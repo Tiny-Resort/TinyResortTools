@@ -89,3 +89,4 @@ E:\DinkumMods\TinyResortTools\bin\Debug\TinyResortTools.dll
 E:\DinkumMods\TinyResortTools\bin\Debug\TinyResortTools.pdb
 E:\DinkumMods\TinyResortTools\obj\Debug\TinyResortTools.dll
 E:\DinkumMods\TinyResortTools\obj\Debug\TinyResortTools.pdb
+E:\DinkumMods\TinyResortTools\bin\Debug\SemanticVersioning.dll

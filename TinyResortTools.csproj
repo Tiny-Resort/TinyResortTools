@@ -66,7 +66,7 @@
       <HintPath>Libraries\Novell.Directory.Ldap.dll</HintPath>
     </Reference>
     <Reference Include="SemanticVersioning">
-      <HintPath>..\..\SteamLibrary\steamapps\common\Dinkum\BepInEx\core\SemanticVersioning.dll</HintPath>
+      <HintPath>Libraries\SemanticVersioning.dll</HintPath>
     </Reference>
     <Reference Include="SimpleWebTransport">
       <HintPath>Libraries\SimpleWebTransport.dll</HintPath>

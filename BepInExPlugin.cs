@@ -11,6 +11,7 @@ using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.Networking;
+using Version = SemanticVersioning.Version;
 
 namespace NexusUpdate {
 
@@ -40,7 +41,7 @@ namespace NexusUpdate {
 
         private IEnumerator CheckPlugins() {
             foreach (KeyValuePair<string, PluginInfo> kvp in PluginInfos) {
-                SemanticVersioning.Version currentVersion = kvp.Value.Metadata.Version;
+                Version currentVersion = kvp.Value.Metadata.Version;
                 string pluginName = kvp.Value.Metadata.Name;
                 string guid = kvp.Value.Metadata.GUID;
                 string cfgFile = Path.Combine(new string[] { Directory.GetParent(Path.GetDirectoryName(typeof(BepInProcess).Assembly.Location)).FullName, "config", guid + ".cfg" });
