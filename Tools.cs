@@ -38,7 +38,7 @@ namespace TR {
             Harmony harmony = new Harmony(pluginGuid);
             MethodInfo makeTopNotification = AccessTools.Method(typeof(NotificationManager), "makeTopNotification");
             MethodInfo makeTopNotificationPrefix = AccessTools.Method(typeof(Tools), "makeTopNotificationPrefix");
-            harmony.Patch(makeTopNotification, new HarmonyMethod(makeTopNotificationPrefix));
+            //harmony.Patch(makeTopNotification, new HarmonyMethod(makeTopNotificationPrefix));
             #endregion
 
         }
