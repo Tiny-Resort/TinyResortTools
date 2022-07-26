@@ -15,12 +15,8 @@ namespace TR {
 
         public static bool forceClearNotification;
         internal void Awake() {
-            //TR.Instance = this;
-           // new SL();
             Harmony harmony = new Harmony("tinyresort.dinkum.TinyResortTools");
             harmony.PatchAll();
         }
     }
-   // public static TRPlugin Instance;
-
 }

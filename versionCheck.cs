@@ -29,12 +29,5 @@ namespace TR.Tools {
             return modGameVersion == currentGameVersion;
         }*/
 
-        /*[HarmonyPrefix]
-        public static void loadVersionNumberPrefix(SaveLoad __instance)
-        {
-            currentGameVersion = WorldManager.manageWorld.versionNumber;
-            Logger.LogInfo("Current Game Version: " + currentGameVersion);
-        }*/
-
     }
 }

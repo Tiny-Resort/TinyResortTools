@@ -56,43 +56,5 @@ namespace TR.Tools {
             }
             else return true;
         }
-
-
-        // public void Start()
-        // {
-        //     modGameVersion = "v0.4.5";
-        //     #region Logging
-        //
-        //     StaticLogger = Logger;
-        //     BepInExInfoLogInterpolatedStringHandler handler =
-        //         new BepInExInfoLogInterpolatedStringHandler(18, 1, out var flag);
-        //     if (flag)
-        //     {
-        //         handler.AppendLiteral("Plugin " + pluginGuid + " (v" + pluginVersion + ") loaded!");
-        //     }
-        //
-        //     StaticLogger.LogInfo(handler);
-        //
-        //     #endregion
-        //
-        //     ManualLogSource logger = Logger;
-        //     
-        //     Logger.LogInfo("Current Game Version: "+ currentGameVersion);
-        //     
-        //     
-        // }
-        //
-        // public static bool compareGameVersions(WorldManager __instance, string myModGameVersion)
-        // {
-        //     currentGameVersion = "v0." + WorldManager.manageWorld.masterVersionNumber.ToString() + "." + WorldManager.manageWorld.versionNumber.ToString();
-        //     return modGameVersion == currentGameVersion;
-        // }
-        /*[HarmonyPrefix]
-        public static void loadVersionNumberPrefix(SaveLoad __instance)
-        {
-            currentGameVersion = WorldManager.manageWorld.versionNumber;
-            Logger.LogInfo("Current Game Version: " + currentGameVersion);
-        }*/
-
     }
 }
