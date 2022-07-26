@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.DirectoryServices.ActiveDirectory;
@@ -13,42 +13,17 @@ using HarmonyLib;
 using System.Reflection;
 using UnityEngine.InputSystem;
 
-namespace TR {
-    [BepInPlugin(pluginGuid, pluginName, pluginVersion)]
-    public class Tools : BaseUnityPlugin {
+namespace TR.Tools {
 
-        public const string pluginGuid = "tinyresort.dinkum.TinyResortTools";
-        public const string pluginName = "Tiny Resort Tools";
-        public const string pluginVersion = "0.0.5";
-        public static ManualLogSource StaticLogger;
-        public static bool forceClearNotification;
-        public static string modGameVersion = null;
-        public static string currentGameVersion;
-
-        private void Awake() {
-
-            #region Logging
-            StaticLogger = Logger;
-            BepInExInfoLogInterpolatedStringHandler handler = new BepInExInfoLogInterpolatedStringHandler(18, 1, out bool flag);
-            if (flag) { handler.AppendLiteral("Plugin " + pluginGuid + " (v" + pluginVersion + ") loaded!"); }
-            StaticLogger.LogInfo(handler);
-            #endregion
-
-            #region Patching
-            Harmony harmony = new Harmony(pluginGuid);
-            MethodInfo makeTopNotification = AccessTools.Method(typeof(NotificationManager), "makeTopNotification");
-            MethodInfo makeTopNotificationPrefix = AccessTools.Method(typeof(Tools), "makeTopNotificationPrefix");
-            //harmony.Patch(makeTopNotification, new HarmonyMethod(makeTopNotificationPrefix));
-            #endregion
-
-        }
-
+    [HarmonyPatch(typeof(NotificationManager), "makeTopNotification")]
+    public class patchMakeTopNotification {
+        
         // Forcibly clears the top notification so that it can be replaced immediately
         [HarmonyPrefix]
         public static bool makeTopNotificationPrefix(NotificationManager __instance) {
 
-            if (forceClearNotification) {
-                forceClearNotification = false;
+            if (TRPlugin.forceClearNotification) {
+                TRPlugin.forceClearNotification = false;
 
                 var toNotify = (List<string>)AccessTools.Field(typeof(NotificationManager), "toNotify").GetValue(__instance);
                 var subTextNot = (List<string>)AccessTools.Field(typeof(NotificationManager), "subTextNot").GetValue(__instance);
@@ -83,35 +58,35 @@ namespace TR {
         }
 
 
-        public void Start()
-        {
-            modGameVersion = "v0.4.5";
-            #region Logging
-
-            StaticLogger = Logger;
-            BepInExInfoLogInterpolatedStringHandler handler =
-                new BepInExInfoLogInterpolatedStringHandler(18, 1, out var flag);
-            if (flag)
-            {
-                handler.AppendLiteral("Plugin " + pluginGuid + " (v" + pluginVersion + ") loaded!");
-            }
-
-            StaticLogger.LogInfo(handler);
-
-            #endregion
-
-            ManualLogSource logger = Logger;
-            
-            Logger.LogInfo("Current Game Version: "+ currentGameVersion);
-            
-            
-        }
-
-        public static bool compareGameVersions(WorldManager __instance, string myModGameVersion)
-        {
-            currentGameVersion = "v0." + WorldManager.manageWorld.masterVersionNumber.ToString() + "." + WorldManager.manageWorld.versionNumber.ToString();
-            return modGameVersion == currentGameVersion;
-        }
+        // public void Start()
+        // {
+        //     modGameVersion = "v0.4.5";
+        //     #region Logging
+        //
+        //     StaticLogger = Logger;
+        //     BepInExInfoLogInterpolatedStringHandler handler =
+        //         new BepInExInfoLogInterpolatedStringHandler(18, 1, out var flag);
+        //     if (flag)
+        //     {
+        //         handler.AppendLiteral("Plugin " + pluginGuid + " (v" + pluginVersion + ") loaded!");
+        //     }
+        //
+        //     StaticLogger.LogInfo(handler);
+        //
+        //     #endregion
+        //
+        //     ManualLogSource logger = Logger;
+        //     
+        //     Logger.LogInfo("Current Game Version: "+ currentGameVersion);
+        //     
+        //     
+        // }
+        //
+        // public static bool compareGameVersions(WorldManager __instance, string myModGameVersion)
+        // {
+        //     currentGameVersion = "v0." + WorldManager.manageWorld.masterVersionNumber.ToString() + "." + WorldManager.manageWorld.versionNumber.ToString();
+        //     return modGameVersion == currentGameVersion;
+        // }
         /*[HarmonyPrefix]
         public static void loadVersionNumberPrefix(SaveLoad __instance)
         {
