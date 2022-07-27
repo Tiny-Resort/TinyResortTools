@@ -63,6 +63,9 @@
     <Reference Include="Novell.Directory.Ldap">
       <HintPath>Libraries\Novell.Directory.Ldap.dll</HintPath>
     </Reference>
+    <Reference Include="SemanticVersioning">
+      <HintPath>Libraries\SemanticVersioning.dll</HintPath>
+    </Reference>
     <Reference Include="SimpleWebTransport">
       <HintPath>Libraries\SimpleWebTransport.dll</HintPath>
     </Reference>

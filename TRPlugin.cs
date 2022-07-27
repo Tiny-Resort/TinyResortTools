@@ -10,8 +10,8 @@ namespace TR {
     [BepInPlugin(pluginGuid, pluginName, pluginVersion)]
     public class TRPlugin : BaseUnityPlugin {
         public const string pluginGuid = "tinyresort.dinkum.TinyResortTools";
-        public const string pluginName = "Time Management";
-        public const string pluginVersion = "1.2.1";
+        public const string pluginName = "Tiny Resort Tools";
+        public const string pluginVersion = "0.1.0";
 
         public static bool forceClearNotification;
         internal void Awake() {

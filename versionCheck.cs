@@ -23,20 +23,21 @@ namespace TR.Tools {
         public static string gameVersionString;
         public static string gameVersionReturnString;
 
-        public static void verifyGameVersion(string myModGameVersion) {
+        public static string verifyGameVersion(string myModGameVersion) {
             if (!isGameVersionChecked) {
                 try {
                     currentGameVersion = "v0." + WorldManager.manageWorld.masterVersionNumber.ToString() + "." + WorldManager.manageWorld.versionNumber.ToString();
                 }
-                catch (MissingReferenceException e) { }
+                catch (MissingReferenceException e) { return null; }
                 if (myModGameVersion == currentGameVersion) {
                     isGameVersionChecked = !isGameVersionChecked;
-                    gameVersionReturnString = "The game version's and mod's game version match.";
+                    return "The game version's and mod's game version match.";
                     
                 }
                 isGameVersionChecked = !isGameVersionChecked;
-                gameVersionReturnString=  "The game version's and mod's game version not match.";
+                return "The game version's and mod's game version not match.";
             }
+            return null;
         }
 
         /*public bool verifyModVersions(currentModVersion) {
