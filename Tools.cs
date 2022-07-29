@@ -1,21 +1,17 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.DirectoryServices.ActiveDirectory;
-using System.Linq;
-using BepInEx;
-using BepInEx.Configuration;
-using BepInEx.Core.Logging.Interpolation;
-using BepInEx.Logging;
-using Mirror;
+﻿//using System;
+//using HarmonyLib;
+//using TR;
 using UnityEngine;
-using HarmonyLib;
-using System.Reflection;
-using UnityEngine.InputSystem;
+//using UnityEngine.SceneManagement;
 
-namespace TR.Tools {
+namespace TR {
     
-    public class versionCheck {
+    //[BepInPlugin(pluginGuid, pluginName, pluginVersion)]
+    public class Tools : MonoBehaviour { // : BaseUnityPlugin {
+        
+        //public const string pluginGuid = "tinyresort.dinkum.TinyResortTools";
+        //public const string pluginName = "Tiny Resort Tools";
+        //public const string pluginVersion = "0.1.0";
 
         public static string currentGameVersion;
         public static bool isModVersionChecked;
@@ -23,7 +19,19 @@ namespace TR.Tools {
         public static string gameVersionString;
         public static string gameVersionReturnString;
 
-        public static string verifyGameVersion(string myModGameVersion) {
+        public static void Initialize() {
+            //Harmony harmony = new Harmony(pluginID);
+         //   Debug.Log("TESTTESTTEST");            
+            //harmony.PatchAll();
+        }
+
+        public static bool forceClearNotification;
+       /* public static void topNotification(string title, string subtitle) {
+            forceClearNotification = true;
+            NotificationManager.manage.makeTopNotification(title, subtitle);
+        }*/
+
+/*        public static string verifyGameVersion(string myModGameVersion) {
             if (!isGameVersionChecked) {
                 try {
                     currentGameVersion = "v0." + WorldManager.manageWorld.masterVersionNumber.ToString() + "." + WorldManager.manageWorld.versionNumber.ToString();
@@ -32,17 +40,12 @@ namespace TR.Tools {
                 if (myModGameVersion == currentGameVersion) {
                     isGameVersionChecked = !isGameVersionChecked;
                     return "The game version's and mod's game version match.";
-                    
+
                 }
                 isGameVersionChecked = !isGameVersionChecked;
                 return "The game version's and mod's game version not match.";
             }
             return null;
-        }
-
-        /*public bool verifyModVersions(currentModVersion) {
-            currentGameVersion = "v0." + WorldManager.manageWorld.masterVersionNumber.ToString() + "." + WorldManager.manageWorld.versionNumber.ToString();
-            return modGameVersion == currentGameVersion;
         }*/
 
     }

@@ -1,19 +1,15 @@
-using System;
+/*using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
-using BepInEx;
-using BepInEx.Configuration;
-using BepInEx.Core.Logging.Interpolation;
-using BepInEx.Logging;
 using Mirror;
 using UnityEngine;
 using HarmonyLib;
 using System.Reflection;
 using UnityEngine.InputSystem;
 
-namespace TR.Tools {
+namespace TR {
 
     [HarmonyPatch(typeof(NotificationManager), "makeTopNotification")]
     public class patchMakeTopNotification {
@@ -22,8 +18,8 @@ namespace TR.Tools {
         [HarmonyPrefix]
         public static bool makeTopNotificationPrefix(NotificationManager __instance) {
 
-            if (TRPlugin.forceClearNotification) {
-                TRPlugin.forceClearNotification = false;
+            if (Tools.forceClearNotification) {
+                Tools.forceClearNotification = false;
 
                 var toNotify = (List<string>)AccessTools.Field(typeof(NotificationManager), "toNotify").GetValue(__instance);
                 var subTextNot = (List<string>)AccessTools.Field(typeof(NotificationManager), "subTextNot").GetValue(__instance);
@@ -58,3 +54,4 @@ namespace TR.Tools {
         }
     }
 }
+*/

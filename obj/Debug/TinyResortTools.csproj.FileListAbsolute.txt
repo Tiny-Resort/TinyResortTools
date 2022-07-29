@@ -2,10 +2,7 @@ E:\DinkumMods\TinyResortTools\obj\Debug\TinyResortTools.csproj.AssemblyReference
 E:\DinkumMods\TinyResortTools\obj\Debug\TinyResortTools.csproj.CoreCompileInputs.cache
 E:\DinkumMods\TinyResortTools\bin\Debug\0Harmony.dll
 E:\DinkumMods\TinyResortTools\bin\Debug\Assembly-CSharp.dll
-E:\DinkumMods\TinyResortTools\bin\Debug\BepInEx.Core.dll
-E:\DinkumMods\TinyResortTools\bin\Debug\BepInEx.Unity.dll
 E:\DinkumMods\TinyResortTools\bin\Debug\Mirror.dll
-E:\DinkumMods\TinyResortTools\bin\Debug\netstandard.dll
 E:\DinkumMods\TinyResortTools\bin\Debug\Newtonsoft.Json.dll
 E:\DinkumMods\TinyResortTools\bin\Debug\Novell.Directory.Ldap.dll
 E:\DinkumMods\TinyResortTools\bin\Debug\SimpleWebTransport.dll
