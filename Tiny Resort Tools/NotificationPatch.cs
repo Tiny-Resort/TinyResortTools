@@ -12,7 +12,7 @@ using UnityEngine.InputSystem;
 namespace TR {
 
     [HarmonyPatch(typeof(NotificationManager), "makeTopNotification")]
-    public class patchMakeTopNotification {
+    public class NotificationPatch {
         
         // Forcibly clears the top notification so that it can be replaced immediately
         [HarmonyPrefix]
@@ -52,5 +52,7 @@ namespace TR {
             }
             else return true;
         }
+        
     }
+    
 }

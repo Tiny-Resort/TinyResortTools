@@ -35,7 +35,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="TestingEnvironment.cs" />
-    <Compile Include="Tiny Resort Tools\patchMakeTopNotification.cs" />
+    <Compile Include="Tiny Resort Tools\ModWindow.cs" />
+    <Compile Include="Tiny Resort Tools\NotificationPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tiny Resort Tools\Tools.cs" />
   </ItemGroup>
