@@ -1,0 +1,91 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Core.Logging.Interpolation;
+using BepInEx.Logging;
+using HarmonyLib;
+using UnityEngine;
+
+namespace TinyResort {
+    
+    public static class TRTools {
+
+        private static bool Initialized;
+        private static Dictionary<BaseUnityPlugin, TRPlugin> HookedPlugins = new Dictionary<BaseUnityPlugin, TRPlugin>();
+
+        /// <summary>
+        /// Initializes the Tiny Resort toolset
+        /// </summary>
+        /// <param name="plugin">Your plugin. When calling this from your plugin, simply use 'this'.</param>
+        /// <param name="harmony">Your harmony instance.</param>
+        /// <param name="logger">The BepInEx logger for your plugin. Usually simply 'Logger'.</param>
+        /// <param name="nexusID">The ID of your mod on nexus. This is the number at the end of the URL for your mod's nexus page. (A mod page does not need to be published in order to have an ID)</param>
+        /// <param name="pluginGuid">The Guid of your plugin, generally declared at the top of your mod.</param>
+        /// <param name="pluginName">The name of your plugin, generally declared at the top of your mod.</param>
+        /// <param name="pluginVersion">The version of your plugin, generally declared at the top of your mod.</param>
+        public static TRPlugin Initialize(this BaseUnityPlugin plugin, Harmony harmony, ManualLogSource logger, int nexusID, string pluginGuid, string pluginName, string pluginVersion) {
+
+            // Initializes the TR Toolset for all mods
+            if (!Initialized) {
+                harmony.PatchAll();
+                TRDrawing.Initialize();
+                Initialized = true;
+            }
+
+            // Initializes this mod in particular
+            if (!HookedPlugins.ContainsKey(plugin)) {
+                
+                HookedPlugins[plugin] = new TRPlugin();
+                HookedPlugins[plugin].plugin = plugin;
+                HookedPlugins[plugin].harmony = harmony;
+
+                HookedPlugins[plugin].nexusID = plugin.Config.Bind("General", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus.");
+                HookedPlugins[plugin].debugMode = plugin.Config.Bind("General", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
+                HookedPlugins[plugin].Logger = logger;
+                BepInExInfoLogInterpolatedStringHandler handler = new BepInExInfoLogInterpolatedStringHandler(18, 1, out var flag);
+                if (flag) { handler.AppendLiteral("Plugin " + pluginGuid + " (v" + pluginVersion + ") loaded!"); }
+                HookedPlugins[plugin].Logger.LogInfo(handler);
+                
+            }
+
+            return HookedPlugins[plugin];
+
+        }
+
+        #region Easy Notifications
+        
+        public static bool forceClearNotification;
+
+        /// <summary>
+        /// Displays a notification at the top of the screen right away rather than waiting on any previous notifications.
+        /// </summary>
+        /// <param name="title">Large text at the top of the notification.</param>
+        /// <param name="subtitle">Smaller descriptive text below the title.</param>
+        public static void TopNotification(string title, string subtitle) {
+            forceClearNotification = true;
+            NotificationManager.manage.makeTopNotification(title, subtitle);
+        }
+        
+        #endregion
+        
+        #region Version Checking
+
+        public static string currentGameVersion;
+
+        public static string CheckGameVersion(string myModGameVersion) {
+                
+            if (!WorldManager.manageWorld) { return "Game not fully loaded. Can not compare version numbers."; }
+            currentGameVersion = "v0." + WorldManager.manageWorld.masterVersionNumber.ToString() + "." + WorldManager.manageWorld.versionNumber.ToString();
+
+            return myModGameVersion == currentGameVersion ? 
+                       "Mod was created using this version of the game." : 
+                       "Mod was created for a different version of the game than is running. Issues may occur.";
+        }
+        
+        #endregion
+
+    }
+
+}

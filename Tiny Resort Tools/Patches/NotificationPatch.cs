@@ -9,7 +9,7 @@ using HarmonyLib;
 using System.Reflection;
 using UnityEngine.InputSystem;
 
-namespace TR {
+namespace TinyResort {
 
     [HarmonyPatch(typeof(NotificationManager), "makeTopNotification")]
     public class NotificationPatch {
@@ -18,8 +18,8 @@ namespace TR {
         [HarmonyPrefix]
         public static bool makeTopNotificationPrefix(NotificationManager __instance) {
 
-            if (Tools.forceClearNotification) {
-                Tools.forceClearNotification = false;
+            if (TRTools.forceClearNotification) {
+                TRTools.forceClearNotification = false;
 
                 var toNotify = (List<string>)AccessTools.Field(typeof(NotificationManager), "toNotify").GetValue(__instance);
                 var subTextNot = (List<string>)AccessTools.Field(typeof(NotificationManager), "subTextNot").GetValue(__instance);
