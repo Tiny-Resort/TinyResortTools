@@ -175,3 +175,5 @@ H:\Modding\Dinkum Mods\Tiny-Resort-Tools\obj\Debug\TinyResortTools.csproj.Assemb
 H:\Modding\Dinkum Mods\Tiny-Resort-Tools\obj\Debug\TinyResortTools.csproj.CoreCompileInputs.cache
 H:\Modding\Dinkum Mods\Tiny-Resort-Tools\obj\Debug\TinyResortTools.dll
 H:\Modding\Dinkum Mods\Tiny-Resort-Tools\obj\Debug\TinyResortTools.pdb
+H:\Modding\Dinkum Mods\Tiny-Resort-Tools\bin\Debug\BepInEx.Core.dll
+H:\Modding\Dinkum Mods\Tiny-Resort-Tools\bin\Debug\BepInEx.Unity.dll
