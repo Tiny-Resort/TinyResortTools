@@ -25,29 +25,31 @@ namespace TinyResort {
         /// <param name="pluginGuid">The Guid of your plugin, generally declared at the top of your mod.</param>
         /// <param name="pluginName">The name of your plugin, generally declared at the top of your mod.</param>
         /// <param name="pluginVersion">The version of your plugin, generally declared at the top of your mod.</param>
-        public static TRPlugin Initialize(this BaseUnityPlugin plugin, Harmony harmony, ManualLogSource logger, int nexusID, string pluginGuid, string pluginName, string pluginVersion) {
-
-            // Initializes the TR Toolset for all mods
-            if (!Initialized) {
-                harmony.PatchAll();
-                TRDrawing.Initialize();
-                Initialized = true;
-            }
+        public static TRPlugin Initialize(this BaseUnityPlugin plugin, ManualLogSource logger, 
+                                          int nexusID, string pluginGuid, string pluginName, string pluginVersion) {
 
             // Initializes this mod in particular
             if (!HookedPlugins.ContainsKey(plugin)) {
-                
+
                 HookedPlugins[plugin] = new TRPlugin();
                 HookedPlugins[plugin].plugin = plugin;
-                HookedPlugins[plugin].harmony = harmony;
+                HookedPlugins[plugin].harmony = new Harmony(pluginGuid);
 
                 HookedPlugins[plugin].nexusID = plugin.Config.Bind("General", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus.");
                 HookedPlugins[plugin].debugMode = plugin.Config.Bind("General", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
+
                 HookedPlugins[plugin].Logger = logger;
                 BepInExInfoLogInterpolatedStringHandler handler = new BepInExInfoLogInterpolatedStringHandler(18, 1, out var flag);
                 if (flag) { handler.AppendLiteral("Plugin " + pluginGuid + " (v" + pluginVersion + ") loaded!"); }
                 HookedPlugins[plugin].Logger.LogInfo(handler);
-                
+
+            }
+
+            // Initializes the TR Toolset for all mods
+            if (!Initialized) {
+                HookedPlugins[plugin].harmony.PatchAll();
+                TRDrawing.Initialize();
+                Initialized = true;
             }
 
             return HookedPlugins[plugin];
