@@ -12,13 +12,15 @@ namespace TinyResort {
 
     [HarmonyPatch(typeof(NotificationManager), "makeTopNotification")]
     public class NotificationPatch {
+
+        public static bool forceClearNotification;
         
         // Forcibly clears the top notification so that it can be replaced immediately
         [HarmonyPrefix]
         public static bool makeTopNotificationPrefix(NotificationManager __instance) {
 
-            if (TRTools.forceClearNotification) {
-                TRTools.forceClearNotification = false;
+            if (forceClearNotification) {
+                forceClearNotification = false;
 
                 var toNotify = (List<string>)AccessTools.Field(typeof(NotificationManager), "toNotify").GetValue(__instance);
                 var subTextNot = (List<string>)AccessTools.Field(typeof(NotificationManager), "subTextNot").GetValue(__instance);

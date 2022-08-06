@@ -19,7 +19,6 @@ namespace TinyResort {
         /// Initializes the Tiny Resort toolset
         /// </summary>
         /// <param name="plugin">Your plugin. When calling this from your plugin, simply use 'this'.</param>
-        /// <param name="harmony">Your harmony instance.</param>
         /// <param name="logger">The BepInEx logger for your plugin. Usually simply 'Logger'.</param>
         /// <param name="nexusID">The ID of your mod on nexus. This is the number at the end of the URL for your mod's nexus page. (A mod page does not need to be published in order to have an ID)</param>
         /// <param name="pluginGuid">The Guid of your plugin, generally declared at the top of your mod.</param>
@@ -57,8 +56,6 @@ namespace TinyResort {
         }
 
         #region Easy Notifications
-        
-        public static bool forceClearNotification;
 
         /// <summary>
         /// Displays a notification at the top of the screen right away rather than waiting on any previous notifications.
@@ -66,15 +63,16 @@ namespace TinyResort {
         /// <param name="title">Large text at the top of the notification.</param>
         /// <param name="subtitle">Smaller descriptive text below the title.</param>
         public static void TopNotification(string title, string subtitle) {
-            forceClearNotification = true;
+            NotificationPatch.forceClearNotification = true;
             NotificationManager.manage.makeTopNotification(title, subtitle);
+            NotificationPatch.forceClearNotification = false;
         }
         
         #endregion
         
         #region Version Checking
 
-        public static string currentGameVersion;
+        private static string currentGameVersion;
 
         public static string CheckGameVersion(string myModGameVersion) {
                 
