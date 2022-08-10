@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using BepInEx;
 using HarmonyLib;
+using I2.Loc;
 using UnityEngine;
 
 namespace TinyResort {
@@ -13,15 +16,15 @@ namespace TinyResort {
         public const string pluginVersion = "0.1.0";
 
         public void Awake() {
-            TRTools.Initialize(this, Logger, -1, pluginGuid, pluginName, pluginVersion);
+            Plugin = TRTools.Initialize(this, Logger, -1, pluginGuid, pluginName, pluginVersion);
         }
-
+        
         public void Update() {
 
-            if (Input.GetKeyDown(KeyCode.Alpha0)) { TRTools.TopNotification("Test", "Working"); }
-            if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            //if (Input.GetKeyDown(KeyCode.Alpha0)) { TRTools.TopNotification("Test", "Working"); }
+            //if (Input.GetKeyDown(KeyCode.Alpha1)) {
                 //ModWindow.CreateOptionsMenu();
-            }
+            //}
             //if (Input.GetKeyDown(KeyCode.Alpha1)) { Tools.CheckGameVersion(); }
             
         }

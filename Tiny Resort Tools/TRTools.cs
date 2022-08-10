@@ -34,7 +34,7 @@ namespace TinyResort {
                 HookedPlugins[plugin].plugin = plugin;
                 HookedPlugins[plugin].harmony = new Harmony(pluginGuid);
 
-                HookedPlugins[plugin].nexusID = plugin.Config.Bind("General", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus.");
+                if (nexusID > 0) { HookedPlugins[plugin].nexusID = plugin.Config.Bind("General", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus."); }
                 HookedPlugins[plugin].debugMode = plugin.Config.Bind("General", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
 
                 HookedPlugins[plugin].Logger = logger;
