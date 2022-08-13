@@ -28,11 +28,7 @@ namespace TinyResort {
         /// <param name="debugModeOnly">If true, this message will only show in the console if the config file has DebugMode set to true.</param>
         public void LogToConsole(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) {
             if (debugModeOnly && !debugMode.Value) return;
-            switch (severity) {
-                case LogSeverity.Standard: Logger.LogInfo(text); break;
-                case LogSeverity.Warning: Logger.LogWarning(text); break;
-                case LogSeverity.Error: Logger.LogError(text); break;
-            }
+            TRTools.LogToConsole(text, severity, Logger);
         }
 
         /// <summary>
@@ -41,15 +37,20 @@ namespace TinyResort {
         /// <param name="sourceClassType">Typically typeOf(className) where className is the class you are patching in Dinkum.</param>
         /// <param name="sourceMethod">The name of the method in Dinkum being patched.</param>
         /// <param name="patchClassType">Typically typeOf(className) where className is the name of your class (the one that contains the patch method).</param>
-        /// <param name="patchMethod">The name of the method doing the patching.</param>
-        public void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string patchMethod) {
+        /// <param name="prefixMethod">The name of the prefix method doing the patching.</param>
+        /// <param name="postfixMethod">The name of the postfix method doing the patching.</param>
+        public void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") {
             MethodInfo sourceMethodInfo = AccessTools.Method(sourceClassType, sourceMethod);
-            MethodInfo patchMethodInfo = AccessTools.Method(patchClassType, patchMethod);
-            harmony.Patch(sourceMethodInfo, new HarmonyMethod(patchMethodInfo));
+            MethodInfo prefixMethodInfo = prefixMethod.IsNullOrWhiteSpace() ? null : AccessTools.Method(patchClassType, prefixMethod);
+            MethodInfo postfixMethodInfo = postfixMethod.IsNullOrWhiteSpace() ? null : AccessTools.Method(patchClassType, postfixMethod);
+            var prefixHarmonyMethod = prefixMethod.IsNullOrWhiteSpace() ? null : new HarmonyMethod(prefixMethodInfo);
+            var postfixHarmonyMethod = postfixMethod.IsNullOrWhiteSpace() ? null : new HarmonyMethod(postfixMethodInfo);
+            harmony.Patch(sourceMethodInfo, prefixHarmonyMethod, postfixHarmonyMethod);
         }
         
     }
 
     public enum LogSeverity { Standard, Warning, Error }
+    public enum PatchType { Prefix, Postfix }
 
 }
