@@ -26,9 +26,13 @@ namespace TinyResort {
         /// <param name="text"></param>
         /// <param name="severity"></param>
         /// <param name="debugModeOnly">If true, this message will only show in the console if the config file has DebugMode set to true.</param>
-        public void LogToConsole(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) {
+        public void Log(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) {
             if (debugModeOnly && !debugMode.Value) return;
-            TRTools.LogToConsole(text, severity, Logger);
+            switch (severity) {
+                case LogSeverity.Standard: Logger.LogInfo(text); break;
+                case LogSeverity.Warning: Logger.LogWarning(text); break;
+                case LogSeverity.Error: Logger.LogError(text); break;
+            }
         }
 
         /// <summary>

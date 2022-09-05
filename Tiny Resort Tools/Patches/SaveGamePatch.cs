@@ -8,8 +8,9 @@ namespace TinyResort {
 
         [HarmonyPrefix]
         public static void patch(SaveLoad __instance) {
-            TRTools.LogToConsole("Started Saving Game");
-            TRData.preSave?.Invoke();
+            TRTools.Log("Started Saving Game");
+            TRData.preSaveEvent?.Invoke();
+            TRData.cleanDataEvent?.Invoke();
         }
 
     }

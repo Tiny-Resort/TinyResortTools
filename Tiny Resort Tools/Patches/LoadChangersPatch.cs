@@ -5,13 +5,19 @@ namespace TinyResort {
 
     [HarmonyPatch(typeof(SaveLoad), "loadChangers")]
     public class LoadChangersPatch {
-
-        // Runs mod data loading after the last bit of game data is loaded
+        
         [HarmonyPostfix]
-        public static void patch(SaveLoad __instance) {
-            TRTools.LogToConsole("Finished Loading In");
+        public static void prefix(SaveLoad __instance) {
+            TRTools.Log("Started Loading In");
+            TRData.preLoadEvent?.Invoke();
+        }
+        
+        [HarmonyPostfix]
+        public static void postfix(SaveLoad __instance) {
+            TRTools.Log("Finished Loading In");
             TRTools.InMainMenu = false;
-            TRData.onLoad?.Invoke();
+            TRData.postLoadEvent?.Invoke();
+            TRData.injectDataEvent?.Invoke();
         }
 
     }

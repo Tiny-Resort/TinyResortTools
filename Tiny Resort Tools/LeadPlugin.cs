@@ -1,0 +1,48 @@
+using System.ComponentModel;
+using BepInEx;
+using UnityEngine;
+
+namespace TinyResort {
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [BepInPlugin(pluginGuid, pluginName, pluginVersion)]
+    public class LeadPlugin : BaseUnityPlugin {
+
+        public static TRPlugin Plugin;
+        
+        public const string pluginName = "TRTools";
+        public const string pluginGuid = "dev.TinyResort." + pluginName;
+        public const string pluginVersion = "0.6.0";
+
+        private void Awake() {
+
+            Plugin = TRTools.Initialize(this, 83);
+            Plugin.harmony.PatchAll();
+            
+            TRDrawing.Initialize();
+            TRLicenses.Initialize();
+
+        }
+
+        private void Start() {
+
+            var TestLicense = TRLicenses.AddLicense(pluginGuid, "Test License 1", Color.cyan, 500, 3, 1, LicenceManager.LicenceTypes.Mining);
+            TestLicense.SetDescription(1, "Level 1: This is a license made for testing the framework.");
+            TestLicense.ConnectToSkill(CharLevelManager.SkillTypes.Mining, 10);
+
+            var TestLicense2 = TRLicenses.AddLicense(pluginGuid, "Test License 2", Color.red, 250, 2, 3, LicenceManager.LicenceTypes.Bridge);
+            TestLicense2.SetDescription(1, "Level 1: This is a license made for testing the framework.");
+            TestLicense2.SetDescription(2, "Level 2: This is a license made for testing the framework.");
+            TestLicense2.SetDescription(3, "Level 3: This is a license made for testing the framework.");
+            TestLicense2.ConnectToSkill(CharLevelManager.SkillTypes.Farming, 20);
+
+            var TestLicense3 = TRLicenses.AddLicense(pluginGuid, "Test License 3", Color.red, 680, 2, 3, LicenceManager.LicenceTypes.Fishing);
+            TestLicense3.SetDescription(1, "Level 1: This is a license made for testing the framework.");
+            TestLicense3.SetDescription(2, "Level 2: This is a license made for testing the framework.");
+            TestLicense3.SetDescription(3, "Level 3: This is a license made for testing the framework.");
+            
+        }
+        
+    }
+
+}

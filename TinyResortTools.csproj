@@ -7,8 +7,8 @@
     <ProjectGuid>{1E849F00-09AF-444A-9BCD-B7938E76082D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TR</RootNamespace>
-    <AssemblyName>TinyResortTools</AssemblyName>
+    <RootNamespace>TinyResort</RootNamespace>
+    <AssemblyName>dev.TinyResort.TRTools</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -34,7 +34,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="TestingEnvironment.cs" />
     <Compile Include="Tiny Resort Tools\**">
       <Link>Tiny Resort Tools\**</Link>
     </Compile>

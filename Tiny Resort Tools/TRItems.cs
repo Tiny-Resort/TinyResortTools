@@ -12,15 +12,17 @@ namespace TinyResort {
             }
         }
 
+        /// <returns>Whether or not the item exists.</returns>
         public static bool DoesItemExist(int itemID) {
             if (itemDetails.Count <= 0) { InitializeItemDetails(); }
             return itemID >= 0 && itemDetails.ContainsKey(itemID);
         }
 
+        /// <returns>The details for an item with the given item ID.</returns>
         public static InventoryItem GetItemDetails(int itemID) {
             if (itemDetails.Count <= 0) { InitializeItemDetails(); }
             if (itemID < 0) {
-                TRTools.LogToConsole("Attempting to get item details for item with ID of " + itemID + " which does not exist.");
+                TRTools.Log("Attempting to get item details for item with ID of " + itemID + " which does not exist.", LogSeverity.Error, false);
                 return null;
             }
             return itemDetails[itemID];

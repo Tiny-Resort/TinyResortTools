@@ -7,8 +7,9 @@ namespace TinyResort {
     public class EasySaveOnTopPatch {
         [HarmonyPostfix]
         public static void patch(SaveLoad __instance) {
-            TRTools.LogToConsole("Finished Saving Game");
-            TRData.postSave?.Invoke();
+            TRTools.Log("Finished Saving Game");
+            TRData.injectDataEvent?.Invoke();
+            TRData.postSaveEvent?.Invoke();
         }
     }
     

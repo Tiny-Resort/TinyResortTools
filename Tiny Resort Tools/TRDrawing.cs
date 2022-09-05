@@ -55,9 +55,7 @@ namespace TinyResort {
 
         public class ModButton { }*/
 
-        /// <summary>
-        /// Creates a sprite in the shape of a circle with a border.
-        /// </summary>
+        /// <summary> Creates a sprite in the shape of a circle with a border. </summary>
         /// <param name="pixelRadius">The radius of the circle (in pixels).</param>
         /// <param name="mainColor">The color of the circle.</param>
         /// <param name="borderThickness">Thickness of the border to the circle (in pixels). Set to 0 to have no border.</param>
