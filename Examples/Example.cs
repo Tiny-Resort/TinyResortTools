@@ -6,7 +6,7 @@ using UnityEngine;
 public class Example : BaseUnityPlugin {
 
     private static TRPlugin plugin;
-    private static ModData modData;
+    private static TRModData modData;
     
     public const string pluginName = "YourPluginName";
     public const string pluginGuid = "your.plugin.guid";
@@ -15,7 +15,7 @@ public class Example : BaseUnityPlugin {
     private int exampleInteger;
     private string[] exampleArray;
 
-    public static ModLicense exampleLicense;
+    public static TRCustomLicense exampleLicense;
 
     /*private void Awake() {
         

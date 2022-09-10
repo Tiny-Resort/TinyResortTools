@@ -4,25 +4,20 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using UnityEngine;
 
 namespace TinyResort {
 
     public class TRPlugin {
 
-        public BaseUnityPlugin plugin;
         public Harmony harmony;
+        internal BaseUnityPlugin plugin;
         
-        public string pluginGuid;
-        public string pluginName;
-        public string pluginVersion;
-        
-        public ManualLogSource Logger;
-        public ConfigEntry<int> nexusID;
-        public ConfigEntry<bool> debugMode;
+        internal ManualLogSource Logger;
+        internal ConfigEntry<int> nexusID;
+        internal ConfigEntry<bool> debugMode;
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Logs to the BepInEx console.</summary>
         /// <param name="text"></param>
         /// <param name="severity"></param>
         /// <param name="debugModeOnly">If true, this message will only show in the console if the config file has DebugMode set to true.</param>

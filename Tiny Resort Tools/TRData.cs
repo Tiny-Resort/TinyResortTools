@@ -14,9 +14,8 @@ namespace TinyResort {
     public static class TRData {
 
         private static int DataVersion;
-        
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static Dictionary<string, ModData> Data = new Dictionary<string, ModData>();
+
+        internal static Dictionary<string, TRModData> Data = new Dictionary<string, TRModData>();
 
         private static int currentSlot => SaveLoad.saveOrLoad.currentSaveSlotNo();
         private static string dataPath => Path.Combine(Application.persistentDataPath, "Slot" + currentSlot, "Mod Data");
@@ -51,20 +50,29 @@ namespace TinyResort {
         public static SaveEvent postLoadEvent;
 
         /// <summary>Subscribes to the save system so that your mod data is saved and loaded properly.</summary>
-        /// <param name="pluginGuid">This will be the name of your save file and could be anything unique, but I recommend using the GUID of your plugin.</param>
+        /// <param name="pluginGuid">The name of your save file. Could be anything unique, but I recommend using the GUID of your plugin.</param>
         /// <returns>A link to the data for your mod. Keep a reference to this. It is used to get and set all saved values.</returns>
-        public static ModData Subscribe(string pluginGuid) {
-            Data[pluginGuid] = new ModData();
+        public static TRModData Subscribe(string pluginGuid) {
+            Data[pluginGuid] = new TRModData();
             Data[pluginGuid].Package = new DataPackage();
             postSaveEvent += () => Save(pluginGuid);
             postLoadEvent += () => Load(pluginGuid);
             return Data[pluginGuid];
         }
-        
-        [EditorBrowsable(EditorBrowsableState.Never)]
+
+        /// <summary>Saves any values that have been set to a mod-specific file in the current save slot folder.</summary>
+        /// <param name="pluginGuid">The name of your save file. Could be anything unique, but I recommend using the GUID of your plugin.</param>
         public static void Save(string pluginGuid) {
 
-            if (TRTools.InMainMenu) { return; }
+            if (TRTools.InMainMenu) {
+                TRTools.Log(pluginGuid + " is trying to save while in the main menu.", LogSeverity.Error);
+                return;
+            }
+
+            if (!Data.ContainsKey(pluginGuid)) {
+                TRTools.Log(pluginGuid + " is trying to save before subscribing.", LogSeverity.Error);
+                return;
+            }
 
             // Creates the folder and finds the save file location
             Directory.CreateDirectory(dataPath);
@@ -88,9 +96,8 @@ namespace TinyResort {
             NewFile.Close();
 
         }
-        
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void Load(string pluginGuid) {
+
+        internal static void Load(string pluginGuid) {
 
             if (TRTools.InMainMenu || !Data.ContainsKey(pluginGuid)) { return; }
 
@@ -110,10 +117,9 @@ namespace TinyResort {
     }
 
     [Serializable]
-    public class ModData {
+    public class TRModData {
         
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [SerializeField] public DataPackage Package = new DataPackage();
+        [SerializeField] internal DataPackage Package = new DataPackage();
 
         /// <summary>Stores an object in the save data for your mod. Can be called either when an object is updated or during a preSave event.</summary>
         /// <param name="name">An identifier for the variable. Can simply be the name of the variable.</param>
@@ -132,7 +138,7 @@ namespace TinyResort {
     }
 
     [Serializable]
-    public class DataPackage {
+    internal class DataPackage {
         public DateTime SaveTime;
         public int DataVersion;
         public Dictionary<string, object> data = new Dictionary<string, object>();

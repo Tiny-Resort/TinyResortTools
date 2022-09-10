@@ -23,34 +23,29 @@ namespace TinyResort {
         /// <param name="nexusID">The ID of your mod on nexus. This is the number at the end of the URL for your mod's nexus page. (A mod page does not need to be published in order to have an ID)</param>
         public static TRPlugin Initialize(this BaseUnityPlugin plugin, int nexusID = -1) {
 
-            // Initializes this mod in particular
-            if (!HookedPlugins.ContainsKey(plugin)) {
+            if (HookedPlugins.ContainsKey(plugin)) { Debug.LogWarning(plugin.Info.Metadata.Name + " is being loaded twice!"); }
 
-                HookedPlugins[plugin] = new TRPlugin();
-                HookedPlugins[plugin].plugin = plugin;
-                HookedPlugins[plugin].harmony = new Harmony(plugin.Info.Metadata.GUID);
+            HookedPlugins[plugin] = new TRPlugin();
+            HookedPlugins[plugin].plugin = plugin;
+            HookedPlugins[plugin].harmony = new Harmony(plugin.Info.Metadata.GUID);
 
-                if (nexusID > 0) { HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus."); }
-                HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
+            if (nexusID > 0) { HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus."); }
+            HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
 
-                HookedPlugins[plugin].Logger = new ManualLogSource(plugin.Info.Metadata.Name);
-                BepInExInfoLogInterpolatedStringHandler handler = new BepInExInfoLogInterpolatedStringHandler(18, 1, out var flag);
-                if (flag) { handler.AppendLiteral("Plugin " + plugin.Info.Metadata.GUID + " (v" + plugin.Info.Metadata.Version + ") loaded!"); }
-                HookedPlugins[plugin].Logger.LogInfo(handler);
-
-            }
+            HookedPlugins[plugin].Logger = BepInEx.Logging.Logger.CreateLogSource(plugin.Info.Metadata.Name);
+            var handler = new BepInExInfoLogInterpolatedStringHandler(18, 1, out var flag);
+            if (flag) { handler.AppendLiteral("Plugin " + plugin.Info.Metadata.GUID + " (v" + plugin.Info.Metadata.Version + ") loaded!"); }
+            HookedPlugins[plugin].Logger.LogInfo(handler);
 
             return HookedPlugins[plugin];
 
         }
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void Log(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) {
+        internal static void Log(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) {
             LeadPlugin.Plugin.Log(text, severity, debugModeOnly);
         }
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") {
+        internal static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") {
             LeadPlugin.Plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod);
         }
 

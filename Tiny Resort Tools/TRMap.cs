@@ -18,10 +18,15 @@ namespace TinyResort {
         /// <param name="markerSize">Width and height of the map marker in pixels.</param>
         /// <returns>A list of all active map markers.</returns>
         public static List<MapMarker> RefreshPool(string category, int desiredMarkerCount, Sprite markerSprite, float markerSize) {
+
             var markers = GetMarkers(category);
+            if (markers.Count > 0 && markers[0].mainRect == null) { MarkersInUse[category].Clear(); }
+            if (AvailableMarkers.Count > 0 && AvailableMarkers[0].mainRect == null) { AvailableMarkers.Clear(); }
+            
             while (desiredMarkerCount > markers.Count) { CreateMarker(category, markerSprite, markerSize); }
             while (markers.Count > desiredMarkerCount) { ReleaseMarker(category, markers[0]); }
             return markers;
+            
         }
 
         /// <summary> Positions a map marker based on an object's world position. </summary>
@@ -96,7 +101,7 @@ namespace TinyResort {
         }
 
         // Keeps icons an appropriate scale to avoid issues when zooming in and out
-        public static void FixMarkerScale() {
+        internal static void FixMarkerScale() {
             foreach (var keyValuePair in MarkersInUse) {
                 foreach (var marker in MarkersInUse[keyValuePair.Key]) {
                     marker.mainRect.localScale = Vector2.one * 0.2f;
