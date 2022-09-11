@@ -51,7 +51,7 @@ namespace TinyResort {
 	    }
 
         public class TRChatCommand {
-
+	        public string pluginName;
 	        public string name;
             public string helpDescription;
             public Action<string[]> method;
