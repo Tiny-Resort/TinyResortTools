@@ -15,7 +15,7 @@ namespace TinyResort {
 
         private static Dictionary<BaseUnityPlugin, TRPlugin> HookedPlugins = new Dictionary<BaseUnityPlugin, TRPlugin>();
 
-        /// <summary>Automatically changes when entering and exiting the dinkum main menu.</summary>
+        /// <summary>Tells you if the player is in the main menu or not.</summary>
         public static bool InMainMenu = true;
 
         /// <summary> Initializes the Tiny Resort toolset </summary>

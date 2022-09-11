@@ -11,13 +11,13 @@ using UnityEngine.InputSystem;
 namespace TinyResort {
 
     [HarmonyPatch(typeof(NotificationManager), "makeTopNotification")]
-    public class NotificationPatch {
+    internal class NotificationPatch {
 
-        public static bool forceClearNotification;
+        internal static bool forceClearNotification;
         
         // Forcibly clears the top notification so that it can be replaced immediately
         [HarmonyPrefix]
-        public static bool makeTopNotificationPrefix(NotificationManager __instance) {
+        internal static bool makeTopNotificationPrefix(NotificationManager __instance) {
 
             if (forceClearNotification) {
                 forceClearNotification = false;

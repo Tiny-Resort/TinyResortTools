@@ -4,15 +4,16 @@ using UnityEngine;
 namespace TinyResort {
 
     [HarmonyPatch(typeof(SaveLoad), "loadChangers")]
-    public class LoadChangersPatch {
+    internal class LoadChangersPatch {
         
         [HarmonyPostfix]
-        public static void prefix(SaveLoad __instance) {
+        internal static void prefix(SaveLoad __instance) {
+            if (TRTools.InMainMenu) { TRData.initialLoadEvent?.Invoke(); }
             TRData.preLoadEvent?.Invoke();
         }
         
         [HarmonyPostfix]
-        public static void postfix(SaveLoad __instance) {
+        internal static void postfix(SaveLoad __instance) {
             TRTools.InMainMenu = false;
             TRData.postLoadEvent?.Invoke();
             TRData.injectDataEvent?.Invoke();

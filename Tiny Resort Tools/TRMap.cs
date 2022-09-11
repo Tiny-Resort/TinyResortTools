@@ -11,13 +11,13 @@ namespace TinyResort {
         private static List<MapMarker> AvailableMarkers = new List<MapMarker>();
         private static Dictionary<string, List<MapMarker>> MarkersInUse = new Dictionary<string, List<MapMarker>>();
 
-        /// <summary> Gets a list of usable markers, removing excess markers or creating new ones as necessary </summary>
+        /// <summary>Gets a list of usable markers, removing excess markers or creating new ones as necessary.</summary>
         /// <param name="category">Helps organize markers by mod and use.</param>
         /// <param name="desiredMarkerCount">How many markers are needed at the moment.</param>
         /// <param name="markerSprite">Sprite to use for the map marker.</param>
         /// <param name="markerSize">Width and height of the map marker in pixels.</param>
         /// <returns>A list of all active map markers.</returns>
-        public static List<MapMarker> RefreshPool(string category, int desiredMarkerCount, Sprite markerSprite, float markerSize) {
+        public static List<MapMarker> Refresh(string category, int desiredMarkerCount, Sprite markerSprite, float markerSize) {
 
             var markers = GetMarkers(category);
             if (markers.Count > 0 && markers[0].mainRect == null) { MarkersInUse[category].Clear(); }
@@ -32,7 +32,7 @@ namespace TinyResort {
         /// <summary> Positions a map marker based on an object's world position. </summary>
         /// <param name="category">Helps organize markers by mod and use.</param>
         /// <param name="index">The index of the marker you want to reposition.</param>
-        /// <param name="worldPosition">The world position of the object (or location) the marker represents.</param>
+        /// <param name="worldPosition">The world position of the object (or location) the marker represents. Typically, this will be the object's transform.position value.</param>
         public static void SetMarkerPosition(string category, int index, Vector3 worldPosition) {
             MarkersInUse[category][index].mainRect.localPosition = new Vector2(worldPosition.x / 2f / RenderMap.map.mapScale, worldPosition.z / 2f / RenderMap.map.mapScale);
         }
@@ -48,7 +48,7 @@ namespace TinyResort {
         /// <param name="markerSprite">Sprite to use for the map marker.</param>
         /// <param name="markerSize">Width and height of the map marker in pixels.</param>
         /// <returns>The map marker.</returns>
-        public static MapMarker CreateMarker(string category, Sprite markerSprite, float markerSize) {
+        internal static MapMarker CreateMarker(string category, Sprite markerSprite, float markerSize) {
 
             // If there's a dot that's not in use, return it
             MapMarker marker;
@@ -86,7 +86,7 @@ namespace TinyResort {
         /// <summary> Disables the marker and adds it back to the object pool for future reuse. </summary>
         /// <param name="category">Helps organize markers by mod and use.</param>
         /// <param name="marker">The marker that should be released.</param>
-        public static void ReleaseMarker(string category, MapMarker marker) {
+        internal static void ReleaseMarker(string category, MapMarker marker) {
             MarkersInUse[category].Remove(marker);
             AvailableMarkers.Add(marker);
             marker.mainRect.gameObject.SetActive(false);

@@ -4,12 +4,13 @@ using UnityEngine;
 namespace TinyResort {
 
     [HarmonyPatch(typeof(SaveLoad), "returnToMenu")]
-    public class ReturnToMenuPatch {
+    internal class ReturnToMenuPatch {
+        
         [HarmonyPostfix]
-        public static void patch(SaveLoad __instance) {
-            TRTools.Log("Returning to Main Menu");
+        internal static void patch(SaveLoad __instance) {
             TRTools.InMainMenu = true;
         }
+        
     }
 
 }

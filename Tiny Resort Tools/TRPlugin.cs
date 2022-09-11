@@ -50,6 +50,5 @@ namespace TinyResort {
     }
 
     public enum LogSeverity { Standard, Warning, Error }
-    public enum PatchType { Prefix, Postfix }
 
 }

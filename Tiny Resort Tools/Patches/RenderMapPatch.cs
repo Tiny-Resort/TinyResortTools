@@ -11,11 +11,11 @@ using UnityEngine.InputSystem;
 namespace TinyResort {
 
     [HarmonyPatch(typeof(RenderMap), "runMapFollow")]
-    public class RenderMapPatch {
+    internal class RenderMapPatch {
         
         // Forcibly clears the top notification so that it can be replaced immediately
         [HarmonyPostfix]
-        public static void runMapFollowPatch(RenderMap __instance) {
+        internal static void runMapFollowPatch(RenderMap __instance) {
             TRMap.FixMarkerScale();
         }
         

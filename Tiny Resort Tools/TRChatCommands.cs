@@ -9,24 +9,56 @@ namespace TinyResort {
 
     internal static class TRChatCommands {
 
-	    private static List<BaseCommand> allCommands = new List<BaseCommand>();
+	    private static Dictionary<string, TRChatCommand> allCommands = new Dictionary<string, TRChatCommand>();
 
-        // TODO: Should return a command to which we can add sub-commands
-        // TODO: Should add returned command to list or dictionary
-        // TODO: Should take in a command name and method to attach to event
-        public static void AddCommand(string name, string description, ) {
-	        allCommands.Add((BaseCommand)Activator.CreateInstance(item));
+	    internal static void Initialize() {
+		    
+		    
+	    }
+
+	    internal static void GetHelpDescription(string[] args) {
+		    if (args.Length <= 0) { return; }
+		    var methodName = args[0];
+		    
+	    }
+
+        internal static void AddChatCommand(string name, string helpDescription, Action<string[]> method) {
+	        var command = new TRChatCommand();
+	        command.name = name;
+	        command.helpDescription = helpDescription;
+	        command.method = method;
+			//allCommands[]
         }
+
+	    internal static void ReadChat(string chatText) {
+
+		    var parts = chatText.Split(' ');
+
+		    // TODO: Get Mod
+		    // parts[0]
+		    
+		    // TODO: Get command
+		    // parts[1]
+
+		    // TODO: Invoke command with remaining arguments
+			// parts[2+]
+			//allCommands[0].method.Invoke(remainingParts);
+		    
+	    }
+
+	    internal static void ChatMessage() {
+		    
+	    }
 
         public class TRChatCommand {
-            
-            public string[] arguments;
+
+	        public string name;
             public string helpDescription;
-            
-            public delegate void OnEnter();
-            public OnEnter onEnter;
-            
+            public Action<string[]> method;
+
         }
+        
+        /*
 
 		public static void Initialize() { TRTools.QuickPatch(typeof(ChatBox), "Update", typeof(TRChatCommands), "UpdatePrefix"); }
 
@@ -135,7 +167,7 @@ namespace TinyResort {
 				HairDresserMenu.menu.openHairCutMenu(colorSelector);
 			}
 		}
-        
+        */
         
     }
 

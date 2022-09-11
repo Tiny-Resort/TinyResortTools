@@ -60,8 +60,7 @@ namespace TinyResort {
         /// <param name="mainColor">The color of the circle.</param>
         /// <param name="borderThickness">Thickness of the border to the circle (in pixels). Set to 0 to have no border.</param>
         /// <param name="borderColor">Color of the border.</param>
-        /// <returns>The sprite.</returns>
-        public static Sprite CircleSprite(int pixelRadius, Color mainColor, float borderThickness, Color borderColor) {
+        public static Sprite DrawCircle(int pixelRadius, Color mainColor, float borderThickness, Color borderColor) {
 
             Texture2D tex = new Texture2D(pixelRadius * 2, pixelRadius * 2, TextureFormat.RGBA32, false);
 

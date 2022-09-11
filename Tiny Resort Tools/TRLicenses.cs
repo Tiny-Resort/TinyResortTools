@@ -24,7 +24,7 @@ namespace TinyResort {
             //TRTools.QuickPatch(typeof(Licence), "canAffordNextlevel", typeof(TRLicenses), "canAffordNextlevelPrefix");
             //TRTools.QuickPatch(typeof(Licence), "getCurrentMaxLevel", typeof(TRLicenses), "getCurrentMaxLevelPrefix");
 
-            Data = TRData.Subscribe("TR.CustomLicenses");
+            Data = TRData.Subscribe("TR.CustomLicenses", TRDataFormats.JSON, false);
             TRData.cleanDataEvent += UnloadLicenses;
             TRData.preSaveEvent += SaveLicenseData;
             TRData.postLoadEvent += LoadLicenseData;
@@ -36,30 +36,31 @@ namespace TinyResort {
 
         /// <summary>Adds a custom license to the system. Must be done for each custom license.</summary>
         /// <param name="pluginGUID">The pluginGuid of your plugin. Changing this after save data has been made WILL result in lost save data.</param>
-        /// <param name="uniqueID">A unique string you are assigning this license only. Changing this after save data has been made WILL result in save data mixups.</param>
-        /// <param name="name">The name that will appear on the license in-game. (Can be changed at any time without issue)</param>
-        /// <param name="color">The color of the banner for the license.</param>
+        /// <param name="licenseID">A unique string you are assigning this license only. Changing this after save data has been made WILL result in save data mixups.</param>
+        /// <param name="licenseName">The name that will appear on the license in-game. (Can be changed at any time without issue)</param>
         /// <param name="maxLevel">The highest unlockable level for this license.</param>
-        /// <param name="licenseIcon">The sprite used for the badge for the license. If left null, a default sprite will be used.</param>
         /// <returns>The custom license that is created. Save a reference to this in order to access its state at any time.</returns>
-        public static TRCustomLicense AddLicense(string pluginGUID, string uniqueID, string name, Color color, int maxLevel = 1, Sprite licenseIcon = null) {
+        public static TRCustomLicense AddLicense(string pluginGUID, string licenseID, string licenseName, int maxLevel = 1) {
             
             var NewLicense = new TRCustomLicense {
                 pluginGuid = pluginGUID,
                 info = new Licence(),
-                uniqueID = uniqueID,
-                licenseIcon = licenseIcon == null ? defaultLicenseSprite : licenseIcon,
-                title = name,
-                color = color,
+                uniqueID = licenseID,
+                licenseIcon = defaultLicenseSprite,
+                title = licenseName,
                 maxLevel = maxLevel,
                 licenseIndex = LicenceTypesCount + CustomLicenses.Count
             };
+
+            for (var i = 1; i <= maxLevel; i++) { NewLicense.SetLevelInfo(i, "This is a placeholder description for level " + i + ".", 500 * i); }
 
             NewLicense.SetInfo();
             CustomLicenses.Add(NewLicense);
             return NewLicense;
             
         }
+
+        #region Patches
 
         // Adds custom licenses to the game licences
         internal static bool StartPatch(LicenceManager __instance) {
@@ -118,8 +119,6 @@ namespace TinyResort {
             return false;
 
         }
-        
-        #region Patches
 
         /*[HarmonyPrefix]
         internal static bool getCurrentMaxLevelPrefix(Licence __instance, ref int __result) {
@@ -247,7 +246,7 @@ namespace TinyResort {
         
         // Appearance
         internal string title;
-        internal Color color;
+        internal Color color = new Color(195f / 255f, 135f / 255f, 112f / 255f, 1);
         internal Sprite licenseIcon;
         
         // Descriptions must be set per-level
@@ -259,6 +258,12 @@ namespace TinyResort {
         internal bool unlockedWithLevel;
         internal CharLevelManager.SkillTypes unlockedBySkill;
         internal int unlockedEveryLevel;
+
+        /// <summary>Sets the color of the banner for the license. Keep in mind this will not change the color of the license icon.</summary>
+        public void SetColor(Color col) { color = col; }
+        
+        /// <summary>Sets the icon used to represent the license.</summary>
+        public void ChangeIcon(Sprite icon) { licenseIcon = icon; }
 
         /// <summary>Sets the description and cost for a specific level of the license.</summary>
         /// <param name="setLevel">What level of the license is being changed.</param>

@@ -4,11 +4,10 @@ using UnityEngine;
 namespace TinyResort {
 
     [HarmonyPatch(typeof(SaveLoad), "SaveGame")]
-    public class SaveGamePatch {
+    internal class SaveGamePatch {
 
         [HarmonyPrefix]
-        public static void patch(SaveLoad __instance) {
-            TRTools.Log("Started Saving Game");
+        internal static void patch(SaveLoad __instance) {
             TRData.preSaveEvent?.Invoke();
             TRData.cleanDataEvent?.Invoke();
         }
