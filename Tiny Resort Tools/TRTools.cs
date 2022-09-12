@@ -21,7 +21,7 @@ namespace TinyResort {
         /// <summary> Initializes the Tiny Resort toolset </summary>
         /// <param name="plugin">Your plugin. When calling this from your plugin, simply use 'this'.</param>
         /// <param name="nexusID">The ID of your mod on nexus. This is the number at the end of the URL for your mod's nexus page. (A mod page does not need to be published in order to have an ID)</param>
-        public static TRPlugin Initialize(this BaseUnityPlugin plugin, int nexusID = -1) {
+        public static TRPlugin Initialize(this BaseUnityPlugin plugin, int nexusID = -1, string chatTrigger = "") {
 
             if (HookedPlugins.ContainsKey(plugin)) { Debug.LogWarning(plugin.Info.Metadata.Name + " is being loaded twice!"); }
 
@@ -31,6 +31,10 @@ namespace TinyResort {
 
             if (nexusID > 0) { HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus."); }
             HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
+            if (!string.IsNullOrEmpty(chatTrigger)) {
+                HookedPlugins[plugin].chatTrigger = 
+                    plugin.Config.Bind("Developer", "Chat Trigger", chatTrigger, "What comes after the / in the chat when using chat commands for this mod. Example: If the chat trigger is 'tr' then all chat commands for this mod would start with /tr");
+            }
 
             HookedPlugins[plugin].Logger = BepInEx.Logging.Logger.CreateLogSource(plugin.Info.Metadata.Name);
             var handler = new BepInExInfoLogInterpolatedStringHandler(18, 1, out var flag);

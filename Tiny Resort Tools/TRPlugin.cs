@@ -16,6 +16,7 @@ namespace TinyResort {
         internal ManualLogSource Logger;
         internal ConfigEntry<int> nexusID;
         internal ConfigEntry<bool> debugMode;
+        internal ConfigEntry<string> chatTrigger;
 
         /// <summary>Logs to the BepInEx console.</summary>
         /// <param name="text"></param>
@@ -46,7 +47,16 @@ namespace TinyResort {
             var postfixHarmonyMethod = postfixMethod.IsNullOrWhiteSpace() ? null : new HarmonyMethod(postfixMethodInfo);
             harmony.Patch(sourceMethodInfo, prefixHarmonyMethod, postfixHarmonyMethod);
         }
-        
+
+        /// <summary>Subscribes to the save system so that your mod data is saved and loaded properly.</summary>
+        /// <param name="command">Subcommand to run.</param>
+        /// <param name="description">Description to show if the user runs the help command.</param>
+        /// <param name="method">Method to run when chat command is done.</param>
+        /// <returns>A reference to all the commands for your mod.</returns>
+        public void CreateCommand(string command, string description, Action<string[]> method) {
+            TRChatCommands.CreateCommand(chatTrigger.Value, command, description, method);
+        }
+
     }
 
     public enum LogSeverity { Standard, Warning, Error }

@@ -10,10 +10,12 @@ namespace TinyResort {
 
         [HarmonyPrefix]
         public static void Prefix(ChatBox __instance) {
+            
             if (!__instance.chatOpen || !InputMaster.input.UISelectActiveConfirmButton() || !__instance.chatBox.text.StartsWith("/")) return;
 
             // Grab List of arguements including mod
             string[] parameters = __instance.chatBox.text.Split(' ');
+            __instance.chatBox.text = null;
 
             // For Debugging
             for (int i = 0; i < parameters.Length; i++) { LeadPlugin.Plugin.Log($"Parameter {i} = {parameters[i]}"); }
@@ -21,19 +23,17 @@ namespace TinyResort {
             var trigger = parameters[0];
             var command = parameters[1];
             var uniqueKey = trigger.Remove(0, 1) + "_" + command;
-            List<string> tmpArgs = parameters.ToList();
-            tmpArgs.RemoveAt(0);
-            tmpArgs.RemoveAt(0);
 
-            for (int i = 0; i < tmpArgs.Count; i++) { LeadPlugin.Plugin.Log($"Parameter {i} = {tmpArgs[i]}"); }
+            var args = parameters.Skip(2).ToArray();
 
-            string[] args = tmpArgs.ToArray();
+            // For Debugging
+            for (int i = 0; i < args.Length; i++) { LeadPlugin.Plugin.Log($"Parameter {i} = {args[i]}"); }
 
-            __instance.chatBox.text = null;
 
             // Prob pass in the TRChatCommand class to get help description
             if (command == "help") {
                 TRChatCommands.GetHelpDescription(parameters);
+                return;
             }
             
             TRChatCommand baseCommand = TRChatCommands.Data[uniqueKey];
@@ -42,7 +42,9 @@ namespace TinyResort {
             else {
                 if (args.Length >= 1) { baseCommand.method.Invoke(args); }
             }
+            
         }
+        
     }
 
 }

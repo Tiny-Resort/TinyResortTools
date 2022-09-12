@@ -19,14 +19,8 @@ namespace TinyResort {
 		/// <param name="description">Description to show if the user runs the help command.</param>
 		/// <param name="method">Method to run when chat command is done.</param>
 		/// <returns>A reference to all the commands for your mod.</returns>
-		public static void CreateCommand(string trigger, string command, string description, Action<string[]> method) {
-			string uniqueKey = trigger + "_" +  command;
-			Data[uniqueKey] = new TRChatCommand {
-				trigger = trigger,
-				name = command,
-				helpDescription = description,
-				method = method
-			};
+		internal static void CreateCommand(string trigger, string command, string description, Action<string[]> method) {
+			Data[trigger + "_" + command] = new TRChatCommand { name = command, helpDescription = description, method = method };
 		}
 
 		public static void SendMessage(string message, string name = "") {
