@@ -11,7 +11,7 @@ namespace TinyResort {
 
 	public class TRConflictingPlugins {
 		
-		public Dictionary<string, BepInEx.PluginInfo> pluginInfos;
+		public Dictionary<string, PluginInfo> pluginInfos;
 		internal static Dictionary<string, string> Data = new Dictionary<string, string>();
 		internal static List<PluginInfo> conflicts = new List<PluginInfo>();
 		internal static string allConflicts;
@@ -22,7 +22,7 @@ namespace TinyResort {
 
 		internal bool CheckIfModsConflicts() {
 			foreach (var data in Data) {
-				BepInEx.PluginInfo oldModInfo;
+				PluginInfo oldModInfo;
 				if (pluginInfos.TryGetValue(data.Value, out oldModInfo)) {
 					conflicts.Add(oldModInfo);
 				}
