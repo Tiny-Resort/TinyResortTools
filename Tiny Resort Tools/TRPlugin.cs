@@ -53,8 +53,8 @@ namespace TinyResort {
         /// <param name="description">Description to show if the user runs the help command.</param>
         /// <param name="method">Method to run when chat command is done.</param>
         /// <returns>A reference to all the commands for your mod.</returns>
-        public void CreateCommand(string command, string description, Action<string[]> method) {
-            TRChatCommands.CreateCommand(chatTrigger.Value, command, description, method);
+        public void AddCommand(string command, string description, Action<string[]> method) {
+            TRChat.AddCommand(plugin.Info.Metadata.Name, chatTrigger.Value, command, description, method);
         }
 
     }

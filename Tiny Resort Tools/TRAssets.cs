@@ -5,6 +5,9 @@ using UnityEngine;
 namespace TinyResort {
 
     public class TRAssets {
+        
+        // TODO: Add way to scan folder for assets of a certain type
+        // TODO: Import audio clips
 
         /// <summary>Loads an image file from the plugins folder as a texture.</summary>
         /// <param name="relativePath">Path to the image file, relative to the BepInEx plugins folder.</param>
