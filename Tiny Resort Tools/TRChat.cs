@@ -8,11 +8,14 @@ using UnityEngine;
 
 namespace TinyResort {
 
+	/// <summary>Tools for sending messages to the chat box.</summary>
 	public class TRChat {
+		
+		internal static string currentChatText = "";
 
 		internal static List<TRChatCommand> allCommands = new List<TRChatCommand>();
 
-		internal static void AddCommand(string pluginName, string trigger, string command, string description, Action<string[]> method, params string[] argumentNames) {
+		internal static void AddCommand(string pluginName, string trigger, string command, string description, Func<string[], string> method, params string[] argumentNames) {
 			allCommands.Add(
 				new TRChatCommand {
 					pluginName = pluginName, 
@@ -49,6 +52,12 @@ namespace TinyResort {
 
 		internal static void GetHelpDescription(string trigger, string[] args) {
 
+			if (trigger == "help") {
+				TRChat.SendMessage("For any chat trigger, you can get more information about available commands by typing /tr help (where tr is the mod's trigger found in its config file)");
+				TRChat.SendMessage("You can also get info on a particular command and its arguments by typing /tr help [Command]");
+				return;
+			}
+
 			var foundCommands = GetMatchingCommands(trigger, args.Length > 0 ? args[0] : "");
 			
 			// If no argument was made, give info on commands usable for this trigger
@@ -59,9 +68,9 @@ namespace TinyResort {
 
 				// Otherwise, list all valid commands for this trigger
 				else {
-					var str = "The following commands exist for this trigger: ";
+					var str = "The following commands exist for /" + trigger + ":\n";
 					for (var i = 0; i < foundCommands.Count; i++) {
-						str += foundCommands[i].command;
+						str += "<color=orange>" + foundCommands[i].command + "</color>";
 						if (i < foundCommands.Count - 1) { str += ", "; }
 					}
 					TRChat.SendMessage(str);
@@ -80,11 +89,11 @@ namespace TinyResort {
 			// Show help info for each matching command
 			if (foundCommands.Count > 1) { TRChat.SendMessage("Multiple matching commands exist. Info on each below."); }
 			foreach (var chatCommand in foundCommands) {
-				var str = chatCommand.pluginName + "</br>/" + chatCommand.trigger + " " + chatCommand.command + " ";
+				var str = "<color=orange>" + chatCommand.pluginName + "</color>\n" 
+				        + "/" + chatCommand.trigger + " " + chatCommand.command + " ";
 				foreach (var arg in chatCommand.argumentNames) { str += "[" + arg + "] "; }
-				TRChat.SendMessage(str + "</br>" + chatCommand.helpDescription);
+				TRChat.SendMessage(str + "\n<i><color=#A1A1A1FF>" + chatCommand.helpDescription + "</color></i>");
 			}
-			
 
 		}
 
@@ -104,7 +113,7 @@ namespace TinyResort {
 		public string command;
 		public string[] argumentNames;
 		public string helpDescription;
-		public Action<string[]> method;
+		public Func<string[], string> method;
 	}
 	
 }

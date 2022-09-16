@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace TinyResort {
 
+    /// <summary>Map-related tools, such as easy map markers.</summary>
     public class TRMap : MonoBehaviour {
 
         private static List<MapMarker> AvailableMarkers = new List<MapMarker>();
@@ -112,8 +113,11 @@ namespace TinyResort {
 
     }
 
+    /// <summary>Information about a particular map marker.</summary>
     public class MapMarker {
+        /// <summary>The RectTransform for this map marker.</summary>
         public RectTransform mainRect;
+        /// <summary>The image component of this map marker.</summary>
         public Image markerImage;
     }
 

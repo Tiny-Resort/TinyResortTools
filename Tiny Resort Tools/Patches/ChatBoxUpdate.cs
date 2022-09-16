@@ -6,21 +6,47 @@ using UnityEngine;
 namespace TinyResort {
 
     [HarmonyPatch(typeof(ChatBox), "Update")]
-    public class Update {
+    internal class Update {
+
+        [HarmonyPostfix]
+        public static void Postfix(ChatBox __instance) {
+            if (__instance.chatOpen && !InputMaster.input.UISelectActiveConfirmButton()) {
+                if (Input.GetKeyDown(KeyCode.DownArrow)) {
+                    var histIndex = (int)AccessTools.Field(typeof(ChatBox), "showingHistoryNo").GetValue(__instance);
+                    var histList = (List<string>)AccessTools.Field(typeof(ChatBox), "history").GetValue(__instance);
+                    if (histIndex == histList.Count) { __instance.chatBox.text = TRChat.currentChatText; }
+                }
+
+                if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)) {
+                    __instance.chatBox.caretPosition = __instance.chatBox.text.Length;
+                }
+            }
+        }
 
         [HarmonyPrefix]
         public static void Prefix(ChatBox __instance) {
+
+            if (!__instance.chatOpen) return;
+
+            if (!InputMaster.input.UISelectActiveConfirmButton()) {
+                var histIndex = (int)AccessTools.Field(typeof(ChatBox), "showingHistoryNo").GetValue(__instance);
+                var histList = (List<string>)AccessTools.Field(typeof(ChatBox), "history").GetValue(__instance);
+                if (histIndex == histList.Count) { TRChat.currentChatText = __instance.chatBox.text; }
+                return;
+            }
             
-            if (!__instance.chatOpen || !InputMaster.input.UISelectActiveConfirmButton() || !__instance.chatBox.text.StartsWith("/")) return;
+            if (!__instance.chatBox.text.StartsWith("/") || __instance.chatBox.text == "/") return;
 
             // Get the parameters entered for the chat command and clear the entry
-            string[] parameters = __instance.chatBox.text.Split(' ');
+            string[] parameters = __instance.chatBox.text.ToLower().Split(' ');
             var trigger = parameters[0].Remove(0, 1);
             __instance.chatBox.text = null;
+            
+            var args = parameters.Length > 2 ? parameters.Skip(2).ToArray() : new string[0];
 
-            // Get the help description for a command
-            if (parameters[1] == "help") {
-                TRChat.GetHelpDescription(trigger, parameters);
+            // Get the help description for a command or for a trigger in general
+            if (trigger == "help" || parameters.Length == 1 || parameters[1] == "help") {
+                TRChat.GetHelpDescription(trigger, args);
                 return;
             }
 
@@ -44,9 +70,9 @@ namespace TinyResort {
                 return;
             }
 
-            // Call the specified command with the arguments
-            var args = parameters.Skip(2).ToArray();
-            foundCommands[0].method.Invoke(args);
+            // Call the specified command with the arguments, then display any returned string in a chat bubble
+            var returnStr = foundCommands[0].method.Invoke(args);
+            if (!string.IsNullOrEmpty(returnStr)) { TRChat.SendMessage(returnStr, foundCommands[0].pluginName); }
             
         }
         

@@ -8,8 +8,10 @@ using UnityEngine;
 
 namespace TinyResort {
 
+    /// <summary>Information and functions relating to your plugin with respect to the TR toolset.</summary>
     public class TRPlugin {
 
+        /// <summary>A harmony instance created specifically for your plugin to use.</summary>
         public Harmony harmony;
         internal BaseUnityPlugin plugin;
         
@@ -19,8 +21,8 @@ namespace TinyResort {
         internal ConfigEntry<string> chatTrigger;
 
         /// <summary>Logs to the BepInEx console.</summary>
-        /// <param name="text"></param>
-        /// <param name="severity"></param>
+        /// <param name="text">The text to post in the console.</param>
+        /// <param name="severity">Determines the color of the log.</param>
         /// <param name="debugModeOnly">If true, this message will only show in the console if the config file has DebugMode set to true.</param>
         public void Log(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) {
             if (debugModeOnly && !debugMode.Value) return;
@@ -52,13 +54,15 @@ namespace TinyResort {
         /// <param name="command">Subcommand to run.</param>
         /// <param name="description">Description to show if the user runs the help command.</param>
         /// <param name="method">Method to run when chat command is done.</param>
+        /// <param name="argumentNames">The names of each argument your command takes. Used purely for the help description.</param>
         /// <returns>A reference to all the commands for your mod.</returns>
-        public void AddCommand(string command, string description, Action<string[]> method) {
-            TRChat.AddCommand(plugin.Info.Metadata.Name, chatTrigger.Value, command, description, method);
+        public void AddCommand(string command, string description, Func<string[], string> method, params string[] argumentNames) {
+            TRChat.AddCommand(plugin.Info.Metadata.Name, chatTrigger.Value.ToLower(), command, description, method, argumentNames);
         }
 
     }
 
+    /// <summary>How severe (and thus what color) a log message should be. </summary>
     public enum LogSeverity { Standard, Warning, Error }
 
 }

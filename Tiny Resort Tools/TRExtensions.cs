@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace TinyResort {
 
+    /// <summary>Just a few useful methods.</summary>
     public static class TRExtensions {
 
         /// <summary>Allows you to copy any class or data structure by value rather than reference in order to change things about a copy without changing the original.</summary>

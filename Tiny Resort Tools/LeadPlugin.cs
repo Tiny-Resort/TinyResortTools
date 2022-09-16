@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using BepInEx;
+using BepInEx.Configuration;
 using UnityEngine;
 
 namespace TinyResort {
@@ -7,18 +8,24 @@ namespace TinyResort {
     [BepInPlugin(pluginGuid, pluginName, pluginVersion)]
     internal class LeadPlugin : BaseUnityPlugin {
 
-        public static TRPlugin Plugin;
+        public static TRPlugin plugin;
+        internal static LeadPlugin instance;
+
+        public static ConfigEntry<bool> useSlashToOpenChat;
         
         public const string pluginName = "TRTools";
         public const string pluginGuid = "dev.TinyResort." + pluginName;
-        public const string pluginVersion = "0.1.0";
+        public const string pluginVersion = "0.2.0";
 
         private void Awake() {
 
-            Plugin = TRTools.Initialize(this, 83);
-            Plugin.harmony.PatchAll();
+            instance = this;
+            plugin = TRTools.Initialize(this, 83, "tr");
+            plugin.harmony.PatchAll();
+
+            useSlashToOpenChat = Config.Bind("Chat", "UseSlashToOpenChat", true, "If true, then pressing forward slash on the keyboard will open the chat box with a slash already in place.");
             
-            TRDrawing.Initialize();
+            //TRDrawing.Initialize();
             TRLicenses.Initialize();
 
         }

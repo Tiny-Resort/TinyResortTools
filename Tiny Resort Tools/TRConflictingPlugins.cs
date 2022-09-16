@@ -9,7 +9,7 @@ using HarmonyLib;
 
 namespace TinyResort {
 
-	public class TRConflictingPlugins {
+	/*public class TRConflictingPlugins {
 		
 		public Dictionary<string, PluginInfo> pluginInfos;
 		internal static Dictionary<string, string> Data = new Dictionary<string, string>();
@@ -33,7 +33,7 @@ namespace TinyResort {
 
 		internal void DisplayAllConflictingMods() {
 			for (int i = 0; i < conflicts.Count; i++) {
-				LeadPlugin.Plugin.Log($"Mod {i}: {conflicts[i].Metadata.Name}");
+				LeadPlugin.plugin.Log($"Mod {i}: {conflicts[i].Metadata.Name}");
 				allConflicts = allConflicts == null ? $"{conflicts[i].Metadata.Name}" : $",{conflicts[i].Metadata.Name}";
 			}
 		}
@@ -49,7 +49,7 @@ namespace TinyResort {
 		}
 
 
-	}
+	}*/
 
 
 }

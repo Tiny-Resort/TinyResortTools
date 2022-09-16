@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using HarmonyLib;
 using UnityEngine;
 
 namespace TinyResort {
 
+    /// <summary>A framework for creating custom licenses and using them to gate your mod's features behind player progression.</summary>
     public static class TRLicenses {
 
         private static TRModData Data;
@@ -24,28 +26,50 @@ namespace TinyResort {
             //TRTools.QuickPatch(typeof(Licence), "canAffordNextlevel", typeof(TRLicenses), "canAffordNextlevelPrefix");
             //TRTools.QuickPatch(typeof(Licence), "getCurrentMaxLevel", typeof(TRLicenses), "getCurrentMaxLevelPrefix");
 
-            Data = TRData.Subscribe("TR.CustomLicenses", TRDataFormats.JSON, false);
+            LeadPlugin.plugin.AddCommand("unlock_license", "Unlocks the specified license at no cost. Use the list_licenses command to get the license names.", UnlockLicense, "LicenseName", "Level");
+            LeadPlugin.plugin.AddCommand("list_licenses", "Lists all custom licenses added by any mods.", ListLicenses);
+
+            Data = TRData.Subscribe("TR.CustomLicenses");
             TRData.cleanDataEvent += UnloadLicenses;
             TRData.preSaveEvent += SaveLicenseData;
             TRData.postLoadEvent += LoadLicenseData;
             TRData.injectDataEvent += LoadLicenses;
 
+            AddLicense("License Framework", "001", "Test Licenses 1", 1);
+
             defaultLicenseSprite = TRAssets.ImportSprite(Path.Combine("TR Tools", "textures", "default_license.png"), Vector2.one * 0.5f);
 
         }
 
+        internal static string ListLicenses(string[] args) {
+            var str = "\nThe following custom licenses exist:\n";
+            foreach (var li in CustomLicenses) { str += li.uniqueModID + "_" + li.licenseID + "\n"; }
+            return str;
+        }
+
+        internal static string UnlockLicense(string[] args) {
+            if (args.Length <= 0) { return "<color=red>No license specified.</color> " + ListLicenses(null); }
+            foreach (var li in CustomLicenses) {
+                if ((li.uniqueModID + "_" + li.licenseID).ToLower() == args[0]) {
+                    li.info.currentLevel = li.info.maxLevel;
+                    return "Unlocking all levels of license: " + li.uniqueModID + "_" + li.licenseID + " (" + li.title + ")";
+                }
+            }
+            return "<color=red>Could not find a license with the specified ID.</color>";
+        }
+
         /// <summary>Adds a custom license to the system. Must be done for each custom license.</summary>
-        /// <param name="pluginGUID">The pluginGuid of your plugin. Changing this after save data has been made WILL result in lost save data.</param>
-        /// <param name="licenseID">A unique string you are assigning this license only. Changing this after save data has been made WILL result in save data mixups.</param>
+        /// <param name="uniqueModID">A unique string representing your mod. Used for saving the license and for chat commands. Changing this will result in save data mixups. Spaces in this are replaced with underscores.</param>
+        /// <param name="licenseID">A unique string you are assigning this license only. Changing this after save data has been made WILL result in save data mixups. Spaces in this are replaced with underscores.</param>
         /// <param name="licenseName">The name that will appear on the license in-game. (Can be changed at any time without issue)</param>
         /// <param name="maxLevel">The highest unlockable level for this license.</param>
         /// <returns>The custom license that is created. Save a reference to this in order to access its state at any time.</returns>
-        public static TRCustomLicense AddLicense(string pluginGUID, string licenseID, string licenseName, int maxLevel = 1) {
+        public static TRCustomLicense AddLicense(string uniqueModID, string licenseID, string licenseName, int maxLevel = 1) {
             
             var NewLicense = new TRCustomLicense {
-                pluginGuid = pluginGUID,
+                uniqueModID = uniqueModID.Replace(' ', '_'),
                 info = new Licence(),
-                uniqueID = licenseID,
+                licenseID = licenseID,
                 licenseIcon = defaultLicenseSprite,
                 title = licenseName,
                 maxLevel = maxLevel,
@@ -217,13 +241,13 @@ namespace TinyResort {
 
         internal static void SaveLicenseData() {
             for (var i = 0; i < CustomLicenses.Count; i++) {
-                Data.SetValue(CustomLicenses[i].pluginGuid + " - " + CustomLicenses[i].uniqueID, CustomLicenses[i].info.currentLevel);
+                Data.SetValue(CustomLicenses[i].uniqueModID + " - " + CustomLicenses[i].licenseID, CustomLicenses[i].info.currentLevel);
             }
         }
 
         internal static void LoadLicenseData() {
             for (var i = 0; i < CustomLicenses.Count; i++) {
-                var val = Data.GetValue(CustomLicenses[i].pluginGuid + " - " + CustomLicenses[i].uniqueID);
+                var val = Data.GetValue(CustomLicenses[i].uniqueModID + " - " + CustomLicenses[i].licenseID);
                 if (val == null) continue;
                 CustomLicenses[i].info.currentLevel = (int) val;
                 CustomLicenses[i].SetInfo();
@@ -234,14 +258,16 @@ namespace TinyResort {
 
     }
 
+    /// <summary>Information and functions related to your custom license.</summary>
     [Serializable]
     public class TRCustomLicense {
 
+        /// <summary>The player's currently unlocked level for this license. If 0, the player has not unlocked this license.</summary>
         public int level => info.currentLevel;
         internal Licence info;
 
-        internal string pluginGuid;
-        internal string uniqueID;
+        internal string uniqueModID;
+        internal string licenseID;
         internal int licenseIndex;
         
         // Appearance

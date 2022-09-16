@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace TinyResort {
     
+    /// <summary>Used mostly for initialization and internal control of the API's features.</summary>
     public static class TRTools {
 
         private static Dictionary<BaseUnityPlugin, TRPlugin> HookedPlugins = new Dictionary<BaseUnityPlugin, TRPlugin>();
@@ -21,6 +22,7 @@ namespace TinyResort {
         /// <summary> Initializes the Tiny Resort toolset </summary>
         /// <param name="plugin">Your plugin. When calling this from your plugin, simply use 'this'.</param>
         /// <param name="nexusID">The ID of your mod on nexus. This is the number at the end of the URL for your mod's nexus page. (A mod page does not need to be published in order to have an ID)</param>
+        /// <param name="chatTrigger">What short text you want associated with your mod when using chat commands. If you put 'tr' for example, then all your chat commands start with /tr</param>
         public static TRPlugin Initialize(this BaseUnityPlugin plugin, int nexusID = -1, string chatTrigger = "") {
 
             if (HookedPlugins.ContainsKey(plugin)) { Debug.LogWarning(plugin.Info.Metadata.Name + " is being loaded twice!"); }
@@ -31,9 +33,9 @@ namespace TinyResort {
 
             if (nexusID > 0) { HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus."); }
             HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
-            if (!string.IsNullOrEmpty(chatTrigger)) {
+            if (!string.IsNullOrEmpty(chatTrigger) && chatTrigger.ToLower() != "help") {
                 HookedPlugins[plugin].chatTrigger = 
-                    plugin.Config.Bind("Developer", "Chat Trigger", chatTrigger, "What comes after the / in the chat when using chat commands for this mod. Example: If the chat trigger is 'tr' then all chat commands for this mod would start with /tr");
+                    plugin.Config.Bind("Developer", "Chat Trigger", chatTrigger.ToLower(), "What comes after the / in the chat when using chat commands for this mod. Example: If the chat trigger is 'tr' then all chat commands for this mod would start with /tr");
             }
 
             HookedPlugins[plugin].Logger = BepInEx.Logging.Logger.CreateLogSource(plugin.Info.Metadata.Name);
@@ -46,11 +48,11 @@ namespace TinyResort {
         }
 
         internal static void Log(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) {
-            LeadPlugin.Plugin.Log(text, severity, debugModeOnly);
+            LeadPlugin.plugin.Log(text, severity, debugModeOnly);
         }
 
         internal static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") {
-            LeadPlugin.Plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod);
+            LeadPlugin.plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod);
         }
 
         #region Easy Notifications

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace TinyResort {
 
     [HarmonyPatch(typeof(ChatBubble), "fillBubble")]
-    public class FillBubble {
+    internal class FillBubble {
 
         [HarmonyPostfix]
         public static void Postfix(ChatBubble __instance, string name, string message) {

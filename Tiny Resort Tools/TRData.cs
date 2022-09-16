@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -11,6 +12,7 @@ using UnityEngine.Serialization;
 
 namespace TinyResort {
 
+    /// <summary>Tools for adding custom save data to your mod.</summary>
     public static class TRData {
 
         private static int DataVersion;
@@ -21,6 +23,7 @@ namespace TinyResort {
         private static string slotDataPath => Path.Combine(Application.persistentDataPath, "Slot" + currentSlot, "Mod Data");
         private static string globalDataPath => Path.Combine(Application.persistentDataPath, "Mod Data");
 
+        /// <summary>Delegate for events related to points in the base game saving and loading.</summary>
         public delegate void SaveEvent();
 
         /// <summary> This event will run just before the game saves and before the cleanDataEvent.
@@ -44,10 +47,10 @@ namespace TinyResort {
         /// </summary>
         public static SaveEvent injectDataEvent;
         
-        // <summary>
-        // This event will run just BEFORE a save slot is loaded from the main menu. Useful for resetting values that shouldn't persist when
-        // loading into another save file.
-        // </summary>
+        /// <summary>
+        /// This event will run just BEFORE a save slot is loaded from the main menu. Useful for resetting values that shouldn't persist when
+        /// loading into another save file.
+        /// </summary>
         public static SaveEvent initialLoadEvent;
 
         /// <summary>This event will run just BEFORE a save slot is loaded.</summary>
@@ -58,13 +61,11 @@ namespace TinyResort {
 
         /// <summary>Subscribes to the save system so that your mod data is saved and loaded properly.</summary>
         /// <param name="fileName">The name of your save file. Could be anything unique, but I recommend using the GUID of your plugin.</param>
-        /// <param name="dataFormat">What kind of serialization you want to use.</param>
         /// <param name="globalSave">If true, then this data will be saved to a global save file used for all save slots. Otherwise, your save file will be specific to each save slot.</param>
         /// <returns>A link to the data for your mod. Keep a reference to this. It is used to get and set all saved values.</returns>
-        public static TRModData Subscribe(string fileName, TRDataFormats dataFormat, bool globalSave = false) {
+        public static TRModData Subscribe(string fileName, bool globalSave = false) {
             Data[fileName] = new TRModData {
                 fileName = fileName,
-                format = dataFormat,
                 global = globalSave
             };
             Data[fileName].package = new DataPackage();
@@ -96,23 +97,15 @@ namespace TinyResort {
             }
 
             // Records important information about this save
-            Data[fileName].package.SaveTime = DateTime.Now;
+            Data[fileName].package.LastSave = DateTime.Now.ToString(CultureInfo.InvariantCulture);
             Data[fileName].package.DataVersion = DataVersion;
             
-            var NewFile = File.Create(savePath);
 
             // Saves in binary format
-            if (Data[fileName].format == TRDataFormats.Binary) {
-                var Formatter = new BinaryFormatter();
-                Formatter.Serialize(NewFile, Data[fileName].package);
-                NewFile.Close();
-            }
-
-            // Saves in JSON format
-            else if (Data[fileName].format == TRDataFormats.JSON) {
-                string json = JsonUtility.ToJson(Data[fileName].package);
-                File.WriteAllText(savePath, json);
-            }
+            var NewFile = File.Create(savePath);
+            var Formatter = new BinaryFormatter();
+            Formatter.Serialize(NewFile, Data[fileName].package);
+            NewFile.Close();
 
         }
 
@@ -125,47 +118,23 @@ namespace TinyResort {
             // If there is no save file, create new mod data
             if (!File.Exists(Path.Combine(path, fileName + ".sav"))) { Data[fileName].package = new DataPackage(); }
 
-            // Otherwise, load the latest save file as the mod data
             else {
-                if (Data[fileName].format == TRDataFormats.Binary) { Data[fileName].package = LoadFromBinary(Path.Combine(path, fileName + ".sav")); }
-                else if (Data[fileName].format == TRDataFormats.JSON) { Data[fileName].package = LoadFromJson(Path.Combine(path, fileName + ".sav")); }
-            }
-
-        }
-
-        internal static DataPackage LoadFromJson(string path, bool secondTry = false) {
-            try {
-                var text = File.ReadAllText(path);
-                return JsonUtility.FromJson<DataPackage>(text);
-            }
-            catch {
-                if (secondTry) return null;
-                return LoadFromBinary(path, true);
-            }
-        }
-
-        internal static DataPackage LoadFromBinary(string path, bool secondTry = false) {
-            try {
-                var LoadedFile = File.Open(path, FileMode.Open);
+                var LoadedFile = File.Open(Path.Combine(path, fileName + ".sav"), FileMode.Open);
                 var Formatter = new BinaryFormatter();
-                var pack = (DataPackage)Formatter.Deserialize(LoadedFile);
+                Data[fileName].package = (DataPackage)Formatter.Deserialize(LoadedFile);
                 LoadedFile.Close();
-                return pack;
             }
-            catch {
-                if (secondTry) return null;
-                return LoadFromJson(path, true);
-            }
+
         }
 
     }
 
+    /// <summary>Container for custom save data and functions used to affect it.</summary>
     public class TRModData {
         
         internal DataPackage package = new DataPackage();
 
         internal string fileName;
-        internal TRDataFormats format;
         internal bool global;
 
         /// <summary>Stores an object in the save data for your mod. Can be called either when an object is updated or during a preSave event.</summary>
@@ -188,19 +157,20 @@ namespace TinyResort {
             if (!package.data.ContainsKey(name)) return;
             package.data.Remove(name);
         }
-
+        
+        /// <summary>Manually creates or updates a save file specific to your mod.</summary>
         public void Save() { TRData.Save(fileName); }
+
+        /// <summary>Manually loads a save file specific to your mod, if one exists.</summary>
         public void Load() { TRData.Load(fileName); }
         
     }
 
     [Serializable]
     internal class DataPackage {
-        public DateTime SaveTime;
+        public string LastSave;
         public int DataVersion;
         public Dictionary<string, object> data = new Dictionary<string, object>();
     }
-    
-    public enum TRDataFormats { Binary, JSON }
 
 }

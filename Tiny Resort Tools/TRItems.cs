@@ -2,7 +2,10 @@ using System.Collections.Generic;
 
 namespace TinyResort {
 
+    /// <summary>Tools for working with the Dinkum inventory.</summary>
     public class TRItems {
+        
+        // TODO: Add info about the item to the tooltip when holding a key
 
         private static Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
         private static void InitializeItemDetails() {

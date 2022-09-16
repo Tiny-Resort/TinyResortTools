@@ -7,9 +7,10 @@ using UnityEngine.SceneManagement;
 
 namespace TinyResort {
 
+    /// <summary> Tools for drawing (WORK IN PROGRESS)</summary>
     public class TRDrawing : MonoBehaviour {
 
-        public static void Initialize() { }
+        //public static void Initialize() { }
 
         /*public static GameObject MapCanvas;
         private static GameObject BlankOptionsMenu;
