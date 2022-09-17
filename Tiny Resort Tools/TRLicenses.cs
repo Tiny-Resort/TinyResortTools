@@ -179,7 +179,7 @@ namespace TinyResort {
         // Patches the function that gets a license name so that it can understand custom licenses
         [HarmonyPrefix]
         internal static bool getLicenceNamePatch(LicenceManager __instance, ref string __result, LicenceManager.LicenceTypes type) {
-            if ((int)type >= LicenceTypesCount) {
+            if ((int)type >= LicenceTypesCount && (int)type - LicenceTypesCount < CustomLicenses.Count) {
                 __result = CustomLicenses[(int) type - LicenceTypesCount].title;
                 return false;
             }
