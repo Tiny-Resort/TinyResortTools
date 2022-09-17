@@ -1,55 +1,56 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Core.Logging.Interpolation;
-using BepInEx.Logging;
 using BepInEx.Unity.Bootstrap;
-using HarmonyLib;
 using UnityEngine;
 using UnityEngine.Networking;
 using Version = SemanticVersioning.Version;
+
 namespace TinyResort {
-    
+
     public class TRModUpdates : BaseUnityPlugin {
-        
+
         public static ConfigEntry<bool> showAllManagedMods;
         private static bool finishedChecking = false;
+
         private static List<DinkumPlugin> pluginsOutOfDate = new List<DinkumPlugin>();
         private static List<DinkumPlugin> pluginsUpToDate = new List<DinkumPlugin>();
 
         private static string configDirectory = Application.dataPath.Replace("Dinkum_Data", "BepInEx/config/");
 
         private void Start() { this.StartCoroutine(CheckPlugins()); }
-        
-        
+
         // TODO: We can probably modify this to use data from the developer initializing it instead of adding the data to the config file
-        // But that would mean we can't have users add the value later. 
+        // TODO: But that would mean we can't have users add the value later. 
         private IEnumerator CheckPlugins() {
 
             // Gets existing plugins
             var pluginInfos = UnityChainloader.Instance.Plugins.Values;
-            
+
             if (pluginInfos == null) yield break;
-            
+
             foreach (var kvp in pluginInfos) {
-                
+
                 #region Get plugin info
-                
+
                 // Get Plugin Info
                 Version modVersion = kvp.Metadata.Version;
                 string plugName = kvp.Metadata.Name;
                 string guid = kvp.Metadata.GUID;
-                
+
                 // Find the config file, create one if its not there
                 string cfgFile = configDirectory + guid + ".cfg";
+
                 //string cfgFile = Path.Combine(Directory.GetParent(Path.GetDirectoryName(typeof(BepInProcess).Assembly.Location)).FullName, "config", guid + ".cfg");
-                if (!File.Exists(cfgFile)) { File.Create(cfgFile); continue; }
+                if (!File.Exists(cfgFile)) {
+                    File.Create(cfgFile);
+                    continue;
+                }
+
                 #endregion
 
                 #region Find nexusID from Config file
@@ -64,14 +65,14 @@ namespace TinyResort {
                     }
                 }
                 if (id == -1) { continue; }
-                
+
                 TRTools.Log(($"{plugName} {id} current version: {modVersion}"));
 
                 #endregion
 
                 #region Get nexus mod page
 
-               // new WWWForm();
+                // new WWWForm();
                 UnityWebRequest uwr = UnityWebRequest.Get($"https://www.nexusmods.com/dinkum/mods/{id}");
                 yield return uwr.SendWebRequest();
                 if (uwr.result != UnityWebRequest.Result.Success) {
@@ -87,10 +88,10 @@ namespace TinyResort {
                 bool check = false;
                 foreach (string line in nexusText) {
                     if (check && line.Contains("<div class=\"stat\">")) {
-                        
+
                         Match match = Regex.Match(line, "<[^>]+>[^0-9.]*([0-9.]+)[^0-9.]*<[^>]+>");
                         if (!match.Success) { break; }
-                        
+
                         Version nexusVersion = new Version(match.Groups[1].Value);
                         TRTools.Log($"{plugName} remote version: {nexusVersion}.");
                         if (nexusVersion > modVersion) {
@@ -125,4 +126,5 @@ namespace TinyResort {
         public Version nexusVersion;
 
     }
+
 }

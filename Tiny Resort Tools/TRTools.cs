@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
@@ -10,7 +11,7 @@ using HarmonyLib;
 using UnityEngine;
 
 namespace TinyResort {
-    
+
     /// <summary>Used mostly for initialization and internal control of the API's features.</summary>
     public static class TRTools {
 
@@ -34,7 +35,7 @@ namespace TinyResort {
             if (nexusID > 0) { HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus."); }
             HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
             if (!string.IsNullOrEmpty(chatTrigger) && chatTrigger.ToLower() != "help") {
-                HookedPlugins[plugin].chatTrigger = 
+                HookedPlugins[plugin].chatTrigger =
                     plugin.Config.Bind("Developer", "Chat Trigger", chatTrigger.ToLower(), "What comes after the / in the chat when using chat commands for this mod. Example: If the chat trigger is 'tr' then all chat commands for this mod would start with /tr");
             }
 
@@ -47,13 +48,9 @@ namespace TinyResort {
 
         }
 
-        internal static void Log(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) {
-            LeadPlugin.plugin.Log(text, severity, debugModeOnly);
-        }
+        internal static void Log(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) { LeadPlugin.plugin.Log(text, severity, debugModeOnly); }
 
-        internal static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") {
-            LeadPlugin.plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod);
-        }
+        internal static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") { LeadPlugin.plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod); }
 
         #region Easy Notifications
 
@@ -67,9 +64,9 @@ namespace TinyResort {
             NotificationManager.manage.makeTopNotification(title, subtitle);
             NotificationPatch.forceClearNotification = false;
         }
-        
+
         #endregion
-        
+
         /*#region Version Checking
 
         private static string currentGameVersion;
@@ -87,6 +84,6 @@ namespace TinyResort {
         
         #endregion*/
 
+        
     }
-
 }

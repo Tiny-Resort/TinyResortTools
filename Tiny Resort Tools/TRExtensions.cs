@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace TinyResort {
@@ -21,7 +24,60 @@ namespace TinyResort {
             foreach (var field in fields) { field.SetValue(copy, field.GetValue(originalComponent)); }
             return copy as T;
         }
-        
+
+        /// <summary>Lets you compare a base string with a list of other strings and finds the closest matches.</summary>
+        /// <param name="baseString">The string you want to compare your list against.</param>
+        /// <param name="stringsToCompare">A list of strings to see which ones are the closest.</param>
+        /// <returns>A list of strings holding all of the strings with the minimum required of steps.</returns>
+        internal static List<string> CompareListOfStrings(this string baseString, List<string> stringsToCompare) {
+
+            Dictionary<string, int> results = new Dictionary<string, int>();
+
+            foreach (var stringToTest in stringsToCompare) {
+                results.Add(stringToTest, ComputeDistance(baseString, stringToTest));
+            }
+
+            var minimumModifications = results.Min(j => j.Value);
+            var AllMinimumRequired = results.Where(i => i.Value == minimumModifications);
+
+            List<string> list = new List<string>();
+            foreach (var compared in AllMinimumRequired) {
+                list.Add(compared.Key);
+            }
+            return list;
+        }
+
+        internal static int ComputeDistance(string baseString, string stringToCompare) {
+            int bsLength = baseString.Length;
+            int stcLength = stringToCompare.Length;
+            int[,] d = new int[bsLength + 1, stcLength + 1];
+
+            // Nothing to compare if either string is empty. 
+            if (bsLength == 0) { return stcLength; }
+            if (stcLength == 0) { return bsLength; }
+
+            // Set each element to the next number
+            for (int i = 0; i <= bsLength; d[i, 0] = i++) { }
+            for (int j = 0; j <= stcLength; d[0, j] = j++) { }
+            for (int i = 1; i <= bsLength; i++) {
+                for (int j = 1; j <= stcLength; j++) {
+                    
+                    // If elements match, 0. If don't match 1. 
+                    int cost = (stringToCompare[j - 1] == baseString[i - 1]) ? 0 : 1;
+                    
+                    // Seems to set current i/j to the minimum value, so the length will always be the minimum at the end. 
+                    // Not sure how this is actually the minimum though. 
+                    // Reference for how it works: https://www.codeproject.com/Articles/13525/Fast-memory-efficient-Levenshtein-algorithm-2
+                    d[i, j] = Math.Min(
+                        Math.Min(d[i - 1, j] + 1, 
+                                 d[i, j - 1] + 1), 
+                        d[i - 1, j - 1] + cost
+                    );
+                }
+            }
+
+            return d[bsLength, stcLength];
+        }
     }
 
 }
