@@ -52,10 +52,19 @@ namespace TinyResort {
 
             // Search for valid commands matching this trigger and command
             List<TRChatCommand> foundCommands = TRChat.GetMatchingCommands(trigger, parameters[1]);
-
-            // If no command is found, this command is invalid
-            if (foundCommands.Count <= 0) { 
-                TRChat.SendError("\"/" + trigger + " " + parameters[1] + "\" is not a valid command.");
+            
+            if (foundCommands.Count <= 0) {
+                if (TRChat.predictedTriggers.Count > 0) {
+                    var message = $"Did you mean to use the command: ";
+                    for (int i = 0; i < TRChat.predictedTriggers.Count; i++) {
+                        message += $"/{TRChat.predictedTriggers[i].trigger} {TRChat.predictedTriggers[i].command}";
+                        if (i != TRChat.predictedTriggers.Count - 1) message += ", ";
+                    }
+                    TRChat.SendError(message);
+                }
+                else {
+                    TRChat.SendError("\"/" + trigger + " " + parameters[1] + "\" is not a valid command.");
+                }
                 return;
             }
 

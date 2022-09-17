@@ -11,8 +11,8 @@ using UnityEngine.Networking;
 using Version = SemanticVersioning.Version;
 
 namespace TinyResort {
-
-    public class TRModUpdates : BaseUnityPlugin {
+    
+    internal class TRModUpdates : BaseUnityPlugin {
 
         public static ConfigEntry<bool> showAllManagedMods;
         private static bool finishedChecking = false;
@@ -85,7 +85,7 @@ namespace TinyResort {
 
                 #region Read nexus mod page and look for version number
 
-                bool check = false;
+                bool check = false;  
                 foreach (string line in nexusText) {
                     if (check && line.Contains("<div class=\"stat\">")) {
 

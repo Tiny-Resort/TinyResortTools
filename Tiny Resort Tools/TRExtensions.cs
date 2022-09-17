@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BepInEx;
 using UnityEngine;
 
 namespace TinyResort {
@@ -36,10 +37,10 @@ namespace TinyResort {
             foreach (var stringToTest in stringsToCompare) {
                 results.Add(stringToTest, ComputeDistance(baseString, stringToTest));
             }
-
+            
             var minimumModifications = results.Min(j => j.Value);
-            var AllMinimumRequired = results.Where(i => i.Value == minimumModifications);
-
+            var AllMinimumRequired = results.Where(i => i.Value == minimumModifications && minimumModifications <= (baseString.Length / 1.5f));
+            TRTools.Log($"{baseString.Length / 1.5f}");
             List<string> list = new List<string>();
             foreach (var compared in AllMinimumRequired) {
                 list.Add(compared.Key);
