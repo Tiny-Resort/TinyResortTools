@@ -73,8 +73,23 @@ namespace TinyResort {
                 modLogo.rectTransform.sizeDelta = new Vector2(modLogo.rectTransform.sizeDelta.x, 250);
                 modLogo.sprite = TRAssets.ImportSprite("TR Tools/textures/mod_logo.png", Vector2.one * 0.5f);
 
+                var credits = GameObject.Instantiate(ModLoaderWindow.transform.GetChild(0).GetChild(2), ModLoaderWindow.transform.GetChild(0));
+                GameObject.Destroy(credits.transform.GetChild(0).gameObject);
+                credits.transform.SetAsLastSibling();
+                
+                var creditsText = credits.GetComponent<TextMeshProUGUI>();
+                creditsText.text = "Mod Logo created by Duvinn, Paris, and Row.";
+                creditsText.rectTransform.anchoredPosition = new Vector2(200, -555);
+                creditsText.rectTransform.anchorMax = new Vector2(0.5f, 1);
+                creditsText.rectTransform.anchorMin = new Vector2(0.5f, 1);
+                creditsText.rectTransform.pivot = new Vector2(0.5f, 1);
+                creditsText.rectTransform.sizeDelta = new Vector2(150, 50);
+                
+                creditsText.fontSize = 5;
+
+
                 // Destroy all unused children
-                GameObject.Destroy(ModLoaderWindow.transform.GetChild(0).GetChild(2).gameObject); // Title 
+                GameObject.Destroy(ModLoaderWindow.transform.GetChild(0).GetChild(2).gameObject); // Title  
                 GameObject.Destroy(ModLoaderWindow.transform.GetChild(0).GetChild(3).gameObject); // Music
                 GameObject.Destroy(ModLoaderWindow.transform.GetChild(0).GetChild(4).gameObject); // VoicesBy
                 GameObject.Destroy(ModLoaderWindow.transform.GetChild(0).GetChild(5).gameObject); // Special Thanks

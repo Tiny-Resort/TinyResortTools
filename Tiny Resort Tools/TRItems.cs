@@ -5,8 +5,18 @@ namespace TinyResort {
     /// <summary>Tools for working with the Dinkum inventory.</summary>
     public class TRItems {
         
-        // TODO: Add info about the item to the tooltip when holding a key
-
+        // TODO: Add Item Framework for adding new items. 
+        // Save item using Mod Save Data. 
+        // Resize the array (keep track of old array size). 
+        // Update the array with all the new items and keep track of item IDs
+        // Before saving, save status of all items and remove them from....
+        // 1. Inventory
+        // 2. Chests
+        // 3. Placed World Objects
+        // 4. The Item Array
+        // 5. Tile Object Array
+        // Restore positions of all items after saving to their approproate places
+        
         private static Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
         private static void InitializeItemDetails() {
             foreach (var item in Inventory.inv.allItems) {
