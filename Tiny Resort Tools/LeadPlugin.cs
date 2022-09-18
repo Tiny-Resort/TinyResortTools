@@ -27,10 +27,16 @@ namespace TinyResort {
             
             //TRDrawing.Initialize();
             TRLicenses.Initialize();
-
         }
 
         private void Start() {
+            TRModUpdates.Initialize();
+        }
+        
+        private void Update() {
+            if (WorldManager.manageWorld && TRModUpdates.lookForMapCanvas) { TRModUpdates.lookForMapCanvas = !TRModUpdates.CreateModUpdateButton(); }
+        }
+        /*private void Start() {
 
             /*var TestLicense = TRLicenses.AddLicense(pluginGuid, "001", "Test License 1", Color.cyan, 500, 3, 1, LicenceManager.LicenceTypes.Mining);
             TestLicense.SetDescription(1, "Level 1: This is a license made for testing the framework.");
@@ -45,9 +51,9 @@ namespace TinyResort {
             var TestLicense3 = TRLicenses.AddLicense(pluginGuid, "003", "Test License 3", Color.red, 680, 2, 3, LicenceManager.LicenceTypes.Fishing);
             TestLicense3.SetDescription(1, "Level 1: This is a license made for testing the framework.");
             TestLicense3.SetDescription(2, "Level 2: This is a license made for testing the framework.");
-            TestLicense3.SetDescription(3, "Level 3: This is a license made for testing the framework.");*/
+            TestLicense3.SetDescription(3, "Level 3: This is a license made for testing the framework.");#1#
             
-        }
+        }*/
         
     }
 
