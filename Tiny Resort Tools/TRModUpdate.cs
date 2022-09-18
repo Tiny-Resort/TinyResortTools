@@ -222,7 +222,7 @@ namespace TinyResort {
 
             
             var pluginInfos = UnityChainloader.Instance.Plugins.Values;
-            var options = new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 };
+            var options = new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 50 }; // setting higher than 1 seems to cause instability if opening menu to soon
             var block = new ActionBlock<PluginInfo>(MyMethodAsync, options);
 
             foreach (var workLoad in pluginInfos) {
