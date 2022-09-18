@@ -23,7 +23,8 @@ namespace TinyResort {
             bool isTool = __instance.allItems[rollOverSlot.itemNo].isATool;
             bool isPowerTool = __instance.allItems[rollOverSlot.itemNo].isPowerTool;
             float staminaCost = __instance.allItems[rollOverSlot.itemNo].getStaminaCost();
-
+            string spriteName = __instance.allItems[rollOverSlot.itemNo].getSprite().name;
+            
             string fuelMessage = "";
             if (hasFuel) {
                 int fuel = rollOverSlot.stack;
@@ -49,7 +50,7 @@ namespace TinyResort {
                 }
             }
 
-            string spriteName = __instance.allItems[rollOverSlot.itemNo].getSprite().name;
+           
 
             string clothesType = "";
             string ShirtMesh = "";
@@ -68,10 +69,14 @@ namespace TinyResort {
                 }
             }
 
-            //__instance.allItems[rollOverSlot.itemNo].equipable.flooring
+            string FurnitureType = "";
+            if (__instance.allItems[rollOverSlot.itemNo].isFurniture) { FurnitureType = "Furniture"; }
+            if (__instance.allItems[rollOverSlot.itemNo].equipable) {
+                if (__instance.allItems[rollOverSlot.itemNo].equipable.wallpaper) FurnitureType = "Wallpaper";
+                if (__instance.allItems[rollOverSlot.itemNo].equipable.flooring) FurnitureType = "Flooring";
+            }
             
-
-            string DefaultItemMessages = $"\n\n[ITEM]\n";
+            string DefaultItemMessages = $"\n\n[ITEM] - Sprite: {spriteName}\n";
             DefaultItemMessages += $"Base Value: {value} | Stackable: {stackable} | Max Stack: {maxStack}\n";
             
             
@@ -93,6 +98,12 @@ namespace TinyResort {
                 FoodMessages = $"[FOOD] - Type: {foodType}\n";
                 FoodMessages += buffMessage;
             }
+
+            string FurnitureMessages = "";
+            if (!string.IsNullOrEmpty(FurnitureType)) {
+                FurnitureMessages = $"[FURNITURE] - Type: {FurnitureType}\n";
+                //FurnitureMessages += $"";
+            }
             
             // TODO: Calculate Value after license
             // TODO: Calculate Stamina use based on level
@@ -101,7 +112,8 @@ namespace TinyResort {
             if (!string.IsNullOrEmpty(ToolMessages)) DebugMessage += ToolMessages;
             if (!string.IsNullOrEmpty(FoodMessages)) DebugMessage += FoodMessages;
             if (!string.IsNullOrEmpty(ClothingMessages)) DebugMessage += ClothingMessages;
-            
+            if (!string.IsNullOrEmpty(FurnitureMessages)) DebugMessage += FurnitureMessages;
+
             if (Input.GetKey(KeyCode.LeftAlt)) __instance.InvDescriptionText.text += DebugMessage;
         }
 
