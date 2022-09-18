@@ -232,10 +232,8 @@ namespace TinyResort {
 
             block.Complete();
             await block.Completion;
-            
         }
-
-
+        
         public static async void MyMethodAsync(PluginInfo data) {
 
             Stopwatch sw = new Stopwatch();
@@ -290,11 +288,8 @@ namespace TinyResort {
                 sw.Stop();
                 TRTools.Log($"Elapsed Time: {sw.Elapsed}");
                 PopulateModList();
-
             }
-
         }
-
     }
 
     internal class DinkumPlugin {
