@@ -38,9 +38,7 @@ namespace TinyResort {
            // TRTools.Log($"Elapsed Time: {sw.Elapsed}");
         }
         
-        private void Update() {
-            if (WorldManager.manageWorld && TRModUpdates.lookForMapCanvas) { TRModUpdates.lookForMapCanvas = !TRModUpdates.CreateModUpdateButton(); }
-        }
+        
         /*private void Start() {
 
             /*var TestLicense = TRLicenses.AddLicense(pluginGuid, "001", "Test License 1", Color.cyan, 500, 3, 1, LicenceManager.LicenceTypes.Mining);
