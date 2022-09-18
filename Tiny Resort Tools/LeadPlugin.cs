@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using BepInEx;
 using BepInEx.Configuration;
 using UnityEngine;
@@ -30,7 +31,11 @@ namespace TinyResort {
         }
 
         private void Start() {
+           // Stopwatch sw = new Stopwatch();
+           // sw.Restart();
             TRModUpdates.Initialize();
+            //sw.Stop();
+           // TRTools.Log($"Elapsed Time: {sw.Elapsed}");
         }
         
         private void Update() {
