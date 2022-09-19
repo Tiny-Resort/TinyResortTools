@@ -39,7 +39,7 @@ namespace TinyResort {
                 }
             }
 
-            else { TRTools.Log("Trying to list files in a folder, but the folder '" + path + "' does not exist.", LogSeverity.Error, false); }
+            else { TRTools.LogError("Trying to list files in a folder, but the folder '" + path + "' does not exist."); }
 
             return list;
             
@@ -56,7 +56,7 @@ namespace TinyResort {
 
             var path = Path.Combine(BepInEx.Paths.PluginPath, relativePath);
             if (!File.Exists(path)) {
-                TRTools.Log("No file found at " + path, LogSeverity.Error, false);
+                TRTools.LogError("No file found at " + path);
                 return null;
             }
             

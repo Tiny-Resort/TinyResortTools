@@ -79,7 +79,7 @@ namespace TinyResort {
         internal static void Save(string fileName) {
 
             if (TRTools.InMainMenu) {
-                TRTools.Log(fileName + " is trying to save while in the main menu.", LogSeverity.Error);
+                TRTools.LogError(fileName + " is trying to save while in the main menu.");
                 return;
             }
 

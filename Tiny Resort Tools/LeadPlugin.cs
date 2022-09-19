@@ -16,7 +16,7 @@ namespace TinyResort {
         
         public const string pluginName = "TRTools";
         public const string pluginGuid = "dev.TinyResort." + pluginName;
-        public const string pluginVersion = "0.2.0";
+        public const string pluginVersion = "0.3.0";
 
         private void Awake() {
 
@@ -31,11 +31,11 @@ namespace TinyResort {
         }
 
         private void Start() {
-           // Stopwatch sw = new Stopwatch();
-           // sw.Restart();
-            TRModUpdates.Initialize();
-            //sw.Stop();
-           // TRTools.Log($"Elapsed Time: {sw.Elapsed}");
+            TRModUpdater.Initialize();
+        }
+
+        private void Update() {
+            TRModUpdater.Update();
         }
         
         

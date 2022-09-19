@@ -38,7 +38,7 @@ namespace TinyResort {
         public static InventoryItem GetItemDetails(int itemID) {
             if (itemDetails.Count <= 0) { InitializeItemDetails(); }
             if (itemID < 0) {
-                TRTools.Log("Attempting to get item details for item with ID of " + itemID + " which does not exist.", LogSeverity.Error, false);
+                TRTools.LogError("Attempting to get item details for item with ID of " + itemID + " which does not exist.");
                 return null;
             }
             return itemDetails[itemID];

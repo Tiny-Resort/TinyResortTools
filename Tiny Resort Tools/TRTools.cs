@@ -48,7 +48,9 @@ namespace TinyResort {
 
         }
 
-        internal static void Log(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) { LeadPlugin.plugin.Log(text, severity, debugModeOnly); }
+        internal static void Log(string text, bool debugModeOnly = true) { LeadPlugin.plugin.Log(text, debugModeOnly); }
+        internal static void LogWarning(string text, bool debugModeOnly = true) { LeadPlugin.plugin.LogWarning(text, debugModeOnly); }
+        internal static void LogError(string text) { LeadPlugin.plugin.LogError(text); }
 
         internal static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") { LeadPlugin.plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod); }
 

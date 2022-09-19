@@ -22,16 +22,23 @@ namespace TinyResort {
 
         /// <summary>Logs to the BepInEx console.</summary>
         /// <param name="text">The text to post in the console.</param>
-        /// <param name="severity">Determines the color of the log.</param>
         /// <param name="debugModeOnly">If true, this message will only show in the console if the config file has DebugMode set to true.</param>
-        public void Log(string text, LogSeverity severity = LogSeverity.Standard, bool debugModeOnly = true) {
+        public void Log(string text, bool debugModeOnly = true) {
             if (debugModeOnly && !debugMode.Value) return;
-            switch (severity) {
-                case LogSeverity.Standard: Logger.LogInfo(text); break;
-                case LogSeverity.Warning: Logger.LogWarning(text); break;
-                case LogSeverity.Error: Logger.LogError(text); break;
-            }
+            Logger.LogInfo(text);
         }
+
+        /// <summary>Logs a warning to the BepInEx console.</summary>
+        /// <param name="text">The text to post in the console.</param>
+        /// <param name="debugModeOnly">If true, this message will only show in the console if the config file has DebugMode set to true.</param>
+        public void LogWarning(string text, bool debugModeOnly = true) {
+            if (debugModeOnly && !debugMode.Value) return;
+            Logger.LogWarning(text);
+        }
+
+        /// <summary>Logs an error to the BepInEx console.</summary>
+        /// <param name="text">The text to post in the console.</param>
+        public void LogError(string text) { Logger.LogError(text); }
 
         /// <summary>
         /// Allows you to patch methods using only one line of code instead of three per method patched.
@@ -61,8 +68,5 @@ namespace TinyResort {
         }
 
     }
-
-    /// <summary>How severe (and thus what color) a log message should be. </summary>
-    public enum LogSeverity { Standard, Warning, Error }
 
 }
