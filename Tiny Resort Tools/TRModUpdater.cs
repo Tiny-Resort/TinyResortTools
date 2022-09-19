@@ -17,6 +17,8 @@ using Object = UnityEngine.Object;
 using Version = SemanticVersioning.Version;
 
 namespace TinyResort {
+    
+    public enum GraphicType { MainMenuButton, CreditsWindow, OptionsSlider }
 
     internal class TRModUpdater {
 
@@ -28,24 +30,40 @@ namespace TinyResort {
         private static GameObject modsWindow;
         private static GameObject creditsButton;
         private static GameObject creditsWindow;
+        private static RectTransform updateButtonGrid;
+        private static GameObject menuText;
         
-        private static GameObject updateButtonGrid;
+        private static float scrollPosition;
+        private static float scrollMaxPosition;
         
         private static string configDirectory = Application.dataPath.Replace("Dinkum_Data", "BepInEx/config/");
 
         public static void Initialize() {
+            
             createEmptyConfigFiles = LeadPlugin.instance.Config.Bind(
                 "Mod Management", "Create Empty Config Files", false, 
                 "If true and no config file exists for a mod, one will automatically be created for you to add a nexusID setting to manually.");
             ScanPlugins();
+            
         }
 
-        public static void Update() { if (WorldManager.manageWorld && (!creditsButton || !creditsWindow)) { CreateModUpdateButton(); } }
+        public static void Update() {
+            
+            // Creates the mods update checker window and button to open window if they aren't created yet
+            if (WorldManager.manageWorld && (!creditsButton || !creditsWindow)) { CreateModUpdateButton(); }
+
+            if (modsWindow && modsWindow.activeInHierarchy) {
+                scrollPosition = Mathf.Clamp(scrollPosition - Input.mouseScrollDelta.y, 0, scrollMaxPosition);
+                updateButtonGrid.anchoredPosition = new Vector2(0, scrollPosition * 58);
+            }
+            
+        }
 
         private static void CreateModUpdateButton() {
 
             if (!creditsButton) {
-                
+
+                var menuTextObj = GameObject.Find("MapCanvas/MenuScreen/MenuButtons/New Game/Text");
                 creditsButton = GameObject.Find("MapCanvas/MenuScreen/CornerStuff/CreditsButton");
 
                 if (creditsButton) {
@@ -53,7 +71,16 @@ namespace TinyResort {
                     // Create and setup a button for opening the mod window
                     modsButton = Object.Instantiate(creditsButton, creditsButton.transform.parent);
                     modsButton.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, 25);
-                    modsButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Mods";
+
+                    // Takes the text from the normal menu buttons so that it has an outline
+                    var child = modsButton.transform.GetChild(0);
+                    Object.Destroy(child.gameObject);
+                    menuText = Object.Instantiate(menuTextObj, modsButton.transform);
+                    var text = menuText.GetComponent<TextMeshProUGUI>();
+                    text.alignment = TextAlignmentOptions.Center;
+                    text.raycastTarget = false;
+                    text.fontSize = 12;
+                    text.text = "MODS";
                     modsButton.name = "ModLoaderButton";
 
                     // Make the button open the mod window when clicked
@@ -77,7 +104,7 @@ namespace TinyResort {
 
                     // Add the Dinkum Mods logo at the top of the updater window
                     var modLogo = modsWindow.transform.GetChild(0).GetChild(7).GetComponent<Image>();
-                    modLogo.rectTransform.anchoredPosition += new Vector2(0, -20);
+                    modLogo.rectTransform.anchoredPosition += new Vector2(0, -30);
                     modLogo.rectTransform.sizeDelta = new Vector2(modLogo.rectTransform.sizeDelta.x, 250);
                     modLogo.sprite = TRAssets.ImportSprite("TR Tools/textures/mod_logo.png", Vector2.one * 0.5f);
 
@@ -88,11 +115,11 @@ namespace TinyResort {
                     var modCreditsText = modCredits.GetComponent<TextMeshProUGUI>();
                     modCreditsText.text = "This Update Checker and the DINKUM MODS logo are both unofficial.\nLogo created by Duvinn, Paris, and Row.";
                     modCreditsText.fontStyle = FontStyles.Italic;
-                    modCreditsText.rectTransform.anchoredPosition = new Vector2(0, 30);
+                    modCreditsText.rectTransform.anchoredPosition = new Vector2(0, 25);
                     modCreditsText.rectTransform.anchorMax = new Vector2(0.5f, 0);
                     modCreditsText.rectTransform.anchorMin = new Vector2(0.5f, 0);
                     modCreditsText.rectTransform.pivot = new Vector2(0.5f, 0);
-                    modCreditsText.rectTransform.sizeDelta = new Vector2(500, 20);
+                    modCreditsText.rectTransform.sizeDelta = new Vector2(500, 35);
                     modCreditsText.fontSize = 11;
 
                     // Destroy all unused children
@@ -103,23 +130,36 @@ namespace TinyResort {
                     Object.Destroy(modsWindow.transform.GetChild(0).GetChild(6).gameObject); // Acknowledgements
                     Object.Destroy(modsWindow.transform.GetChild(0).GetChild(8).gameObject); // Additional Dialogue
 
+                    var scrollArea = new GameObject("Mod Update Buttons Scroll Area");
+                    scrollArea.transform.SetParent(modsWindow.transform.GetChild(0));
+                    scrollArea.transform.SetAsLastSibling();
+                    var scrollAreaImage = scrollArea.AddComponent<Image>();
+                    scrollAreaImage.rectTransform.anchorMin = new Vector2(0.5f, 1f);
+                    scrollAreaImage.rectTransform.anchorMax = new Vector2(0.5f, 1f);
+                    scrollAreaImage.rectTransform.pivot = new Vector2(0.5f, 1f);
+                    scrollAreaImage.rectTransform.sizeDelta = new Vector2(550, 340);
+                    scrollAreaImage.rectTransform.anchoredPosition = new Vector2(0, -155f);
+                    scrollAreaImage.color = Color.red;
+                    scrollAreaImage.rectTransform.localScale = Vector3.one;
+                    scrollArea.AddComponent<Mask>().showMaskGraphic = false;
+
                     // Create a UI grid for the update buttons to go in
-                    updateButtonGrid = new GameObject();
-                    updateButtonGrid.transform.SetParent(modsWindow.transform.GetChild(0));
-                    updateButtonGrid.transform.SetAsLastSibling();
-                    var gridLayoutGroup = updateButtonGrid.AddComponent<GridLayoutGroup>();
-                    gridLayoutGroup.cellSize = new Vector2(250, 70);
-                    gridLayoutGroup.spacing = new Vector2(20, 10);
+                    var updateButtonObj = new GameObject("Mod Update Button Grid");
+                    updateButtonObj.transform.SetParent(scrollArea.transform);
+                    updateButtonObj.transform.SetAsLastSibling();
+                    var gridLayoutGroup = updateButtonObj.AddComponent<GridLayoutGroup>();
+                    gridLayoutGroup.cellSize = new Vector2(500, 50);
+                    gridLayoutGroup.spacing = new Vector2(8, 8);
                     gridLayoutGroup.childAlignment = TextAnchor.UpperCenter;
                     gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-                    gridLayoutGroup.constraintCount = 2;
-                    var rect = updateButtonGrid.GetComponent<RectTransform>();
-                    rect.pivot = new Vector2(0.5f, 1);
-                    rect.anchorMax = new Vector2(0.5f, 1);
-                    rect.anchorMin = new Vector2(0.5f, 1);
-                    rect.localScale = Vector3.one;
-                    rect.anchoredPosition = new Vector2(0, -155);
-                    
+                    gridLayoutGroup.constraintCount = 1;
+                    updateButtonGrid = updateButtonObj.GetComponent<RectTransform>();
+                    updateButtonGrid.pivot = new Vector2(0.5f, 1);
+                    updateButtonGrid.anchorMax = new Vector2(0.5f, 1);
+                    updateButtonGrid.anchorMin = new Vector2(0.5f, 1);
+                    updateButtonGrid.localScale = Vector3.one;
+                    updateButtonGrid.anchoredPosition = new Vector2(0, 0);
+
                 }
             
             }
@@ -130,6 +170,9 @@ namespace TinyResort {
 
         private static void PopulateModList() {
 
+            scrollPosition = 0;
+            scrollMaxPosition = Mathf.Max(loadedPlugins.Count - 6, 0);
+            
             foreach (var mod in loadedPlugins) {
 
                 // If a button already exists for this mod, move on
@@ -137,17 +180,27 @@ namespace TinyResort {
 
                 // Create a button for each mod, indicating if it has an update available
                 mod.updateButton = Object.Instantiate(creditsButton, updateButtonGrid.transform);
-                var ModButtonText = mod.updateButton.GetComponentInChildren<TextMeshProUGUI>();
-                ModButtonText.fontStyle = FontStyles.Normal;
-                ModButtonText.text = mod.outOfDate
-                                         ? $"{mod.name}\nUPDATE AVAILABLE\n({mod.modVersion} -> {mod.nexusVersion})"
-                                         : $"{mod.name}\nUp to Date\n({mod.modVersion})";
+                mod.updateButton.GetComponent<WindowAnimator>().openDelay = 0;
+                Object.Destroy(mod.updateButton.GetComponent<ButtonAnimation>());
+                Object.Destroy(mod.updateButton.transform.GetChild(0).gameObject);
+                
+                var text = Object.Instantiate(menuText, mod.updateButton.transform).GetComponent<TextMeshProUGUI>();
+                text.fontSize = 13;
+                text.alignment = TextAlignmentOptions.Center;
+                text.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+                text.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+                text.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                text.rectTransform.sizeDelta = new Vector2(500, 50);
+                text.rectTransform.anchoredPosition = new Vector2(0, 0);
+                text.lineSpacing = -20;
+                text.text = mod.outOfDate
+                                ? $"<size=16>{mod.name}</size>\n<color=#00ff00ff><b>UPDATE AVAILABLE</b></color> (<color=#ff7226ff>{mod.modVersion}</color> -> <color=#00ff00ff>{mod.nexusVersion}</color>)"
+                                : $"<size=16>{mod.name}</size>\n<color=#787877FF>UP TO DATE ({mod.modVersion})</color>";
 
                 // When the button is clicked, open a web browser to that mod's file page
                 var nexusLink = mod.updateButton.GetComponent<InvButton>();
                 nexusLink.onButtonPress = new UnityEvent();
                 nexusLink.onButtonPress.AddListener(delegate { openWebpage(mod.id); });
-                ModButtonText.rectTransform.sizeDelta = new Vector2(225, 50);
 
             }
 
@@ -170,7 +223,10 @@ namespace TinyResort {
 
                 // Look for the plugin's config file. One none exists, create one if desired
                 string cfgFile = Path.Combine(configDirectory, kvp.Metadata.GUID + ".cfg");
-                if (createEmptyConfigFiles.Value && !File.Exists(cfgFile)) { File.Create(cfgFile); continue; }
+                if (!File.Exists(cfgFile)) {
+                    if (createEmptyConfigFiles.Value) { File.Create(cfgFile); }
+                    continue;
+                }
 
                 // Search through the config file for a nexusID for this plugin
                 int id = -1;
