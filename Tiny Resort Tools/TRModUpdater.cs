@@ -208,6 +208,10 @@ namespace TinyResort {
             loadedPlugins = loadedPlugins.OrderByDescending(i => i.outOfDate).ThenBy(i => i.name).ToList();
             for (var i = 0; i < loadedPlugins.Count; i++) { loadedPlugins[i].updateButton.transform.SetSiblingIndex(i); }
 
+            // TODO
+            var obj = TRAssets.ImportBundle("TR Tools/main menu button");
+            obj.transform.SetParent(updateButtonGrid.transform);
+
         }
 
         internal static void ToggleModWindow() {

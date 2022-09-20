@@ -10,6 +10,8 @@ namespace TinyResort {
     /// <summary>Tools for importing custom assets.</summary>
     public class TRAssets {
         
+        //private static Dictionary<string, AssetBundle> 
+        
         #region Scanning Folders
         
         internal static string[] textureFormats = new []{ "bmp", "exr", "gif", "hdr", "iff", "jpg", "pict", "png", "psd", "tga", "tiff" };
@@ -48,6 +50,25 @@ namespace TinyResort {
         #endregion
         
         #region Importing
+
+        public static GameObject ImportBundle(string relativePath) {
+
+            var path = Path.Combine(BepInEx.Paths.PluginPath, relativePath);
+            if (!File.Exists(path)) {
+                TRTools.LogError("No file found at " + path);
+                return null;
+            }
+
+            var bundle = AssetBundle.LoadFromFile(path);
+            if (bundle == null) {
+                TRTools.LogError("Failed to load asset bundle from " + path);
+                return null;
+            }
+
+            var GO = bundle.LoadAsset<GameObject>("Button");
+            return Object.Instantiate(GO);
+
+        }
 
         /// <summary>Loads an image file from the plugins folder as a texture.</summary>
         /// <param name="relativePath">Path to the image file, relative to the BepInEx plugins folder.</param>

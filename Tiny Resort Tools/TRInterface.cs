@@ -17,6 +17,8 @@ namespace TinyResort {
 
         internal static Dictionary<string, GameObject> currentObjects = new Dictionary<string, GameObject>();
 
+        internal static GameObject scrollBar;
+
         /// <summary>Searches for and instantiates an object while storing it in a Dictionary to avoid duplication.</summary>
         /// <param name="location">Location of the GameObject you would like to instantiate, i.e. "MapCanvas/Menu".</param>
         /// <param name="parentObject">Parent object you would like to attach your button too.</param>
@@ -86,6 +88,7 @@ namespace TinyResort {
         }
         
         internal static void InitializeAllObjects() {
+            
             Type transformType = typeof(Transform);
             Transform[] toFind = (Transform[])Resources.FindObjectsOfTypeAll(transformType);
 
@@ -100,6 +103,9 @@ namespace TinyResort {
                     currentObjects[path] = trans.gameObject;
                 }
             }
+            
+            //var newScrollbar = GameObject.Instantiate()
+            
         }
         
     }
