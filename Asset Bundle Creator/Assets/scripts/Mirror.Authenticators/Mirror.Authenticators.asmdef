@@ -1,0 +1,7 @@
+{
+  "name": "Mirror.Authenticators",
+  "references": [
+    "Mirror"
+  ],
+  "allowUnsafeCode": true
+}

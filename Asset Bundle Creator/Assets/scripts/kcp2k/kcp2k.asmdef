@@ -1,0 +1,7 @@
+{
+  "name": "kcp2k",
+  "references": [
+    "where-allocations"
+  ],
+  "allowUnsafeCode": true
+}

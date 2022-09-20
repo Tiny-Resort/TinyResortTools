@@ -3,3 +3,7 @@
 bin/*
 obj/*
 *.user
+Asset Bundle Creator/Library/*
+Asset Bundle Creator/obj/*
+Asset Bundle Creator/Logs/*
+Asset Bundle Creator/.idea/*
