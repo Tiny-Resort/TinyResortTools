@@ -24,7 +24,6 @@ namespace TinyResort {
             plugin = TRTools.Initialize(this, 83, "tr");
             plugin.harmony.PatchAll();
             // Initializing early so we can use it for all other stuff. 
-            TRInterface.InitializeAllObjects();
 
             useSlashToOpenChat = Config.Bind("Chat", "UseSlashToOpenChat", true, "If true, then pressing forward slash on the keyboard will open the chat box with a slash already in place.");
             
@@ -32,6 +31,7 @@ namespace TinyResort {
         }
 
         private void Start() {
+            TRInterface.Initialize();
             TRModUpdater.Initialize();
         }
 

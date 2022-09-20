@@ -37,7 +37,7 @@ namespace TinyResort {
 
             AddLicense("License Framework", "001", "Test Licenses 1", 1);
 
-            defaultLicenseSprite = TRAssets.ImportSprite(Path.Combine("TR Tools", "textures", "default_license.png"), Vector2.one * 0.5f);
+            defaultLicenseSprite = TRAssets.LoadSprite(Path.Combine("TR Tools", "textures", "default_license.png"), Vector2.one * 0.5f);
 
         }
 

@@ -16,8 +16,33 @@ namespace TinyResort {
     public class TRInterface : MonoBehaviour {
 
         internal static Dictionary<string, GameObject> currentObjects = new Dictionary<string, GameObject>();
-
+        
+        internal static TRButton buttonMainMenu;
         internal static GameObject scrollBar;
+
+        internal static void Initialize() {
+
+            // Load Button Asset Bundles
+            buttonMainMenu = InitializeButton("TR Tools/bundles/button_mainmenu", "Main Menu Button");
+
+            Type transformType = typeof(Transform);
+            Transform[] toFind = (Transform[])Resources.FindObjectsOfTypeAll(transformType);
+
+            foreach (var trans in toFind) {
+                string path = trans.gameObject.name;
+                if (trans.parent != null) {
+                    Transform parent = trans.parent;
+                    while (parent != null) {
+                        path = parent.gameObject.name + "/" + path;
+                        parent = parent.parent;
+                    }
+                    currentObjects[path] = trans.gameObject;
+                }
+            }
+
+            //var newScrollbar = GameObject.Instantiate()
+
+        }
 
         /// <summary>Searches for and instantiates an object while storing it in a Dictionary to avoid duplication.</summary>
         /// <param name="location">Location of the GameObject you would like to instantiate, i.e. "MapCanvas/Menu".</param>
@@ -29,9 +54,7 @@ namespace TinyResort {
 
         /// <summary>Returns the game object at the specified location from a pre-prepared dictionary.</summary>
         /// <param name="location">Location of the GameObject you would like to return, i.e. "MapCanvas/Menu".</param>
-        public static GameObject GetObject(string location) {
-            return currentObjects[location];
-        }
+        public static GameObject GetObject(string location) => currentObjects[location];
         
         /// <summary>Creates a button based on a game object and attached it to a parent object.</summary>
         /// <param name="Location">Location of the GameObject you would like to instantiate, i.e. "MapCanvas/Menu"</param>
@@ -52,7 +75,6 @@ namespace TinyResort {
             if (buttonExists) {
                 buttonExists.onButtonPress = new UnityEvent();
                 buttonExists.onButtonPress.AddListener(method);
-
                 buttonExists.isACloseButton = false;
                 buttonExists.isSnappable = true;
             }
@@ -63,6 +85,34 @@ namespace TinyResort {
             GOIm.color = new Color(.502f, .356f, .235f);
             
             return GO;
+        }
+
+        public static TRButton NewButton(ButtonTypes type, Transform parent, string text, UnityAction clickAction = null) {
+
+            TRButton newButton = null;
+            switch (type) {
+                case ButtonTypes.MainMenu:
+                    newButton = buttonMainMenu.Instantiate(parent);
+                    newButton.textMesh.text = text;
+                    if (clickAction != null) { newButton.button.onButtonPress.AddListener(clickAction); }
+                    break;
+            }
+
+            return newButton;
+
+        }
+
+        // Creates a prefab for a specific button type
+        private static TRButton InitializeButton(string path, string name) {
+            var newObject = Object.Instantiate(TRAssets.LoadBundle(path).LoadAsset<GameObject>(name));
+            var newButton = newObject.AddComponent<TRButton>();
+            newButton.background = newObject.GetComponent<Image>();
+            newButton.button = newObject.GetComponent<InvButton>();
+            newButton.rectTransform = newObject.GetComponent<RectTransform>();
+            newButton.textMesh = newObject.GetComponentInChildren<TextMeshProUGUI>();
+            newButton.windowAnim = newObject.GetComponent<WindowAnimator>();
+            newButton.buttonAnim = newObject.GetComponent<ButtonAnimation>();
+            return newButton;
         }
 
         /// <summary> Creates a sprite in the shape of a circle with a border. </summary>
@@ -87,27 +137,24 @@ namespace TinyResort {
 
         }
         
-        internal static void InitializeAllObjects() {
-            
-            Type transformType = typeof(Transform);
-            Transform[] toFind = (Transform[])Resources.FindObjectsOfTypeAll(transformType);
-
-            foreach (var trans in toFind) {
-                string path = trans.gameObject.name;
-                if (trans.parent != null) {
-                    Transform parent = trans.parent;
-                    while (parent != null) {
-                        path = parent.gameObject.name + "/" + path;
-                        parent = parent.parent;
-                    }
-                    currentObjects[path] = trans.gameObject;
-                }
-            }
-            
-            //var newScrollbar = GameObject.Instantiate()
-            
-        }
-        
     }
+    
+    public class TRButton : MonoBehaviour {
+        
+        public RectTransform rectTransform;
+        public InvButton button;
+        public Image background;
+        public TextMeshProUGUI textMesh;
+        public ButtonAnimation buttonAnim;
+        public WindowAnimator windowAnim;
+
+        public TRButton Instantiate(Transform parent) {
+            var copy = Object.Instantiate(gameObject, parent);
+            return copy.GetComponent<TRButton>();
+        }
+
+    }
+    
+    public enum ButtonTypes { MainMenu }
 
 }

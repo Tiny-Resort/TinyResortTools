@@ -9,8 +9,8 @@ namespace TinyResort {
 
     /// <summary>Tools for importing custom assets.</summary>
     public class TRAssets {
-        
-        //private static Dictionary<string, AssetBundle> 
+
+        private static Dictionary<string, AssetBundle> loadedBundles = new Dictionary<string, AssetBundle>();
         
         #region Scanning Folders
         
@@ -50,8 +50,7 @@ namespace TinyResort {
         #endregion
         
         #region Importing
-
-        public static GameObject ImportBundle(string relativePath) {
+        public static AssetBundle LoadBundle(string relativePath) {
 
             var path = Path.Combine(BepInEx.Paths.PluginPath, relativePath);
             if (!File.Exists(path)) {
@@ -65,15 +64,14 @@ namespace TinyResort {
                 return null;
             }
 
-            var GO = bundle.LoadAsset<GameObject>("Button");
-            return Object.Instantiate(GO);
+            return bundle;
 
         }
 
         /// <summary>Loads an image file from the plugins folder as a texture.</summary>
         /// <param name="relativePath">Path to the image file, relative to the BepInEx plugins folder.</param>
         /// <returns>The loaded texture.</returns>
-        public static Texture2D ImportTexture(string relativePath) {
+        public static Texture2D LoadTexture(string relativePath) {
 
             var path = Path.Combine(BepInEx.Paths.PluginPath, relativePath);
             if (!File.Exists(path)) {
@@ -93,8 +91,8 @@ namespace TinyResort {
         /// <param name="relativePath">Path to the image file, relative to the BepInEx plugins folder.</param>
         /// <param name="pivot">The center of the sprite. Vector2.zero would be the top left and Vector2.one would be the bottom right.</param>
         /// <returns>The loaded Sprite.</returns>
-        public static Sprite ImportSprite(string relativePath, Vector2 pivot) {
-            Texture2D tex = ImportTexture(relativePath);
+        public static Sprite LoadSprite(string relativePath, Vector2 pivot) {
+            Texture2D tex = LoadTexture(relativePath);
             Sprite newSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), pivot, 100);
             return newSprite;
         }
