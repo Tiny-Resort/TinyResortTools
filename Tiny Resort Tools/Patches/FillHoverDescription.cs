@@ -78,7 +78,7 @@ namespace TinyResort {
                 if (__instance.allItems[rollOverSlot.itemNo].equipable.flooring) FurnitureType = "Flooring";
             }
             
-            string DefaultItemMessages = $"\n\n[ITEM] - Sprite: {spriteName}\n";
+            string DefaultItemMessages = $"\n\n[ITEM] - ID: {itemID} - Sprite: {spriteName}\n";
             DefaultItemMessages += $"Base Value: {value} | Stackable: {stackable} | Max Stack: {maxStack}\n";
             
             

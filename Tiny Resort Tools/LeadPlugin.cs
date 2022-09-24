@@ -33,10 +33,12 @@ namespace TinyResort {
         private void Start() {
             TRInterface.Initialize();
             TRModUpdater.Initialize();
+            TRItems.ManageAllItemArray();
         }
 
         private void Update() {
             TRModUpdater.Update();
+            
         }
         
         

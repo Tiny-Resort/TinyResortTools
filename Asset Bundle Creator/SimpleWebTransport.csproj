@@ -52,36 +52,36 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\BufferPool.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SslConfig.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SendLoopConfig.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ReceiveLoop.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ReadHelper.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SimpleWebJSLib.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SslConfigLoader.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ClientState.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\BufferPool.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\BufferBucket.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\Message.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ArrayBuffer.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ServerHandshake.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ClientHandshake.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\Utils.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\WebSocketClientStandAlone.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ServerSslHelper.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\MessageProcessor.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SimpleWebTransport.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\TcpConfig.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\EventType.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SslConfig.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SimpleWebJSLib.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ArrayBuffer.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\Connection.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ReadHelperException.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\WebSocketServer.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\IBufferOwner.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SimpleWebServer.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ReadHelper.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\Message.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ServerHandshake.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\Utils.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ServerSslHelper.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SimpleWebTransport.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\Constants.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SimpleWebClient.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\Log.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SendLoop.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ReceiveLoop.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\SslConfigLoader.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ClientState.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ClientHandshake.cs" />
+     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\WebSocketClientStandAlone.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\ClientSslHelper.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\TcpConfig.cs" />
-     <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\EventType.cs" />
      <Compile Include="Assets\scripts\SimpleWebTransport\Mirror\SimpleWeb\WebSocketClientWebGl.cs" />
      <None Include="Assets\scripts\SimpleWebTransport\SimpleWebTransport.asmdef" />
  <Reference Include="UnityEngine">
@@ -313,16 +313,16 @@
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.17f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Plastic.Antlr3.Runtime">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/Unity.Plastic.Antlr3.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="log4netPlastic">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/log4netPlastic.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/log4netPlastic.dll</HintPath>
  </Reference>
  <Reference Include="Newtonsoft.Json">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.nuget.newtonsoft-json@2.0.0/Runtime/Newtonsoft.Json.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.nuget.newtonsoft-json@2.0.0/Runtime/Newtonsoft.Json.dll</HintPath>
  </Reference>
  <Reference Include="unityplastic">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/unityplastic.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/unityplastic.dll</HintPath>
  </Reference>
  <Reference Include="netstandard">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.17f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
@@ -670,10 +670,10 @@
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.17f1/Editor/Data/NetStandard/compat/2.0.0/shims/netfx/System.Xml.Serialization.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.UI">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -52,104 +52,104 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Bloom.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TextureParameterDefault.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AutoExposure.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\EyeAdaptation.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MinMaxAttribute.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScalableAO.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\KernelSize.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ShaderIDs.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessEffectRenderer.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\SplineParameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AutoExposureRenderer.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\GradingMode.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessDebug.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ChromaticAberration.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\VignetteRenderer.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessVolume.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\LogHistogram.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\EyeAdaptationParameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TonemapperParameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusionQualityParameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ColorBlindnessType.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\BloomRenderer.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessEvent.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessResources.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusionMode.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessDebugLayer.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusionRenderer.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Vector2Parameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\HaltonSeq.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusion.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\GradingModeParameter.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TextureLerper.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\DepthOfField.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\LensDistortion.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\DisplayNameAttribute.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\RuntimeUtilities.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusionModeParameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\LensDistortionRenderer.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\FastApproximateAntialiasing.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\GrainRenderer.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\HistogramMonitor.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ColorGradingRenderer.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScreenSpaceReflectionPreset.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\WaveformMonitor.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusionQuality.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TemporalAntialiasing.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\DebugOverlay.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Fog.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TextureParameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessLayer.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\SubpixelMorphologicalAntialiasing.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\DepthOfFieldRenderer.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\VectorscopeMonitor.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TargetPool.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScreenSpaceReflectionResolution.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MeshUtilities.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessAttribute.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MonitorType.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PropertySheet.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessProfile.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ChromaticAberrationRenderer.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\KernelSizeParameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Grain.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScreenSpaceReflections.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ColorUtilities.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MotionBlur.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessRenderContext.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessBundle.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Vector3Parameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScreenSpaceReflectionsRenderer.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessManager.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\FloatParameter.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Spline.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Dithering.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessEffectSettings.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\BoolParameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\HableCurve.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Vignette.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ColorGrading.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\VignetteModeParameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Monitor.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MotionBlurRenderer.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MinAttribute.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TextureFormatUtilities.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\LightMeterMonitor.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessEventComparer.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PropertySheetFactory.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Tonemapper.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\VignetteMode.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ColorParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ParameterOverride.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\IAmbientOcclusionMethod.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScalableAO.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\EyeAdaptationParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessResources.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ColorBlindnessType.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\BloomRenderer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessDebugLayer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\DisplayNameAttribute.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\RuntimeUtilities.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\GrainRenderer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\HistogramMonitor.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusionQuality.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TextureParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MeshUtilities.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessAttribute.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PropertySheet.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ChromaticAberrationRenderer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MotionBlur.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessManager.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\FloatParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MultiScaleVO.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AutoExposure.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TextureParameterDefault.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessEffectRenderer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AutoExposureRenderer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ChromaticAberration.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\VignetteRenderer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessEvent.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusionQualityParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusion.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\LensDistortion.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusionModeParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\DebugOverlay.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessLayer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\VectorscopeMonitor.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TargetPool.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MonitorType.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessProfile.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Grain.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScreenSpaceReflectionsRenderer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Dithering.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Vignette.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\LightMeterMonitor.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessEventComparer.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScreenSpaceReflectionPresetParameter.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\IntParameter.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MaxAttribute.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MultiScaleVO.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ParameterOverride.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScreenSpaceReflectionResolutionParameter.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Vector4Parameter.cs" />
-     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\IAmbientOcclusionMethod.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Bloom.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\EyeAdaptation.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\MinMaxAttribute.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ShaderIDs.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessDebug.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessVolume.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TonemapperParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\AmbientOcclusionMode.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Vector2Parameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\HaltonSeq.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\GradingModeParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\DepthOfField.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\LensDistortionRenderer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Fog.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\SubpixelMorphologicalAntialiasing.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\DepthOfFieldRenderer.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScreenSpaceReflectionResolution.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\KernelSizeParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ScreenSpaceReflections.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ColorUtilities.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PostProcessRenderContext.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Vector3Parameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\BoolParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\HableCurve.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ColorGrading.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\VignetteModeParameter.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\Monitor.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\PropertySheetFactory.cs" />
+     <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\ColorParameter.cs" />
      <Compile Include="Assets\scripts\Unity.Postprocessing.Runtime\UnityEngine\Rendering\PostProcessing\TrackballAttribute.cs" />
      <None Include="Assets\scripts\Unity.Postprocessing.Runtime\Unity.Postprocessing.Runtime.asmdef" />
  <Reference Include="UnityEngine">
@@ -381,16 +381,16 @@
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.17f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Plastic.Antlr3.Runtime">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/Unity.Plastic.Antlr3.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="log4netPlastic">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/log4netPlastic.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/log4netPlastic.dll</HintPath>
  </Reference>
  <Reference Include="Newtonsoft.Json">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.nuget.newtonsoft-json@2.0.0/Runtime/Newtonsoft.Json.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.nuget.newtonsoft-json@2.0.0/Runtime/Newtonsoft.Json.dll</HintPath>
  </Reference>
  <Reference Include="unityplastic">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/unityplastic.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/unityplastic.dll</HintPath>
  </Reference>
  <Reference Include="netstandard">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.17f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
@@ -738,10 +738,10 @@
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.17f1/Editor/Data/NetStandard/compat/2.0.0/shims/netfx/System.Xml.Serialization.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.UI">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

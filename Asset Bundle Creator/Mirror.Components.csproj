@@ -52,44 +52,44 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkTransformBase.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkMatch.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\LogEntry.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\GUIConsole.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\MatchInterestManagement.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NTSnapshot.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\SceneInterestManagement.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkTransform.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkAnimator.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Grid2D.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkMatchChecker.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkRigidbody2D.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Discovery\NetworkDiscoveryBase.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkLobbyPlayer.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\System\Runtime\CompilerServices\IsReadOnlyAttribute.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkTransformChild.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\GeneratedNetworkCode.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\Discovery\NetworkDiscoveryHUD.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkLobbyManager.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkRigidbody.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\LogEntry.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkAnimator.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Grid2D.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkRigidbody2D.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkTransformChild.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkOwnerChecker.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkRoomManager.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\DistanceInterestManagement.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Discovery\ServerRequest.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkPingDisplay.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Microsoft\CodeAnalysis\EmbeddedAttribute.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\Discovery\ServerFoundUnityEvent.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkLerpRigidbody.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkRigidbody.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkTransformChild.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\Discovery\NetworkDiscovery.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkRoomPlayer.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkProximityChecker.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\DistanceInterestManagementCustomRange.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkTransform.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\Discovery\ServerResponse.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkTransformBase.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkTransformBase.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkMatch.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\MatchInterestManagement.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NTSnapshot.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkTransform.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkMatchChecker.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkLobbyPlayer.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\GeneratedNetworkCode.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Discovery\ServerRequest.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\DistanceInterestManagement.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Experimental\NetworkLerpRigidbody.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\SceneInterestManagement.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\Discovery\NetworkDiscoveryBase.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Microsoft\CodeAnalysis\EmbeddedAttribute.cs" />
+     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkRoomPlayer.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\SpatialHashingInterestManagement.cs" />
      <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkSceneChecker.cs" />
-     <Compile Include="Assets\scripts\Mirror.Components\Mirror\NetworkTransformBase.cs" />
      <None Include="Assets\scripts\Mirror.Components\Mirror.Components.asmdef" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.17f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -320,16 +320,16 @@
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.17f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Plastic.Antlr3.Runtime">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/Unity.Plastic.Antlr3.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="log4netPlastic">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/log4netPlastic.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/log4netPlastic.dll</HintPath>
  </Reference>
  <Reference Include="Newtonsoft.Json">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.nuget.newtonsoft-json@2.0.0/Runtime/Newtonsoft.Json.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.nuget.newtonsoft-json@2.0.0/Runtime/Newtonsoft.Json.dll</HintPath>
  </Reference>
  <Reference Include="unityplastic">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/unityplastic.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/PackageCache/com.unity.collab-proxy@1.7.1/Lib/Editor/PlasticSCM/unityplastic.dll</HintPath>
  </Reference>
  <Reference Include="netstandard">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.17f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
@@ -677,10 +677,10 @@
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.17f1/Editor/Data/NetStandard/compat/2.0.0/shims/netfx/System.Xml.Serialization.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.UI">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
- <HintPath>H:/Modding/Dinkum Mods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+ <HintPath>E:/DinkumMods/TinyResortTools/Asset Bundle Creator/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
