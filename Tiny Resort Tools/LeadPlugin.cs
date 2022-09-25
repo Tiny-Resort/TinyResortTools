@@ -38,6 +38,10 @@ namespace TinyResort {
 
         private void Update() {
             TRModUpdater.Update();
+
+            if (Input.GetKeyDown(KeyCode.F11)) {
+                TRItems.UnloadCustomItemsPlayerInventory();
+            }
             
         }
         

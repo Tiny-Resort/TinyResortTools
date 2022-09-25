@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using BepInEx;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem.LowLevel;
 
 namespace TinyResort {
@@ -24,9 +26,10 @@ namespace TinyResort {
         // Restore positions of all items after saving to their approproate places
 
         private static Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
-        private static Dictionary<string, ModItemData> customItems = new Dictionary<string, ModItemData>();
+        private static Dictionary<string, TRCustomItem> customItems = new Dictionary<string, TRCustomItem>();
+        private static Dictionary<int, TRCustomItem> customItemsByID = new Dictionary<int, TRCustomItem>();
 
-        internal static bool CustomItemsInitialized;
+        internal static bool customItemsInitialized;
 
         private static void InitializeItemDetails() {
             foreach (var item in Inventory.inv.allItems) {
@@ -51,53 +54,54 @@ namespace TinyResort {
             return itemDetails[itemID];
         }
 
-        public static void InitializeNewItem(string uniqueID, string relativePath) {
-            if (CustomItemsInitialized) {
+        internal static void AddCustomItem(TRPlugin plugin, string relativePath, string uniqueItemID) {
+            if (customItemsInitialized) {
                 TRTools.LogError($"Mod attempted to load a new item after item initialization. You need to load new items in the Awake() method.");
                 return;
             }
-            customItems[uniqueID] = new ModItemData(relativePath);
-            customItems[uniqueID].UniqueID = uniqueID;
+            customItems[plugin.nexusID + uniqueItemID] = new TRCustomItem(relativePath);
+            customItems[plugin.nexusID + uniqueItemID].uniqueID = plugin.nexusID + uniqueItemID;
         }
 
         internal static void ManageAllItemArray() {
             // Make sure this runs only after the other items are added into the dictionary
             var customItemCount = customItems.Count;
+
             //TRTools.Log($"2---CustomItemsInitialized: {CustomItemsInitialized} -- Items: {customItems.Count}");
 
             Array.Resize<InventoryItem>(ref Inventory.inv.allItems, Inventory.inv.allItems.Length + customItemCount);
-            var ItemCount = Inventory.inv.allItems.Length - 1;
+            var itemCount = Inventory.inv.allItems.Length - 1;
+
             //TRTools.Log($"ItemCount: {ItemCount} -- Items: {customItems.Count}");
 
             Array.Resize<TileObject>(ref WorldManager.manageWorld.allObjects, WorldManager.manageWorld.allObjects.Length + customItemCount);
-            var TileObjectCount = WorldManager.manageWorld.allObjects.Length - 1;
+            var tileObjectCount = WorldManager.manageWorld.allObjects.Length - 1;
+
             //TRTools.Log($"TileObjectCount: {TileObjectCount} -- Items: {customItems.Count}");
 
             Array.Resize<TileObjectSettings>(ref WorldManager.manageWorld.allObjectSettings, WorldManager.manageWorld.allObjectSettings.Length + customItemCount);
-            var TileObjectSettingsCount = WorldManager.manageWorld.allObjectSettings.Length - 1;
+            var tileObjectSettingsCount = WorldManager.manageWorld.allObjectSettings.Length - 1;
+
             //TRTools.Log($"TileObjectSettingsCount: {TileObjectSettingsCount} -- Items: {customItems.Count}");
 
             int loopCount = 0;
             foreach (var item in customItems) {
 
-                Inventory.inv.allItems[ItemCount - loopCount] = item.Value.InvItem;
-                item.Value.InvItem.setItemId(ItemCount - loopCount);
+                Inventory.inv.allItems[itemCount - loopCount] = item.Value.invItem;
+                item.Value.invItem.setItemId(itemCount - loopCount);
+                if (item.Value.tileObject && item.Value.tileObjectSettings) {
+                    WorldManager.manageWorld.allObjects[tileObjectCount - loopCount] = item.Value.tileObject;
+                    item.Value.tileObject.tileObjectId = tileObjectCount - loopCount;
 
-                if (item.Value.TileObject && item.Value.TileObjectSettings) {
-                    WorldManager.manageWorld.allObjects[TileObjectCount - loopCount] = item.Value.TileObject;
-                    item.Value.TileObject.tileObjectId = TileObjectCount - loopCount;
-
-                    WorldManager.manageWorld.allObjectSettings[TileObjectSettingsCount - loopCount] = item.Value.TileObjectSettings;
-                    item.Value.TileObjectSettings.tileObjectId = TileObjectSettingsCount - loopCount;
+                    WorldManager.manageWorld.allObjectSettings[tileObjectSettingsCount - loopCount] = item.Value.tileObjectSettings;
+                    item.Value.tileObjectSettings.tileObjectId = tileObjectSettingsCount - loopCount;
                 }
-                
+                customItemsByID[itemCount - loopCount] = item.Value;
+
                 loopCount += 1;
+
+                // Add to new dictionary that uses ItemID as key with InvItem
             }
-            if (loopCount == customItems.Count) FixCheatCatalogue();
-
-        }
-
-        internal static void FixCheatCatalogue() {
 
             // Resize and/or add mod save data of if they have obtained it or not
             // In a pre-save event, go through all items in catalogue array past vanilla items and check which are true and set them. 
@@ -108,47 +112,73 @@ namespace TinyResort {
             // This works and doesn't get saved so oh well
             var cheatButton = typeof(CheatScript).GetField("cheatButtons", BindingFlags.Instance | BindingFlags.NonPublic);
             cheatButton.SetValue(CheatScript.cheat, new GameObject[Inventory.inv.allItems.Length]);
-            CustomItemsInitialized = true;
+            customItemsInitialized = true;
+
         }
 
+        internal static void LoadCustomItems() {
+            // Go through all custom items and based on saved data
+            // what slot? how many in slot?
+        }
+
+        internal static void UnloadCustomItemsPlayerInventory() {
+
+            for (int i = 0; i < Inventory.inv.invSlots.Length; i++) {
+                var currentSlot = Inventory.inv.invSlots[i];
+
+                if (customItemsByID.ContainsKey(currentSlot.itemNo)) {
+                    TRTools.Log($"Found Custom Item: {customItemsByID[currentSlot.itemNo].invItem.itemName}");
+                }
+                else {
+                    TRTools.Log($"No Custom Item Found.");
+
+                }
+            }
+        }
     }
 
-    internal class ModItemData {
+    internal class TRCustomItem {
 
-        public ModItemData(string assetBundlePath) {
+        public TRCustomItem(string assetBundlePath) {
             TRTools.Log("Attemping Load: Asset Bundle.");
-            this.AssetBundle = TRAssets.LoadBundle(assetBundlePath);
-            TRTools.Log($"Loaded: Asset Bundle -- {this.AssetBundle}.");
+            this.assetBundle = TRAssets.LoadBundle(assetBundlePath);
+            TRTools.Log($"Loaded: Asset Bundle -- {this.assetBundle}.");
 
-            var AllAssets = this.AssetBundle.LoadAllAssets<GameObject>();
+            var AllAssets = this.assetBundle.LoadAllAssets<GameObject>();
 
             for (int i = 0; i < AllAssets.Length; i++) {
 
-                if (this.InvItem == null) {
+                if (this.invItem == null) {
                     TRTools.Log("Attemping Load: InvItem.");
-                    this.InvItem = AllAssets[i].GetComponent<InventoryItem>();
-                    TRTools.Log($"Loaded: InvItem -- {this.InvItem}.");
+                    this.invItem = AllAssets[i].GetComponent<InventoryItem>();
+                    TRTools.Log($"Loaded: InvItem -- {this.invItem}.");
                 }
-                if (this.TileObject == null) {
+                if (this.tileObject == null) {
                     TRTools.Log("Attemping Load: TileObject.");
-                    this.TileObject = AllAssets[i].GetComponent<TileObject>();
-                    TRTools.Log($"Loaded: TileObject -- {this.TileObject}.");
+                    this.tileObject = AllAssets[i].GetComponent<TileObject>();
+                    TRTools.Log($"Loaded: TileObject -- {this.tileObject}.");
                 }
-                if (this.TileObjectSettings == null) {
+                if (this.tileObjectSettings == null) {
                     TRTools.Log("Attemping Load: TileObjectSettings.");
-                    this.TileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>();
-                    TRTools.Log($"Loaded: TileObjectSettings -- {this.TileObjectSettings}.");
+                    this.tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>();
+                    TRTools.Log($"Loaded: TileObjectSettings -- {this.tileObjectSettings}.");
                 }
             }
 
-            this.AssetBundle.Unload(false);
+            this.assetBundle.Unload(false);
         }
 
-        public AssetBundle AssetBundle;
-        public InventoryItem InvItem;
-        public TileObject TileObject;
-        public TileObjectSettings TileObjectSettings;
-        public string UniqueID;
+        public AssetBundle assetBundle;
+        public InventoryItem invItem;
+        public TileObject tileObject;
+        public TileObjectSettings tileObjectSettings;
+        public string uniqueID;
+
+        // Dictionary<int, int> of slots of the item is in and how many -- player inventory
+        // need for inv and chest
+
+        public delegate void TileObjectEvent();
+        public TileObjectEvent interactEvent;
 
     }
 

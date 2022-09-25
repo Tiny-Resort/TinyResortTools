@@ -67,6 +67,10 @@ namespace TinyResort {
             TRChat.AddCommand(plugin.Info.Metadata.Name, chatTrigger.Value.ToLower(), command, description, method, argumentNames);
         }
 
+        /// <returns>Creates a new item.</returns>
+        /// /// <param name="relativePath">The path to your asset bundle.</param>
+        /// <param name="uniqueItemID">A unique ID for your item that will be combined with your nexus ID.</param>
+        public void AddCustomItem(string relativePath, string uniqueItemID) { TRItems.AddCustomItem(this, relativePath, uniqueItemID); }
     }
 
 }

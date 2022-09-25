@@ -31,8 +31,16 @@ namespace TinyResort {
             HookedPlugins[plugin] = new TRPlugin();
             HookedPlugins[plugin].plugin = plugin;
             HookedPlugins[plugin].harmony = new Harmony(plugin.Info.Metadata.GUID);
-
-            if (nexusID > 0) { HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus."); }
+            
+            if (nexusID > 0) {
+                HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus.");
+                // Enforce nexus ID if the developer set one
+                HookedPlugins[plugin].nexusID.Value = nexusID;
+                HookedPlugins[plugin].plugin.Config.Save();
+            }
+            else {
+                TRTools.LogError($"We highly recommend adding the nexusID from the URL of your mod page. This will allow you to use all of the TR Tool's features and shows users when there is an update for your mod. This error can be safely ignored if you are in a testing phase, but please add one before the release.", useASCII:true);
+            }
             HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
             if (!string.IsNullOrEmpty(chatTrigger) && chatTrigger.ToLower() != "help") {
                 HookedPlugins[plugin].chatTrigger =
@@ -48,9 +56,35 @@ namespace TinyResort {
 
         }
 
-        internal static void Log(string text, bool debugModeOnly = true) { LeadPlugin.plugin.Log(text, debugModeOnly); }
-        internal static void LogWarning(string text, bool debugModeOnly = true) { LeadPlugin.plugin.LogWarning(text, debugModeOnly); }
-        internal static void LogError(string text) { LeadPlugin.plugin.LogError(text); }
+        internal static string TRAscii() {
+            string asciiArt;
+            asciiArt = "==========================================================================================================\n";
+            asciiArt += "    _____ _____ _   ___   __ ______ _____ _____  ___________ _____   _____ _____  _____ _      _____ \n";
+            asciiArt += "   |_   _|_   _| \\ | \\ \\ / / | ___ \\  ___/  ___||  _  | ___ \\_   _| |_   _|  _  ||  _  | |    /  ___|\n";
+            asciiArt += "     | |   | | |  \\| |\\ V /  | |_/ / |__ \\ `--. | | | | |_/ / | |     | | | | | || | | | |    \\ `--. \n";
+            asciiArt += "     | |   | | | . ` | \\ /   |    /|  __| `--. \\| | | |    /  | |     | | | | | || | | | |     `--. \\\n";
+            asciiArt += "     | |  _| |_| |\\  | | |   | |\\ \\| |___/\\__/ /\\ \\_/ / |\\ \\  | |     | | \\ \\_/ /\\ \\_/ / |____/\\__/ /\n";
+            asciiArt += "     \\_/  \\___/\\_| \\_/ \\_/   \\_| \\_\\____/\\____/  \\___/\\_| \\_| \\_/     \\_/  \\___/  \\___/\\_____/\\____/ \n\n";
+            asciiArt += "==========================================================================================================\n\n";
+
+            return asciiArt;
+        }
+
+        internal static void Log(string text, bool debugModeOnly = true, bool useASCII = false) {
+            if (useASCII) { text = $"\n\n\n{TRAscii()}{text.ToUpper()}\n\n"; }
+            LeadPlugin.plugin.Log(text, debugModeOnly);
+
+        }
+
+        internal static void LogWarning(string text, bool debugModeOnly = true, bool useASCII = false) {
+            if (useASCII) { text = $"\n\n\n{TRAscii()}{text.ToUpper()}\n\n"; }
+            LeadPlugin.plugin.LogWarning(text, debugModeOnly);
+        }
+
+        internal static void LogError(string text, bool useASCII = false) {
+            if (useASCII) { text = $"\n\n\n{TRAscii()}{text.ToUpper()}\n\n"; }
+            LeadPlugin.plugin.LogError(text);
+        }
 
         internal static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") { LeadPlugin.plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod); }
 
