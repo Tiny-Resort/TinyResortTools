@@ -141,8 +141,6 @@ namespace TinyResort {
 
         internal static void UnloadChests() {
             TRTools.Log($"0: {WorldManager.manageWorld.onTileMap.GetLength(0)} | 1: {WorldManager.manageWorld.onTileMap.GetLength(1)}");
-            Stopwatch sw = new Stopwatch();
-            sw.Restart();
             for (int i = 0; i < WorldManager.manageWorld.onTileMap.GetLength(0); i++) {
                 for (int j = 0; j < WorldManager.manageWorld.onTileMap.GetLength(1); j++) {
 
@@ -186,8 +184,6 @@ namespace TinyResort {
                     }
                 }
             }
-            sw.Stop();
-            TRTools.Log($"Searching for all items took....: {sw.Elapsed}");
         }
 
         internal static void SaveCustomItems() {
@@ -210,12 +206,13 @@ namespace TinyResort {
                     }
                 }
             }
-
-             
             
             if (currentItemList.Count > 0) {
                 for (int i = 0; i < currentItemList.Count; i++) {
-                    if (currentItemList[i].playerInventory) { Inventory.inv.invSlots[currentItemList[i].slotNo].updateSlotContentsAndRefresh(currentItemList[i].customItem.invItem.getItemId(), currentItemList[i].stackSize); }
+                    if (currentItemList[i].playerInventory) {
+                        
+                        Inventory.inv.invSlots[currentItemList[i].slotNo].updateSlotContentsAndRefresh(currentItemList[i].customItem.invItem.getItemId(), currentItemList[i].stackSize);
+                    }
                     
                     else if (currentItemList[i].chestInventory) {
                         var chestX = currentItemList[i].chestX;
