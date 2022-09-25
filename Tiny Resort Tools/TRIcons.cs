@@ -147,7 +147,7 @@ namespace TinyResort {
                 var spriteName = Inventory.inv.allItems[k].itemSprite.name;
 
                 // if (Inventory.inv.allItems[k].itemSprite == null) { itemsWithoutIcons += $"{Inventory.inv.allItems[k].itemName}\n"; }
-                if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName)) && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower())) { itemsWithoutIcons += $"{k} {Inventory.inv.allItems[k].itemName}\n"; }
+                if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName)) && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower().Replace(" ", "_"))) { itemsWithoutIcons += $"{k} {Inventory.inv.allItems[k].itemName}\n"; }
             }
 
             TRTools.Log(notInItemList);
