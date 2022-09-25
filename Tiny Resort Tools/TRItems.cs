@@ -140,7 +140,35 @@ namespace TinyResort {
                 }
             }
             
-            // TODO: Remove custom clothing from player's body
+            if (customItemsByID.ContainsKey(EquipWindow.equip.hatSlot.itemNo)) {
+                var hatSlot = EquipWindow.equip.hatSlot;
+                savedItemData.Add(new ItemSaveData(customItemsByID[hatSlot.itemNo], ItemSaveData.EquipLocation.Hat, hatSlot.stack));
+                hatSlot.updateSlotContentsAndRefresh(-1, 0);
+            }
+            if (customItemsByID.ContainsKey(EquipWindow.equip.faceSlot.itemNo)) {
+                var faceSlot = EquipWindow.equip.faceSlot;
+                savedItemData.Add(new ItemSaveData(customItemsByID[faceSlot.itemNo], ItemSaveData.EquipLocation.Face, faceSlot.stack));
+                faceSlot.updateSlotContentsAndRefresh(-1, 0);
+            }
+            if (customItemsByID.ContainsKey(EquipWindow.equip.shirtSlot.itemNo)) {
+                var shirtSlot = EquipWindow.equip.shirtSlot;
+                savedItemData.Add(new ItemSaveData(customItemsByID[shirtSlot.itemNo], ItemSaveData.EquipLocation.Shirt, shirtSlot.stack));
+                shirtSlot.updateSlotContentsAndRefresh(-1, 0);
+            }
+            if (customItemsByID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo)) {
+                var pantsSlot = EquipWindow.equip.pantsSlot;
+                savedItemData.Add(new ItemSaveData(customItemsByID[pantsSlot.itemNo], ItemSaveData.EquipLocation.Pants, pantsSlot.stack));
+                pantsSlot.updateSlotContentsAndRefresh(-1, 0);
+            }
+            if (customItemsByID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo)) {
+                var shoeSlot = EquipWindow.equip.shoeSlot;
+                savedItemData.Add(new ItemSaveData(customItemsByID[shoeSlot.itemNo], ItemSaveData.EquipLocation.Shoes, shoeSlot.stack));
+                shoeSlot.updateSlotContentsAndRefresh(-1, 0);
+            }
+            
+            // Removed or possible planned content?
+            //if (customItemsByID.ContainsKey(EquipWindow.equip.idolSlot.itemNo)) { }
+            
 
             // Go through every tile on the world map and look for objects that are custom items to unload them
             // This prevents corrupted save data if the player removes the mod and tries to load
@@ -154,8 +182,10 @@ namespace TinyResort {
                     if (allObjects[tileMap[x, y]].tileObjectChest) { UnloadFromChest(allObjects[tileMap[x, y]].tileObjectChest, x, y, null); }
 
                     // If the tile contains a custom world object, save and unload it
-                    else if (customTileObjectByID.ContainsKey(tileMap[x, y])) { UnloadWorldObject(tileMap[x, y], x, y, null); }
-
+                    else if (customTileObjectByID.ContainsKey(tileMap[x,y])) {
+                        var rotation = WorldManager.manageWorld.rotationMap[x, y];
+                        UnloadWorldObject(tileMap[x, y], x, y, rotation, null);
+                    }
                     // Might need to check for burried items
                     // removeMultiTiledObject
                     // removeMultiTiledObjectInside
@@ -183,7 +213,10 @@ namespace TinyResort {
                                 if (allObjects[tileObjectID].tileObjectChest) { UnloadFromChest(allObjects[tileObjectID].tileObjectChest, houseX, houseY, houseDetails); }
 
                                 // If it's a custom item, save and unload it
-                                else if (customTileObjectByID.ContainsKey(tileObjectID)) { UnloadWorldObject(tileObjectID, houseX, houseY, houseDetails); }
+                                else if (customTileObjectByID.ContainsKey(tileObjectID)) {
+                                    var rotation = WorldManager.manageWorld.rotationMap[houseX, houseY];
+                                    UnloadWorldObject(tileObjectID, houseX, houseY, rotation, houseDetails);
+                                }
 
                             }
                         }
@@ -204,10 +237,11 @@ namespace TinyResort {
                 }
             }
         }
-
-        internal static void UnloadWorldObject(int tileObjectID, int x, int y, HouseDetails houseDetails) {
-            //savedItemData.Add(new ItemSaveData(customTileObjectByID[tileObjectID], z, chest.itemStacks[z], x, y, houseDetails));
-            
+        
+        internal static void UnloadWorldObject(int tileObjectID, int x, int y, int rotation, HouseDetails houseDetails) {
+            savedItemData.Add(new ItemSaveData(customTileObjectByID[tileObjectID], x, y, rotation, houseDetails));
+            if (houseDetails != null) { customItemsByID[tileObjectID].tileObject.removeMultiTiledObjectInside(x, y, rotation, houseDetails); }
+            else { customItemsByID[tileObjectID].tileObject.removeMultiTiledObject(x, y, rotation); }
         }
 
         internal static void SaveCustomItems() {
@@ -236,10 +270,31 @@ namespace TinyResort {
                             ContainerManager.manage.changeSlotInChest(item.xPos, item.yPos, item.slotNo, customItem.invItem.getItemId(), item.stackSize, item.houseDetails);
                             break;
 
+                        case ItemSaveData.ItemLocations.Equipped:
+                            switch (item.equipment) {
+                                case ItemSaveData.EquipLocation.Hat:
+                                    EquipWindow.equip.hatSlot.updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
+                                    break;
+                                case ItemSaveData.EquipLocation.Face:
+                                    EquipWindow.equip.faceSlot.updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
+                                    break;
+                                case ItemSaveData.EquipLocation.Shirt:
+                                    EquipWindow.equip.shirtSlot.updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
+                                    break;
+                                case ItemSaveData.EquipLocation.Pants:
+                                    EquipWindow.equip.pantsSlot.updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
+                                    break;
+                                case ItemSaveData.EquipLocation.Shoes:
+                                    EquipWindow.equip.shoeSlot.updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
+                                    break;
+                            }
+                            break;
+
                         // TODO: Handle these below cases
-                        case ItemSaveData.ItemLocations.Equipped: break;
                         case ItemSaveData.ItemLocations.Stash: break;
-                        case ItemSaveData.ItemLocations.World: 
+                        case ItemSaveData.ItemLocations.World:
+                            if (item.houseDetails != null) { customItem.tileObject.removeMultiTiledObjectInside(item.xPos, item.yPos, item.rotation, item.houseDetails); }
+                            else { customItem.tileObject.removeMultiTiledObject(item.xPos, item.yPos, item.rotation); }
                             // starting x, starting y, rotation
                             // place inside vs outside vs underground
                             break;
@@ -326,8 +381,16 @@ namespace TinyResort {
             this.yPos = yPos;
         }
 
+        public ItemSaveData(TRCustomItem customItem, EquipLocation equipment, int stackSize) {
+            this.uniqueID = customItem.uniqueID;
+            this.location = ItemLocations.Equipped;
+            this.equipment = equipment;
+            this.stackSize = stackSize;
+        }
+        
         public string uniqueID;
         public ItemLocations location;
+        public EquipLocation equipment;
         public HouseDetails houseDetails;
         public int xPos;
         public int yPos;
@@ -336,6 +399,7 @@ namespace TinyResort {
         public int stackSize;
 
         public enum ItemLocations { Inventory, Equipped, Chest, Stash, World, HomeFloor, HomeWall }
+        public enum EquipLocation { Hat, Face, Shirt, Pants, Shoes }
 
     }
 }

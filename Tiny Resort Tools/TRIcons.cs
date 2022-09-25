@@ -23,7 +23,7 @@ namespace TinyResort {
         internal static List<string> FolderList = new List<string>();
         internal static List<string> defaultSprites = new List<string>();
         
-        internal static string iconPath = Application.dataPath.Replace("Dinkum_Data", "BepInEx/plugins/custom_assets/item_icons");
+        internal static string iconPath = Application.dataPath.Replace("Dinkum_Data", "BepInEx/plugins/custom_assets/item_icons/");
         internal static string relativePath = "custom_assets/item_icons";
         
         internal class CustomSprites {
@@ -147,7 +147,7 @@ namespace TinyResort {
                 var spriteName = Inventory.inv.allItems[k].itemSprite.name;
 
                 // if (Inventory.inv.allItems[k].itemSprite == null) { itemsWithoutIcons += $"{Inventory.inv.allItems[k].itemName}\n"; }
-                if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName)) && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower())) { itemsWithoutIcons += $"{k} {Inventory.inv.allItems[k].itemName}\n"; }
+                if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName)) && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower().Replace(" ", "_"))) { itemsWithoutIcons += $"{k} {Inventory.inv.allItems[k].itemName}\n"; }
             }
 
             TRTools.Log(notInItemList);
