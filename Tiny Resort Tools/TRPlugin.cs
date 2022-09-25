@@ -68,9 +68,19 @@ namespace TinyResort {
         }
 
         /// <returns>Creates a new item.</returns>
-        /// /// <param name="relativePath">The path to your asset bundle.</param>
-        /// <param name="uniqueItemID">A unique ID for your item that will be combined with your nexus ID.</param>
-        public void AddCustomItem(string relativePath, string uniqueItemID) { TRItems.AddCustomItem(this, relativePath, uniqueItemID); }
+        /// /// <param name="assetBundlePath">The path to your asset bundle, relative to the plugins folder.</param>
+        /// <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
+        public void AddCustomItem(string assetBundlePath, string uniqueItemID) { TRItems.AddCustomItem(this, assetBundlePath, uniqueItemID); }
+
+        /// <summary>Adds a custom license to the system. Must be done for each custom license.</summary>
+        /// <param name="licenseID">A unique string you are assigning this license only. Changing this after save data has been made WILL result in save data mixups. Spaces in this are replaced with underscores.</param>
+        /// <param name="licenseName">The name that will appear on the license in-game. (Can be changed at any time without issue)</param>
+        /// <param name="maxLevel">The highest unlockable level for this license.</param>
+        /// <returns>The custom license that is created. Save a reference to this in order to access its state at any time.</returns>
+        public TRCustomLicense AddLicense(int licenseID, string licenseName, int maxLevel = 1) {
+            return TRLicenses.AddLicense(nexusID.Value, licenseID, licenseName, maxLevel);
+        }
+        
     }
 
 }

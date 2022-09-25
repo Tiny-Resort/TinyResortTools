@@ -9,8 +9,6 @@ namespace TinyResort {
 
     /// <summary>Tools for importing custom assets.</summary>
     public class TRAssets {
-
-        private static Dictionary<string, AssetBundle> loadedBundles = new Dictionary<string, AssetBundle>();
         
         #region Scanning Folders
         
@@ -50,6 +48,10 @@ namespace TinyResort {
         #endregion
         
         #region Importing
+
+        /// <summary>Loads an asset bundle from the plugins folder.</summary>
+        /// <param name="relativePath">Path to the asset bundle, relative to the BepInEx plugins folder.</param>
+        /// <returns>The loaded asset bundle.</returns>
         public static AssetBundle LoadBundle(string relativePath) {
 
             var path = Path.Combine(BepInEx.Paths.PluginPath, relativePath);

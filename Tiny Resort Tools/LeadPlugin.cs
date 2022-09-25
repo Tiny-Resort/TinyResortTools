@@ -40,7 +40,7 @@ namespace TinyResort {
             TRModUpdater.Update();
 
             if (Input.GetKeyDown(KeyCode.F11)) {
-                TRItems.UnloadChests();
+                TRItems.UnloadCustomItems();
             }
             if (Input.GetKeyDown(KeyCode.F10)) { TRItems.LoadCustomItems(); }
             
