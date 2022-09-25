@@ -50,7 +50,7 @@ namespace TinyResort {
 
             // Create mod update checker button
             var modsButtonParent = OptionsMenu.options.menuParent.transform.GetChild(10);
-            modsWindowButton = TRInterface.NewButton(ButtonTypes.MainMenu, modsButtonParent, "MODS", ToggleModWindow);
+            modsWindowButton = TRInterface.CreateButton(ButtonTypes.MainMenu, modsButtonParent, "MODS", ToggleModWindow);
             modsWindowButton.rectTransform.sizeDelta = new Vector2(73, 22);
             modsWindowButton.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             modsWindowButton.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
@@ -61,7 +61,7 @@ namespace TinyResort {
             modsWindowButton.textMesh.fontSize = 12;
             
             // Create an update button to work with
-            updateButton = TRInterface.NewButton(ButtonTypes.MainMenu, null, "");
+            updateButton = TRInterface.CreateButton(ButtonTypes.MainMenu, null, "");
             updateButton.windowAnim.openDelay = 0;
             Object.Destroy(updateButton.buttonAnim);
             updateButton.textMesh.fontSize = 12;
@@ -172,11 +172,13 @@ namespace TinyResort {
                 if (mod.updateButton != null) continue;
 
                 // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
-                mod.updateButton = updateButton.Instantiate(updateButtonGrid.transform);
-                mod.updateButton.button.onButtonPress.AddListener(delegate { openWebpage(mod.id); });
-                mod.updateButton.textMesh.text = mod.outOfDate
-                                            ? $"<size=15>{mod.name}</size>\n<color=#00ff00ff><b>UPDATE AVAILABLE</b></color> (<color=#ff7226ff>{mod.modVersion}</color> -> <color=#00ff00ff>{mod.nexusVersion}</color>)"
-                                            : $"<size=15>{mod.name}</size>\n<color=#787877FF>UP TO DATE ({mod.modVersion})</color>";
+                mod.updateButton = updateButton.Copy(
+                    updateButtonGrid.transform,
+                    mod.outOfDate
+                        ? $"<size=15>{mod.name}</size>\n<color=#00ff00ff><b>UPDATE AVAILABLE</b></color> (<color=#ff7226ff>{mod.modVersion}</color> -> <color=#00ff00ff>{mod.nexusVersion}</color>)"
+                        : $"<size=15>{mod.name}</size>\n<color=#787877FF>UP TO DATE ({mod.modVersion})</color>", 
+                    delegate { openWebpage(mod.id); }
+                );
 
             }
 

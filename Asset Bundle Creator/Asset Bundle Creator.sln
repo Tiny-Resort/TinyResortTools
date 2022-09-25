@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Analytics.DataPrivacy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coffee.UIParticle", "Coffee.UIParticle.csproj", "{d22e63b0-33fa-26ee-6d4f-9fcf6ea0dffa}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{ba4c8126-1395-0b54-89d7-e5c06b1cecea}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{d22e63b0-33fa-26ee-6d4f-9fcf6ea0dffa}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{d22e63b0-33fa-26ee-6d4f-9fcf6ea0dffa}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{d22e63b0-33fa-26ee-6d4f-9fcf6ea0dffa}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ba4c8126-1395-0b54-89d7-e5c06b1cecea}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ba4c8126-1395-0b54-89d7-e5c06b1cecea}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ba4c8126-1395-0b54-89d7-e5c06b1cecea}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ba4c8126-1395-0b54-89d7-e5c06b1cecea}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

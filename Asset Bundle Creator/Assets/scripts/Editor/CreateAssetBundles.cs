@@ -8,7 +8,7 @@ public class CreateAssetBundles : MonoBehaviour
 {
     [MenuItem("Assets/Build AssetBundles")]
     static void BuildAllAssetBundles() {
-        string assetBundleDirectory = "Assets/_MODDING/Bundles";
+        string assetBundleDirectory = "Assets/bundles";
         if (!Directory.Exists(assetBundleDirectory)) { Directory.CreateDirectory(assetBundleDirectory); }
         BuildPipeline.BuildAssetBundles(
             assetBundleDirectory,

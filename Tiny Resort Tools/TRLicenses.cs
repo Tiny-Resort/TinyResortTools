@@ -40,6 +40,7 @@ namespace TinyResort {
         }
 
         internal static string ListLicenses(string[] args) {
+            if (CustomLicenses.Count <= 0) { return "None of the installed mods have a custom license."; }
             var str = "\nThe following custom licenses exist:\n";
             foreach (var li in CustomLicenses) { str += li.title + " (ID: " + li.nexusID + "." + li.licenseID + ")" + "\n"; }
             return str;
@@ -279,9 +280,10 @@ namespace TinyResort {
 
         /// <summary>Sets the color of the banner for the license. Keep in mind this will not change the color of the license icon.</summary>
         public void SetColor(Color col) { color = col; }
-        
+
         /// <summary>Sets the icon used to represent the license.</summary>
-        public void ChangeIcon(Sprite icon) { licenseIcon = icon; }
+        /// <param name="iconFileName">The name (including extension) of the image file you want to use as an icon for the license. This file must be placed in the custom_assets/license_icons/ folder.</param>
+        public void SetIcon(string iconFileName) { licenseIcon = TRAssets.LoadSprite(Path.Combine("custom_assets", "license_icons", iconFileName), Vector2.one * 0.5f); }
 
         /// <summary>Sets the description and cost for a specific level of the license.</summary>
         /// <param name="setLevel">What level of the license is being changed.</param>

@@ -16,7 +16,7 @@ namespace TinyResort {
         
         public const string pluginName = "TRTools";
         public const string pluginGuid = "dev.TinyResort." + pluginName;
-        public const string pluginVersion = "0.3.0";
+        public const string pluginVersion = "0.5.0";
 
         private void Awake() {
 
