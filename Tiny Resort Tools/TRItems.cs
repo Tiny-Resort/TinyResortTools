@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -28,6 +30,16 @@ namespace TinyResort {
         private static Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
         private static Dictionary<string, TRCustomItem> customItems = new Dictionary<string, TRCustomItem>();
         private static Dictionary<int, TRCustomItem> customItemsByID = new Dictionary<int, TRCustomItem>();
+        private static List<CurrentItems> currentItemList = new List<CurrentItems>();
+        private static TRModData Data;
+
+        internal static void Initialize() {
+            Data = TRData.Subscribe("TR.CustomItems");
+            /*TRData.cleanDataEvent += UnloadLicenses;
+            TRData.preSaveEvent += SaveLicenseData;
+            TRData.postLoadEvent += LoadLicenseData;
+            TRData.injectDataEvent += LoadLicenses;*/
+        }
 
         internal static bool customItemsInitialized;
 
@@ -99,8 +111,6 @@ namespace TinyResort {
                 customItemsByID[itemCount - loopCount] = item.Value;
 
                 loopCount += 1;
-
-                // Add to new dictionary that uses ItemID as key with InvItem
             }
 
             // Resize and/or add mod save data of if they have obtained it or not
@@ -116,22 +126,106 @@ namespace TinyResort {
 
         }
 
-        internal static void LoadCustomItems() {
-            // Go through all custom items and based on saved data
-            // what slot? how many in slot?
-        }
-
-        internal static void UnloadCustomItemsPlayerInventory() {
+        internal static void UnloadPlayerInventory() {
 
             for (int i = 0; i < Inventory.inv.invSlots.Length; i++) {
                 var currentSlot = Inventory.inv.invSlots[i];
 
                 if (customItemsByID.ContainsKey(currentSlot.itemNo)) {
                     TRTools.Log($"Found Custom Item: {customItemsByID[currentSlot.itemNo].invItem.itemName}");
+                    currentItemList.Add(new CurrentItems(customItemsByID[currentSlot.itemNo], i, currentSlot.stack));
+                    currentSlot.updateSlotContentsAndRefresh(-1, 0);
                 }
-                else {
-                    TRTools.Log($"No Custom Item Found.");
+            }
+        }
 
+        internal static void UnloadChests() {
+            TRTools.Log($"0: {WorldManager.manageWorld.onTileMap.GetLength(0)} | 1: {WorldManager.manageWorld.onTileMap.GetLength(1)}");
+            Stopwatch sw = new Stopwatch();
+            sw.Restart();
+            for (int i = 0; i < WorldManager.manageWorld.onTileMap.GetLength(0); i++) {
+                for (int j = 0; j < WorldManager.manageWorld.onTileMap.GetLength(1); j++) {
+
+                    if (WorldManager.manageWorld.onTileMap[i, j] > -1) {
+                        if (WorldManager.manageWorld.allObjects[WorldManager.manageWorld.onTileMap[i, j]].tileObjectChest) {
+
+                            var currentChestOutside = WorldManager.manageWorld.allObjects[WorldManager.manageWorld.onTileMap[i, j]].tileObjectChest;
+                            currentChestOutside.checkIfEmpty(i, j, null);
+                            var chestOutside = ContainerManager.manage.activeChests.First(p => p.xPos == i && p.yPos == j && !p.inside);
+                            for (int z = 0; z < chestOutside.itemIds.Length; z++) {
+                                if (customItemsByID.ContainsKey(chestOutside.itemIds[z])) {
+                                    //TRTools.Log($"Found Custom Item: {customItemsByID[chestOutside.itemIds[z]].invItem.itemName}");
+                                    currentItemList.Add(new CurrentItems(customItemsByID[chestOutside.itemIds[z]], z, chestOutside.itemStacks[z], i, j, null));
+                                    ContainerManager.manage.changeSlotInChest(i, j, z, -1, 0, null);
+                                }
+                            }
+                        }
+                        else if (WorldManager.manageWorld.allObjects[WorldManager.manageWorld.onTileMap[i, j]].displayPlayerHouseTiles) {
+                            var houseDetails = HouseManager.manage.getHouseInfo(i, j);
+                            for (int n = 0; n < houseDetails.houseMapOnTile.GetLength(0); n++) {
+                                for (int o = 0; o < houseDetails.houseMapOnTile.GetLength(1); o++) {
+                                    if (houseDetails.houseMapOnTile[n, o] > 0) {
+
+                                        if (WorldManager.manageWorld.allObjects[houseDetails.houseMapOnTile[n, o]].tileObjectChest) {
+                                            var currentChestInside = WorldManager.manageWorld.allObjects[houseDetails.houseMapOnTile[n, o]].tileObjectChest;
+                                            currentChestInside.checkIfEmpty(n, o, houseDetails);
+                                            var chestInside = ContainerManager.manage.activeChests.First(p => p.xPos == n && p.yPos == o && p.inside);
+
+                                            for (int z = 0; z < chestInside.itemIds.Length; z++) {
+                                                if (customItemsByID.ContainsKey(chestInside.itemIds[z])) {
+                                                    //TRTools.Log($"Found Custom Item: {customItemsByID[chestInside.itemIds[z]].invItem.itemName}");
+                                                    currentItemList.Add(new CurrentItems(customItemsByID[chestInside.itemIds[z]], z, chestInside.itemStacks[z], n, o, houseDetails));
+                                                    ContainerManager.manage.changeSlotInChest(n, o, z, -1, 0, houseDetails);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            sw.Stop();
+            TRTools.Log($"Searching for all items took....: {sw.Elapsed}");
+        }
+
+        internal static void SaveCustomItems() {
+            currentItemList.Clear();
+            UnloadPlayerInventory();
+            UnloadChests();
+            Data.SetValue("CurrentItemList", currentItemList);
+        }
+
+        internal static void LoadCustomItems() {
+
+            if (currentItemList.Count == 0) {
+                currentItemList = (List<CurrentItems>)Data.GetValue("CurrentItemList", new List<CurrentItems>());
+
+                // Might need to compare currentItemList with customItems to get new ItemIDs if this is the first load.
+                // This might work??? 
+                foreach (var item in currentItemList) {
+                    if (customItems.ContainsKey(item.customItem.uniqueID)) {
+                        item.customItem.invItem.setItemId(item.customItem.invItem.getItemId());
+                    }
+                }
+            }
+
+             
+            
+            if (currentItemList.Count > 0) {
+                for (int i = 0; i < currentItemList.Count; i++) {
+                    if (currentItemList[i].playerInventory) { Inventory.inv.invSlots[currentItemList[i].slotNo].updateSlotContentsAndRefresh(currentItemList[i].customItem.invItem.getItemId(), currentItemList[i].stackSize); }
+                    
+                    else if (currentItemList[i].chestInventory) {
+                        var chestX = currentItemList[i].chestX;
+                        var chestY = currentItemList[i].chestY;
+                        var slotNo = currentItemList[i].slotNo;
+                        var stackNo = currentItemList[i].stackSize;
+                        var houseDetails = currentItemList[i].playerHouse;
+
+                        ContainerManager.manage.changeSlotInChest(chestX, chestY, slotNo, currentItemList[i].customItem.invItem.getItemId(), stackNo, houseDetails);
+                    }
                 }
             }
         }
@@ -179,6 +273,36 @@ namespace TinyResort {
 
         public delegate void TileObjectEvent();
         public TileObjectEvent interactEvent;
+
+    }
+
+    internal class CurrentItems {
+
+        public CurrentItems(TRCustomItem customItem, int slotNo, int stackSize) {
+            this.customItem = customItem;
+            this.slotNo = slotNo;
+            this.stackSize = stackSize;
+            this.playerInventory = true;
+        }
+
+        public CurrentItems(TRCustomItem customItem, int slotNo, int stackSize, int chestX, int chestY, HouseDetails playerHouse = null) {
+            this.customItem = customItem;
+            this.slotNo = slotNo;
+            this.stackSize = stackSize;
+            this.chestX = chestX;
+            this.chestY = chestY;
+            this.playerHouse = playerHouse;
+            this.chestInventory = true;
+        }
+
+        public TRCustomItem customItem;
+        public int slotNo;
+        public int stackSize;
+        public bool playerInventory;
+        public bool chestInventory;
+        public int chestX;
+        public int chestY;
+        public HouseDetails playerHouse;
 
     }
 
