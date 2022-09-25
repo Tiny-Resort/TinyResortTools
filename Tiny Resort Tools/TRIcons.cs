@@ -23,7 +23,7 @@ namespace TinyResort {
         internal static List<string> FolderList = new List<string>();
         internal static List<string> defaultSprites = new List<string>();
         
-        internal static string iconPath = Application.dataPath.Replace("Dinkum_Data", "BepInEx/plugins/custom_assets/item_icons");
+        internal static string iconPath = Application.dataPath.Replace("Dinkum_Data", "BepInEx/plugins/custom_assets/item_icons/");
         internal static string relativePath = "custom_assets/item_icons";
         
         internal class CustomSprites {
