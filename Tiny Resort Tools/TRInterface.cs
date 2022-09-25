@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -23,7 +24,7 @@ namespace TinyResort {
         internal static void Initialize() {
 
             // Load Button Asset Bundles
-            buttonMainMenu = InitializeButton("TR Tools/bundles/button_mainmenu", "Main Menu Button");
+            buttonMainMenu = InitializeButton(Path.Combine("button_mainmenu"), "Main Menu Button");
 
             Type transformType = typeof(Transform);
             Transform[] toFind = (Transform[])Resources.FindObjectsOfTypeAll(transformType);
@@ -104,7 +105,7 @@ namespace TinyResort {
 
         // Creates a prefab for a specific button type
         private static TRButton InitializeButton(string path, string name) {
-            var newObject = Object.Instantiate(TRAssets.LoadBundle(path).LoadAsset<GameObject>(name));
+            var newObject = Object.Instantiate(TRAssets.LoadBundle(Path.Combine("custom_assets", "user_interface", path)).LoadAsset<GameObject>(name));
             var newButton = newObject.AddComponent<TRButton>();
             newButton.background = newObject.GetComponent<Image>();
             newButton.button = newObject.GetComponent<InvButton>();
