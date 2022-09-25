@@ -28,6 +28,7 @@ namespace TinyResort {
             useSlashToOpenChat = Config.Bind("Chat", "UseSlashToOpenChat", true, "If true, then pressing forward slash on the keyboard will open the chat box with a slash already in place.");
             
             TRLicenses.Initialize();
+            TRIcons.Initialize();
         }
 
         private void Start() {
@@ -39,6 +40,8 @@ namespace TinyResort {
         private void Update() {
             TRModUpdater.Update();
 
+            if (NetworkMapSharer.share.localChar) TRIcons.InitializeIcons();
+            
             if (Input.GetKeyDown(KeyCode.F11)) {
                 TRItems.UnloadCustomItems();
             }
