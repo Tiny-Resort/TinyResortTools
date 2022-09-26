@@ -252,7 +252,6 @@ namespace TinyResort {
             var chest = ContainerManager.manage.activeChests.First(p => p.xPos == x && p.yPos == y && p.inside == (houseDetails != null));
             for (int z = 0; z < chest.itemIds.Length; z++) {
                 if (customItemsByID.ContainsKey(chest.itemIds[z])) {
-                    //TRTools.Log($"Found Custom Item: {customItemsByID[chestOutside.itemIds[z]].invItem.itemName}");
                     savedItemData.Add(new ItemSaveData(customItemsByID[chest.itemIds[z]], z, chest.itemStacks[z], x, y, houseDetails));
                     ContainerManager.manage.changeSlotInChest(x, y, z, -1, 0, houseDetails);
                 }
@@ -269,7 +268,6 @@ namespace TinyResort {
                 house.refreshHouseTiles();
             }
             else {
-                //NetworkMapSharer.share.RpcRemoveMultiTiledObject(tileObjectID, x, y, rotation);
                 customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObject(x, y, rotation);
                 WorldManager.manageWorld.onTileStatusMap[x, y] = -1;
                 WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(x, y, false);
