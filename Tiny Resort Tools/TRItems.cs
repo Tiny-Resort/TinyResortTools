@@ -129,6 +129,7 @@ namespace TinyResort {
         }
 
         internal static void UnloadCustomItems() {
+            savedItemData.Clear();
 
             // Unloads (and saves) items from the player's inventory
             for (int i = 0; i < Inventory.inv.invSlots.Length; i++) {
@@ -139,7 +140,7 @@ namespace TinyResort {
                     currentSlot.updateSlotContentsAndRefresh(-1, 0);
                 }
             }
-            
+
             if (customItemsByID.ContainsKey(EquipWindow.equip.hatSlot.itemNo)) {
                 var hatSlot = EquipWindow.equip.hatSlot;
                 savedItemData.Add(new ItemSaveData(customItemsByID[hatSlot.itemNo], ItemSaveData.EquipLocation.Hat, hatSlot.stack));
@@ -165,10 +166,9 @@ namespace TinyResort {
                 savedItemData.Add(new ItemSaveData(customItemsByID[shoeSlot.itemNo], ItemSaveData.EquipLocation.Shoes, shoeSlot.stack));
                 shoeSlot.updateSlotContentsAndRefresh(-1, 0);
             }
-            
+
             // Removed or possible planned content?
             //if (customItemsByID.ContainsKey(EquipWindow.equip.idolSlot.itemNo)) { }
-            
 
             // Go through every tile on the world map and look for objects that are custom items to unload them
             // This prevents corrupted save data if the player removes the mod and tries to load
@@ -178,26 +178,35 @@ namespace TinyResort {
                 for (int y = 0; y < tileMap.GetLength(1); y++) {
                     if (tileMap[x, y] <= -1) continue;
 
+                    // PlaceItemOnTop is untested
+
+                    var onTopOfTile = ItemOnTopManager.manage.getAllItemsOnTop(x, y, null);
+
+                    for (int i = 0; i < onTopOfTile.Length; i++) {
+                        if (customTileObjectByID.ContainsKey(onTopOfTile[i].itemId)) {
+                            UnloadWorldObjectOnTop(
+                                onTopOfTile[i].itemId, x, y, -1, -1, onTopOfTile[i].itemRotation, null, onTopOfTile[i].itemStatus, true, onTopOfTile[i].onTopPosition);
+                            TRTools.Log($"Found item on top");
+                        }
+                    }
+
                     // If the tile has a chest on it, save and unload custom items from the chest
                     if (allObjects[tileMap[x, y]].tileObjectChest) { UnloadFromChest(allObjects[tileMap[x, y]].tileObjectChest, x, y, null); }
 
                     // If the tile contains a custom world object, save and unload it
-                    else if (customTileObjectByID.ContainsKey(tileMap[x,y])) {
+                    else if (customTileObjectByID.ContainsKey(tileMap[x, y])) {
+                        TRTools.Log($"Found Object outside House");
                         var rotation = WorldManager.manageWorld.rotationMap[x, y];
-                        UnloadWorldObject(tileMap[x, y], x, y, rotation, null);
+                        UnloadWorldObject(tileMap[x, y], -1, -1, x, y, rotation, null);
                     }
+
                     // Might need to check for burried items
-                    // removeMultiTiledObject
-                    // removeMultiTiledObjectInside
-                    // remmoveItemOnTop
-                    // removeItemOnTopInside
                     // PlaceMultiTiledObject
                     // placeBridgeTiledObject
-                    // placeItemOnTop
                     // Might need to remove item from things like a furnace
                     // Donate fish????
                     // Mail?
-                    
+
                     // Remove item on top of other items
                     // If the tile is the location of a house, check what's in the house
                     else if (allObjects[tileMap[x, y]].displayPlayerHouseTiles) {
@@ -208,20 +217,32 @@ namespace TinyResort {
                                 // If nothing is on this tile, ignore it
                                 var tileObjectID = houseDetails.houseMapOnTile[houseX, houseY];
                                 if (tileObjectID <= 0) continue;
-                                
+
                                 // If the object on this house tile is a chest, save and unload custom items from the chest
                                 if (allObjects[tileObjectID].tileObjectChest) { UnloadFromChest(allObjects[tileObjectID].tileObjectChest, houseX, houseY, houseDetails); }
 
                                 // If it's a custom item, save and unload it
                                 else if (customTileObjectByID.ContainsKey(tileObjectID)) {
-                                    var rotation = WorldManager.manageWorld.rotationMap[houseX, houseY];
-                                    UnloadWorldObject(tileObjectID, houseX, houseY, rotation, houseDetails);
+                                    TRTools.Log($"Found Object Inside House");
+                                    var rotation = houseDetails.houseMapRotation[houseX, houseY];
+                                    UnloadWorldObject(tileObjectID, x, y, houseX, houseY, rotation ,houseDetails);
                                 }
+                                var onTopOfTileInside = ItemOnTopManager.manage.getAllItemsOnTopInHouse(houseDetails);
 
+                                // PlaceItemOnTop is untested
+
+                                for (int i = 0; i < onTopOfTile.Length; i++) {
+                                    if (customTileObjectByID.ContainsKey(onTopOfTileInside[i].itemId)) {
+                                        UnloadWorldObjectOnTop(
+                                            onTopOfTileInside[i].itemId, x, y, houseX, houseY, onTopOfTileInside[i].itemRotation, houseDetails, onTopOfTileInside[i].itemStatus, true,
+                                            onTopOfTileInside[i].onTopPosition
+                                        );
+                                        TRTools.Log($"Found item on top inside house");
+                                    }
+                                }
                             }
                         }
                     }
-                    
                 }
             }
         }
@@ -237,15 +258,40 @@ namespace TinyResort {
                 }
             }
         }
-        
-        internal static void UnloadWorldObject(int tileObjectID, int x, int y, int rotation, HouseDetails houseDetails) {
+
+        internal static void UnloadWorldObject(int tileObjectID, int houseX, int houseY, int x, int y, int rotation, HouseDetails houseDetails) {
             savedItemData.Add(new ItemSaveData(customTileObjectByID[tileObjectID], x, y, rotation, houseDetails));
-            if (houseDetails != null) { customItemsByID[tileObjectID].tileObject.removeMultiTiledObjectInside(x, y, rotation, houseDetails); }
-            else { customItemsByID[tileObjectID].tileObject.removeMultiTiledObject(x, y, rotation); }
+            if (houseDetails != null) {
+                customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObjectInside(x, y, rotation, houseDetails);
+                houseDetails.houseMapOnTileStatus[x, y] = -1;
+                var house = HouseManager.manage.findHousesOnDisplay(houseX, houseY);
+                house.tileObjectsInHouse[x, y].tileObjectFurniture.updateOnTileStatus(x, y, houseDetails);
+                house.refreshHouseTiles();
+            }
+            else {
+                //NetworkMapSharer.share.RpcRemoveMultiTiledObject(tileObjectID, x, y, rotation);
+                customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObject(x, y, rotation);
+                WorldManager.manageWorld.onTileStatusMap[x, y] = -1;
+                WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(x, y, false);
+                NetworkNavMesh.nav.updateChunkInUse();
+            }
+        }
+
+        internal static void UnloadWorldObjectOnTop(int tileObjectID, int houseX, int houseY, int x, int y, int rotation, HouseDetails houseDetails, int status, bool onTop = true, int onTopPos = -1) {
+            savedItemData.Add(new ItemSaveData(customTileObjectByID[tileObjectID], x, y, rotation, houseDetails, status, onTop, onTopPos));
+            if (houseDetails != null) {
+                ItemOnTopManager.manage.removeItemOnTop(ItemOnTopManager.manage.getItemOnTopInPosition(onTopPos, x, y, HouseManager.manage.getHouseInfo(houseX, houseY)));
+                DisplayPlayerHouseTiles displayPlayerHouseTiles = HouseManager.manage.findHousesOnDisplay(houseX, houseY);
+                if (displayPlayerHouseTiles && displayPlayerHouseTiles.tileObjectsInHouse[x, y]) { displayPlayerHouseTiles.tileObjectsInHouse[x, y].checkOnTopInside(x, y, HouseManager.manage.getHouseInfo(houseX, houseY)); }
+            }
+            else {
+                ItemOnTopManager.manage.removeItemOnTop(ItemOnTopManager.manage.getItemOnTopInPosition(onTopPos, x, y, null));
+                WorldManager.manageWorld.unlockClientTile(x,y);
+                WorldManager.manageWorld.refreshAllChunksInUse(x, y, false);
+            }
         }
 
         internal static void SaveCustomItems() {
-            savedItemData.Clear();
             UnloadCustomItems();
             Data.SetValue("CurrentItemList", savedItemData);
         }
@@ -275,15 +321,19 @@ namespace TinyResort {
                                 case ItemSaveData.EquipLocation.Hat:
                                     EquipWindow.equip.hatSlot.updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
                                     break;
+
                                 case ItemSaveData.EquipLocation.Face:
                                     EquipWindow.equip.faceSlot.updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
                                     break;
+
                                 case ItemSaveData.EquipLocation.Shirt:
                                     EquipWindow.equip.shirtSlot.updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
                                     break;
+
                                 case ItemSaveData.EquipLocation.Pants:
                                     EquipWindow.equip.pantsSlot.updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
                                     break;
+
                                 case ItemSaveData.EquipLocation.Shoes:
                                     EquipWindow.equip.shoeSlot.updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
                                     break;
@@ -292,12 +342,40 @@ namespace TinyResort {
 
                         // TODO: Handle these below cases
                         case ItemSaveData.ItemLocations.Stash: break;
+
+                        // TODO: Maybe remove particle/sound effects from objects outside
                         case ItemSaveData.ItemLocations.World:
-                            if (item.houseDetails != null) { customItem.tileObject.removeMultiTiledObjectInside(item.xPos, item.yPos, item.rotation, item.houseDetails); }
-                            else { customItem.tileObject.removeMultiTiledObject(item.xPos, item.yPos, item.rotation); }
-                            // starting x, starting y, rotation
-                            // place inside vs outside vs underground
+                            if (!item.onTop) {
+                                if (item.houseDetails != null) {
+                                    customItem.tileObject.placeMultiTiledObjectInside(item.xPos, item.yPos, item.rotation, item.houseDetails);
+                                    var house = HouseManager.manage.findHousesOnDisplay(item.houseDetails.xPos, item.houseDetails.yPos);
+                                    item.houseDetails.houseMapOnTileStatus[item.xPos, item.yPos] = 0;
+                                    house.refreshHouseTiles();
+                                }
+                                else {
+                                    customItem.tileObject.placeMultiTiledObject(item.xPos, item.yPos, item.rotation);
+                                    WorldManager.manageWorld.onTileStatusMap[item.xPos, item.yPos] = 0;
+                                    WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(item.xPos, item.yPos, false);
+                                    NetworkNavMesh.nav.updateChunkInUse();
+                                    WorldManager.manageWorld.unlockClientTile(item.xPos, item.yPos);
+                                }
+                            }
+                            // PlaceItemOnTop is untested
+                            else {
+                                if (item.houseDetails != null) {
+                                    ItemOnTopManager.manage.placeItemOnTop(customItem.invItem.getItemId(), item.onTopPos, item.status, item.rotation, item.xPos, item.yPos, item.houseDetails);
+                                    WorldManager.manageWorld.unlockClientTile(item.xPos, item.yPos);
+                                    WorldManager.manageWorld.refreshAllChunksInUse(item.xPos, item.yPos, false);
+                                }
+                                else {
+                                    ItemOnTopManager.manage.placeItemOnTop(customItem.invItem.getItemId(), item.onTopPos, item.status, item.rotation, item.xPos, item.yPos, null);
+                                    WorldManager.manageWorld.unlockClientTile(item.xPos, item.yPos);
+                                    WorldManager.manageWorld.refreshAllChunksInUse(item.xPos, item.yPos, false);
+                                }
+
+                            }
                             break;
+
                         case ItemSaveData.ItemLocations.HomeFloor: break;
                         case ItemSaveData.ItemLocations.HomeWall: break;
 
@@ -310,7 +388,7 @@ namespace TinyResort {
     internal class TRCustomItem {
 
         public TRCustomItem(string assetBundlePath) {
-            
+
             TRTools.Log("Attemping Load: Asset Bundle.");
             this.assetBundle = TRAssets.LoadBundle(assetBundlePath);
             TRTools.Log($"Loaded: Asset Bundle -- {this.assetBundle}.");
@@ -372,13 +450,15 @@ namespace TinyResort {
         }
 
         // For saving items that out in the world
-        public ItemSaveData(TRCustomItem customItem, int xPos, int yPos, int rotation, HouseDetails houseDetails = null) {
+        public ItemSaveData(TRCustomItem customItem, int xPos, int yPos, int rotation, HouseDetails houseDetails = null, int status = -1, bool onTop = false, int onTopPos = -1) {
             this.uniqueID = customItem.uniqueID;
             this.location = ItemLocations.World;
             this.houseDetails = houseDetails;
             this.rotation = rotation;
             this.xPos = xPos;
             this.yPos = yPos;
+            this.onTop = onTop;
+            this.onTopPos = onTopPos;
         }
 
         public ItemSaveData(TRCustomItem customItem, EquipLocation equipment, int stackSize) {
@@ -387,10 +467,13 @@ namespace TinyResort {
             this.equipment = equipment;
             this.stackSize = stackSize;
         }
-        
+
         public string uniqueID;
         public ItemLocations location;
         public EquipLocation equipment;
+        public bool onTop = false;
+        public int onTopPos;
+        public int status;
         public HouseDetails houseDetails;
         public int xPos;
         public int yPos;
@@ -402,4 +485,5 @@ namespace TinyResort {
         public enum EquipLocation { Hat, Face, Shirt, Pants, Shoes }
 
     }
+
 }
