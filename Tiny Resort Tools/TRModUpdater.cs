@@ -55,8 +55,7 @@ namespace TinyResort {
             modsWindowButton.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             modsWindowButton.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
             modsWindowButton.rectTransform.pivot = new Vector2(0.5f, 0.5f);
-            
-                             modsWindowButton.rectTransform.anchoredPosition = new Vector2(1.5f, 64f);
+            modsWindowButton.rectTransform.anchoredPosition = new Vector2(1.5f, 64f);
             modsWindowButton.textMesh.alignment = TextAlignmentOptions.Center;
             modsWindowButton.textMesh.fontSize = 12;
             
