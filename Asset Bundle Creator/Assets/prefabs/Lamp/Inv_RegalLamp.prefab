@@ -1,0 +1,118 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1953689509955506
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4987040330734269}
+  - component: {fileID: 1376370490652109052}
+  m_Layer: 0
+  m_Name: Inv_RegalLamp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4987040330734269
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953689509955506}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 137.69499, y: 97.22403, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
+--- !u!114 &1376370490652109052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953689509955506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7417490e436cfa8448b1c4fab2658bbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Mod Regal Lamp
+  itemDescription: To Mod
+  value: 1
+  itemSprite: {fileID: 21300000, guid: a7deb3ed8a7f99d47a8fbc7d3a9f6a6b, type: 3}
+  itemPrefab: {fileID: 1713847594315399, guid: 00991e094063d244c816ddede475f0f3, type: 3}
+  altDropPrefab: {fileID: 0}
+  changeToWhenUsed: {fileID: 0}
+  changeToAndStillUseFuel: 0
+  hideHighlighter: 0
+  hasUseAnimationStance: 1
+  useRightHandAnim: 0
+  myAnimType: 0
+  placeable: {fileID: 930445637137309627, guid: 2ac5be132d637f242a73ca1041f660a3, type: 3}
+  burriedPlaceable: 0
+  ignoreOnTileObject: 0
+  canBePlacedOntoTileType: 
+  placeableTileType: -1
+  canBePlacedOnToTileObject: []
+  statusToChangeToWhenPlacedOnTop: 0
+  isStackable: 1
+  maxStack: -1
+  isATool: 0
+  isPowerTool: 0
+  isFurniture: 1
+  canBePlacedInHouse: 0
+  canBeUsedInShops: 0
+  isRequestable: 0
+  isUniqueItem: 0
+  staminaTypeUse: 0
+  hasFuel: 0
+  fuelMax: 0
+  fuelOnUse: 5
+  customFuelColour: {r: 0, g: 0, b: 0, a: 0}
+  weaponDamage: 1
+  weaponKnockback: 2.5
+  canBlock: 0
+  damagePerAttack: 1
+  damageWood: 0
+  damageHardWood: 0
+  damageMetal: 0
+  damageStone: 0
+  damageHardStone: 0
+  damageSmallPlants: 0
+  changeToHeightTiles: 0
+  onlyChangeHeightPaths: 1
+  anyHeight: 0
+  grassGrowable: 0
+  canDamagePath: 0
+  canDamageDirt: 0
+  canDamageStone: 0
+  canDamageTilledDirt: 0
+  canDamageWetTilledDirt: 0
+  canDamageFertilizedSoil: 0
+  canDamageWetFertilizedSoil: 0
+  resultingTileType: 
+  ignoreTwoArmAnim: 0
+  isDeed: 0
+  hasColourVariation: 0
+  isRepairable: 0
+  canUseUnderWater: 0
+  spawnPlaceable: {fileID: 0}
+  requiredToBuy: 0
+  requiredLicenceLevel: 1
+  assosiatedTask: 0
+  taskWhenSold: 0
+  equipable: {fileID: 0}
+  craftable: {fileID: 0}
+  consumeable: {fileID: 0}
+  itemChange: {fileID: 0}
+  bug: {fileID: 0}
+  fish: {fileID: 0}
+  underwaterCreature: {fileID: 0}
+  relic: {fileID: 0}

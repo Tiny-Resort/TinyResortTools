@@ -1,7 +1,10 @@
 ManifestFileVersion: 0
-CRC: 1574456941
+CRC: 965805210
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
       Name: ui_elements
+      Dependencies: {}
+    Info_1:
+      Name: regallamp
       Dependencies: {}
