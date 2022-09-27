@@ -129,6 +129,12 @@ namespace TinyResort {
         }
 
         internal static void UnloadCustomItems() {
+
+            // Might need to check for burried items
+            // placeBridgeTiledObject
+            // Might need to remove item from things like a furnace
+            // Donate fish????
+            // Mail?
             savedItemData.Clear();
 
             #region Inventory
@@ -225,11 +231,6 @@ namespace TinyResort {
                         UnloadWorldObject(tileMap[x, y], -1, -1, x, y, rotation, null);
                     }
                     #endregion
-                    // Might need to check for burried items
-                    // placeBridgeTiledObject
-                    // Might need to remove item from things like a furnace
-                    // Donate fish????
-                    // Mail?
 
                     // Remove item on top of other items
                     // If the tile is the location of a house, check what's in the house
@@ -380,7 +381,7 @@ namespace TinyResort {
                             }
                             break;
 
-                        // TODO: Handle these below cases
+                        // TODO: This will not work if the stash window is open, so might need to do some patching?
                         case ItemSaveData.ItemLocations.Stash:
                             ContainerManager.manage.privateStashes[item.stashPostition].itemIds[item.slotNo] = customItem.invItem.getItemId();
                             ContainerManager.manage.privateStashes[item.stashPostition].itemStacks[item.slotNo] = item.stackSize;
@@ -415,6 +416,8 @@ namespace TinyResort {
                                     var houseOnTop = HouseManager.manage.findHousesOnDisplay(item.houseDetails.xPos, item.houseDetails.yPos);
                                     houseOnTop.refreshHouseTiles();
                                     break;
+
+                                // TODO: Handle these below cases
 
                                 case ItemSaveData.WorldObject.Bridge: break;
 
