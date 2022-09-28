@@ -37,10 +37,8 @@ namespace TinyResort {
 
         internal static void Initialize() {
             Data = TRData.Subscribe("TR.CustomItems");
-            /*TRData.cleanDataEvent += UnloadLicenses;
-            TRData.preSaveEvent += SaveLicenseData;
-            TRData.postLoadEvent += LoadLicenseData;
-            TRData.injectDataEvent += LoadLicenses;*/
+            TRData.cleanDataEvent += UnloadCustomItems;
+            TRData.injectDataEvent += LoadCustomItems; 
         }
 
         internal static bool customItemsInitialized;
@@ -133,8 +131,11 @@ namespace TinyResort {
             // Might need to check for burried items
             // placeBridgeTiledObject
             // Might need to remove item from things like a furnace
+            // Tiles (like cement, rocky, etc) ChangeOnTile
             // Donate fish????
             // Mail?
+
+            TRTools.Log($"Remvoing Items");
             savedItemData.Clear();
 
             #region Inventory
@@ -203,6 +204,9 @@ namespace TinyResort {
                 for (int y = 0; y < tileMap.GetLength(1); y++) {
                     if (tileMap[x, y] <= -1) continue;
 
+                    
+                   // if (tileMap[x,y])
+                    
                     // PlaceItemOnTop is untested
 
                     #region OnTopOf Outside
@@ -336,6 +340,7 @@ namespace TinyResort {
         }
 
         internal static void LoadCustomItems() {
+            TRTools.Log($"Re-adding Items");
 
             // This should put OnTop to the end of the list and process them last.
             savedItemData = savedItemData.OrderBy(i => i.type == ItemSaveData.WorldObject.OnTop).ToList();

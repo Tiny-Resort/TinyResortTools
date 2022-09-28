@@ -29,6 +29,7 @@ namespace TinyResort {
             
             TRLicenses.Initialize();
             TRIcons.Initialize();
+            TRItems.Initialize();
         }
 
         private void Start() {
