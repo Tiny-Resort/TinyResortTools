@@ -15,7 +15,8 @@ namespace TinyResort {
         [HarmonyAfter(new string[] { "spicy.museumtooltip", "Octr_ValueTooltip" })]
         internal static void postfix(ref Inventory __instance, InventorySlot rollOverSlot) {
 
-            if (CraftingManager.manage.craftMenuOpen) return;
+            // This broke when hovering over an item in crafting menu and/or mail window
+            if (CraftingManager.manage.craftMenuOpen || MailManager.manage.mailWindow.activeSelf) return;
             
             itemID = rollOverSlot.itemNo;
             bool stackable = __instance.allItems[rollOverSlot.itemNo].isStackable;
