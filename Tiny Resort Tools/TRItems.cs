@@ -1,15 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using BepInEx;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem.LowLevel;
 
 namespace TinyResort {
 
@@ -21,8 +14,6 @@ namespace TinyResort {
         * Quick creating tiles, clothing, floors and walls with just textures.
         * Make it so the better icons code also checks for icons for custom items automatically(if it does already, we need to test it).
         * (Some Work Done)Catalogue support(Mostly need to keep track of catalogue, its safe already)
-        * (No Work Done) Bridges support
-        * (Some Work Done)Tile support
         * (Maybe) Quick creating furniture.
         * (No Work Done)Carryable Support
         * (No Work Done)Mail Support -- Need to remove item from mailbox if it is a modded item.How do we test this?
@@ -52,13 +43,20 @@ namespace TinyResort {
         private static List<TileObject> tileObjectDefaultList;
         private static List<TileObjectSettings> tileObjectSettingsDefaultList;
 
+        internal static bool customItemsInitialized;
+
+        // TODO: Create LetterType template for Mods
+        // TODO: Create more robust system for developers to send user mail
+        // TODO: Look at ShowLetter function
+        public static void SendMail(TRCustomItem itemToSend) { MailManager.manage.mailInBox.Add(new Letter(1, Letter.LetterType.AnimalTrapReturn, itemToSend.invItem.getItemId(), 5)); }
+
+        public static void SendMailTomorrow(TRCustomItem itemToSend) { MailManager.manage.tomorrowsLetters.Add(new Letter(1, Letter.LetterType.AnimalTrapReturn, itemToSend.invItem.getItemId(), 5)); }
+
         internal static void Initialize() {
             Data = TRData.Subscribe("TR.CustomItems");
             TRData.cleanDataEvent += UnloadCustomItems;
             TRData.injectDataEvent += LoadCustomItems;
         }
-
-        internal static bool customItemsInitialized;
 
         private static void InitializeItemDetails() {
             foreach (var item in Inventory.inv.allItems) {
@@ -83,16 +81,17 @@ namespace TinyResort {
             return itemDetails[itemID];
         }
 
-        internal static void AddCustomItem(TRPlugin plugin, string assetBundlePath, string uniqueItemID) {
+        internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, string uniqueItemID) {
 
             if (customItemsInitialized) {
                 TRTools.LogError($"Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
-                return;
+                return null;
             }
 
             customItems[plugin.nexusID + uniqueItemID] = new TRCustomItem(assetBundlePath);
             customItems[plugin.nexusID + uniqueItemID].uniqueID = plugin.nexusID + uniqueItemID;
 
+            return customItems[plugin.nexusID + uniqueItemID];
         }
 
         // Resize the array depending on the number of modded items added
@@ -105,7 +104,7 @@ namespace TinyResort {
             tileObjectSettingsDefaultList = WorldManager.manageWorld.allObjectSettings.ToList();
             CatalogueDefaultList = CatalogueManager.manage.collectedItem.ToList();
             TRTools.Log($"Catalogue size: {CatalogueManager.manage.collectedItem.Length}");
-            
+
             // Get existing item lists
             itemList = Inventory.inv.allItems.ToList();
             tileObjectList = WorldManager.manageWorld.allObjects.ToList();
@@ -249,10 +248,26 @@ namespace TinyResort {
 
             #endregion
 
+            #region Mail
+
+            var CurrentMail = MailManager.manage.mailInBox;
+            var TomorrowsMail = MailManager.manage.tomorrowsLetters;
+
+            foreach (var letter in CurrentMail) {
+                if (customItemsByID.ContainsKey(letter.itemOriginallAttached) || customItemsByID.ContainsKey(letter.itemAttached)) { TRTools.Log($"Found mail with a custom Item {customItemsByID[letter.itemOriginallAttached].invItem.itemName}"); }
+            }
+
+            foreach (var letter in TomorrowsMail) {
+                if (customItemsByID.ContainsKey(letter.itemOriginallAttached) || customItemsByID.ContainsKey(letter.itemAttached)) { TRTools.Log($"Found mail for tomorrow with a custom Item {customItemsByID[letter.itemOriginallAttached].invItem.itemName}"); }
+            }
+
+            #endregion
+
             // Removed or possible planned content?
             //if (customItemsByID.ContainsKey(EquipWindow.equip.idolSlot.itemNo)) { }
 
             #region Tile/Paths
+
             // Go through every tile on the world map and look for objects that are custom items to unload them
             // This prevents corrupted save data if the player removes the mod and tries to load
             var tileTypeMap = WorldManager.manageWorld.tileTypeMap;
@@ -268,8 +283,9 @@ namespace TinyResort {
                     }
                 }
             }
+
             #endregion
-            
+
             #region World Objects & Chests
 
             var allObjects = WorldManager.manageWorld.allObjects;
@@ -277,8 +293,9 @@ namespace TinyResort {
             for (int x = 0; x < tileMap.GetLength(0); x++) {
                 for (int y = 0; y < tileMap.GetLength(1); y++) {
                     if (tileMap[x, y] <= -1) continue;
-                    
+
                     #region OnTopOf Outside
+
                     var onTopOfTile = ItemOnTopManager.manage.getAllItemsOnTop(x, y, null);
 
                     for (int i = 0; i < onTopOfTile.Length; i++) {
@@ -292,11 +309,14 @@ namespace TinyResort {
                             );
                         }
                     }
+
                     #endregion
 
                     #region Chests
+
                     // If the tile has a chest on it, save and unload custom items from the chest
                     if (allObjects[tileMap[x, y]].tileObjectChest) { UnloadFromChest(allObjects[tileMap[x, y]].tileObjectChest, x, y, -1, -1); }
+
                     #endregion
 
                     #region Bridges
@@ -304,8 +324,8 @@ namespace TinyResort {
                     //TRTools.Log($"Tile Map: {tileMap[x, y]}");
                     //else if (allObjects[tileMap[x, y]].tileObjectBridge && customTileObjectByID.ContainsKey(tileMap[x, y])) { TRTools.Log($"FOUND A BRIDGE YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY\n\n\n\n\n\n"); }
 
-
                     #endregion
+
                     #region Onject On Floor Outside
 
                     // If the tile contains a custom world object, save and unload it
@@ -315,22 +335,14 @@ namespace TinyResort {
                         var bridgeLength = -1;
                         if (allObjects[tileMap[x, y]].tileObjectBridge) {
                             type = ItemSaveData.WorldObject.Bridge;
-                            if (rotation == 1) {
-                                bridgeLength = customTileObjectByID[tileMap[x,y]].tileObjectSettings.checkBridgLenth(x, y, 0, -1);
-                            }
-                            else if (rotation == 2) {
-                                bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, -1, 0);
-                            }
-                            else if (rotation == 3) {
-                                bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, 1);
-                            }
-                            else if (rotation == 4) {
-                                bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 1, 0);
-                            }
+                            if (rotation == 1) { bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, -1); }
+                            else if (rotation == 2) { bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, -1, 0); }
+                            else if (rotation == 3) { bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, 1); }
+                            else if (rotation == 4) { bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 1, 0); }
                         }
 
                         UnloadWorldObject(tileMap[x, y], x, y, -1, -1, rotation, type, bridgeLength);
-   
+
                     }
 
                     #endregion
@@ -402,12 +414,13 @@ namespace TinyResort {
             var done = DefaultSize();
             if (done) Data.SetValue("CurrentItemList", savedItemData);
         }
-//        public ItemSaveData(TRCustomItem customItem, WorldObject type, int objectXPos, int objectYPos, int tileType) {
 
-        internal static void UnloadFromTile(int objectXPos, int objectYPos, int tileType) {
-            savedItemData.Add(new ItemSaveData(customTileTypeByID[tileType], ItemSaveData.WorldObject.Path, objectXPos, objectYPos, tileType));
-        }
-        
+        //        public ItemSaveData(TRCustomItem customItem, WorldObject type, int objectXPos, int objectYPos, int tileType) {
+
+        internal static void UnloadFromMail() { }
+
+        internal static void UnloadFromTile(int objectXPos, int objectYPos, int tileType) { savedItemData.Add(new ItemSaveData(customTileTypeByID[tileType], ItemSaveData.WorldObject.Path, objectXPos, objectYPos, tileType)); }
+
         internal static void UnloadFromChest(ChestPlaceable chestPlaceable, int objectXPos, int objectYPos, int houseXPos, int houseYPos) {
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             chestPlaceable.checkIfEmpty(objectXPos, objectYPos, houseDetails);
@@ -422,16 +435,19 @@ namespace TinyResort {
 
         internal static void UnloadWorldObject(int tileObjectID, int objectXPos, int objectYPos, int houseXPos, int houseYPos, int rotation, ItemSaveData.WorldObject type = ItemSaveData.WorldObject.OnTile, int bridgeLength = -1) {
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
-            savedItemData.Add(new ItemSaveData(customTileObjectByID[tileObjectID], objectXPos, objectYPos, rotation, type, houseXPos, houseYPos, bridgeLength:bridgeLength));
+            savedItemData.Add(new ItemSaveData(customTileObjectByID[tileObjectID], objectXPos, objectYPos, rotation, type, houseXPos, houseYPos, bridgeLength: bridgeLength));
             if (houseDetails != null) {
                 customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObjectInside(objectXPos, objectYPos, rotation, houseDetails);
                 houseDetails.houseMapOnTile[objectXPos, objectYPos] = -1;
                 houseDetails.houseMapOnTileStatus[objectXPos, objectYPos] = -1;
                 var house = HouseManager.manage.findHousesOnDisplay(houseXPos, houseYPos);
-                if (house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture) {
+
+                //TRTools.Log($"House: -- {house} -- ");
+                if (house && house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture) {
                     house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture.updateOnTileStatus(objectXPos, objectYPos, houseDetails);
+                    house.refreshHouseTiles();
                 }
-                house.refreshHouseTiles();
+
                 //HouseManager.manage.updateAllHouseFurniturePos();
 
             }
@@ -532,14 +548,14 @@ namespace TinyResort {
                                     if (tmpHouseDetails != null) {
                                         customItem.tileObject.placeMultiTiledObjectInside(item.ObjectXPos, item.ObjectYPos, item.rotation, tmpHouseDetails);
 
-                                        // JOHN: This breaks on the first load but works for all other loads (i.e. when you sleep it works)
-                                        // var house = HouseManager.manage.findHousesOnDisplay(item.HouseXPos, item.HouseYPos);
                                         tmpHouseDetails.houseMapOnTile[item.ObjectXPos, item.ObjectYPos] = customItem.tileObject.tileObjectId;
                                         tmpHouseDetails.houseMapOnTileStatus[item.ObjectXPos, item.ObjectYPos] = 0;
 
-                                        // JOHN this is needed for us to see the objects in the house right away after sleeping. It loads fine on first load without it...
-                                        // If you get out of bed it will fix tho.
-                                        //tmpHouseDetails.refreshHouseTiles();
+                                        // Must check if localChar is null because it will fail on first load since HouseManager doesn't exist
+                                        if (NetworkMapSharer.share.localChar) {
+                                            var house = HouseManager.manage.findHousesOnDisplay(item.HouseXPos, item.HouseYPos);
+                                            house.refreshHouseTiles();
+                                        }
 
                                     }
                                     else {
@@ -560,8 +576,11 @@ namespace TinyResort {
                                     WorldManager.manageWorld.unlockClientTile(item.ObjectXPos, item.ObjectYPos);
                                     WorldManager.manageWorld.refreshAllChunksInUse(item.ObjectXPos, item.ObjectYPos, false);
 
-                                    //var houseOnTop = HouseManager.manage.findHousesOnDisplay(item.HouseXPos, item.HouseYPos);
-                                    //houseOnTop.refreshHouseTiles();
+                                    // Must check if localChar is null because it will fail on first load since HouseManager doesn't exist
+                                    if (NetworkMapSharer.share.localChar) {
+                                        var house = HouseManager.manage.findHousesOnDisplay(item.HouseXPos, item.HouseYPos);
+                                        house.refreshHouseTiles();
+                                    }
                                     break;
 
                                 // TODO: Handle these below cases
@@ -573,7 +592,7 @@ namespace TinyResort {
                                     WorldManager.manageWorld.unlockClientTile(item.ObjectXPos, item.ObjectYPos);
 
                                     break;
-                                
+
                                 case ItemSaveData.WorldObject.Path:
                                     WorldManager.manageWorld.tileTypeMap[item.ObjectXPos, item.ObjectYPos] = item.tileType;
                                     WorldManager.manageWorld.refreshAllChunksInUse(item.ObjectXPos, item.ObjectYPos, false);
@@ -591,7 +610,18 @@ namespace TinyResort {
     }
 
     [Serializable]
-    internal class TRCustomItem {
+    public class TRCustomItem {
+
+        // TODO: Implement events
+        public delegate void TileObjectEvent();
+
+        public AssetBundle assetBundle;
+        public InventoryItem invItem;
+        public TileObject tileObject;
+        public TileObjectSettings tileObjectSettings;
+        public TileTypes tileTypes;
+        public string uniqueID;
+        public TileObjectEvent interactEvent;
 
         public TRCustomItem(string assetBundlePath) {
 
@@ -626,22 +656,31 @@ namespace TinyResort {
 
             this.assetBundle.Unload(false);
         }
-
-        public AssetBundle assetBundle;
-        public InventoryItem invItem;
-        public TileObject tileObject;
-        public TileObjectSettings tileObjectSettings;
-        public TileTypes tileTypes;
-        public string uniqueID;
-
-        // TODO: Implement events
-        public delegate void TileObjectEvent();
-        public TileObjectEvent interactEvent;
-
     }
 
     [Serializable]
     internal class ItemSaveData {
+        public enum EquipLocation { Hat, Face, Shirt, Pants, Shoes }
+
+        public enum ItemLocations { Inventory, Equipped, Chest, Stash, World, HomeFloor, HomeWall }
+        public enum WorldObject { OnTile, OnTop, Bridge, Path }
+
+        public string uniqueID;
+        public ItemLocations location;
+        public EquipLocation equipment;
+        public WorldObject type;
+        public int onTopPos;
+        public int status;
+        public int stashPostition;
+        public int ObjectXPos;
+        public int ObjectYPos;
+        public int HouseXPos;
+        public int HouseYPos;
+        public int rotation;
+        public int slotNo;
+        public int stackSize;
+        public int tileType;
+        public int bridgeLength;
 
         // For saving items that were in the player's inventory
         public ItemSaveData(TRCustomItem customItem, int slotNo, int stackSize) {
@@ -719,27 +758,6 @@ namespace TinyResort {
             this.ObjectYPos = objectYPos;
             this.type = type;
         }
-        
-        public string uniqueID;
-        public ItemLocations location;
-        public EquipLocation equipment;
-        public WorldObject type;
-        public int onTopPos;
-        public int status;
-        public int stashPostition;
-        public int ObjectXPos;
-        public int ObjectYPos;
-        public int HouseXPos;
-        public int HouseYPos;
-        public int rotation;
-        public int slotNo;
-        public int stackSize;
-        public int tileType;
-        public int bridgeLength;
-
-        public enum ItemLocations { Inventory, Equipped, Chest, Stash, World, HomeFloor, HomeWall }
-        public enum EquipLocation { Hat, Face, Shirt, Pants, Shoes }
-        public enum WorldObject { OnTile, OnTop, Bridge, Path }
     }
 
 }
