@@ -6,7 +6,7 @@ namespace TinyResort {
     [HarmonyPatch(typeof(SaveLoad), "loadChangers")]
     internal class LoadChangersPatch {
         
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         internal static void prefix(SaveLoad __instance) {
             if (TRTools.InMainMenu) { TRData.initialLoadEvent?.Invoke(); }
             TRData.preLoadEvent?.Invoke();
