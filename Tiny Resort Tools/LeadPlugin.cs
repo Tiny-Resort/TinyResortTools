@@ -47,7 +47,10 @@ namespace TinyResort {
                 TRItems.UnloadCustomItems();
             }
             if (Input.GetKeyDown(KeyCode.F10)) { TRItems.LoadCustomItems(); }
-            
+            if (Input.GetKeyDown(KeyCode.F9)) { 
+                TRTools.Log($"Size: {SaveLoad.saveOrLoad.carryablePrefabs.Length}");
+                NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[10], NetworkMapSharer.share.localChar.transform.position, true);
+            }
         }
         
         

@@ -16,7 +16,7 @@ namespace TinyResort {
                     foreach (var item in TRItems.savedDroppedItems) {
                         if (!TRItems.customItems.TryGetValue(item.uniqueID, out var customItem)) continue;
                         TRTools.Log($"Restorting items");
-                        item.droppedItem.RestoreDroppedItem();
+                        item.droppedItem.Restore();
                     }
                 }
             }

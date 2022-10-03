@@ -4,7 +4,9 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using Mirror;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TinyResort {
 
@@ -12,16 +14,14 @@ namespace TinyResort {
     public class TRItems {
 
         /*
-        * To Do List:
-        * Quick creating tiles, clothing, floors and walls with just textures.
-        * Make it so the better icons code also checks for icons for custom items automatically(if it does already, we need to test it).
-        * (Some Work Done)Catalogue support(Mostly need to keep track of catalogue, its safe already)
-        * (Maybe) Quick creating furniture.
-        * (No Work Done)Carryable Support
-        * (No Work Done)Trap Support(maybe?)
-         * Add Wallpaper and Flooring checks
-        * (No Work Done)Fences Support - Replace modded fence with a base game fence to make sure the next day fence calculations run correctly.
-        */
+         * To Do List:
+         * TODO: Quick creating tiles, clothing, floors and walls with just textures.
+         * TODO: Make it so the better icons code also checks for icons for custom items automatically(if it does already, we need to test it).
+         * (Maybe) Quick creating furniture.
+         * TODO: Test Clothing
+         * TODO: Fences Support - Replace modded fence with a base game fence to make sure the next day fence calculations run correctly.
+         * TODO: Trap Support(maybe?)
+         */
 
         private static readonly Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
         internal static readonly Dictionary<string, TRCustomItem> customItems = new Dictionary<string, TRCustomItem>();
@@ -29,10 +29,11 @@ namespace TinyResort {
         private static readonly Dictionary<int, TRCustomItem> customTileObjectByID = new Dictionary<int, TRCustomItem>();
         private static readonly Dictionary<int, TRCustomItem> customTileTypeByID = new Dictionary<int, TRCustomItem>();
         internal static readonly Dictionary<int, TRCustomItem> customVehicleByID = new Dictionary<int, TRCustomItem>();
+        internal static readonly Dictionary<int, TRCustomItem> customCarryableByID = new Dictionary<int, TRCustomItem>();
 
         private static List<ItemSaveData> savedItemData = new List<ItemSaveData>();
         internal static List<ItemSaveData> savedDroppedItems = new List<ItemSaveData>();
-        internal static List<ItemSaveData> savedVehicleData = new List<ItemSaveData>();
+        internal static List<ItemSaveData> savedItemDataLate = new List<ItemSaveData>();
 
         internal static TRModData Data;
 
@@ -41,22 +42,22 @@ namespace TinyResort {
         private static List<TileObjectSettings> tileObjectSettingsList;
         private static List<TileTypes> tileTypesList;
         private static List<GameObject> vehiclePrefabList;
+        private static List<GameObject> carryablePrefabList;
 
         private static List<bool> CatalogueDefaultList;
         private static List<InventoryItem> allItemsDefaultList;
         private static List<GameObject> vehiclePrefabDefaultList;
-        
+        private static List<GameObject> carryablePrefabDefaultList;
+
         private static List<TileObject> tileObjectDefaultList;
         private static List<TileObjectSettings> tileObjectSettingsDefaultList;
 
         internal static bool _droppedItemsEnabled = false;
         internal static bool customItemsInitialized;
+        internal static bool customItemsLoaded;
 
+        internal static void RemoveModdedSavedDrops() { }
 
-        internal static void RemoveModdedSavedDrops() {
-            
-        }
-        
         // TODO: Create LetterType template for Mods
         // TODO: Create more robust system for developers to send user mail
         // TODO: Look at ShowLetter function
@@ -116,6 +117,7 @@ namespace TinyResort {
             tileObjectSettingsDefaultList = WorldManager.manageWorld.allObjectSettings.ToList();
             CatalogueDefaultList = CatalogueManager.manage.collectedItem.ToList();
             vehiclePrefabDefaultList = SaveLoad.saveOrLoad.vehiclePrefabs.ToList();
+            carryablePrefabDefaultList = SaveLoad.saveOrLoad.carryablePrefabs.ToList();
             TRTools.Log($"Catalogue size: {CatalogueManager.manage.collectedItem.Length}");
 
             // Get existing item lists
@@ -124,20 +126,24 @@ namespace TinyResort {
             tileObjectSettingsList = WorldManager.manageWorld.allObjectSettings.ToList();
             tileTypesList = WorldManager.manageWorld.tileTypes.ToList();
             vehiclePrefabList = SaveLoad.saveOrLoad.vehiclePrefabs.ToList();
+            carryablePrefabList = SaveLoad.saveOrLoad.carryablePrefabs.ToList();
+
             // Add custom items to existing item lists
             foreach (var item in customItems) {
-
-                if (item.Value.tileTypes)
+                if (item.Value.tileTypes) {
                     if (item.Value.tileTypes.isPath) {
                         tileTypesList.Add(item.Value.tileTypes);
                         item.Value.invItem.placeableTileType = tileTypesList.Count - 1;
                         customTileTypeByID[tileTypesList.Count - 1] = item.Value;
                     }
+                }
 
                 // Add custom inventory item
-                itemList.Add(item.Value.invItem);
-                item.Value.invItem.setItemId(itemList.Count - 1);
-                customItemsByID[itemList.Count - 1] = item.Value;
+                if (item.Value.invItem) {
+                    itemList.Add(item.Value.invItem);
+                    item.Value.invItem.setItemId(itemList.Count - 1);
+                    customItemsByID[itemList.Count - 1] = item.Value;
+                }
 
                 // Add tile object and settings if they exist
                 if (item.Value.tileObject) {
@@ -147,13 +153,17 @@ namespace TinyResort {
                     item.Value.tileObjectSettings.tileObjectId = tileObjectSettingsList.Count - 1;
                     customTileObjectByID[tileObjectList.Count - 1] = item.Value;
                 }
-
                 if (item.Value.vehicleType) {
                     vehiclePrefabList.Add(item.Value.invItem.spawnPlaceable);
                     item.Value.vehicleType.saveId = vehiclePrefabList.Count - 1;
                     customVehicleByID[vehiclePrefabList.Count - 1] = item.Value;
                 }
-                
+                if (item.Value.carryable) {
+                    carryablePrefabList.Add(item.Value.carryable.gameObject);
+                    item.Value.carryable.prefabId = carryablePrefabList.Count - 1;
+                    customCarryableByID[carryablePrefabList.Count - 1] = item.Value;
+                }
+
             }
 
             // Set the game's arrays to match the new lists that include the custom items
@@ -162,7 +172,11 @@ namespace TinyResort {
             WorldManager.manageWorld.allObjectSettings = tileObjectSettingsList.ToArray();
             WorldManager.manageWorld.tileTypes = tileTypesList.ToArray();
             SaveLoad.saveOrLoad.vehiclePrefabs = vehiclePrefabList.ToArray();
-            
+            TRTools.Log($"Size of Old: {SaveLoad.saveOrLoad.carryablePrefabs.Length} | Size of New Carryable: {carryablePrefabList.Count}");
+            SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabList.ToArray();
+
+            foreach (var carry in SaveLoad.saveOrLoad.carryablePrefabs) { TRTools.Log($"Carry: {carry.name}"); }
+
             // TODO:
             // Resize and/or add mod save data of if they have obtained it or not
             // In a pre-save event, go through all items in catalogue array past vanilla items and check which are true and set them. 
@@ -185,6 +199,7 @@ namespace TinyResort {
             WorldManager.manageWorld.allObjectSettings = tileObjectSettingsList.ToArray();
             CatalogueManager.manage.collectedItem = new bool[Inventory.inv.allItems.Length];
             SaveLoad.saveOrLoad.vehiclePrefabs = vehiclePrefabList.ToArray();
+            SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabList.ToArray();
         }
 
         internal static bool DefaultSize() {
@@ -195,13 +210,15 @@ namespace TinyResort {
             Array.Resize(ref WorldManager.manageWorld.allObjectSettings, tileObjectSettingsDefaultList.Count);
             Array.Resize(ref CatalogueManager.manage.collectedItem, allItemsDefaultList.Count);
             Array.Resize(ref SaveLoad.saveOrLoad.vehiclePrefabs, vehiclePrefabDefaultList.Count);
-            
+            Array.Resize(ref SaveLoad.saveOrLoad.carryablePrefabs, carryablePrefabDefaultList.Count);
+
             Inventory.inv.allItems = allItemsDefaultList.ToArray();
             WorldManager.manageWorld.allObjects = tileObjectDefaultList.ToArray();
             WorldManager.manageWorld.allObjectSettings = tileObjectSettingsDefaultList.ToArray();
             CatalogueManager.manage.collectedItem = CatalogueDefaultList.ToArray();
             SaveLoad.saveOrLoad.vehiclePrefabs = vehiclePrefabDefaultList.ToArray();
-            
+            SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabDefaultList.ToArray();
+
             TRTools.Log($"Items: {Inventory.inv.allItems.Length} | Objects: {WorldManager.manageWorld.allObjects.Length} & {WorldManager.manageWorld.allObjectSettings.Length} | Catalogue: {CatalogueManager.manage.collectedItem.Length}");
             return true;
         }
@@ -210,9 +227,18 @@ namespace TinyResort {
 
             TRTools.Log("Remvoing Items");
             savedItemData.Clear();
-            savedVehicleData.Clear();
+            savedItemDataLate.Clear();
             savedDroppedItems.Clear();
-            
+
+            #region House Wallpaper/Flooring
+
+            foreach (var house in HouseManager.manage.allHouses) {
+                if (customItemsByID.ContainsKey(house.floor)) { UnloadFlooring(house); }
+                if (customItemsByID.ContainsKey(house.wall)) { UnloadWallpaper(house); }
+            }
+
+            #endregion
+
             #region Vehicles
 
             var listOfVehicles = SaveLoad.saveOrLoad.vehiclesToSave;
@@ -224,11 +250,12 @@ namespace TinyResort {
                 }
             }
             UnloadVehicle(tmplistOfVehicles);
+
             //if (tmplistOfVehicles.Count > 0) // UnloadFromDropped(tmplistOfVehicles);
             //else { TRTools.Log($"Found no dropped items"); }
 
             #endregion
-            
+
             #region ItemsOnGround
 
             var floatingItems = WorldManager.manageWorld.itemsOnGround;
@@ -241,7 +268,21 @@ namespace TinyResort {
                 }
             }
             if (tmpDroppedItems.Count > 0) UnloadFromDropped(tmpDroppedItems);
-            else { TRTools.Log($"Found no dropped items"); }
+
+            #endregion
+
+            #region Carryables
+
+            var allCarryables = WorldManager.manageWorld.allCarriables;
+            List<PickUpAndCarry> tmpCarryables = new List<PickUpAndCarry>();
+            foreach (var carry in allCarryables) {
+                if (customCarryableByID.ContainsKey(carry.prefabId)) {
+                    tmpCarryables.Add(carry);
+                    TRTools.Log($"Found a modded carryable");
+                }
+            }
+            if (tmpCarryables.Count > 0) UnloadCarryable(tmpCarryables);
+
             #endregion
 
             #region Inventory
@@ -476,15 +517,32 @@ namespace TinyResort {
             DefaultSize();
             Data.SetValue("CurrentItemList", savedItemData);
             if (_droppedItemsEnabled) Data.SetValue("DroppedItemList", savedDroppedItems);
-            Data.SetValue("CurrentVehicles", savedVehicleData);
+            Data.SetValue("CurrentVehicles", savedItemDataLate);
 
         }
 
-        // TODO: Fix vehicle duplications...
+        internal static void UnloadCarryable(List<PickUpAndCarry> toRemove) {
+            foreach (var carry in toRemove) {
+                TRTools.Log($"Attempting to remove: {carry.name}");
+                savedItemDataLate.Add(new ItemSaveData().StoreCarry(carry, customCarryableByID[carry.prefabId].uniqueID));
+                WorldManager.manageWorld.allCarriables.Remove(carry);
+            }
+        }
+
+        internal static void UnloadWallpaper(HouseDetails house) {
+            savedItemData.Add(new ItemSaveData().StoreWallpaper(house, customItemsByID[house.wall].uniqueID));
+            house.wall = 550; // Rattan Wall
+        }
+
+        internal static void UnloadFlooring(HouseDetails house) {
+            savedItemData.Add(new ItemSaveData().StoreFlooring(house, customItemsByID[house.floor].uniqueID));
+            house.floor = 546; // Rattan Floor
+        }
+
         internal static void UnloadVehicle(List<Vehicle> toRemove) {
             TRTools.Log($"This is being called");
             foreach (var item in toRemove) {
-                savedVehicleData.Add(new ItemSaveData().StoreVehicle(item, customVehicleByID[item.saveId].uniqueID));
+                savedItemDataLate.Add(new ItemSaveData().StoreVehicle(item, customVehicleByID[item.saveId].uniqueID));
                 SaveLoad.saveOrLoad.vehiclesToSave.Remove(item);
             }
         }
@@ -581,15 +639,57 @@ namespace TinyResort {
             }
         }
 
+        
+        internal enum ToLoad { Main, AfterNetwork, All }
+        // TODO: Reaname Current Vehicles to be generic for all after network loaded items
+        internal static void LoadModSavedData(ToLoad toLoad, bool bypass = false) {
+
+            if (!customItemsLoaded || bypass) {
+                switch (toLoad) {
+                    case ToLoad.All:
+                        savedItemData = (List<ItemSaveData>)Data.GetValue("CurrentItemList", new List<ItemSaveData>());
+                        savedItemData = savedItemData.OrderBy(i => i.type == ItemSaveData.WorldObject.OnTop).ToList();
+                        savedItemDataLate = (List<ItemSaveData>)Data.GetValue("CurrentVehicles", new List<ItemSaveData>());
+                        break;
+
+                    case ToLoad.Main:
+                        savedItemData = (List<ItemSaveData>)Data.GetValue("CurrentItemList", new List<ItemSaveData>());
+                        savedItemData = savedItemData.OrderBy(i => i.type == ItemSaveData.WorldObject.OnTop).ToList();
+                        break;
+
+                    case ToLoad.AfterNetwork:
+                        savedItemDataLate = (List<ItemSaveData>)Data.GetValue("CurrentVehicles", new List<ItemSaveData>());
+                        break;
+                }
+            }
+
+        }
+
+        internal static void LoadCustomItemPostLoad() {
+            
+            if (NetworkMapSharer.share.localChar) return;
+            
+            TRItems.LoadModSavedData(ToLoad.AfterNetwork, true);
+
+            foreach (var item in savedItemDataLate) {
+                if (!customItems.TryGetValue(item.uniqueID, out var customItem)) continue;
+
+                switch (item.location) {
+                    // DOne in LoadChangerPatch
+                    case ItemSaveData.ItemLocations.Vehicle:
+                        item.vehicle.Restore();
+                        break;
+                    case ItemSaveData.ItemLocations.Carry:
+                        item.carry.Restore();
+                        break;
+                }
+            }
+        }
+        
         internal static void LoadCustomItems() {
             RestoreModSize();
             TRTools.Log("Re-adding Items");
-
-            // This should put OnTop to the end of the list and process them last.
-
-            // If not loaded yet, load the custom items that were in the player's inventory or chests
-            if (savedItemData.Count == 0) savedItemData = (List<ItemSaveData>)Data.GetValue("CurrentItemList", new List<ItemSaveData>());
-            savedItemData = savedItemData.OrderBy(i => i.type == ItemSaveData.WorldObject.OnTop).ToList();
+            LoadModSavedData(ToLoad.Main, true);
 
             if (savedItemData.Count > 0) {
                 var tmpHouseDetails = new HouseDetails();
@@ -700,27 +800,33 @@ namespace TinyResort {
                             break;
 
                         case ItemSaveData.ItemLocations.Letter:
-                            if (!item.letter.tomorrow) { MailManager.manage.mailInBox.Add(item.letter.RestoreLetter()); }
-                            else { MailManager.manage.tomorrowsLetters.Add(item.letter.RestoreLetter()); }
+                            if (!item.letter.tomorrow) { MailManager.manage.mailInBox.Add(item.letter.Restore()); }
+                            else { MailManager.manage.tomorrowsLetters.Add(item.letter.Restore()); }
                             break;
 
                         case ItemSaveData.ItemLocations.Buried:
                             WorldManager.manageWorld.onTileMap[item.buriedItem.xP, item.buriedItem.yP] = 30;
-                            BuriedManager.manage.allBuriedItems.Add(item.buriedItem.RestoreBuriedItem());
+                            BuriedManager.manage.allBuriedItems.Add(item.buriedItem.Restore());
                             break;
 
-                        case ItemSaveData.ItemLocations.Vehicle: 
-                            //item.vehicle.RestoreVehicle();
+
+
+                        case ItemSaveData.ItemLocations.HomeFloor:
+                            item.flooring.Restore();
                             break;
-                        
-                        case ItemSaveData.ItemLocations.HomeFloor: break;
-                        case ItemSaveData.ItemLocations.HomeWall: break;
+
+                        case ItemSaveData.ItemLocations.HomeWall:
+                            item.wallpaper.Restore();
+                            break;
+
 
                     }
                 }
             }
         }
     }
+    
+    
 
     [Serializable]
     public class TRCustomItem {
@@ -734,6 +840,7 @@ namespace TinyResort {
         public TileObjectSettings tileObjectSettings;
         public TileTypes tileTypes;
         public Vehicle vehicleType;
+        public PickUpAndCarry carryable;
         public string uniqueID;
         public TileObjectEvent interactEvent;
 
@@ -747,29 +854,39 @@ namespace TinyResort {
             for (var i = 0; i < AllAssets.Length; i++) {
 
                 if (invItem == null) {
-                    TRTools.Log("Attemping Load: InvItem.");
+                    //TRTools.Log("Attemping Load: InvItem.");
                     invItem = AllAssets[i].GetComponent<InventoryItem>();
-                    TRTools.Log($"Loaded: InvItem -- {invItem}.");
+
+                    //TRTools.Log($"Loaded: InvItem -- {invItem}.");
                 }
                 if (tileObject == null) {
-                    TRTools.Log("Attemping Load: TileObject.");
+                    //TRTools.Log("Attemping Load: TileObject.");
                     tileObject = AllAssets[i].GetComponent<TileObject>();
-                    TRTools.Log($"Loaded: TileObject -- {tileObject}.");
+
+                    //TRTools.Log($"Loaded: TileObject -- {tileObject}.");
                 }
                 if (tileObjectSettings == null) {
-                    TRTools.Log("Attemping Load: TileObjectSettings.");
+                    //TRTools.Log("Attemping Load: TileObjectSettings.");
                     tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>();
-                    TRTools.Log($"Loaded: TileObjectSettings -- {tileObjectSettings}.");
+
+                    //TRTools.Log($"Loaded: TileObjectSettings -- {tileObjectSettings}.");
                 }
                 if (tileTypes == null) {
-                    TRTools.Log("Attemping Load: tileTypes.");
+                    //TRTools.Log("Attemping Load: tileTypes.");
                     tileTypes = AllAssets[i].GetComponent<TileTypes>();
-                    TRTools.Log($"Loaded: tileTypes -- {tileTypes}.");
+
+                    //TRTools.Log($"Loaded: tileTypes -- {tileTypes}.");
                 }
                 if (vehicleType == null) {
-                    TRTools.Log("Attemping Load: vehicleType.");
+                    //TRTools.Log("Attemping Load: vehicleType.");
                     vehicleType = AllAssets[i].GetComponent<Vehicle>();
-                    TRTools.Log($"Loaded: tileTypes -- {vehicleType}.");
+
+                    //TRTools.Log($"Loaded: tileTypes -- {vehicleType}.");
+                }
+                if (carryable == null) {
+                    TRTools.Log("Attemping Load: carryable.");
+                    carryable = AllAssets[i].GetComponent<PickUpAndCarry>();
+                    TRTools.Log($"Loaded: tileTypes -- {carryable}.");
                 }
             }
 
@@ -789,7 +906,7 @@ namespace TinyResort {
         public bool hasBeenRead;
         public bool tomorrow;
 
-        public Letter RestoreLetter() {
+        public Letter Restore() {
             Letter tmp = new Letter(this.sentById, this.myType, this.itemAttached, this.stackOfItemAttached);
             tmp.itemOriginallAttached = this.itemOriginallAttached;
             tmp.seasonSent = this.seasonSent;
@@ -813,12 +930,14 @@ namespace TinyResort {
         public bool saveDrop;
         public bool underground;
 
-        public void RestoreDroppedItem() {
+        public void Restore() {
             DropToSave tmpToDrop = new DropToSave(this.myItemId, this.stackAmount, new Vector3(this.desiredPositionX, this.desiredPositionY, this.desiredPositionZ), this.houseX, this.houseY);
             tmpToDrop.spawnDrop();
         }
 
     }
+
+    // TODO: Confirm it respawns on reload
 
     [Serializable]
     internal class SavedBuriedItems {
@@ -827,7 +946,7 @@ namespace TinyResort {
         public int xP;
         public int yP;
 
-        public BuriedItem RestoreBuriedItem() { return new BuriedItem(this.itemId, this.stack, this.xP, this.yP); }
+        public BuriedItem Restore() { return new BuriedItem(this.itemId, this.stack, this.xP, this.yP); }
     }
 
     [Serializable]
@@ -840,10 +959,10 @@ namespace TinyResort {
         public float rotationX;
         public float rotationY;
         public float rotationZ;
-        
+
         public string uniqueID;
 
-        public void initialize(Vehicle toSave) {
+        public void Initialize(Vehicle toSave) {
             this.vehicleId = toSave.saveId;
             this.colourVariation = toSave.getVariation();
             this.positionX = toSave.transform.position.x;
@@ -853,20 +972,89 @@ namespace TinyResort {
             this.rotationY = toSave.transform.eulerAngles.y;
             this.rotationZ = toSave.transform.eulerAngles.z;
         }
-        
-        public void RestoreVehicle() {
-            TRTools.Log($"Vehicle Save ID: {vehicleId}");
+
+        public void Restore() {
             GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(SaveLoad.saveOrLoad.vehiclePrefabs[vehicleId], new Vector3(positionX, positionY, positionZ), Quaternion.Euler(rotationX, rotationY, rotationZ));
             gameObject.GetComponent<Vehicle>().setVariation(colourVariation);
             NetworkMapSharer.share.spawnGameObject(gameObject);
         }
     }
-    
+
+    [Serializable]
+    internal class SavedWallpaper {
+        public int houseX;
+        public int houseY;
+        public int wallpaperID;
+
+        public void Restore() {
+            TRTools.Log($"Restoring Wallpaper: {wallpaperID}");
+            var house = HouseManager.manage.getHouseInfo(houseX, houseY);
+            house.wall = wallpaperID;
+        }
+    }
+
+    [Serializable]
+    internal class SavedFlooring {
+        public int houseX;
+        public int houseY;
+        public int flooringID;
+
+        public void Restore() {
+            TRTools.Log($"Restoring Flooring: {flooringID}");
+            var house = HouseManager.manage.getHouseInfo(houseX, houseY);
+            house.floor = flooringID;
+        }
+    }
+
+    // TODO: Confirm it respawns on reload
+    [Serializable]
+    internal class SavedCarryable {
+
+        public bool farmAnimalBox;
+        public bool trappedAnimal;
+        public int animalId;
+        public int animalVariation;
+        public string animalName;
+
+        public int carryablePrefabId;
+        public float positionX;
+        public float positionY;
+        public float positionZ;
+
+        public void Initialize(PickUpAndCarry myCarry) {
+            AnimalCarryBox component = myCarry.GetComponent<AnimalCarryBox>();
+            if (component) {
+                this.farmAnimalBox = true;
+                this.trappedAnimal = false;
+                this.animalId = component.animalId;
+                this.animalVariation = component.variation;
+                this.animalName = component.animalName;
+            }
+            TrappedAnimal component2 = myCarry.GetComponent<TrappedAnimal>();
+            if (component2) {
+                this.farmAnimalBox = false;
+                this.trappedAnimal = true;
+                this.animalId = component2.trappedAnimalId;
+                this.animalVariation = component2.trappedAnimalVariation;
+            }
+            this.carryablePrefabId = myCarry.prefabId;
+            this.positionX = myCarry.transform.position.x;
+            this.positionY = myCarry.transform.position.y;
+            this.positionZ = myCarry.transform.position.z;
+        }
+
+        public void Restore() {
+            TRTools.Log($"Restoring Carryable: {carryablePrefabId}");
+            NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[carryablePrefabId], new Vector3(positionX, positionY, positionZ), false);
+        }
+
+    }
+
     [Serializable]
     internal class ItemSaveData {
         public enum EquipLocation { Hat, Face, Shirt, Pants, Shoes }
 
-        public enum ItemLocations { Inventory, Equipped, Chest, Stash, World, HomeFloor, HomeWall, Letter, Buried, Dropped, Vehicle }
+        public enum ItemLocations { Inventory, Equipped, Chest, Stash, World, HomeFloor, HomeWall, Letter, Buried, Dropped, Vehicle, Carry }
         public enum WorldObject { OnTile, OnTop, Bridge, Path }
 
         public string uniqueID;
@@ -890,11 +1078,14 @@ namespace TinyResort {
         public SavedBuriedItems buriedItem = new SavedBuriedItems();
         public SavedDroppedItem droppedItem = new SavedDroppedItem();
         public SavedVehicle vehicle = new SavedVehicle();
-        
+        public SavedWallpaper wallpaper = new SavedWallpaper();
+        public SavedFlooring flooring = new SavedFlooring();
+        public SavedCarryable carry = new SavedCarryable();
+
         public ItemSaveData() { }
 
         public ItemSaveData StoreDroppedItem(DroppedItem toRemove, string ID) {
-            ItemSaveData tmpDroppedItem = new ItemSaveData(); 
+            ItemSaveData tmpDroppedItem = new ItemSaveData();
 
             tmpDroppedItem.droppedItem.myItemId = toRemove.myItemId;
             tmpDroppedItem.droppedItem.stackAmount = toRemove.stackAmount;
@@ -907,7 +1098,7 @@ namespace TinyResort {
             }
             tmpDroppedItem.droppedItem.saveDrop = toRemove.saveDrop;
             tmpDroppedItem.droppedItem.underground = toRemove.underground;
- 
+
             tmpDroppedItem.location = ItemLocations.Dropped;
             tmpDroppedItem.uniqueID = ID;
 
@@ -949,10 +1140,44 @@ namespace TinyResort {
             ItemSaveData tmpVehicle = new ItemSaveData();
             tmpVehicle.uniqueID = ID;
             tmpVehicle.location = ItemLocations.Vehicle;
-            tmpVehicle.vehicle.initialize(toRemove);
+            tmpVehicle.vehicle.Initialize(toRemove);
             return tmpVehicle;
         }
-        
+
+        public ItemSaveData StoreWallpaper(HouseDetails house, string ID) {
+            ItemSaveData tmpWallpaper = new ItemSaveData();
+            tmpWallpaper.wallpaper.wallpaperID = house.wall;
+            tmpWallpaper.wallpaper.houseX = house.xPos;
+            tmpWallpaper.wallpaper.houseY = house.yPos;
+            tmpWallpaper.uniqueID = ID;
+
+            tmpWallpaper.location = ItemLocations.HomeWall;
+
+            return tmpWallpaper;
+        }
+
+        public ItemSaveData StoreFlooring(HouseDetails house, string ID) {
+            ItemSaveData tmpFlooring = new ItemSaveData();
+            tmpFlooring.flooring.flooringID = house.floor;
+            tmpFlooring.flooring.houseX = house.xPos;
+            tmpFlooring.flooring.houseY = house.yPos;
+            tmpFlooring.uniqueID = ID;
+
+            tmpFlooring.location = ItemLocations.HomeFloor;
+
+            return tmpFlooring;
+        }
+
+        public ItemSaveData StoreCarry(PickUpAndCarry myCarry, string ID) {
+            ItemSaveData tmpCarry = new ItemSaveData();
+            tmpCarry.carry.Initialize(myCarry);
+            tmpCarry.uniqueID = ID;
+
+            tmpCarry.location = ItemLocations.Carry;
+
+            return tmpCarry;
+        }
+
         // For saving items that were in the player's inventory
         public ItemSaveData(TRCustomItem customItem, int slotNo, int stackSize) {
             uniqueID = customItem.uniqueID;
