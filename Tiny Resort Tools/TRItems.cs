@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using HarmonyLib;
+using Mirror;
 using UnityEngine;
 
 namespace TinyResort {
@@ -16,21 +18,22 @@ namespace TinyResort {
         * (Some Work Done)Catalogue support(Mostly need to keep track of catalogue, its safe already)
         * (Maybe) Quick creating furniture.
         * (No Work Done)Carryable Support
-        * (No Work Done)Mail Support -- Need to remove item from mailbox if it is a modded item.How do we test this?
         * (No Work Done)Trap Support(maybe?)
         * (No Work Done)Vehicle Support
         * (No Work Done)Fences Support - Replace modded fence with a base game fence to make sure the next day fence calculations run correctly.
         * (No Work Done)Buried Objects     
         */
 
-        private static Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
-        private static Dictionary<string, TRCustomItem> customItems = new Dictionary<string, TRCustomItem>();
-        private static Dictionary<int, TRCustomItem> customItemsByID = new Dictionary<int, TRCustomItem>();
-        private static Dictionary<int, TRCustomItem> customTileObjectByID = new Dictionary<int, TRCustomItem>();
-        private static Dictionary<int, TRCustomItem> customTileTypeByID = new Dictionary<int, TRCustomItem>();
+        private static readonly Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
+        internal static readonly Dictionary<string, TRCustomItem> customItems = new Dictionary<string, TRCustomItem>();
+        internal static readonly Dictionary<int, TRCustomItem> customItemsByID = new Dictionary<int, TRCustomItem>();
+        private static readonly Dictionary<int, TRCustomItem> customTileObjectByID = new Dictionary<int, TRCustomItem>();
+        private static readonly Dictionary<int, TRCustomItem> customTileTypeByID = new Dictionary<int, TRCustomItem>();
 
         private static List<ItemSaveData> savedItemData = new List<ItemSaveData>();
-        private static TRModData Data;
+        internal static List<ItemSaveData> savedDroppedItems = new List<ItemSaveData>();
+
+        internal static TRModData Data;
 
         private static List<InventoryItem> itemList;
         private static List<TileObject> tileObjectList;
@@ -43,14 +46,20 @@ namespace TinyResort {
         private static List<TileObject> tileObjectDefaultList;
         private static List<TileObjectSettings> tileObjectSettingsDefaultList;
 
+        internal static bool _droppedItemsEnabled = false;
         internal static bool customItemsInitialized;
 
+
+        internal static void RemoveModdedSavedDrops() {
+            
+        }
+        
         // TODO: Create LetterType template for Mods
         // TODO: Create more robust system for developers to send user mail
         // TODO: Look at ShowLetter function
-        public static void SendMail(TRCustomItem itemToSend) { MailManager.manage.mailInBox.Add(new Letter(1, Letter.LetterType.AnimalTrapReturn, itemToSend.invItem.getItemId(), 5)); }
+        public static void SendMail(TRCustomItem itemToSend) => MailManager.manage.mailInBox.Add(new Letter(1, Letter.LetterType.AnimalTrapReturn, itemToSend.invItem.getItemId(), 5));
 
-        public static void SendMailTomorrow(TRCustomItem itemToSend) { MailManager.manage.tomorrowsLetters.Add(new Letter(1, Letter.LetterType.AnimalTrapReturn, itemToSend.invItem.getItemId(), 5)); }
+        public static void SendMailTomorrow(TRCustomItem itemToSend) => MailManager.manage.tomorrowsLetters.Add(new Letter(1, Letter.LetterType.AnimalTrapReturn, itemToSend.invItem.getItemId(), 5));
 
         internal static void Initialize() {
             Data = TRData.Subscribe("TR.CustomItems");
@@ -67,13 +76,13 @@ namespace TinyResort {
 
         /// <returns>Whether or not the item exists.</returns>
         public static bool DoesItemExist(int itemID) {
-            if (itemDetails.Count <= 0) { InitializeItemDetails(); }
+            if (itemDetails.Count <= 0) InitializeItemDetails();
             return itemID >= 0 && itemDetails.ContainsKey(itemID);
         }
 
         /// <returns>The details for an item with the given item ID.</returns>
         public static InventoryItem GetItemDetails(int itemID) {
-            if (itemDetails.Count <= 0) { InitializeItemDetails(); }
+            if (itemDetails.Count <= 0) InitializeItemDetails();
             if (itemID < 0) {
                 TRTools.LogError("Attempting to get item details for item with ID of " + itemID + " which does not exist.");
                 return null;
@@ -84,7 +93,7 @@ namespace TinyResort {
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, string uniqueItemID) {
 
             if (customItemsInitialized) {
-                TRTools.LogError($"Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
+                TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
                 return null;
             }
 
@@ -114,13 +123,12 @@ namespace TinyResort {
             // Add custom items to existing item lists
             foreach (var item in customItems) {
 
-                if (item.Value.tileTypes) {
+                if (item.Value.tileTypes)
                     if (item.Value.tileTypes.isPath) {
                         tileTypesList.Add(item.Value.tileTypes);
                         item.Value.invItem.placeableTileType = tileTypesList.Count - 1;
                         customTileTypeByID[tileTypesList.Count - 1] = item.Value;
                     }
-                }
 
                 // Add custom inventory item
                 itemList.Add(item.Value.invItem);
@@ -170,9 +178,9 @@ namespace TinyResort {
         internal static bool DefaultSize() {
             TRTools.Log($"Items: {Inventory.inv.allItems.Length} | Objects: {WorldManager.manageWorld.allObjects.Length} & {WorldManager.manageWorld.allObjectSettings.Length} | Catalogue: {CatalogueManager.manage.collectedItem.Length}");
 
-            Array.Resize<InventoryItem>(ref Inventory.inv.allItems, allItemsDefaultList.Count);
-            Array.Resize<TileObject>(ref WorldManager.manageWorld.allObjects, tileObjectDefaultList.Count);
-            Array.Resize<TileObjectSettings>(ref WorldManager.manageWorld.allObjectSettings, tileObjectSettingsDefaultList.Count);
+            Array.Resize(ref Inventory.inv.allItems, allItemsDefaultList.Count);
+            Array.Resize(ref WorldManager.manageWorld.allObjects, tileObjectDefaultList.Count);
+            Array.Resize(ref WorldManager.manageWorld.allObjectSettings, tileObjectSettingsDefaultList.Count);
             Array.Resize(ref CatalogueManager.manage.collectedItem, allItemsDefaultList.Count);
 
             Inventory.inv.allItems = allItemsDefaultList.ToArray();
@@ -185,13 +193,28 @@ namespace TinyResort {
 
         internal static void UnloadCustomItems() {
 
-            TRTools.Log($"Remvoing Items");
+            TRTools.Log("Remvoing Items");
             savedItemData.Clear();
+
+            #region ItemsOnGround
+
+            var floatingItems = WorldManager.manageWorld.itemsOnGround;
+            List<DroppedItem> tmpDroppedItems = new List<DroppedItem>();
+            foreach (var item in floatingItems) {
+                if (customItemsByID.ContainsKey(item.myItemId) && !item.saveDrop) { TRTools.Log($"Found Modded Item Not Scheduled For Save"); }
+                if (customItemsByID.ContainsKey(item.myItemId) && item.saveDrop) {
+                    tmpDroppedItems.Add(item);
+                    TRTools.Log($"Found a dropped item {item.myItemId} | House: {item.inside}");
+                }
+            }
+            if (tmpDroppedItems.Count > 0) UnloadFromDropped(tmpDroppedItems);
+            else { TRTools.Log($"Found no dropped items"); }
+            #endregion
 
             #region Inventory
 
             // Unloads (and saves) items from the player's inventory
-            for (int i = 0; i < Inventory.inv.invSlots.Length; i++) {
+            for (var i = 0; i < Inventory.inv.invSlots.Length; i++) {
                 var currentSlot = Inventory.inv.invSlots[i];
                 if (customItemsByID.ContainsKey(currentSlot.itemNo)) {
                     TRTools.Log($"Found Custom Item: {customItemsByID[currentSlot.itemNo].invItem.itemName}");
@@ -204,16 +227,16 @@ namespace TinyResort {
 
             #region Stashes
 
-            for (int j = 0; j < ContainerManager.manage.privateStashes.Count; j++) {
+            for (var j = 0; j < ContainerManager.manage.privateStashes.Count; j++) {
                 var stash = ContainerManager.manage.privateStashes[j];
-                for (int i = 0; i < stash.itemIds.Length; i++) {
+                for (var i = 0; i < stash.itemIds.Length; i++)
+
                     //TRTools.Log($"Found Item: {stash.itemIds[i]}");
                     if (customItemsByID.ContainsKey(stash.itemIds[i])) {
                         savedItemData.Add(new ItemSaveData(customItemsByID[stash.itemIds[i]], stash.itemStacks[i], j, i));
                         stash.itemIds[i] = -1;
                         stash.itemStacks[i] = 0;
                     }
-                }
             }
 
             #endregion
@@ -252,14 +275,28 @@ namespace TinyResort {
 
             var CurrentMail = MailManager.manage.mailInBox;
             var TomorrowsMail = MailManager.manage.tomorrowsLetters;
+            var tmpMailBox = new List<Letter>();
+            var tmpTomorrowMailBox = new List<Letter>();
 
             foreach (var letter in CurrentMail) {
-                if (customItemsByID.ContainsKey(letter.itemOriginallAttached) || customItemsByID.ContainsKey(letter.itemAttached)) { TRTools.Log($"Found mail with a custom Item {customItemsByID[letter.itemOriginallAttached].invItem.itemName}"); }
+                if (customItemsByID.ContainsKey(letter.itemOriginallAttached) || customItemsByID.ContainsKey(letter.itemAttached)) { tmpMailBox.Add(letter); }
             }
-
             foreach (var letter in TomorrowsMail) {
-                if (customItemsByID.ContainsKey(letter.itemOriginallAttached) || customItemsByID.ContainsKey(letter.itemAttached)) { TRTools.Log($"Found mail for tomorrow with a custom Item {customItemsByID[letter.itemOriginallAttached].invItem.itemName}"); }
+                if (customItemsByID.ContainsKey(letter.itemOriginallAttached) || customItemsByID.ContainsKey(letter.itemAttached)) { tmpTomorrowMailBox.Add(letter); }
             }
+            if (tmpMailBox.Count > 0) UnloadFromMail(tmpMailBox, false);
+            if (tmpTomorrowMailBox.Count > 0) UnloadFromMail(tmpTomorrowMailBox, true);
+
+            #endregion
+
+            #region Buried Items
+
+            var buriedItems = BuriedManager.manage.allBuriedItems;
+            List<BuriedItem> tmpBuriedItems = new List<BuriedItem>();
+            foreach (var item in buriedItems) {
+                if (customItemsByID.ContainsKey(item.itemId)) { tmpBuriedItems.Add(item); }
+            }
+            UnloadFromBuried(tmpBuriedItems);
 
             #endregion
 
@@ -271,17 +308,14 @@ namespace TinyResort {
             // Go through every tile on the world map and look for objects that are custom items to unload them
             // This prevents corrupted save data if the player removes the mod and tries to load
             var tileTypeMap = WorldManager.manageWorld.tileTypeMap;
-            for (int x = 0; x < tileTypeMap.GetLength(0); x++) {
-                for (int y = 0; y < tileTypeMap.GetLength(1); y++) {
-                    if (tileTypeMap[x, y] > -1) {
-                        if (WorldManager.manageWorld.tileTypes[tileTypeMap[x, y]].isPath) {
+            for (var x = 0; x < tileTypeMap.GetLength(0); x++) {
+                for (var y = 0; y < tileTypeMap.GetLength(1); y++)
+                    if (tileTypeMap[x, y] > -1)
+                        if (WorldManager.manageWorld.tileTypes[tileTypeMap[x, y]].isPath)
                             if (customTileTypeByID.ContainsKey(tileTypeMap[x, y])) {
                                 UnloadFromTile(x, y, tileTypeMap[x, y]);
                                 tileTypeMap[x, y] = 0;
                             }
-                        }
-                    }
-                }
             }
 
             #endregion
@@ -290,16 +324,16 @@ namespace TinyResort {
 
             var allObjects = WorldManager.manageWorld.allObjects;
             var tileMap = WorldManager.manageWorld.onTileMap;
-            for (int x = 0; x < tileMap.GetLength(0); x++) {
-                for (int y = 0; y < tileMap.GetLength(1); y++) {
+            for (var x = 0; x < tileMap.GetLength(0); x++) {
+                for (var y = 0; y < tileMap.GetLength(1); y++) {
                     if (tileMap[x, y] <= -1) continue;
 
                     #region OnTopOf Outside
 
                     var onTopOfTile = ItemOnTopManager.manage.getAllItemsOnTop(x, y, null);
 
-                    for (int i = 0; i < onTopOfTile.Length; i++) {
-                        if (customTileObjectByID.ContainsKey(onTopOfTile[i].itemId)) {
+                    for (var i = 0; i < onTopOfTile.Length; i++)
+                        if (customTileObjectByID.ContainsKey(onTopOfTile[i].itemId))
                             UnloadWorldObjectOnTop(
                                 onTopOfTile[i].itemId, x, y,
                                 -1, -1,
@@ -307,8 +341,6 @@ namespace TinyResort {
                                 onTopOfTile[i].itemStatus,
                                 true, onTopOfTile[i].onTopPosition
                             );
-                        }
-                    }
 
                     #endregion
 
@@ -335,10 +367,13 @@ namespace TinyResort {
                         var bridgeLength = -1;
                         if (allObjects[tileMap[x, y]].tileObjectBridge) {
                             type = ItemSaveData.WorldObject.Bridge;
-                            if (rotation == 1) { bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, -1); }
-                            else if (rotation == 2) { bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, -1, 0); }
-                            else if (rotation == 3) { bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, 1); }
-                            else if (rotation == 4) { bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 1, 0); }
+                            if (rotation == 1)
+                                bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, -1);
+                            else if (rotation == 2)
+                                bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, -1);
+                            else if (rotation == 3)
+                                bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, 1);
+                            else if (rotation == 4) bridgeLength = customTileObjectByID[tileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 1);
                         }
 
                         UnloadWorldObject(tileMap[x, y], x, y, -1, -1, rotation, type, bridgeLength);
@@ -357,7 +392,7 @@ namespace TinyResort {
 
                         // PlaceItemOnTop is untested
                         // Needs to get items on top of everything BEFORE removing any items. 
-                        for (int i = 0; i < onTopOfTileInside.Length; i++) {
+                        for (var i = 0; i < onTopOfTileInside.Length; i++)
                             if (customTileObjectByID.ContainsKey(onTopOfTileInside[i].getTileObjectId())) {
                                 TRTools.Log($"Found {customTileObjectByID[onTopOfTileInside[i].getTileObjectId()].invItem.itemName}");
 
@@ -372,12 +407,11 @@ namespace TinyResort {
                                     true, onTopOfTileInside[i].onTopPosition
                                 );
                             }
-                        }
 
                         #endregion
 
-                        for (int houseX = 0; houseX < houseDetails.houseMapOnTile.GetLength(0); houseX++) {
-                            for (int houseY = 0; houseY < houseDetails.houseMapOnTile.GetLength(1); houseY++) {
+                        for (var houseX = 0; houseX < houseDetails.houseMapOnTile.GetLength(0); houseX++) {
+                            for (var houseY = 0; houseY < houseDetails.houseMapOnTile.GetLength(1); houseY++) {
 
                                 // If nothing is on this tile, ignore it
                                 var tileObjectID = houseDetails.houseMapOnTile[houseX, houseY];
@@ -411,26 +445,62 @@ namespace TinyResort {
 
             #endregion
 
-            var done = DefaultSize();
-            if (done) Data.SetValue("CurrentItemList", savedItemData);
+            DefaultSize();
+            Data.SetValue("CurrentItemList", savedItemData);
+            if (_droppedItemsEnabled) Data.SetValue("DroppedItemList", savedDroppedItems);
         }
 
-        //        public ItemSaveData(TRCustomItem customItem, WorldObject type, int objectXPos, int objectYPos, int tileType) {
+        internal static void UnloadFromDropped(List<DroppedItem> toRemove) {
+            foreach (var item in toRemove) {
+                TRTools.Log($"Attempting to add to ItemSaveData List");
 
-        internal static void UnloadFromMail() { }
+                savedDroppedItems.Add(new ItemSaveData().StoreDroppedItem(item, customItemsByID[item.myItemId].uniqueID));
+                TRTools.Log($"Attempting to set item to false");
 
-        internal static void UnloadFromTile(int objectXPos, int objectYPos, int tileType) { savedItemData.Add(new ItemSaveData(customTileTypeByID[tileType], ItemSaveData.WorldObject.Path, objectXPos, objectYPos, tileType)); }
+                item.saveDrop = false;
+
+                //WorldManager.manageWorld.itemsOnGround.Remove(item);
+                TRTools.Log($"Deleted Item From List");
+
+                //NetworkMapSharer.share.localChar.myPickUp.CmdPickUp(item.netId);
+            }
+        }
+
+        internal static void UnloadFromBuried(List<BuriedItem> toRemove) {
+            foreach (var item in toRemove) {
+                savedItemData.Add(new ItemSaveData().StoreBuriedItem(item, customItemsByID[item.itemId].uniqueID));
+                BuriedManager.manage.allBuriedItems.Remove(item);
+                WorldManager.manageWorld.onTileMap[item.xPos, item.yPos] = -1;
+            }
+        }
+
+        internal static void UnloadFromMail(List<Letter> toRemove, bool tomorrow = false) {
+
+            if (!tomorrow) {
+                foreach (var letter in toRemove) {
+                    savedItemData.Add(new ItemSaveData().StoreLetter(letter, tomorrow, customItemsByID[letter.itemAttached].uniqueID));
+                    MailManager.manage.mailInBox.Remove(letter);
+                }
+            }
+            else {
+                foreach (var letter in toRemove) {
+                    savedItemData.Add(new ItemSaveData().StoreLetter(letter, tomorrow, customItemsByID[letter.itemAttached].uniqueID));
+                    MailManager.manage.tomorrowsLetters.Remove(letter);
+                }
+            }
+        }
+
+        internal static void UnloadFromTile(int objectXPos, int objectYPos, int tileType) => savedItemData.Add(new ItemSaveData(customTileTypeByID[tileType], ItemSaveData.WorldObject.Path, objectXPos, objectYPos, tileType));
 
         internal static void UnloadFromChest(ChestPlaceable chestPlaceable, int objectXPos, int objectYPos, int houseXPos, int houseYPos) {
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             chestPlaceable.checkIfEmpty(objectXPos, objectYPos, houseDetails);
             var chest = ContainerManager.manage.activeChests.First(p => p.xPos == objectXPos && p.yPos == objectYPos && p.inside == (houseDetails != null));
-            for (int z = 0; z < chest.itemIds.Length; z++) {
+            for (var z = 0; z < chest.itemIds.Length; z++)
                 if (customItemsByID.ContainsKey(chest.itemIds[z])) {
                     savedItemData.Add(new ItemSaveData(customItemsByID[chest.itemIds[z]], z, chest.itemStacks[z], objectXPos, objectYPos, houseXPos, houseYPos));
                     ContainerManager.manage.changeSlotInChest(objectXPos, objectYPos, z, -1, 0, houseDetails);
                 }
-            }
         }
 
         internal static void UnloadWorldObject(int tileObjectID, int objectXPos, int objectYPos, int houseXPos, int houseYPos, int rotation, ItemSaveData.WorldObject type = ItemSaveData.WorldObject.OnTile, int bridgeLength = -1) {
@@ -455,7 +525,7 @@ namespace TinyResort {
                 customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObject(objectXPos, objectYPos, rotation);
                 WorldManager.manageWorld.onTileMap[objectXPos, objectYPos] = -1;
                 WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = -1;
-                WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(objectXPos, objectYPos, false);
+                WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(objectXPos, objectYPos);
                 NetworkNavMesh.nav.updateChunkInUse();
             }
         }
@@ -470,33 +540,32 @@ namespace TinyResort {
             );
             if (houseDetails != null) {
                 ItemOnTopManager.manage.removeItemOnTop(ItemOnTopManager.manage.getItemOnTopInPosition(onTopPos, objectXPos, objectYPos, HouseManager.manage.getHouseInfo(HouseXPos, HouseYPos)));
-                DisplayPlayerHouseTiles displayPlayerHouseTiles = HouseManager.manage.findHousesOnDisplay(HouseXPos, HouseYPos);
-                if (displayPlayerHouseTiles && displayPlayerHouseTiles.tileObjectsInHouse[objectXPos, objectYPos]) { displayPlayerHouseTiles.tileObjectsInHouse[objectXPos, objectYPos].checkOnTopInside(objectXPos, objectYPos, HouseManager.manage.getHouseInfo(HouseXPos, HouseYPos)); }
+                var displayPlayerHouseTiles = HouseManager.manage.findHousesOnDisplay(HouseXPos, HouseYPos);
+                if (displayPlayerHouseTiles && displayPlayerHouseTiles.tileObjectsInHouse[objectXPos, objectYPos]) displayPlayerHouseTiles.tileObjectsInHouse[objectXPos, objectYPos].checkOnTopInside(objectXPos, objectYPos, HouseManager.manage.getHouseInfo(HouseXPos, HouseYPos));
             }
             else {
                 ItemOnTopManager.manage.removeItemOnTop(ItemOnTopManager.manage.getItemOnTopInPosition(onTopPos, objectXPos, objectYPos, null));
                 WorldManager.manageWorld.unlockClientTile(objectXPos, objectYPos);
-                WorldManager.manageWorld.refreshAllChunksInUse(objectXPos, objectYPos, false);
+                WorldManager.manageWorld.refreshAllChunksInUse(objectXPos, objectYPos);
 
             }
         }
 
         internal static void LoadCustomItems() {
             RestoreModSize();
-            TRTools.Log($"Re-adding Items");
+            TRTools.Log("Re-adding Items");
 
             // This should put OnTop to the end of the list and process them last.
-            savedItemData = savedItemData.OrderBy(i => i.type == ItemSaveData.WorldObject.OnTop).ToList();
 
             // If not loaded yet, load the custom items that were in the player's inventory or chests
-            if (savedItemData.Count == 0) { savedItemData = (List<ItemSaveData>)Data.GetValue("CurrentItemList", new List<ItemSaveData>()); }
+            if (savedItemData.Count == 0) savedItemData = (List<ItemSaveData>)Data.GetValue("CurrentItemList", new List<ItemSaveData>());
+            savedItemData = savedItemData.OrderBy(i => i.type == ItemSaveData.WorldObject.OnTop).ToList();
 
             if (savedItemData.Count > 0) {
                 var tmpHouseDetails = new HouseDetails();
                 tmpHouseDetails = null;
                 foreach (var item in savedItemData) {
                     if (!customItems.TryGetValue(item.uniqueID, out var customItem)) continue;
-                    TRTools.Log($"Item Found: {customItem.invItem.itemName}");
 
                     switch (item.location) {
 
@@ -562,7 +631,7 @@ namespace TinyResort {
                                         customItem.tileObject.placeMultiTiledObject(item.ObjectXPos, item.ObjectYPos, item.rotation);
                                         WorldManager.manageWorld.onTileMap[item.ObjectXPos, item.ObjectYPos] = customItem.tileObject.tileObjectId;
                                         WorldManager.manageWorld.onTileStatusMap[item.ObjectXPos, item.ObjectYPos] = 0;
-                                        WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(item.ObjectXPos, item.ObjectYPos, false);
+                                        WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(item.ObjectXPos, item.ObjectYPos);
 
                                         //NetworkNavMesh.nav.updateChunkInUse();
                                         WorldManager.manageWorld.unlockClientTile(item.ObjectXPos, item.ObjectYPos);
@@ -574,7 +643,7 @@ namespace TinyResort {
                                     tmpHouseDetails = item.HouseXPos == -1 ? null : HouseManager.manage.getHouseInfo(item.HouseXPos, item.HouseYPos);
                                     ItemOnTopManager.manage.placeItemOnTop(customItem.tileObject.tileObjectId, item.onTopPos, item.status, item.rotation, item.ObjectXPos, item.ObjectYPos, tmpHouseDetails);
                                     WorldManager.manageWorld.unlockClientTile(item.ObjectXPos, item.ObjectYPos);
-                                    WorldManager.manageWorld.refreshAllChunksInUse(item.ObjectXPos, item.ObjectYPos, false);
+                                    WorldManager.manageWorld.refreshAllChunksInUse(item.ObjectXPos, item.ObjectYPos);
 
                                     // Must check if localChar is null because it will fail on first load since HouseManager doesn't exist
                                     if (NetworkMapSharer.share.localChar) {
@@ -588,18 +657,29 @@ namespace TinyResort {
                                 case ItemSaveData.WorldObject.Bridge:
                                     TRTools.Log($"Starting Position: ({item.ObjectXPos}, {item.ObjectYPos}) | Rotation: {item.rotation} | Length: {item.bridgeLength}");
                                     customItem.tileObject.placeBridgeTiledObject(item.ObjectXPos, item.ObjectYPos, item.rotation, item.bridgeLength);
-                                    WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(item.ObjectXPos, item.ObjectYPos, false);
+                                    WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(item.ObjectXPos, item.ObjectYPos);
                                     WorldManager.manageWorld.unlockClientTile(item.ObjectXPos, item.ObjectYPos);
 
                                     break;
 
                                 case ItemSaveData.WorldObject.Path:
                                     WorldManager.manageWorld.tileTypeMap[item.ObjectXPos, item.ObjectYPos] = item.tileType;
-                                    WorldManager.manageWorld.refreshAllChunksInUse(item.ObjectXPos, item.ObjectYPos, false);
+                                    WorldManager.manageWorld.refreshAllChunksInUse(item.ObjectXPos, item.ObjectYPos);
                                     break;
                             }
                             break;
 
+                        case ItemSaveData.ItemLocations.Letter:
+                            if (!item.letter.tomorrow) { MailManager.manage.mailInBox.Add(item.letter.RestoreLetter()); }
+                            else { MailManager.manage.tomorrowsLetters.Add(item.letter.RestoreLetter()); }
+                            break;
+
+                        case ItemSaveData.ItemLocations.Buried:
+                            WorldManager.manageWorld.onTileMap[item.buriedItem.xP, item.buriedItem.yP] = 30;
+                            BuriedManager.manage.allBuriedItems.Add(item.buriedItem.RestoreBuriedItem());
+                            break;
+
+                        
                         case ItemSaveData.ItemLocations.HomeFloor: break;
                         case ItemSaveData.ItemLocations.HomeWall: break;
 
@@ -626,43 +706,96 @@ namespace TinyResort {
         public TRCustomItem(string assetBundlePath) {
 
             TRTools.Log("Attemping Load: Asset Bundle.");
-            this.assetBundle = TRAssets.LoadBundle(assetBundlePath);
-            TRTools.Log($"Loaded: Asset Bundle -- {this.assetBundle}.");
+            assetBundle = TRAssets.LoadBundle(assetBundlePath);
+            TRTools.Log($"Loaded: Asset Bundle -- {assetBundle}.");
 
-            var AllAssets = this.assetBundle.LoadAllAssets<GameObject>();
-            for (int i = 0; i < AllAssets.Length; i++) {
+            var AllAssets = assetBundle.LoadAllAssets<GameObject>();
+            for (var i = 0; i < AllAssets.Length; i++) {
 
-                if (this.invItem == null) {
+                if (invItem == null) {
                     TRTools.Log("Attemping Load: InvItem.");
-                    this.invItem = AllAssets[i].GetComponent<InventoryItem>();
-                    TRTools.Log($"Loaded: InvItem -- {this.invItem}.");
+                    invItem = AllAssets[i].GetComponent<InventoryItem>();
+                    TRTools.Log($"Loaded: InvItem -- {invItem}.");
                 }
-                if (this.tileObject == null) {
+                if (tileObject == null) {
                     TRTools.Log("Attemping Load: TileObject.");
-                    this.tileObject = AllAssets[i].GetComponent<TileObject>();
-                    TRTools.Log($"Loaded: TileObject -- {this.tileObject}.");
+                    tileObject = AllAssets[i].GetComponent<TileObject>();
+                    TRTools.Log($"Loaded: TileObject -- {tileObject}.");
                 }
-                if (this.tileObjectSettings == null) {
+                if (tileObjectSettings == null) {
                     TRTools.Log("Attemping Load: TileObjectSettings.");
-                    this.tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>();
-                    TRTools.Log($"Loaded: TileObjectSettings -- {this.tileObjectSettings}.");
+                    tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>();
+                    TRTools.Log($"Loaded: TileObjectSettings -- {tileObjectSettings}.");
                 }
-                if (this.tileTypes == null) {
+                if (tileTypes == null) {
                     TRTools.Log("Attemping Load: tileTypes.");
-                    this.tileTypes = AllAssets[i].GetComponent<TileTypes>();
-                    TRTools.Log($"Loaded: tileTypes -- {this.tileTypes}.");
+                    tileTypes = AllAssets[i].GetComponent<TileTypes>();
+                    TRTools.Log($"Loaded: tileTypes -- {tileTypes}.");
                 }
             }
 
-            this.assetBundle.Unload(false);
+            assetBundle.Unload(false);
         }
+    }
+
+    [Serializable]
+    internal class SavedLetter {
+        public int itemAttached;
+        public int itemOriginallAttached;
+        public int stackOfItemAttached;
+        public Letter.LetterType myType;
+        public int seasonSent;
+        public int letterTemplateNo;
+        public int sentById;
+        public bool hasBeenRead;
+        public bool tomorrow;
+
+        public Letter RestoreLetter() {
+            Letter tmp = new Letter(this.sentById, this.myType, this.itemAttached, this.stackOfItemAttached);
+            tmp.itemOriginallAttached = this.itemOriginallAttached;
+            tmp.seasonSent = this.seasonSent;
+            tmp.hasBeenRead = this.hasBeenRead;
+            return tmp;
+        }
+    }
+
+    [Serializable]
+    internal class SavedDroppedItem {
+        // Cant serialize HouseDetails
+        // House data isnt saved right now...
+        public bool inside;
+        public int myItemId;
+        public int stackAmount;
+        public float desiredPositionX;
+        public float desiredPositionY;
+        public float desiredPositionZ;
+        public int houseX = -1;
+        public int houseY = -1;
+        public bool saveDrop;
+        public bool underground;
+
+        public void RestoreDroppedItem() {
+            DropToSave tmpToDrop = new DropToSave(this.myItemId, this.stackAmount, new Vector3(this.desiredPositionX, this.desiredPositionY, this.desiredPositionZ), this.houseX, this.houseY);
+            tmpToDrop.spawnDrop();
+        }
+
+    }
+
+    [Serializable]
+    internal class SavedBuriedItems {
+        public int itemId;
+        public int stack;
+        public int xP;
+        public int yP;
+
+        public BuriedItem RestoreBuriedItem() { return new BuriedItem(this.itemId, this.stack, this.xP, this.yP); }
     }
 
     [Serializable]
     internal class ItemSaveData {
         public enum EquipLocation { Hat, Face, Shirt, Pants, Shoes }
 
-        public enum ItemLocations { Inventory, Equipped, Chest, Stash, World, HomeFloor, HomeWall }
+        public enum ItemLocations { Inventory, Equipped, Chest, Stash, World, HomeFloor, HomeWall, Letter, Buried, Dropped }
         public enum WorldObject { OnTile, OnTop, Bridge, Path }
 
         public string uniqueID;
@@ -682,18 +815,88 @@ namespace TinyResort {
         public int tileType;
         public int bridgeLength;
 
+        public SavedLetter letter = new SavedLetter();
+        public SavedBuriedItems buriedItem = new SavedBuriedItems();
+        public SavedDroppedItem droppedItem = new SavedDroppedItem();
+
+        public ItemSaveData() { }
+
+        public ItemSaveData StoreDroppedItem(DroppedItem toRemove, string ID) {
+            ItemSaveData tmpDroppedItem = new ItemSaveData(); 
+
+            TRTools.Log($"Attempting to add data to SavedDroppedItem");
+            tmpDroppedItem.droppedItem.myItemId = toRemove.myItemId;
+            TRTools.Log($"Attempting to add data to myItemId");
+            tmpDroppedItem.droppedItem.stackAmount = toRemove.stackAmount;
+            TRTools.Log($"Attempting to add data to stackAmount");
+            tmpDroppedItem.droppedItem.desiredPositionX = toRemove.desiredPos.x;
+            TRTools.Log($"Attempting to add data to desiredPos X");
+            tmpDroppedItem.droppedItem.desiredPositionY = toRemove.desiredPos.y;
+            TRTools.Log($"Attempting to add data to desiredPos Y");
+            tmpDroppedItem.droppedItem.desiredPositionZ = toRemove.desiredPos.z;
+            TRTools.Log($"Attempting to add data to desiredPos Z");
+            if (toRemove.inside != null) {
+                tmpDroppedItem.droppedItem.houseX = toRemove.inside.xPos;
+                TRTools.Log($"Attempting to add data to xPos");
+                tmpDroppedItem.droppedItem.houseY = toRemove.inside.yPos;
+                TRTools.Log($"Attempting to add data to yPos");
+            }
+            tmpDroppedItem.droppedItem.saveDrop = toRemove.saveDrop;
+            TRTools.Log($"Attempting to add data to saveDrop");
+            tmpDroppedItem.droppedItem.underground = toRemove.underground;
+            TRTools.Log($"Attempting to add data to underground");
+ 
+            tmpDroppedItem.location = ItemLocations.Dropped;
+            tmpDroppedItem.uniqueID = ID;
+            TRTools.Log($"Added data to SavedDroppedItem");
+
+            return tmpDroppedItem;
+        }
+
+        public ItemSaveData StoreLetter(Letter toRemove, bool tomorrow, string uniqueID) {
+            ItemSaveData storeLetter = new ItemSaveData();
+
+            storeLetter.letter.itemAttached = toRemove.itemAttached;
+            storeLetter.letter.itemOriginallAttached = toRemove.itemOriginallAttached;
+            storeLetter.letter.stackOfItemAttached = toRemove.stackOfItemAttached;
+            storeLetter.letter.myType = toRemove.myType;
+            storeLetter.letter.seasonSent = toRemove.seasonSent;
+            storeLetter.letter.letterTemplateNo = toRemove.letterTemplateNo;
+            storeLetter.letter.sentById = toRemove.sentById;
+            storeLetter.letter.hasBeenRead = toRemove.hasBeenRead;
+            storeLetter.location = ItemLocations.Letter;
+            storeLetter.letter.tomorrow = tomorrow;
+
+            storeLetter.uniqueID = uniqueID;
+            return storeLetter;
+        }
+
+        public ItemSaveData StoreBuriedItem(BuriedItem toRemove, string uniqueID) {
+            ItemSaveData tmpBuriedItem = new ItemSaveData();
+
+            tmpBuriedItem.buriedItem.itemId = toRemove.itemId;
+            tmpBuriedItem.buriedItem.stack = toRemove.stackedAmount;
+            tmpBuriedItem.buriedItem.xP = toRemove.xPos;
+            tmpBuriedItem.buriedItem.yP = toRemove.yPos;
+
+            tmpBuriedItem.location = ItemLocations.Buried;
+            tmpBuriedItem.uniqueID = uniqueID;
+            return tmpBuriedItem;
+        }
+
         // For saving items that were in the player's inventory
         public ItemSaveData(TRCustomItem customItem, int slotNo, int stackSize) {
-            this.uniqueID = customItem.uniqueID;
-            this.location = ItemLocations.Inventory;
+            uniqueID = customItem.uniqueID;
+            location = ItemLocations.Inventory;
             this.slotNo = slotNo;
             this.stackSize = stackSize;
+
         }
 
         // For saving items that were in a chest
         public ItemSaveData(TRCustomItem customItem, int slotNo, int stackSize, int ObjectXPos, int ObjectYPos, int HouseXPos, int HouseYPos) {
-            this.uniqueID = customItem.uniqueID;
-            this.location = ItemLocations.Chest;
+            uniqueID = customItem.uniqueID;
+            location = ItemLocations.Chest;
 
             this.stackSize = stackSize;
             this.slotNo = slotNo;
@@ -709,8 +912,8 @@ namespace TinyResort {
 
         // For saving items that out in the world
         public ItemSaveData(TRCustomItem customItem, int ObjectXPos, int ObjectYPos, int rotation, WorldObject type, int HouseXPos, int HouseYPos, int status = -1, int onTopPos = -1, int bridgeLength = -1) {
-            this.uniqueID = customItem.uniqueID;
-            this.location = ItemLocations.World;
+            uniqueID = customItem.uniqueID;
+            location = ItemLocations.World;
 
             // Type of Object: OnTile, OnTop, Bridge
             this.type = type;
@@ -735,8 +938,8 @@ namespace TinyResort {
 
         // Saving items in a stash
         public ItemSaveData(TRCustomItem customItem, int stackSize, int stashPostition, int slotNo) {
-            this.uniqueID = customItem.uniqueID;
-            this.location = ItemLocations.Stash;
+            uniqueID = customItem.uniqueID;
+            location = ItemLocations.Stash;
             this.stackSize = stackSize;
             this.stashPostition = stashPostition;
             this.slotNo = slotNo;
@@ -744,18 +947,18 @@ namespace TinyResort {
 
         // Saving equipment slots
         public ItemSaveData(TRCustomItem customItem, EquipLocation equipment, int stackSize) {
-            this.uniqueID = customItem.uniqueID;
-            this.location = ItemLocations.Equipped;
+            uniqueID = customItem.uniqueID;
+            location = ItemLocations.Equipped;
             this.equipment = equipment;
             this.stackSize = stackSize;
         }
 
         public ItemSaveData(TRCustomItem customItem, WorldObject type, int objectXPos, int objectYPos, int tileType) {
-            this.uniqueID = customItem.uniqueID;
+            uniqueID = customItem.uniqueID;
             this.tileType = tileType;
-            this.location = ItemLocations.World;
-            this.ObjectXPos = objectXPos;
-            this.ObjectYPos = objectYPos;
+            location = ItemLocations.World;
+            ObjectXPos = objectXPos;
+            ObjectYPos = objectYPos;
             this.type = type;
         }
     }

@@ -119,7 +119,5 @@ namespace TinyResort {
 
             if (Input.GetKey(KeyCode.LeftAlt)) __instance.InvDescriptionText.text += DebugMessage;
         }
-
     }
-
 }
