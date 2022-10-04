@@ -24,6 +24,8 @@ namespace TinyResort {
         TODO: Fix catalogue history
         TODO: (TANY) Update Sending Mail to be useable for other developers. It is too basic right now.
         TODO: (TANY) Double check adding icons works for modded items
+        TODO: Add try{}catch{} statements to protect different points of the code from modders breaking it
+        TODO: We should add a condition of saving non modded items in situations where a non modded item is on top of a modded one
         */
 
         /*
@@ -201,6 +203,8 @@ namespace TinyResort {
 
         }
 
+        // This is used to restore the modded items into the lists after saving. It just takes the list of items we have
+        // and adds them to the games arrays. 
         internal static void RestoreModSize() {
             Inventory.inv.allItems = itemList.ToArray();
             WorldManager.manageWorld.allObjects = tileObjectList.ToArray();
@@ -210,6 +214,8 @@ namespace TinyResort {
             SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabList.ToArray();
         }
 
+        // I am not positive this is required. I resize to restore the original size depending on the default list I create in the ManageAllItemsArray method
+        // but... we might not need to resize it. If setting an array to a new array overwrites the whole thing, then we probably don't need to resize it. 
         internal static bool DefaultSize() {
             TRTools.Log($"Items: {Inventory.inv.allItems.Length} | Objects: {WorldManager.manageWorld.allObjects.Length} & {WorldManager.manageWorld.allObjectSettings.Length} | Catalogue: {CatalogueManager.manage.collectedItem.Length}");
 
@@ -231,15 +237,25 @@ namespace TinyResort {
             return true;
         }
 
+        
+        // One large method to go through all modded items in the game and remove them. 
+        // This might be worth breaking up. Specifically, anything that is done before the Loops of the tiles can be put into
+        // their own methods. 
         internal static void UnloadCustomItems() {
 
             TRTools.Log("Remvoing Items");
+            // SavedItemData is the list of all item data that can be restored at the current load point
             savedItemData.Clear();
+            // savedItemDataLate is the list of all item data that needs to wait for the map to be available (on first load). 
             savedItemDataLate.Clear();
+            // The dropped item list can be incorporated into the savedItemDataLate list. It wasn't done because we dont restore them right now
+            // The dropped items for now are set to not save and will always be deleted. This is to protect against James's changes in the future
+            // that might break the API due to saving items in houses out of nowhere (its a b ug that they arent saved). 
             savedDroppedItems.Clear();
 
             #region House Wallpaper/Flooring
-
+            
+            // This goes through the allHouse array, finds any wall/floor that is custom and unloads them. 
             foreach (var house in HouseManager.manage.allHouses) {
                 if (customItemsByID.ContainsKey(house.floor)) { UnloadFlooring(house); }
                 if (customItemsByID.ContainsKey(house.wall)) { UnloadWallpaper(house); }
@@ -258,9 +274,6 @@ namespace TinyResort {
                 }
             }
             UnloadVehicle(tmplistOfVehicles);
-
-            //if (tmplistOfVehicles.Count > 0) // UnloadFromDropped(tmplistOfVehicles);
-            //else { TRTools.Log($"Found no dropped items"); }
 
             #endregion
 
@@ -525,10 +538,16 @@ namespace TinyResort {
             DefaultSize();
             Data.SetValue("CurrentItemList", savedItemData);
             if (_droppedItemsEnabled) Data.SetValue("DroppedItemList", savedDroppedItems);
+            // We shoudl rename the save name here because its not accurate. I just didn't want to change it while I was testing code
+            // since it will break the current save data I had. 
             Data.SetValue("CurrentVehicles", savedItemDataLate);
 
         }
 
+        // Runs StoreCarry and then removes the carryable from the allCarriables list. 
+        // The allCarriables list is used by the game to iterate through and save all of its contents. 
+        // We remove it so that its not included in the save. This means that it will not delete the item from the world, but only remove from a list
+        // You don't want to restore the carryable between sleeping and only when loading the save. 
         internal static void UnloadCarryable(List<PickUpAndCarry> toRemove) {
             foreach (var carry in toRemove) {
                 TRTools.Log($"Attempting to remove: {carry.name}");
@@ -537,6 +556,7 @@ namespace TinyResort {
             }
         }
 
+        // Wallpaper and Flooring are temporarily set to Rattan Wall/Floor. This should probably be updated to the basic wall/floor
         internal static void UnloadWallpaper(HouseDetails house) {
             savedItemData.Add(new ItemSaveData().StoreWallpaper(house, customItemsByID[house.wall].uniqueID));
             house.wall = 550; // Rattan Wall
@@ -547,14 +567,17 @@ namespace TinyResort {
             house.floor = 546; // Rattan Floor
         }
 
+        // This works similar to Carryables. It won't delete the item, so only restore it on the load of the save. 
         internal static void UnloadVehicle(List<Vehicle> toRemove) {
-            TRTools.Log($"This is being called");
             foreach (var item in toRemove) {
                 savedItemDataLate.Add(new ItemSaveData().StoreVehicle(item, customVehicleByID[item.saveId].uniqueID));
                 SaveLoad.saveOrLoad.vehiclesToSave.Remove(item);
             }
         }
 
+        // This iterates through all of the drops found that are modded and sets them to false. I am not positive this would get overwritten though...
+        // I also patch loadDrops to restore these items, but it is current disabled by a bool. 
+        // I also patch getDropsToSave to make sure everything that is modded is set to false. 
         internal static void UnloadFromDropped(List<DroppedItem> toRemove) {
             foreach (var item in toRemove) {
                 savedDroppedItems.Add(new ItemSaveData().StoreDroppedItem(item, customItemsByID[item.myItemId].uniqueID));
@@ -562,6 +585,9 @@ namespace TinyResort {
             }
         }
 
+        // This takes in a list of items, and removes it from the allBurriedItems list and sets the the tileMap to -1. 
+        // We need to set to -1 because otherwise it will add new items into the ground. He has a method that if it can't
+        // find the item in the ground and the tileMap is set to 30, then put a random item inside the ground. 
         internal static void UnloadFromBuried(List<BuriedItem> toRemove) {
             foreach (var item in toRemove) {
                 savedItemData.Add(new ItemSaveData().StoreBuriedItem(item, customItemsByID[item.itemId].uniqueID));
@@ -570,6 +596,7 @@ namespace TinyResort {
             }
         }
 
+        // This goes through the list and unloads each mail by removing it form the appropriate list. 
         internal static void UnloadFromMail(List<Letter> toRemove, bool tomorrow = false) {
 
             if (!tomorrow) {
@@ -586,8 +613,10 @@ namespace TinyResort {
             }
         }
 
+        // This takes the tile and unloads the path. 
         internal static void UnloadFromTile(int objectXPos, int objectYPos, int tileType) => savedItemData.Add(new ItemSaveData(customTileTypeByID[tileType], ItemSaveData.WorldObject.Path, objectXPos, objectYPos, tileType));
 
+        //This will iterate through the chest given (by location) and remove any times that are modded
         internal static void UnloadFromChest(ChestPlaceable chestPlaceable, int objectXPos, int objectYPos, int houseXPos, int houseYPos) {
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             chestPlaceable.checkIfEmpty(objectXPos, objectYPos, houseDetails);
@@ -599,6 +628,8 @@ namespace TinyResort {
                 }
         }
 
+        // Unload all tile objects in the world (furniture, traps, furnances, etc). I didn't test furnances, but dont see why it wouldn't work. 
+        // This does both inside the house and outside the house. 
         internal static void UnloadWorldObject(int tileObjectID, int objectXPos, int objectYPos, int houseXPos, int houseYPos, int rotation, ItemSaveData.WorldObject type = ItemSaveData.WorldObject.OnTile, int bridgeLength = -1) {
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             savedItemData.Add(new ItemSaveData(customTileObjectByID[tileObjectID], objectXPos, objectYPos, rotation, type, houseXPos, houseYPos, bridgeLength: bridgeLength));
@@ -608,14 +639,11 @@ namespace TinyResort {
                 houseDetails.houseMapOnTileStatus[objectXPos, objectYPos] = -1;
                 var house = HouseManager.manage.findHousesOnDisplay(houseXPos, houseYPos);
 
-                //TRTools.Log($"House: -- {house} -- ");
                 if (house && house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture) {
                     house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture.updateOnTileStatus(objectXPos, objectYPos, houseDetails);
                     house.refreshHouseTiles();
                 }
-
-                //HouseManager.manage.updateAllHouseFurniturePos();
-
+                
             }
             else {
                 customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObject(objectXPos, objectYPos, rotation);
@@ -626,6 +654,7 @@ namespace TinyResort {
             }
         }
 
+        // This gets rid of all of the items on Top. This shoudl be done BEFORE the other tile objects otherwise we risk a floating item and probably an error. 
         internal static void UnloadWorldObjectOnTop(int tileObjectID, int objectXPos, int objectYPos, int HouseXPos, int HouseYPos, int rotation, int status, bool onTop = true, int onTopPos = -1) {
             var houseDetails = HouseXPos == -1 ? null : HouseManager.manage.getHouseInfo(HouseXPos, HouseYPos);
             savedItemData.Add(
@@ -650,6 +679,8 @@ namespace TinyResort {
         
         internal enum ToLoad { Main, AfterNetwork, All }
         // TODO: Reaname Current Vehicles to be generic for all after network loaded items
+        // This loads all mod save data and has a flag set so we can load all at once and/or load the specific data we need at the time. 
+        // We probably don't need All. (or we can probably only use All..? There was a reason I didnt use it but I cant remember why)
         internal static void LoadModSavedData(ToLoad toLoad, bool bypass = false) {
 
             if (!customItemsLoaded || bypass) {
@@ -673,6 +704,7 @@ namespace TinyResort {
 
         }
 
+        // Method for loading stuff after the world has loaded for thigns like carryables, dropped items, and vehicles. 
         internal static void LoadCustomItemPostLoad() {
             
             if (NetworkMapSharer.share.localChar) return;
@@ -694,6 +726,7 @@ namespace TinyResort {
             }
         }
         
+        // Method for loading everything else
         internal static void LoadCustomItems() {
             RestoreModSize();
             TRTools.Log("Re-adding Items");
@@ -707,16 +740,18 @@ namespace TinyResort {
 
                     switch (item.location) {
 
+                        // Straightforward....
                         case ItemSaveData.ItemLocations.Inventory:
                             Inventory.inv.invSlots[item.slotNo].updateSlotContentsAndRefresh(customItem.invItem.getItemId(), item.stackSize);
-                            TRTools.Log($"Add back in {customItem.invItem.itemName}");
                             break;
 
+                        // Straight forward since we alrady did the Craft From Storage Mod. 
                         case ItemSaveData.ItemLocations.Chest:
                             tmpHouseDetails = item.HouseXPos == -1 ? null : HouseManager.manage.getHouseInfo(item.HouseXPos, item.HouseYPos);
                             ContainerManager.manage.changeSlotInChest(item.ObjectXPos, item.ObjectYPos, item.slotNo, customItem.invItem.getItemId(), item.stackSize, tmpHouseDetails);
                             break;
 
+                        // Takes the equipment slot and runs the change item on it. This has been tested now and works. 
                         case ItemSaveData.ItemLocations.Equipped:
                             switch (item.equipment) {
                                 case ItemSaveData.EquipLocation.Hat:
@@ -748,8 +783,10 @@ namespace TinyResort {
                             break;
 
                         // TODO: Maybe remove particle/sound effects from objects outside
+                        // Goes through the World Tiles and separates them into various types. 
                         case ItemSaveData.ItemLocations.World:
                             switch (item.type) {
+                                // OnTile is for anytihng directly on a tile
                                 case ItemSaveData.WorldObject.OnTile:
                                     tmpHouseDetails = item.HouseXPos == -1 ? null : HouseManager.manage.getHouseInfo(item.HouseXPos, item.HouseYPos);
                                     if (tmpHouseDetails != null) {
@@ -776,7 +813,9 @@ namespace TinyResort {
                                     }
                                     break;
 
-                                // Untested
+                                // OnTop is for anything that needs to be loaded on top of another item
+                                // TODO: we still need to test removing/restoring from a custom table with a custom item
+                                // TODO: we should add a condition of saving non modded items in situations where a non modded item is on top of a modded one
                                 case ItemSaveData.WorldObject.OnTop:
                                     tmpHouseDetails = item.HouseXPos == -1 ? null : HouseManager.manage.getHouseInfo(item.HouseXPos, item.HouseYPos);
                                     ItemOnTopManager.manage.placeItemOnTop(customItem.tileObject.tileObjectId, item.onTopPos, item.status, item.rotation, item.ObjectXPos, item.ObjectYPos, tmpHouseDetails);
@@ -792,6 +831,7 @@ namespace TinyResort {
 
                                 // TODO: Handle these below cases
 
+                                // Restores the bridges in the world. 
                                 case ItemSaveData.WorldObject.Bridge:
                                     TRTools.Log($"Starting Position: ({item.ObjectXPos}, {item.ObjectYPos}) | Rotation: {item.rotation} | Length: {item.bridgeLength}");
                                     customItem.tileObject.placeBridgeTiledObject(item.ObjectXPos, item.ObjectYPos, item.rotation, item.bridgeLength);
@@ -800,6 +840,8 @@ namespace TinyResort {
 
                                     break;
 
+                                // Restores the paths (cemenet path, etc)
+                                // We set the TileTypeMpa to the tileType ID
                                 case ItemSaveData.WorldObject.Path:
                                     WorldManager.manageWorld.tileTypeMap[item.ObjectXPos, item.ObjectYPos] = item.tileType;
                                     WorldManager.manageWorld.refreshAllChunksInUse(item.ObjectXPos, item.ObjectYPos);
@@ -807,18 +849,19 @@ namespace TinyResort {
                             }
                             break;
 
+                        // This restores items from today and tomorrow's mail
                         case ItemSaveData.ItemLocations.Letter:
                             if (!item.letter.tomorrow) { MailManager.manage.mailInBox.Add(item.letter.Restore()); }
                             else { MailManager.manage.tomorrowsLetters.Add(item.letter.Restore()); }
                             break;
 
+                        // Buried Items, We have to set the TileMap to 30 and then restore buried items otherwise the item wont be there. 
                         case ItemSaveData.ItemLocations.Buried:
                             WorldManager.manageWorld.onTileMap[item.buriedItem.xP, item.buriedItem.yP] = 30;
                             BuriedManager.manage.allBuriedItems.Add(item.buriedItem.Restore());
                             break;
 
-
-
+                        // Restores the homefloor and home walls
                         case ItemSaveData.ItemLocations.HomeFloor:
                             item.flooring.Restore();
                             break;
