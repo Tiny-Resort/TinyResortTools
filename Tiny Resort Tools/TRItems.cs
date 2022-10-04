@@ -26,6 +26,11 @@ namespace TinyResort {
         TODO: (TANY) Double check adding icons works for modded items
         */
 
+        /*
+         * Note: Currently I am patching loadCarriables to do `TRItems.LoadCustomItemPostLoad();`. This is because I couldn't get the save data
+         * to load for me correctly me when I moved it there. Since you understand the Save Data better I think it would be best for you to experiment.
+         * Let me know if you want my save data with all the modded items to test stuff with or you can spawn the items in yourself. 
+         */
         private static readonly Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
         internal static readonly Dictionary<string, TRCustomItem> customItems = new Dictionary<string, TRCustomItem>();
         internal static readonly Dictionary<int, TRCustomItem> customItemsByID = new Dictionary<int, TRCustomItem>();
