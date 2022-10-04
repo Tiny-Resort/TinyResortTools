@@ -14,14 +14,17 @@ namespace TinyResort {
     public class TRItems {
 
         /*
-         * To Do List:
-         * TODO: Quick creating tiles, clothing, floors and walls with just textures.
-         * TODO: Make it so the better icons code also checks for icons for custom items automatically(if it does already, we need to test it).
-         * (Maybe) Quick creating furniture.
-         * TODO: Test Clothing
-         * TODO: Fences Support - Replace modded fence with a base game fence to make sure the next day fence calculations run correctly.
-         * TODO: Trap Support(maybe?)
-         */
+        TODO: Refactor code.
+        TODO: A chat command for giving yourself a custom item. 
+        TODO: Be able to add it to enemy drops and chests including buried underground.
+        TODO: Be able to add it to list of items that NPCs can give you, or you can find in the recycle bin.
+        TODO: Be able to add it to Franklyn's crafting list.
+        TODO: Be able to make a recipe that creates the item, and give the recipe to the player.
+        TODO: Quick creating tiles, clothing, floors and walls with just textures.
+        TODO: Fix catalogue history
+        TODO: Update Sending Mail to be useable for other developers. It is too basic right now.
+        TODO: Double check adding icons works for modded items
+        */
 
         private static readonly Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
         internal static readonly Dictionary<string, TRCustomItem> customItems = new Dictionary<string, TRCustomItem>();
