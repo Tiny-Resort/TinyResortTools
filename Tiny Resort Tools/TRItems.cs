@@ -14,16 +14,16 @@ namespace TinyResort {
     public class TRItems {
 
         /*
-        TODO: Refactor code.
-        TODO: A chat command for giving yourself a custom item. 
+        TODO: (SLOW) Refactor code.
+        TODO: (SLOW) A chat command for giving yourself a custom item. 
         TODO: Be able to add it to enemy drops and chests including buried underground.
         TODO: Be able to add it to list of items that NPCs can give you, or you can find in the recycle bin.
         TODO: Be able to add it to Franklyn's crafting list.
         TODO: Be able to make a recipe that creates the item, and give the recipe to the player.
-        TODO: Quick creating tiles, clothing, floors and walls with just textures.
+        TODO: (TANY) Quick creating tiles, clothing, floors and walls with just textures.
         TODO: Fix catalogue history
-        TODO: Update Sending Mail to be useable for other developers. It is too basic right now.
-        TODO: Double check adding icons works for modded items
+        TODO: (TANY) Update Sending Mail to be useable for other developers. It is too basic right now.
+        TODO: (TANY) Double check adding icons works for modded items
         */
 
         private static readonly Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
