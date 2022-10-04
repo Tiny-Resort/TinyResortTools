@@ -237,24 +237,27 @@ namespace TinyResort {
             return true;
         }
 
-        
+
         // One large method to go through all modded items in the game and remove them. 
         // This might be worth breaking up. Specifically, anything that is done before the Loops of the tiles can be put into
         // their own methods. 
         internal static void UnloadCustomItems() {
 
             TRTools.Log("Remvoing Items");
+
             // SavedItemData is the list of all item data that can be restored at the current load point
             savedItemData.Clear();
+
             // savedItemDataLate is the list of all item data that needs to wait for the map to be available (on first load). 
             savedItemDataLate.Clear();
+
             // The dropped item list can be incorporated into the savedItemDataLate list. It wasn't done because we dont restore them right now
             // The dropped items for now are set to not save and will always be deleted. This is to protect against James's changes in the future
             // that might break the API due to saving items in houses out of nowhere (its a b ug that they arent saved). 
             savedDroppedItems.Clear();
 
             #region House Wallpaper/Flooring
-            
+
             // This goes through the allHouse array, finds any wall/floor that is custom and unloads them. 
             foreach (var house in HouseManager.manage.allHouses) {
                 if (customItemsByID.ContainsKey(house.floor)) { UnloadFlooring(house); }
@@ -538,6 +541,7 @@ namespace TinyResort {
             DefaultSize();
             Data.SetValue("CurrentItemList", savedItemData);
             if (_droppedItemsEnabled) Data.SetValue("DroppedItemList", savedDroppedItems);
+
             // We shoudl rename the save name here because its not accurate. I just didn't want to change it while I was testing code
             // since it will break the current save data I had. 
             Data.SetValue("CurrentVehicles", savedItemDataLate);
@@ -643,7 +647,7 @@ namespace TinyResort {
                     house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture.updateOnTileStatus(objectXPos, objectYPos, houseDetails);
                     house.refreshHouseTiles();
                 }
-                
+
             }
             else {
                 customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObject(objectXPos, objectYPos, rotation);
@@ -676,8 +680,9 @@ namespace TinyResort {
             }
         }
 
-        
+
         internal enum ToLoad { Main, AfterNetwork, All }
+
         // TODO: Reaname Current Vehicles to be generic for all after network loaded items
         // This loads all mod save data and has a flag set so we can load all at once and/or load the specific data we need at the time. 
         // We probably don't need All. (or we can probably only use All..? There was a reason I didnt use it but I cant remember why)
@@ -706,9 +711,9 @@ namespace TinyResort {
 
         // Method for loading stuff after the world has loaded for thigns like carryables, dropped items, and vehicles. 
         internal static void LoadCustomItemPostLoad() {
-            
+
             if (NetworkMapSharer.share.localChar) return;
-            
+
             TRItems.LoadModSavedData(ToLoad.AfterNetwork, true);
 
             foreach (var item in savedItemDataLate) {
@@ -719,13 +724,14 @@ namespace TinyResort {
                     case ItemSaveData.ItemLocations.Vehicle:
                         item.vehicle.Restore();
                         break;
+
                     case ItemSaveData.ItemLocations.Carry:
                         item.carry.Restore();
                         break;
                 }
             }
         }
-        
+
         // Method for loading everything else
         internal static void LoadCustomItems() {
             RestoreModSize();
@@ -876,8 +882,6 @@ namespace TinyResort {
             }
         }
     }
-    
-    
 
     [Serializable]
     public class TRCustomItem {
@@ -981,15 +985,14 @@ namespace TinyResort {
         public bool saveDrop;
         public bool underground;
 
+        // Create a new DropToSave and then use that to run spawnDrop to place it back onto the floor. This doesn't currently run since drops aren't saved. 
         public void Restore() {
             DropToSave tmpToDrop = new DropToSave(this.myItemId, this.stackAmount, new Vector3(this.desiredPositionX, this.desiredPositionY, this.desiredPositionZ), this.houseX, this.houseY);
             tmpToDrop.spawnDrop();
         }
 
     }
-
-    // TODO: Confirm it respawns on reload
-
+    
     [Serializable]
     internal class SavedBuriedItems {
         public int itemId;
@@ -997,6 +1000,7 @@ namespace TinyResort {
         public int xP;
         public int yP;
 
+        // Creates a new BuriedItem and returns it. This is used to a list and is eventually added to the allBurriedItems list
         public BuriedItem Restore() { return new BuriedItem(this.itemId, this.stack, this.xP, this.yP); }
     }
 
@@ -1013,6 +1017,7 @@ namespace TinyResort {
 
         public string uniqueID;
 
+        // Initiailizing vehicle felt clunky so I made a Initialize method. This is the date James uses when laoded a vehicle. 
         public void Initialize(Vehicle toSave) {
             this.vehicleId = toSave.saveId;
             this.colourVariation = toSave.getVariation();
@@ -1024,6 +1029,7 @@ namespace TinyResort {
             this.rotationZ = toSave.transform.eulerAngles.z;
         }
 
+        // This is his method for spawning a vehicle back into the game. 
         public void Restore() {
             GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(SaveLoad.saveOrLoad.vehiclePrefabs[vehicleId], new Vector3(positionX, positionY, positionZ), Quaternion.Euler(rotationX, rotationY, rotationZ));
             gameObject.GetComponent<Vehicle>().setVariation(colourVariation);
@@ -1037,8 +1043,8 @@ namespace TinyResort {
         public int houseY;
         public int wallpaperID;
 
+        // Get the current house with the x,y position and then set the house.wall to the customID
         public void Restore() {
-            TRTools.Log($"Restoring Wallpaper: {wallpaperID}");
             var house = HouseManager.manage.getHouseInfo(houseX, houseY);
             house.wall = wallpaperID;
         }
@@ -1050,14 +1056,13 @@ namespace TinyResort {
         public int houseY;
         public int flooringID;
 
+        // The same as wallpaper
         public void Restore() {
-            TRTools.Log($"Restoring Flooring: {flooringID}");
             var house = HouseManager.manage.getHouseInfo(houseX, houseY);
             house.floor = flooringID;
         }
     }
 
-    // TODO: Confirm it respawns on reload
     [Serializable]
     internal class SavedCarryable {
 
@@ -1072,6 +1077,7 @@ namespace TinyResort {
         public float positionY;
         public float positionZ;
 
+        // Iniatialize a new carryable item. These are how he does it in his code. 
         public void Initialize(PickUpAndCarry myCarry) {
             AnimalCarryBox component = myCarry.GetComponent<AnimalCarryBox>();
             if (component) {
@@ -1094,13 +1100,15 @@ namespace TinyResort {
             this.positionZ = myCarry.transform.position.z;
         }
 
+        // Spawns a carryable with the initialized information
         public void Restore() {
-            TRTools.Log($"Restoring Carryable: {carryablePrefabId}");
             NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[carryablePrefabId], new Vector3(positionX, positionY, positionZ), false);
         }
 
     }
 
+    // My idea of this was to remove all/most of these variables. The variables would all be in their own class dependent on their type. 
+    // We would want to keep the Enum and also the Unique ID, but otherwise all the rest would get removed and used in each of their own classes. 
     [Serializable]
     internal class ItemSaveData {
         public enum EquipLocation { Hat, Face, Shirt, Pants, Shoes }
@@ -1125,6 +1133,7 @@ namespace TinyResort {
         public int tileType;
         public int bridgeLength;
 
+        // We would create a default for each class type of item
         public SavedLetter letter = new SavedLetter();
         public SavedBuriedItems buriedItem = new SavedBuriedItems();
         public SavedDroppedItem droppedItem = new SavedDroppedItem();
@@ -1135,6 +1144,10 @@ namespace TinyResort {
 
         public ItemSaveData() { }
 
+        // If we create a initialize in each of the classes, this would just end up 2-3 lines for each Store method. 
+        
+        // Create a new ItemSaveData, Add all of the appropriate information needed, and return the ItemSaveData
+        // This will be called to gather al of the data and add it to the approproiate list for when it needs to be restored. 
         public ItemSaveData StoreDroppedItem(DroppedItem toRemove, string ID) {
             ItemSaveData tmpDroppedItem = new ItemSaveData();
 
@@ -1219,6 +1232,7 @@ namespace TinyResort {
             return tmpFlooring;
         }
 
+        // Example of using initialize to make it cleaner here
         public ItemSaveData StoreCarry(PickUpAndCarry myCarry, string ID) {
             ItemSaveData tmpCarry = new ItemSaveData();
             tmpCarry.carry.Initialize(myCarry);
@@ -1228,6 +1242,11 @@ namespace TinyResort {
 
             return tmpCarry;
         }
+
+        
+        
+        // The original way we were doing it and is much much messier...
+        // We sent in specific information and "hoped" it would be unique enough to find the correct method. 
 
         // For saving items that were in the player's inventory
         public ItemSaveData(TRCustomItem customItem, int slotNo, int stackSize) {
@@ -1297,6 +1316,7 @@ namespace TinyResort {
             this.stackSize = stackSize;
         }
 
+        // Pretty sure this was for paths. 
         public ItemSaveData(TRCustomItem customItem, WorldObject type, int objectXPos, int objectYPos, int tileType) {
             uniqueID = customItem.uniqueID;
             this.tileType = tileType;
