@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BepInEx;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -9,11 +11,47 @@ namespace TinyResort {
 
     /// <summary>Tools for importing custom assets.</summary>
     public class TRAssets {
-        
+
         #region Scanning Folders
-        
-        internal static string[] textureFormats = new []{ "bmp", "exr", "gif", "hdr", "iff", "jpg", "pict", "png", "psd", "tga", "tiff" };
-        internal static string[] audioFormats = new []{ "aif", "wav", "mp3", "ogg" };
+
+        internal static string[] textureFormats = new[] {
+            "bmp",
+            "exr",
+            "gif",
+            "hdr",
+            "iff",
+            "jpg",
+            "pict",
+            "png",
+            "psd",
+            "tga",
+            "tiff"
+        };
+        internal static string[] audioFormats = new[] { "aif", "wav", "mp3", "ogg" };
+
+        internal static bool checkFileSignature(string file) {
+            bool isSafe = false;
+
+            using (BinaryReader binary_reader = new BinaryReader(File.Open(file, FileMode.Open))) {
+                byte[] data = binary_reader.ReadBytes(0x10);
+                string data_as_hex = BitConverter.ToString(data).Trim();
+                if (!data_as_hex.IsNullOrWhiteSpace()) {
+                    var startsWith = data_as_hex.Substring(0, 23);
+                    if (startsWith.StartsWith("89-50-4E-47-0D-0A-1A-0A")) isSafe = true; // PNG
+                    if (startsWith.StartsWith("42-4D")) isSafe = true; // BMP
+                    if (startsWith.StartsWith("76-2F-31-01")) isSafe = true; // EXR
+                    if (startsWith.StartsWith("47-49-46-38-37-61")) isSafe = true; // GIF
+                    if (startsWith.StartsWith("47-49-46-38-39-61")) isSafe = true; // GIF
+                    if (startsWith.StartsWith("46-4F-52-4D")) isSafe = true; // IFF
+                    if (startsWith.StartsWith("FF-D8-FF-E0")) isSafe = true; // JPG
+                    if (startsWith.StartsWith("78-56-34")) isSafe = true; // PICT
+                    if (startsWith.StartsWith("38-42-50-53")) isSafe = true; // PSD
+                    if (startsWith.StartsWith("49-49-2A-00")) isSafe = true; // TIFF
+                    if (startsWith.StartsWith("4D-4D-00-2A")) isSafe = true; // TIFF
+                }
+            }
+            return isSafe;
+        }
 
         /// <summary>Returns a list of all files in a folder that can be imported as a texture (or sprite).</summary>
         /// <param name="relativePath">Path to the folder that you want to be scanned, relative to the BepInEx plugins folder.</param>
@@ -42,11 +80,11 @@ namespace TinyResort {
             else { TRTools.LogError("Trying to list files in a folder, but the folder '" + path + "' does not exist."); }
 
             return list;
-            
+
         }
-        
+
         #endregion
-        
+
         #region Importing
 
         /// <summary>Loads an asset bundle from the plugins folder.</summary>
@@ -80,13 +118,16 @@ namespace TinyResort {
                 TRTools.LogError("No file found at " + path);
                 return null;
             }
-            
-            byte[] fileData = File.ReadAllBytes(path);
-            Texture2D tex = new Texture2D(2, 2);
-            tex.LoadImage(fileData);
-            
-            return tex;
-            
+
+            if (checkFileSignature(path)) {
+                byte[] fileData = File.ReadAllBytes(path);
+                Texture2D tex = new Texture2D(2, 2);
+                tex.LoadImage(fileData);
+                return tex;
+            }
+
+            TRTools.LogError("File type is incorrect at " + path);
+            return null;
         }
 
         /// <summary>Loads an image file from the plugins folder as a Sprite.</summary>
@@ -143,9 +184,9 @@ namespace TinyResort {
             }
             
         }*/
-        
+
         #endregion
-        
+
     }
 
     /*public class AudioClipLoader {

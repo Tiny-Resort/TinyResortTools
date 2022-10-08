@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using HarmonyLib;
+using I2.Loc;
 using Mirror;
 using Unity.Collections;
 using UnityEngine;
@@ -117,6 +119,15 @@ namespace TinyResort {
             return customItems[plugin.nexusID + uniqueItemID];
         }
 
+        internal static TRCustomItem AddCustomClothing(GameObject newItem, Texture newTexture, string itemName, int value) {
+            
+            TRTools.Log("CustomClothing" + itemName);
+
+            customItems["CustomClothing" + itemName] = new TRCustomItem().CreateCustomClothing(newItem, newTexture, itemName, value);
+            customItems["CustomClothing" + itemName].uniqueID = "CustomClothing" + itemName;
+
+            return customItems["CustomClothing" + itemName];
+        }
         // Resize the array depending on the number of modded items added
         // Ignore modded items saved if it doesnt exist in customItems
 
@@ -236,7 +247,6 @@ namespace TinyResort {
             TRTools.Log($"Items: {Inventory.inv.allItems.Length} | Objects: {WorldManager.manageWorld.allObjects.Length} & {WorldManager.manageWorld.allObjectSettings.Length} | Catalogue: {CatalogueManager.manage.collectedItem.Length}");
             return true;
         }
-
 
         // One large method to go through all modded items in the game and remove them. 
         // This might be worth breaking up. Specifically, anything that is done before the Loops of the tiles can be put into
@@ -680,7 +690,6 @@ namespace TinyResort {
             }
         }
 
-
         internal enum ToLoad { Main, AfterNetwork, All }
 
         // TODO: Reaname Current Vehicles to be generic for all after network loaded items
@@ -876,7 +885,6 @@ namespace TinyResort {
                             item.wallpaper.Restore();
                             break;
 
-
                     }
                 }
             }
@@ -898,6 +906,7 @@ namespace TinyResort {
         public PickUpAndCarry carryable;
         public string uniqueID;
         public TileObjectEvent interactEvent;
+        public TRCustomItem() { }
 
         public TRCustomItem(string assetBundlePath) {
 
@@ -947,6 +956,18 @@ namespace TinyResort {
 
             assetBundle.Unload(false);
         }
+
+        public TRCustomItem CreateCustomClothing(GameObject ClothingAssetBundle, Texture newTexture, string itemName, int value) {
+            if (ClothingAssetBundle.GetComponent<InventoryItem>() != null && invItem == null) {
+                var GO = GameObject.Instantiate(ClothingAssetBundle);
+                invItem = GO.GetComponent<InventoryItem>();
+                invItem.equipable.material = new Material(invItem.equipable.material);
+                invItem.equipable.material.mainTexture = newTexture; 
+                TRTools.Log($"Item Name: {itemName} | Material: {newTexture.name}");
+                invItem.itemName = itemName;
+            }
+            return this;
+        }
     }
 
     [Serializable]
@@ -992,7 +1013,7 @@ namespace TinyResort {
         }
 
     }
-    
+
     [Serializable]
     internal class SavedBuriedItems {
         public int itemId;
@@ -1101,9 +1122,7 @@ namespace TinyResort {
         }
 
         // Spawns a carryable with the initialized information
-        public void Restore() {
-            NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[carryablePrefabId], new Vector3(positionX, positionY, positionZ), false);
-        }
+        public void Restore() { NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[carryablePrefabId], new Vector3(positionX, positionY, positionZ), false); }
 
     }
 
@@ -1145,7 +1164,7 @@ namespace TinyResort {
         public ItemSaveData() { }
 
         // If we create a initialize in each of the classes, this would just end up 2-3 lines for each Store method. 
-        
+
         // Create a new ItemSaveData, Add all of the appropriate information needed, and return the ItemSaveData
         // This will be called to gather al of the data and add it to the approproiate list for when it needs to be restored. 
         public ItemSaveData StoreDroppedItem(DroppedItem toRemove, string ID) {
@@ -1243,8 +1262,6 @@ namespace TinyResort {
             return tmpCarry;
         }
 
-        
-        
         // The original way we were doing it and is much much messier...
         // We sent in specific information and "hoped" it would be unique enough to find the correct method. 
 
