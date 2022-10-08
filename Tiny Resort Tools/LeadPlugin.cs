@@ -30,12 +30,15 @@ namespace TinyResort {
             TRLicenses.Initialize();
             TRIcons.Initialize();
             TRItems.Initialize();
+            TRCustomClothes.Initialize();
         }
 
         private void Start() {
             TRInterface.Initialize();
             TRModUpdater.Initialize();
             TRItems.ManageAllItemArray();
+            
+
         }
 
         private void Update() {
