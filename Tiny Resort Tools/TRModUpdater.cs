@@ -17,8 +17,6 @@ using Object = UnityEngine.Object;
 using Version = SemanticVersioning.Version;
 
 namespace TinyResort {
-    
-    public enum GraphicType { MainMenuButton, CreditsWindow, OptionsSlider }
 
     internal class TRModUpdater {
 

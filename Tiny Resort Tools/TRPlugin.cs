@@ -72,13 +72,17 @@ namespace TinyResort {
         /// <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
         public TRCustomItem AddCustomItem(string assetBundlePath, string uniqueItemID) { return TRItems.AddCustomItem(this, assetBundlePath, uniqueItemID); }
 
-        /// <summary>Adds a custom license to the system. Must be done for each custom license.</summary>
-        /// <param name="licenseID">A unique string you are assigning this license only. Changing this after save data has been made WILL result in save data mixups. Spaces in this are replaced with underscores.</param>
-        /// <param name="licenseName">The name that will appear on the license in-game. (Can be changed at any time without issue)</param>
-        /// <param name="maxLevel">The highest unlockable level for this license.</param>
-        /// <returns>The custom license that is created. Save a reference to this in order to access its state at any time.</returns>
-        public TRCustomLicense AddLicense(int licenseID, string licenseName, int maxLevel = 1) {
-            return TRLicenses.AddLicense(nexusID.Value, licenseID, licenseName, maxLevel);
+        /// <summary>Adds a custom licence to the system. Must be done for each custom licence.</summary>
+        /// <param name="licenceID">A unique string you are assigning this licence only. Changing this after save data has been made WILL result in save data mixups. Spaces in this are replaced with underscores.</param>
+        /// <param name="licenceName">The name that will appear on the licence in-game. (Can be changed at any time without issue)</param>
+        /// <param name="maxLevel">The highest unlockable level for this licence. The true maximum is 5 since the game only shows up to 5 dots.</param>
+        /// <returns>The custom licence that is created. Save a reference to this in order to access its state at any time.</returns>
+        public TRCustomLicence AddLicence(int licenceID, string licenceName, int maxLevel = 1) {
+            if (maxLevel > 5) {
+                maxLevel = 5; 
+                TRTools.LogError("Custom Licence " + nexusID.Value + "." + licenceID + " " + licenceName + " can not have a max level above 5.");
+            }
+            return TRLicences.AddLicence(nexusID.Value, licenceID, licenceName, maxLevel);
         }
         
     }
