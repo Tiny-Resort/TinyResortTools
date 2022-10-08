@@ -29,6 +29,7 @@ namespace TinyResort {
             TRLicences.Initialize();
             TRIcons.Initialize();
             TRItems.Initialize();
+            TRCustomClothes.Initialize();
         }
 
         private void Start() {
