@@ -23,55 +23,61 @@ namespace TinyResort {
             instance = this;
             plugin = TRTools.Initialize(this, 83, "tr");
             plugin.harmony.PatchAll();
-            // Initializing early so we can use it for all other stuff. 
 
             useSlashToOpenChat = Config.Bind("Chat", "UseSlashToOpenChat", true, "If true, then pressing forward slash on the keyboard will open the chat box with a slash already in place.");
             
-            TRLicenses.Initialize();
+            TRLicences.Initialize();
             TRIcons.Initialize();
             TRItems.Initialize();
         }
 
         private void Start() {
+            
             TRInterface.Initialize();
             TRModUpdater.Initialize();
-            TRItems.ManageAllItemArray();
+            TRItems.ManageAllItemArray();            
+            
+            /*var TestLicense = plugin.AddLicense(1, "Test License 1",  10);
+            TestLicense.SetColor(Color.cyan);
+            TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
+            TestLicense.SetLevelInfo(2, "Level 2: This is a license made for testing the framework.", 1500);
+            TestLicense.SetLevelInfo(3, "Level 3: This is a license made for testing the framework.", 2500);
+            TestLicense.AddSkillRequirement(1, CharLevelManager.SkillTypes.Mining, 10);
+            TestLicense.AddSkillRequirement(2, CharLevelManager.SkillTypes.Mining, 20);
+            TestLicense.AddSkillRequirement(3, CharLevelManager.SkillTypes.Mining, 30);
+            
+            var TestLicense2 = plugin.AddLicense(2, "Test License 2", 2);
+            TestLicense2.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
+            TestLicense2.SetLevelInfo(2, "Level 2: This is a license made for testing the framework.", 1500);
+            TestLicense2.SetLevelInfo(3, "Level 3: This is a license made for testing the framework.", 3000);
+            TestLicense2.AddSkillRequirement(1, CharLevelManager.SkillTypes.Farming, 10);
+            TestLicense2.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
+            TestLicense2.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
+
+            var TestLicense3 = plugin.AddLicense(3, "Test License 3", 3);
+            TestLicense3.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 1000);
+            TestLicense3.SetLevelInfo(2, "Level 2: This is a license made for testing the framework.", 2000);
+            TestLicense3.SetLevelInfo(3, "Level 3: This is a license made for testing the framework.", 5000);
+            TestLicense3.AddSkillRequirement(1, CharLevelManager.SkillTypes.Hunting, 10);
+            TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
+            TestLicense3.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
+            TestLicense3.AddPrerequisite(TestLicense);*/
+            
         }
 
         private void Update() {
+            
             TRModUpdater.Update();
 
             if (NetworkMapSharer.share.localChar) TRIcons.InitializeIcons();
             
-            if (Input.GetKeyDown(KeyCode.F11)) {
-                TRItems.UnloadCustomItems();
-            }
+            if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems(); }
             if (Input.GetKeyDown(KeyCode.F10)) { TRItems.LoadCustomItems(); }
             if (Input.GetKeyDown(KeyCode.F9)) { 
                 TRTools.Log($"Size: {SaveLoad.saveOrLoad.carryablePrefabs.Length}");
                 NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[10], NetworkMapSharer.share.localChar.transform.position, true);
             }
         }
-        
-        
-        /*private void Start() {
-
-            /*var TestLicense = TRLicenses.AddLicense(pluginGuid, "001", "Test License 1", Color.cyan, 500, 3, 1, LicenceManager.LicenceTypes.Mining);
-            TestLicense.SetDescription(1, "Level 1: This is a license made for testing the framework.");
-            TestLicense.ConnectToSkill(CharLevelManager.SkillTypes.Mining, 10);
-
-            var TestLicense2 = TRLicenses.AddLicense(pluginGuid, "002", "Test License 2", Color.red, 250, 2, 3, LicenceManager.LicenceTypes.Bridge);
-            TestLicense2.SetDescription(1, "Level 1: This is a license made for testing the framework.");
-            TestLicense2.SetDescription(2, "Level 2: This is a license made for testing the framework.");
-            TestLicense2.SetDescription(3, "Level 3: This is a license made for testing the framework.");
-            TestLicense2.ConnectToSkill(CharLevelManager.SkillTypes.Farming, 20);
-
-            var TestLicense3 = TRLicenses.AddLicense(pluginGuid, "003", "Test License 3", Color.red, 680, 2, 3, LicenceManager.LicenceTypes.Fishing);
-            TestLicense3.SetDescription(1, "Level 1: This is a license made for testing the framework.");
-            TestLicense3.SetDescription(2, "Level 2: This is a license made for testing the framework.");
-            TestLicense3.SetDescription(3, "Level 3: This is a license made for testing the framework.");#1#
-            
-        }*/
         
     }
 
