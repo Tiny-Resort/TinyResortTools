@@ -8,6 +8,8 @@ using UnityEngine;
 
 namespace TinyResort {
 
+    // TODO: Fix stretched icon when buying license.
+    // TODO: Make description say to level up skills.
     /// <summary>A framework for creating custom licences and using them to gate your mod's features behind player progression.</summary>
     public static class TRLicences {
 

@@ -8,9 +8,13 @@ namespace TinyResort {
     [HarmonyPatch(typeof(SaveLoad), "loadCarriables")]
     internal class loadCarriables {
         
-        [HarmonyPostfix]
         public static void Postfix() {
-            TRItems.LoadCustomItemPostLoad();
+            TRTools.InMainMenu = false;
+            TRData.postLoadEvent?.Invoke();
+            TRData.injectDataEvent?.Invoke();
+            //TRItems.LoadCustomItemPostLoad();
         }
+        
     }
+    
 }

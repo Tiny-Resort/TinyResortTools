@@ -29,7 +29,7 @@ namespace TinyResort {
             TRLicences.Initialize();
             TRIcons.Initialize();
             TRItems.Initialize();
-            TRCustomClothes.Initialize();
+            TRQuickItems.Initialize();
         }
 
         private void Start() {

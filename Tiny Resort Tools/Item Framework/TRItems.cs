@@ -9,6 +9,7 @@ using Mirror;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Object = UnityEngine.Object;
 
 namespace TinyResort {
 
@@ -22,7 +23,7 @@ namespace TinyResort {
         TODO: Be able to add it to list of items that NPCs can give you, or you can find in the recycle bin.
         TODO: Be able to add it to Franklyn's crafting list.
         TODO: Be able to make a recipe that creates the item, and give the recipe to the player.
-        TODO: (TANY) Quick creating tiles, clothing, floors and walls with just textures.
+        TODO: (TANY) Quick creating tiles, floors and walls with just textures.
         TODO: Fix catalogue history
         TODO: (TANY) Update Sending Mail to be useable for other developers. It is too basic right now.
         TODO: (TANY) Double check adding icons works for modded items
@@ -64,18 +65,8 @@ namespace TinyResort {
         private static List<TileObject> tileObjectDefaultList;
         private static List<TileObjectSettings> tileObjectSettingsDefaultList;
 
-        internal static bool _droppedItemsEnabled = false;
         internal static bool customItemsInitialized;
         internal static bool customItemsLoaded;
-
-        internal static void RemoveModdedSavedDrops() { }
-
-        // TODO: Create LetterType template for Mods
-        // TODO: Create more robust system for developers to send user mail
-        // TODO: Look at ShowLetter function
-        public static void SendMail(TRCustomItem itemToSend) => MailManager.manage.mailInBox.Add(new Letter(1, Letter.LetterType.AnimalTrapReturn, itemToSend.invItem.getItemId(), 5));
-
-        public static void SendMailTomorrow(TRCustomItem itemToSend) => MailManager.manage.tomorrowsLetters.Add(new Letter(1, Letter.LetterType.AnimalTrapReturn, itemToSend.invItem.getItemId(), 5));
 
         internal static void Initialize() {
             Data = TRData.Subscribe("TR.CustomItems");
@@ -113,24 +104,20 @@ namespace TinyResort {
                 return null;
             }
 
-            customItems[plugin.nexusID + uniqueItemID] = new TRCustomItem(assetBundlePath);
+            customItems[plugin.nexusID + uniqueItemID] = TRCustomItem.Create(assetBundlePath);
             customItems[plugin.nexusID + uniqueItemID].uniqueID = plugin.nexusID + uniqueItemID;
-
             return customItems[plugin.nexusID + uniqueItemID];
-        }
-
-        internal static TRCustomItem AddCustomClothing(GameObject newItem, Texture newTexture, string itemName, int value) {
             
-            TRTools.Log("CustomClothing" + itemName);
-
-            customItems["CustomClothing" + itemName] = new TRCustomItem().CreateCustomClothing(newItem, newTexture, itemName, value);
-            customItems["CustomClothing" + itemName].uniqueID = "CustomClothing" + itemName;
-
-            return customItems["CustomClothing" + itemName];
         }
+
+        // Adds a new custom item to the dictionary but allows it to be created somewhere else
+        internal static void AddCustomItem(TRCustomItem item, string uniqueID) {
+            item.uniqueID = uniqueID;
+            customItems[uniqueID] = item;
+        }
+        
         // Resize the array depending on the number of modded items added
         // Ignore modded items saved if it doesnt exist in customItems
-
         internal static void ManageAllItemArray() {
             // Default lengths of all the arrays
             allItemsDefaultList = Inventory.inv.allItems.ToList();
@@ -174,9 +161,9 @@ namespace TinyResort {
                     item.Value.tileObjectSettings.tileObjectId = tileObjectSettingsList.Count - 1;
                     customTileObjectByID[tileObjectList.Count - 1] = item.Value;
                 }
-                if (item.Value.vehicleType) {
+                if (item.Value.vehicle) {
                     vehiclePrefabList.Add(item.Value.invItem.spawnPlaceable);
-                    item.Value.vehicleType.saveId = vehiclePrefabList.Count - 1;
+                    item.Value.vehicle.saveId = vehiclePrefabList.Count - 1;
                     customVehicleByID[vehiclePrefabList.Count - 1] = item.Value;
                 }
                 if (item.Value.carryable) {
@@ -550,7 +537,7 @@ namespace TinyResort {
 
             DefaultSize();
             Data.SetValue("CurrentItemList", savedItemData);
-            if (_droppedItemsEnabled) Data.SetValue("DroppedItemList", savedDroppedItems);
+            //if (_droppedItemsEnabled) Data.SetValue("DroppedItemList", savedDroppedItems);
 
             // We shoudl rename the save name here because its not accurate. I just didn't want to change it while I was testing code
             // since it will break the current save data I had. 
@@ -696,26 +683,22 @@ namespace TinyResort {
         // This loads all mod save data and has a flag set so we can load all at once and/or load the specific data we need at the time. 
         // We probably don't need All. (or we can probably only use All..? There was a reason I didnt use it but I cant remember why)
         internal static void LoadModSavedData(ToLoad toLoad, bool bypass = false) {
+            switch (toLoad) {
+                case ToLoad.All:
+                    savedItemData = (List<ItemSaveData>)Data.GetValue("CurrentItemList", new List<ItemSaveData>());
+                    savedItemData = savedItemData.OrderBy(i => i.type == ItemSaveData.WorldObject.OnTop).ToList();
+                    savedItemDataLate = (List<ItemSaveData>)Data.GetValue("CurrentVehicles", new List<ItemSaveData>());
+                    break;
 
-            if (!customItemsLoaded || bypass) {
-                switch (toLoad) {
-                    case ToLoad.All:
-                        savedItemData = (List<ItemSaveData>)Data.GetValue("CurrentItemList", new List<ItemSaveData>());
-                        savedItemData = savedItemData.OrderBy(i => i.type == ItemSaveData.WorldObject.OnTop).ToList();
-                        savedItemDataLate = (List<ItemSaveData>)Data.GetValue("CurrentVehicles", new List<ItemSaveData>());
-                        break;
+                case ToLoad.Main:
+                    savedItemData = (List<ItemSaveData>)Data.GetValue("CurrentItemList", new List<ItemSaveData>());
+                    savedItemData = savedItemData.OrderBy(i => i.type == ItemSaveData.WorldObject.OnTop).ToList();
+                    break;
 
-                    case ToLoad.Main:
-                        savedItemData = (List<ItemSaveData>)Data.GetValue("CurrentItemList", new List<ItemSaveData>());
-                        savedItemData = savedItemData.OrderBy(i => i.type == ItemSaveData.WorldObject.OnTop).ToList();
-                        break;
-
-                    case ToLoad.AfterNetwork:
-                        savedItemDataLate = (List<ItemSaveData>)Data.GetValue("CurrentVehicles", new List<ItemSaveData>());
-                        break;
-                }
+                case ToLoad.AfterNetwork:
+                    savedItemDataLate = (List<ItemSaveData>)Data.GetValue("CurrentVehicles", new List<ItemSaveData>());
+                    break;
             }
-
         }
 
         // Method for loading stuff after the world has loaded for thigns like carryables, dropped items, and vehicles. 
@@ -891,457 +874,43 @@ namespace TinyResort {
         }
     }
 
-    [Serializable]
     public class TRCustomItem {
+        
+        public string uniqueID;
 
         // TODO: Implement events
         public delegate void TileObjectEvent();
+        public TileObjectEvent interactEvent;
 
-        public AssetBundle assetBundle;
         public InventoryItem invItem;
         public TileObject tileObject;
         public TileObjectSettings tileObjectSettings;
         public TileTypes tileTypes;
-        public Vehicle vehicleType;
+        public Vehicle vehicle;
         public PickUpAndCarry carryable;
-        public string uniqueID;
-        public TileObjectEvent interactEvent;
-        public TRCustomItem() { }
 
-        public TRCustomItem(string assetBundlePath) {
+        internal static TRCustomItem Create(string assetBundlePath) {
 
             TRTools.Log("Attemping Load: Asset Bundle.");
-            assetBundle = TRAssets.LoadBundle(assetBundlePath);
-            TRTools.Log($"Loaded: Asset Bundle -- {assetBundle}.");
+            var newItem = new TRCustomItem();
+            var bundle = TRAssets.LoadBundle(assetBundlePath);
+            TRTools.Log($"Loaded: Asset Bundle -- {bundle}.");
 
-            var AllAssets = assetBundle.LoadAllAssets<GameObject>();
+            var AllAssets = bundle.LoadAllAssets<GameObject>();
             for (var i = 0; i < AllAssets.Length; i++) {
-
-                if (invItem == null) {
-                    //TRTools.Log("Attemping Load: InvItem.");
-                    invItem = AllAssets[i].GetComponent<InventoryItem>();
-
-                    //TRTools.Log($"Loaded: InvItem -- {invItem}.");
-                }
-                if (tileObject == null) {
-                    //TRTools.Log("Attemping Load: TileObject.");
-                    tileObject = AllAssets[i].GetComponent<TileObject>();
-
-                    //TRTools.Log($"Loaded: TileObject -- {tileObject}.");
-                }
-                if (tileObjectSettings == null) {
-                    //TRTools.Log("Attemping Load: TileObjectSettings.");
-                    tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>();
-
-                    //TRTools.Log($"Loaded: TileObjectSettings -- {tileObjectSettings}.");
-                }
-                if (tileTypes == null) {
-                    //TRTools.Log("Attemping Load: tileTypes.");
-                    tileTypes = AllAssets[i].GetComponent<TileTypes>();
-
-                    //TRTools.Log($"Loaded: tileTypes -- {tileTypes}.");
-                }
-                if (vehicleType == null) {
-                    //TRTools.Log("Attemping Load: vehicleType.");
-                    vehicleType = AllAssets[i].GetComponent<Vehicle>();
-
-                    //TRTools.Log($"Loaded: tileTypes -- {vehicleType}.");
-                }
-                if (carryable == null) {
-                    TRTools.Log("Attemping Load: carryable.");
-                    carryable = AllAssets[i].GetComponent<PickUpAndCarry>();
-                    TRTools.Log($"Loaded: tileTypes -- {carryable}.");
-                }
+                if (newItem.invItem == null) { newItem.invItem = AllAssets[i].GetComponent<InventoryItem>(); }
+                if (newItem.tileObject == null) { newItem.tileObject = AllAssets[i].GetComponent<TileObject>(); }
+                if (newItem.tileObjectSettings == null) { newItem.tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>(); }
+                if (newItem.tileTypes == null) { newItem.tileTypes = AllAssets[i].GetComponent<TileTypes>(); }
+                if (newItem.vehicle == null) { newItem.vehicle = AllAssets[i].GetComponent<Vehicle>(); }
+                if (newItem.carryable == null) { newItem.carryable = AllAssets[i].GetComponent<PickUpAndCarry>(); }
             }
 
-            assetBundle.Unload(false);
+            bundle.Unload(false);
+            return newItem;
+
         }
-
-        public TRCustomItem CreateCustomClothing(GameObject ClothingAssetBundle, Texture newTexture, string itemName, int value) {
-            if (ClothingAssetBundle.GetComponent<InventoryItem>() != null && invItem == null) {
-                var GO = GameObject.Instantiate(ClothingAssetBundle);
-                invItem = GO.GetComponent<InventoryItem>();
-                invItem.equipable.material = new Material(invItem.equipable.material);
-                invItem.equipable.material.mainTexture = newTexture; 
-                TRTools.Log($"Item Name: {itemName} | Material: {newTexture.name}");
-                invItem.itemName = itemName;
-            }
-            return this;
-        }
-    }
-
-    [Serializable]
-    internal class SavedLetter {
-        public int itemAttached;
-        public int itemOriginallAttached;
-        public int stackOfItemAttached;
-        public Letter.LetterType myType;
-        public int seasonSent;
-        public int letterTemplateNo;
-        public int sentById;
-        public bool hasBeenRead;
-        public bool tomorrow;
-
-        public Letter Restore() {
-            Letter tmp = new Letter(this.sentById, this.myType, this.itemAttached, this.stackOfItemAttached);
-            tmp.itemOriginallAttached = this.itemOriginallAttached;
-            tmp.seasonSent = this.seasonSent;
-            tmp.hasBeenRead = this.hasBeenRead;
-            return tmp;
-        }
-    }
-
-    [Serializable]
-    internal class SavedDroppedItem {
-        // Cant serialize HouseDetails
-        // House data isnt saved right now...
-        public bool inside;
-        public int myItemId;
-        public int stackAmount;
-        public float desiredPositionX;
-        public float desiredPositionY;
-        public float desiredPositionZ;
-        public int houseX = -1;
-        public int houseY = -1;
-        public bool saveDrop;
-        public bool underground;
-
-        // Create a new DropToSave and then use that to run spawnDrop to place it back onto the floor. This doesn't currently run since drops aren't saved. 
-        public void Restore() {
-            DropToSave tmpToDrop = new DropToSave(this.myItemId, this.stackAmount, new Vector3(this.desiredPositionX, this.desiredPositionY, this.desiredPositionZ), this.houseX, this.houseY);
-            tmpToDrop.spawnDrop();
-        }
-
-    }
-
-    [Serializable]
-    internal class SavedBuriedItems {
-        public int itemId;
-        public int stack;
-        public int xP;
-        public int yP;
-
-        // Creates a new BuriedItem and returns it. This is used to a list and is eventually added to the allBurriedItems list
-        public BuriedItem Restore() { return new BuriedItem(this.itemId, this.stack, this.xP, this.yP); }
-    }
-
-    [Serializable]
-    internal class SavedVehicle {
-        public int vehicleId;
-        public int colourVariation;
-        public float positionX;
-        public float positionY;
-        public float positionZ;
-        public float rotationX;
-        public float rotationY;
-        public float rotationZ;
-
-        public string uniqueID;
-
-        // Initiailizing vehicle felt clunky so I made a Initialize method. This is the date James uses when laoded a vehicle. 
-        public void Initialize(Vehicle toSave) {
-            this.vehicleId = toSave.saveId;
-            this.colourVariation = toSave.getVariation();
-            this.positionX = toSave.transform.position.x;
-            this.positionY = toSave.transform.position.y;
-            this.positionZ = toSave.transform.position.z;
-            this.rotationX = toSave.transform.eulerAngles.x;
-            this.rotationY = toSave.transform.eulerAngles.y;
-            this.rotationZ = toSave.transform.eulerAngles.z;
-        }
-
-        // This is his method for spawning a vehicle back into the game. 
-        public void Restore() {
-            GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(SaveLoad.saveOrLoad.vehiclePrefabs[vehicleId], new Vector3(positionX, positionY, positionZ), Quaternion.Euler(rotationX, rotationY, rotationZ));
-            gameObject.GetComponent<Vehicle>().setVariation(colourVariation);
-            NetworkMapSharer.share.spawnGameObject(gameObject);
-        }
-    }
-
-    [Serializable]
-    internal class SavedWallpaper {
-        public int houseX;
-        public int houseY;
-        public int wallpaperID;
-
-        // Get the current house with the x,y position and then set the house.wall to the customID
-        public void Restore() {
-            var house = HouseManager.manage.getHouseInfo(houseX, houseY);
-            house.wall = wallpaperID;
-        }
-    }
-
-    [Serializable]
-    internal class SavedFlooring {
-        public int houseX;
-        public int houseY;
-        public int flooringID;
-
-        // The same as wallpaper
-        public void Restore() {
-            var house = HouseManager.manage.getHouseInfo(houseX, houseY);
-            house.floor = flooringID;
-        }
-    }
-
-    [Serializable]
-    internal class SavedCarryable {
-
-        public bool farmAnimalBox;
-        public bool trappedAnimal;
-        public int animalId;
-        public int animalVariation;
-        public string animalName;
-
-        public int carryablePrefabId;
-        public float positionX;
-        public float positionY;
-        public float positionZ;
-
-        // Iniatialize a new carryable item. These are how he does it in his code. 
-        public void Initialize(PickUpAndCarry myCarry) {
-            AnimalCarryBox component = myCarry.GetComponent<AnimalCarryBox>();
-            if (component) {
-                this.farmAnimalBox = true;
-                this.trappedAnimal = false;
-                this.animalId = component.animalId;
-                this.animalVariation = component.variation;
-                this.animalName = component.animalName;
-            }
-            TrappedAnimal component2 = myCarry.GetComponent<TrappedAnimal>();
-            if (component2) {
-                this.farmAnimalBox = false;
-                this.trappedAnimal = true;
-                this.animalId = component2.trappedAnimalId;
-                this.animalVariation = component2.trappedAnimalVariation;
-            }
-            this.carryablePrefabId = myCarry.prefabId;
-            this.positionX = myCarry.transform.position.x;
-            this.positionY = myCarry.transform.position.y;
-            this.positionZ = myCarry.transform.position.z;
-        }
-
-        // Spawns a carryable with the initialized information
-        public void Restore() { NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[carryablePrefabId], new Vector3(positionX, positionY, positionZ), false); }
-
-    }
-
-    // My idea of this was to remove all/most of these variables. The variables would all be in their own class dependent on their type. 
-    // We would want to keep the Enum and also the Unique ID, but otherwise all the rest would get removed and used in each of their own classes. 
-    [Serializable]
-    internal class ItemSaveData {
-        public enum EquipLocation { Hat, Face, Shirt, Pants, Shoes }
-
-        public enum ItemLocations { Inventory, Equipped, Chest, Stash, World, HomeFloor, HomeWall, Letter, Buried, Dropped, Vehicle, Carry }
-        public enum WorldObject { OnTile, OnTop, Bridge, Path }
-
-        public string uniqueID;
-        public ItemLocations location;
-        public EquipLocation equipment;
-        public WorldObject type;
-        public int onTopPos;
-        public int status;
-        public int stashPostition;
-        public int ObjectXPos;
-        public int ObjectYPos;
-        public int HouseXPos;
-        public int HouseYPos;
-        public int rotation;
-        public int slotNo;
-        public int stackSize;
-        public int tileType;
-        public int bridgeLength;
-
-        // We would create a default for each class type of item
-        public SavedLetter letter = new SavedLetter();
-        public SavedBuriedItems buriedItem = new SavedBuriedItems();
-        public SavedDroppedItem droppedItem = new SavedDroppedItem();
-        public SavedVehicle vehicle = new SavedVehicle();
-        public SavedWallpaper wallpaper = new SavedWallpaper();
-        public SavedFlooring flooring = new SavedFlooring();
-        public SavedCarryable carry = new SavedCarryable();
-
-        public ItemSaveData() { }
-
-        // If we create a initialize in each of the classes, this would just end up 2-3 lines for each Store method. 
-
-        // Create a new ItemSaveData, Add all of the appropriate information needed, and return the ItemSaveData
-        // This will be called to gather al of the data and add it to the approproiate list for when it needs to be restored. 
-        public ItemSaveData StoreDroppedItem(DroppedItem toRemove, string ID) {
-            ItemSaveData tmpDroppedItem = new ItemSaveData();
-
-            tmpDroppedItem.droppedItem.myItemId = toRemove.myItemId;
-            tmpDroppedItem.droppedItem.stackAmount = toRemove.stackAmount;
-            tmpDroppedItem.droppedItem.desiredPositionX = toRemove.desiredPos.x;
-            tmpDroppedItem.droppedItem.desiredPositionY = toRemove.desiredPos.y;
-            tmpDroppedItem.droppedItem.desiredPositionZ = toRemove.desiredPos.z;
-            if (toRemove.inside != null) {
-                tmpDroppedItem.droppedItem.houseX = toRemove.inside.xPos;
-                tmpDroppedItem.droppedItem.houseY = toRemove.inside.yPos;
-            }
-            tmpDroppedItem.droppedItem.saveDrop = toRemove.saveDrop;
-            tmpDroppedItem.droppedItem.underground = toRemove.underground;
-
-            tmpDroppedItem.location = ItemLocations.Dropped;
-            tmpDroppedItem.uniqueID = ID;
-
-            return tmpDroppedItem;
-        }
-
-        public ItemSaveData StoreLetter(Letter toRemove, bool tomorrow, string uniqueID) {
-            ItemSaveData storeLetter = new ItemSaveData();
-
-            storeLetter.letter.itemAttached = toRemove.itemAttached;
-            storeLetter.letter.itemOriginallAttached = toRemove.itemOriginallAttached;
-            storeLetter.letter.stackOfItemAttached = toRemove.stackOfItemAttached;
-            storeLetter.letter.myType = toRemove.myType;
-            storeLetter.letter.seasonSent = toRemove.seasonSent;
-            storeLetter.letter.letterTemplateNo = toRemove.letterTemplateNo;
-            storeLetter.letter.sentById = toRemove.sentById;
-            storeLetter.letter.hasBeenRead = toRemove.hasBeenRead;
-            storeLetter.location = ItemLocations.Letter;
-            storeLetter.letter.tomorrow = tomorrow;
-
-            storeLetter.uniqueID = uniqueID;
-            return storeLetter;
-        }
-
-        public ItemSaveData StoreBuriedItem(BuriedItem toRemove, string uniqueID) {
-            ItemSaveData tmpBuriedItem = new ItemSaveData();
-
-            tmpBuriedItem.buriedItem.itemId = toRemove.itemId;
-            tmpBuriedItem.buriedItem.stack = toRemove.stackedAmount;
-            tmpBuriedItem.buriedItem.xP = toRemove.xPos;
-            tmpBuriedItem.buriedItem.yP = toRemove.yPos;
-
-            tmpBuriedItem.location = ItemLocations.Buried;
-            tmpBuriedItem.uniqueID = uniqueID;
-            return tmpBuriedItem;
-        }
-
-        public ItemSaveData StoreVehicle(Vehicle toRemove, string ID) {
-            ItemSaveData tmpVehicle = new ItemSaveData();
-            tmpVehicle.uniqueID = ID;
-            tmpVehicle.location = ItemLocations.Vehicle;
-            tmpVehicle.vehicle.Initialize(toRemove);
-            return tmpVehicle;
-        }
-
-        public ItemSaveData StoreWallpaper(HouseDetails house, string ID) {
-            ItemSaveData tmpWallpaper = new ItemSaveData();
-            tmpWallpaper.wallpaper.wallpaperID = house.wall;
-            tmpWallpaper.wallpaper.houseX = house.xPos;
-            tmpWallpaper.wallpaper.houseY = house.yPos;
-            tmpWallpaper.uniqueID = ID;
-
-            tmpWallpaper.location = ItemLocations.HomeWall;
-
-            return tmpWallpaper;
-        }
-
-        public ItemSaveData StoreFlooring(HouseDetails house, string ID) {
-            ItemSaveData tmpFlooring = new ItemSaveData();
-            tmpFlooring.flooring.flooringID = house.floor;
-            tmpFlooring.flooring.houseX = house.xPos;
-            tmpFlooring.flooring.houseY = house.yPos;
-            tmpFlooring.uniqueID = ID;
-
-            tmpFlooring.location = ItemLocations.HomeFloor;
-
-            return tmpFlooring;
-        }
-
-        // Example of using initialize to make it cleaner here
-        public ItemSaveData StoreCarry(PickUpAndCarry myCarry, string ID) {
-            ItemSaveData tmpCarry = new ItemSaveData();
-            tmpCarry.carry.Initialize(myCarry);
-            tmpCarry.uniqueID = ID;
-
-            tmpCarry.location = ItemLocations.Carry;
-
-            return tmpCarry;
-        }
-
-        // The original way we were doing it and is much much messier...
-        // We sent in specific information and "hoped" it would be unique enough to find the correct method. 
-
-        // For saving items that were in the player's inventory
-        public ItemSaveData(TRCustomItem customItem, int slotNo, int stackSize) {
-            uniqueID = customItem.uniqueID;
-            location = ItemLocations.Inventory;
-            this.slotNo = slotNo;
-            this.stackSize = stackSize;
-        }
-
-        // For saving items that were in a chest
-        public ItemSaveData(TRCustomItem customItem, int slotNo, int stackSize, int ObjectXPos, int ObjectYPos, int HouseXPos, int HouseYPos) {
-            uniqueID = customItem.uniqueID;
-            location = ItemLocations.Chest;
-
-            this.stackSize = stackSize;
-            this.slotNo = slotNo;
-
-            // Position of tile outside (the house in some cases)
-            this.ObjectXPos = ObjectXPos;
-            this.ObjectYPos = ObjectYPos;
-
-            // Position of inside the house
-            this.HouseXPos = HouseXPos;
-            this.HouseYPos = HouseYPos;
-        }
-
-        // For saving items that out in the world
-        public ItemSaveData(TRCustomItem customItem, int ObjectXPos, int ObjectYPos, int rotation, WorldObject type, int HouseXPos, int HouseYPos, int status = -1, int onTopPos = -1, int bridgeLength = -1) {
-            uniqueID = customItem.uniqueID;
-            location = ItemLocations.World;
-
-            // Type of Object: OnTile, OnTop, Bridge
-            this.type = type;
-            this.rotation = rotation;
-
-            // Position of tile outside (the house in some cases)
-            this.ObjectXPos = ObjectXPos;
-            this.ObjectYPos = ObjectYPos;
-
-            // Position of inside the house
-            this.HouseXPos = HouseXPos;
-            this.HouseYPos = HouseYPos;
-
-            // Status of current object
-            this.status = status;
-
-            // What y level (height) it is at
-            this.onTopPos = onTopPos;
-
-            this.bridgeLength = bridgeLength;
-        }
-
-        // Saving items in a stash
-        public ItemSaveData(TRCustomItem customItem, int stackSize, int stashPostition, int slotNo) {
-            uniqueID = customItem.uniqueID;
-            location = ItemLocations.Stash;
-            this.stackSize = stackSize;
-            this.stashPostition = stashPostition;
-            this.slotNo = slotNo;
-        }
-
-        // Saving equipment slots
-        public ItemSaveData(TRCustomItem customItem, EquipLocation equipment, int stackSize) {
-            uniqueID = customItem.uniqueID;
-            location = ItemLocations.Equipped;
-            this.equipment = equipment;
-            this.stackSize = stackSize;
-        }
-
-        // Pretty sure this was for paths. 
-        public ItemSaveData(TRCustomItem customItem, WorldObject type, int objectXPos, int objectYPos, int tileType) {
-            uniqueID = customItem.uniqueID;
-            this.tileType = tileType;
-            location = ItemLocations.World;
-            ObjectXPos = objectXPos;
-            ObjectYPos = objectYPos;
-            this.type = type;
-        }
+        
     }
 
 }

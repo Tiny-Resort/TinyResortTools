@@ -14,7 +14,6 @@ namespace TinyResort {
 
         public static void Initialize() {
 
-
             Type transformType = typeof(Transform);
             Transform[] toFind = (Transform[])Resources.FindObjectsOfTypeAll(transformType);
 
