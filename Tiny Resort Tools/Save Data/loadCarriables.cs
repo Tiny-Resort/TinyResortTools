@@ -9,10 +9,16 @@ namespace TinyResort {
     internal class loadCarriables {
         
         public static void Postfix() {
-            TRTools.InMainMenu = false;
-            TRData.postLoadEvent?.Invoke();
+            
             TRData.injectDataEvent?.Invoke();
-            //TRItems.LoadCustomItemPostLoad();
+
+            if (TRTools.InMainMenu) {
+                TRData.initialLoadEvent?.Invoke();
+                TRTools.InMainMenu = false;
+            }
+            
+            TRData.postLoadEvent?.Invoke();
+            
         }
         
     }

@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Object = UnityEngine.Object;
+
+namespace TinyResort {
+
+
+    [Serializable]
+    internal class VehicleData : ItemSaveData {
+
+        public static List<VehicleData> all = new List<VehicleData>();
+        public int colourVariation;
+        public float positionX;
+        public float positionY;
+        public float positionZ;
+        public float rotationX;
+        public float rotationY;
+        public float rotationZ;
+
+        public static void LoadAll(bool firstLoad) {
+            all = (List<VehicleData>)TRItems.Data.GetValue("VehicleData", new List<VehicleData>());
+            foreach (var item in all) { item.Load(firstLoad); }
+        }
+
+        public static void Save(Vehicle toRemove) {
+            all.Add(new VehicleData {
+                customItemID = TRItems.customVehicleByID[toRemove.saveId].customItemID, colourVariation = toRemove.getVariation(),
+                positionX = toRemove.transform.position.x, positionY = toRemove.transform.position.y, positionZ = toRemove.transform.position.z,
+                rotationX = toRemove.transform.eulerAngles.x, rotationY = toRemove.transform.eulerAngles.y, rotationZ = toRemove.transform.eulerAngles.z
+            });
+            SaveLoad.saveOrLoad.vehiclesToSave.Remove(toRemove);
+
+        }
+
+        public void Load(bool firstLoad) {
+            
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+
+            // If re-injecting data after saving, just re-add it to list
+            if (!firstLoad) {
+                SaveLoad.saveOrLoad.vehiclesToSave.Add(customItem.vehicle);
+                return;
+            }
+            
+            // If loading into save slot, then create the item and set it up
+            GameObject gameObject = Object.Instantiate(
+                customItem.invItem.spawnPlaceable,
+                new Vector3(positionX, positionY, positionZ),
+                Quaternion.Euler(rotationX, rotationY, rotationZ)
+            );
+            
+            gameObject.GetComponent<Vehicle>().setVariation(colourVariation);
+            NetworkMapSharer.share.spawnGameObject(gameObject);
+            
+        }
+
+    }
+
+}

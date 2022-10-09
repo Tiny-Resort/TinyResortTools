@@ -41,7 +41,8 @@ namespace TinyResort {
         // Goes through all textures in a specific folder and tries to load them as custom items
         internal static void SortThroughFolder(string path, GameObject obj) {
             
-            var files = Directory.GetFiles(path).ToList();
+            var files = TRAssets.ListAllTextures(path);
+            
             foreach (var file in files) {
                 
                 // If no texture could be loaded, skip this one

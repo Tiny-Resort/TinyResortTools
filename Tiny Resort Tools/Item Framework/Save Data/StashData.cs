@@ -1,0 +1,34 @@
+using System;
+using System.Collections.Generic;
+
+namespace TinyResort {
+
+    [Serializable]
+    internal class StashData : ItemSaveData {
+
+        public static List<StashData> all = new List<StashData>();
+        public int stashPostition;
+
+        public static void LoadAll() {
+            all = (List<StashData>)TRItems.Data.GetValue("StashData", new List<StashData>());
+            foreach (var item in all) { item.Load(); }
+        }
+
+        public static void Save(int stackSize, int stashPostition, int slotNo) {
+            all.Add(new StashData {
+                customItemID = TRItems.customItemsByItemID[ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo]].customItemID, 
+                stackSize = stackSize, stashPostition = stashPostition, slotNo = slotNo
+            });
+            ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo] = -1;
+            ContainerManager.manage.privateStashes[stashPostition].itemStacks[slotNo] = 0;
+        }
+
+        public void Load() {
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+            ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo] = customItem.invItem.getItemId();
+            ContainerManager.manage.privateStashes[stashPostition].itemStacks[slotNo] = stackSize;
+        }
+
+    }
+
+}

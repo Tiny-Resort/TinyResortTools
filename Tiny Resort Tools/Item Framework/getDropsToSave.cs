@@ -9,7 +9,7 @@ namespace TinyResort {
 
         public static void Prefix(WorldManager __instance) {
             foreach (var item in WorldManager.manageWorld.itemsOnGround) {
-                if (TRItems.customItemsByID.ContainsKey(item.myItemId)) {
+                if (TRItems.customItemsByItemID.ContainsKey(item.myItemId)) {
                     TRTools.Log($"Setting Modded Item to not save {item.myItemId}");
                     item.saveDrop = false;
                 }
@@ -17,4 +17,5 @@ namespace TinyResort {
         }
         
     }
+    
 }
