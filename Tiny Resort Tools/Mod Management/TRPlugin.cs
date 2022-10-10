@@ -84,7 +84,19 @@ namespace TinyResort {
             }
             return TRLicences.AddLicence(nexusID.Value, licenceID, licenceName, maxLevel);
         }
+
+        /// <summary>
+        /// Set a conflicting plugin to warn the user's about if they have it in their folder. 
+        /// </summary>
+        /// <param name="conflictingPlugin">The GUID for the conflicting plugin.</param>
+        public void AddConflictingPlugin(string conflictingPlugin) { TRConflictingPlugins.AddConflictingPlugin(plugin.Info, conflictingPlugin); }
         
+        /// <summary>
+        /// If you want to do something specific if they ignore the warning, use this to check in Start()
+        /// </summary>
+        /// <returns></returns>
+        public bool PlayingWithConflicts() { return TRConflictingPlugins.PlayingWithConflicts(plugin.Info); }
+
     }
 
 }

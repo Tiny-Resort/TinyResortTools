@@ -101,16 +101,19 @@ namespace TinyResort {
             customItems[plugin.nexusID + uniqueItemID] = TRCustomItem.Create(assetBundlePath);
             customItems[plugin.nexusID + uniqueItemID].customItemID = plugin.nexusID + uniqueItemID;
             return customItems[plugin.nexusID + uniqueItemID];
-            
+
         }
 
         // Adds a new custom item to the dictionary but allows it to be created somewhere else
-        internal static void AddCustomItem(TRCustomItem item, string uniqueID) { item.customItemID = uniqueID; customItems[uniqueID] = item; }
-        
+        internal static void AddCustomItem(TRCustomItem item, string uniqueID) {
+            item.customItemID = uniqueID;
+            customItems[uniqueID] = item;
+        }
+
         // Resize the array depending on the number of modded items added
         // Ignore modded items saved if it doesnt exist in customItems
         internal static void ManageAllItemArray() {
-            
+
             // Saves the default arrays for existing item lists
             allItemsVanilla = Inventory.inv.allItems.ToList();
             tileObjectsVanilla = WorldManager.manageWorld.allObjects.ToList();
@@ -118,7 +121,7 @@ namespace TinyResort {
             vehiclePrefabsVanilla = SaveLoad.saveOrLoad.vehiclePrefabs.ToList();
             carryablePrefabsVanilla = SaveLoad.saveOrLoad.carryablePrefabs.ToList();
             tileTypesVanilla = WorldManager.manageWorld.tileTypes.ToList();
-            
+
             CatalogueVanilla = CatalogueManager.manage.collectedItem.ToList();
             TRTools.Log($"Catalogue size: {CatalogueManager.manage.collectedItem.Length}");
 
@@ -132,7 +135,7 @@ namespace TinyResort {
 
             // Add custom items to existing item lists
             foreach (var item in customItems) {
-                
+
                 // Add custom paths
                 if (item.Value.tileTypes) {
                     if (item.Value.tileTypes.isPath) {
@@ -157,14 +160,14 @@ namespace TinyResort {
                     item.Value.tileObjectSettings.tileObjectId = tileObjectSettingsFull.Count - 1;
                     customTileObjectByID[tileObjectsFull.Count - 1] = item.Value;
                 }
-                
+
                 // Add custom vehicles
                 if (item.Value.vehicle) {
                     vehiclePrefabsFull.Add(item.Value.invItem.spawnPlaceable);
                     item.Value.vehicle.saveId = vehiclePrefabsFull.Count - 1;
                     customVehicleByID[vehiclePrefabsFull.Count - 1] = item.Value;
                 }
-                
+
                 // Add custom carryable items
                 if (item.Value.carryable) {
                     carryablePrefabsFull.Add(item.Value.carryable.gameObject);
@@ -286,12 +289,10 @@ namespace TinyResort {
             for (var j = 0; j < ContainerManager.manage.privateStashes.Count; j++) {
                 for (var i = 0; i < ContainerManager.manage.privateStashes[j].itemIds.Length; i++) {
                     TRTools.Log($"Found Item: {ContainerManager.manage.privateStashes[j].itemIds[i]}");
-                    if (customItemsByItemID.ContainsKey(ContainerManager.manage.privateStashes[j].itemIds[i])) {
-                        StashData.Save(ContainerManager.manage.privateStashes[j].itemStacks[i], j, i);
-                    }
+                    if (customItemsByItemID.ContainsKey(ContainerManager.manage.privateStashes[j].itemIds[i])) { StashData.Save(ContainerManager.manage.privateStashes[j].itemStacks[i], j, i); }
                 }
             }
-            
+
             // Unloads and saves all equipped clothing
             if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo)) { EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat); }
             if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo)) { EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face); }
@@ -302,15 +303,13 @@ namespace TinyResort {
             // Removes mail from the mail box if it contains a custom item
             var inMailBox = new List<Letter>(MailManager.manage.mailInBox);
             foreach (var letter in inMailBox) {
-                if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached))
-                    LetterData.Save(letter, false);
+                if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached)) LetterData.Save(letter, false);
             }
-            
+
             // Removes mail that would be sent the next night if it contains a custom item
             var tomorrowMail = new List<Letter>(MailManager.manage.tomorrowsLetters);
             foreach (var letter in tomorrowMail) {
-                if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached)) 
-                    LetterData.Save(letter, true);
+                if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached)) LetterData.Save(letter, true);
             }
 
             #endregion
@@ -325,8 +324,10 @@ namespace TinyResort {
             var tileTypeMap = WorldManager.manageWorld.tileTypeMap;
             for (var x = 0; x < tileTypeMap.GetLength(0); x++) {
                 for (var y = 0; y < tileTypeMap.GetLength(1); y++)
-                    if (tileTypeMap[x, y] > -1 && WorldManager.manageWorld.tileTypes[tileTypeMap[x, y]].isPath && customTileTypeByID.ContainsKey(tileTypeMap[x, y]))
+                    if (tileTypeMap[x, y] > -1 && WorldManager.manageWorld.tileTypes[tileTypeMap[x, y]].isPath && customTileTypeByID.ContainsKey(tileTypeMap[x, y])) {
+                        TRTools.Log($"Found Mod Tile: {tileTypeMap[x, y]} | ({x},{y})");
                         PathData.Save(tileTypeMap[x, y], x, y);
+                    }
             }
 
             #endregion
@@ -338,7 +339,7 @@ namespace TinyResort {
             var onTileMap = WorldManager.manageWorld.onTileMap;
             for (var x = 0; x < onTileMap.GetLength(0); x++) {
                 for (var y = 0; y < onTileMap.GetLength(1); y++) {
-                    
+
                     // If the tile is empty, ignore it
                     if (onTileMap[x, y] <= -1) continue;
 
@@ -369,17 +370,20 @@ namespace TinyResort {
 
                     // If the tile contains a custom world object, unload and save it
                     else if (customTileObjectByID.ContainsKey(onTileMap[x, y])) {
-                        
+
                         // If not a bridge, save as an overworld object
                         var rotation = WorldManager.manageWorld.rotationMap[x, y];
                         if (!allObjects[onTileMap[x, y]].tileObjectBridge) { ObjectData.Save(onTileMap[x, y], x, y, rotation, -1, -1); }
-                        
+
                         // If it is a bridge, find the length and save the bridge
                         else {
                             var bridgeLength = -1;
-                            if (rotation == 1) bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, -1);
-                            else if (rotation == 2) bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, -1);
-                            else if (rotation == 3) bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, 1);
+                            if (rotation == 1)
+                                bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, -1);
+                            else if (rotation == 2)
+                                bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, -1);
+                            else if (rotation == 3)
+                                bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, 1);
                             else if (rotation == 4) bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 1);
                             BridgeData.Save(onTileMap[x, y], x, y, rotation, bridgeLength);
                         }
@@ -399,8 +403,10 @@ namespace TinyResort {
                         for (var i = 0; i < onTopOfTileInside.Length; i++) {
                             if (customTileObjectByID.ContainsKey(onTopOfTileInside[i].getTileObjectId())) {
                                 TRTools.Log($"Found {customTileObjectByID[onTopOfTileInside[i].getTileObjectId()].invItem.itemName}");
-                                ObjectTopData.Save(onTopOfTileInside[i].itemId, onTopOfTileInside[i].sittingOnX, onTopOfTileInside[i].sittingOnY, 
-                                                   onTopOfTileInside[i].itemRotation, x, y, onTopOfTileInside[i].itemStatus, onTopOfTileInside[i].onTopPosition);
+                                ObjectTopData.Save(
+                                    onTopOfTileInside[i].itemId, onTopOfTileInside[i].sittingOnX, onTopOfTileInside[i].sittingOnY,
+                                    onTopOfTileInside[i].itemRotation, x, y, onTopOfTileInside[i].itemStatus, onTopOfTileInside[i].onTopPosition
+                                );
                             }
                         }
 
@@ -421,15 +427,14 @@ namespace TinyResort {
                                 // TODO: It's possible that we need to also remove vanilla items from custom chests
                                 // Chest.cs -> Data structure that holds the items it has and stuff
                                 // ChestPlaceable.cs -> Actual object placed in the world.
-                                if (allObjects[tileObjectID].tileObjectChest) { ChestData.Save(allObjects[onTileMap[x, y]].tileObjectChest, houseTileX, houseTileY, x, y); }
+                                if (allObjects[tileObjectID].tileObjectChest) { ChestData.Save(allObjects[tileObjectID].tileObjectChest, houseTileX, houseTileY, x, y); }
 
                                 #endregion
 
                                 #region World Objects (INSIDE a house)
 
                                 // If it's a custom item, save and unload it
-                                else if (customTileObjectByID.ContainsKey(tileObjectID))
-                                    ObjectData.Save(tileObjectID, houseTileX, houseTileY, x, y, houseDetails.houseMapRotation[houseTileX, houseTileY]);
+                                else if (customTileObjectByID.ContainsKey(tileObjectID)) ObjectData.Save(tileObjectID, houseTileX, houseTileY, houseDetails.houseMapRotation[houseTileX, houseTileY], x, y);
 
                                 #endregion
 
@@ -442,7 +447,7 @@ namespace TinyResort {
             #endregion
 
             UnmodTheArrays();
-            
+
             // Saves all the new data
             Data.SetValue("InvItemData", InvItemData.all);
             Data.SetValue("ChestData", ChestData.all);
@@ -457,12 +462,53 @@ namespace TinyResort {
             Data.SetValue("BridgeData", BridgeData.all);
             Data.SetValue("PathData", PathData.all);
             Data.SetValue("BuriedObjectData", BuriedObjectData.all);
+            TRTools.Log($"Saving InvItemData: {InvItemData.all.Count}");
+            TRTools.Log($"Saving ChestData: {ChestData.all.Count}");
+            TRTools.Log($"Saving EquipData: {EquipData.all.Count}");
+            TRTools.Log($"Saving LetterData: {LetterData.all.Count}");
+            TRTools.Log($"Saving StashData: {StashData.all.Count}");
+            TRTools.Log($"Saving HouseData: {HouseData.all.Count}");
+            TRTools.Log($"Saving VehicleData: {VehicleData.all.Count}");
+            TRTools.Log($"Saving CarryableData: {CarryableData.all.Count}");
+            TRTools.Log($"Saving ObjectData: {ObjectData.all.Count}");
+            TRTools.Log($"Saving ObjectTopData: {ObjectTopData.all.Count}");
+            TRTools.Log($"Saving BridgeData: {BridgeData.all.Count}");
+            TRTools.Log($"Saving PathData: {PathData.all.Count}");
+            TRTools.Log($"Saving BuriedObjectData: {BuriedObjectData.all.Count}");
+        }
 
+        internal static void CurrentSaveInfo() {
+            var test = (List<InvItemData>)Data.GetValue("InvItemData", new List<InvItemData>());
+            TRTools.Log($"CurrentInv Data: {test.Count}");
+            var test1 = (List<StashData>)Data.GetValue("StashData", new List<StashData>());
+            TRTools.Log($"StashData Data: {test1.Count}");
+            var test2 = (List<HouseData>)Data.GetValue("HouseData", new List<HouseData>());
+            TRTools.Log($"HouseData Data: {test2.Count}");
+            var test3 = (List<VehicleData>)Data.GetValue("VehicleData", new List<VehicleData>());
+            TRTools.Log($"VehicleData Data: {test3.Count}");
+            var test4 = (List<CarryableData>)Data.GetValue("CarryableData", new List<CarryableData>());
+            TRTools.Log($"CarryableData Data: {test4.Count}");
+            var test5 = (List<ObjectData>)Data.GetValue("ObjectData", new List<ObjectData>());
+            TRTools.Log($"ObjectData Data: {test5.Count}");
+            var test6 = (List<ObjectTopData>)Data.GetValue("ObjectTopData", new List<ObjectTopData>());
+            TRTools.Log($"ObjectTopData Data: {test6.Count}");
+            var test7 = (List<BridgeData>)Data.GetValue("BridgeData", new List<BridgeData>());
+            TRTools.Log($"BridgeData Data: {test7.Count}");
+            var test8 = (List<PathData>)Data.GetValue("PathData", new List<PathData>());
+            TRTools.Log($"PathData Data: {test8.Count}");
+            var test9 = (List<BuriedObjectData>)Data.GetValue("BuriedObjectData", new List<BuriedObjectData>());
+            TRTools.Log($"BuriedObjectData Data: {test9.Count}");
+            var test10 = (List<ChestData>)Data.GetValue("ChestData", new List<ChestData>());
+            TRTools.Log($"ChestData Data: {test10.Count}");
+            var test11 = (List<EquipData>)Data.GetValue("EquipData", new List<EquipData>());
+            TRTools.Log($"EquipData Data: {test11.Count}");
+            var test12 = (List<LetterData>)Data.GetValue("LetterData", new List<LetterData>());
+            TRTools.Log($"LetterData Data: {test12.Count}");
         }
 
         // Called whenever loading or after saving
         internal static void LoadCustomItems() {
-            
+
             TRTools.Log("Re-adding Items");
             ModTheArrays();
 
@@ -471,7 +517,7 @@ namespace TinyResort {
                 VehicleData.LoadAll(false);
                 CarryableData.LoadAll(false);
             }
-            
+
             // Loads all other items normally
             InvItemData.LoadAll();
             ChestData.LoadAll();
@@ -484,19 +530,19 @@ namespace TinyResort {
             BridgeData.LoadAll();
             PathData.LoadAll();
             BuriedObjectData.LoadAll();
-            
+
         }
 
         // Only called when loading a save slot, not when sleeping
         internal static void LoadCustomMovables() {
             VehicleData.LoadAll(true);
-            CarryableData.LoadAll(true);
+            CarryableData.LoadAll(true); // Do we need to check if this is on a scale? o.o
         }
-        
+
     }
 
     public class TRCustomItem {
-        
+
         public string customItemID;
 
         // TODO: Implement events
@@ -531,7 +577,7 @@ namespace TinyResort {
             return newItem;
 
         }
-        
+
     }
 
 }

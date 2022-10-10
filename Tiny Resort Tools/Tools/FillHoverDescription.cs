@@ -117,7 +117,8 @@ namespace TinyResort {
             if (!string.IsNullOrEmpty(ClothingMessages)) DebugMessage += ClothingMessages;
             if (!string.IsNullOrEmpty(FurnitureMessages)) DebugMessage += FurnitureMessages;
 
-            if (Input.GetKey(KeyCode.LeftAlt)) __instance.InvDescriptionText.text += DebugMessage;
+            //TODO: Set an option to have this always turned on(?)
+            if (Input.GetKey(KeyCode.LeftAlt) && !__instance.InvDescriptionText.text.Contains(DebugMessage)) __instance.InvDescriptionText.text += DebugMessage;
         }
     }
 }

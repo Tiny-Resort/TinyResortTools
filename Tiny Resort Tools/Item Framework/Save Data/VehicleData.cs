@@ -20,6 +20,7 @@ namespace TinyResort {
 
         public static void LoadAll(bool firstLoad) {
             all = (List<VehicleData>)TRItems.Data.GetValue("VehicleData", new List<VehicleData>());
+            TRTools.Log($"Loading VehicleData: {all.Count}");
             foreach (var item in all) { item.Load(firstLoad); }
         }
 

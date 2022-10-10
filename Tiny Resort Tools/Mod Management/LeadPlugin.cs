@@ -36,8 +36,8 @@ namespace TinyResort {
             
             TRInterface.Initialize();
             TRModUpdater.Initialize();
-            TRItems.ManageAllItemArray();            
-            
+            TRConflictingPlugins.Initialize();
+            TRItems.ManageAllItemArray();
             /*var TestLicense = plugin.AddLicense(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);
             TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
@@ -63,16 +63,19 @@ namespace TinyResort {
             TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
             TestLicense3.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
             TestLicense3.AddPrerequisite(TestLicense);*/
-            
+
         }
 
         private void Update() {
             
             TRModUpdater.Update();
+            TRConflictingPlugins.Update();
 
             if (NetworkMapSharer.share.localChar) TRIcons.InitializeIcons();
             
-            if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems(); }
+            if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems();
+            }
+            if (Input.GetKeyDown(KeyCode.F12)) { TRItems.CurrentSaveInfo(); }
             if (Input.GetKeyDown(KeyCode.F10)) { TRItems.LoadCustomItems(); }
             if (Input.GetKeyDown(KeyCode.F9)) { 
                 TRTools.Log($"Size: {SaveLoad.saveOrLoad.carryablePrefabs.Length}");

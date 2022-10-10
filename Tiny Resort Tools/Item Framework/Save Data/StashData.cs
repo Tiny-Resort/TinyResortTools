@@ -11,6 +11,7 @@ namespace TinyResort {
 
         public static void LoadAll() {
             all = (List<StashData>)TRItems.Data.GetValue("StashData", new List<StashData>());
+            TRTools.Log($"Loading StashData: {all.Count}");
             foreach (var item in all) { item.Load(); }
         }
 

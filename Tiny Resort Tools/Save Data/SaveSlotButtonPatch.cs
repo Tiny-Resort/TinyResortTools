@@ -8,6 +8,7 @@ namespace TinyResort {
         
         [HarmonyPrefix]
         internal static void Prefix(SaveLoad __instance) {
+            TRTools.Log($"Running onPress");
             TRData.preLoadEvent?.Invoke();
         }
 

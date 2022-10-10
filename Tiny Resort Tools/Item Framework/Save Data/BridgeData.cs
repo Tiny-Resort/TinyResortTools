@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TinyResort {
     
@@ -11,6 +12,7 @@ namespace TinyResort {
 
         public static void LoadAll() {
             all = (List<BridgeData>)TRItems.Data.GetValue("BridgeData", new List<BridgeData>());
+            TRTools.Log($"Loading BridgeData: {all.Count}");
             foreach (var item in all) { item.Load(); }
         }
 

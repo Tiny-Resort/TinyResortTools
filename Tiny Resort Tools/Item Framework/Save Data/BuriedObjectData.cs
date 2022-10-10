@@ -10,6 +10,7 @@ namespace TinyResort {
 
         public static void LoadAll() {
             all = (List<BuriedObjectData>)TRItems.Data.GetValue("BuriedObjectData", new List<BuriedObjectData>());
+            TRTools.Log($"Loading BuriedObjectData: {all.Count}");
             foreach (var item in all) { item.Load(); }
         }
 
@@ -26,7 +27,7 @@ namespace TinyResort {
         public void Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
             WorldManager.manageWorld.onTileMap[objectXPos, objectYPos] = 30;
-            BuriedManager.manage.allBuriedItems.Add(new BuriedItem(customItem.invItem.itemId, stackSize, objectXPos, objectYPos));
+            BuriedManager.manage.allBuriedItems.Add(new BuriedItem(customItem.invItem.getItemId(), stackSize, objectXPos, objectYPos)); 
         }
 
     }

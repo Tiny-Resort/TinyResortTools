@@ -87,7 +87,7 @@ namespace TinyResort {
         }
 
         internal static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") { LeadPlugin.plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod); }
-
+        
         #region Easy Notifications
 
         /// <summary> Displays a notification at the top of the screen right away rather than waiting on any previous notifications. </summary>

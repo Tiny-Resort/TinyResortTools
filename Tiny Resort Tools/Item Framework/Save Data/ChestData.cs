@@ -11,6 +11,7 @@ namespace TinyResort {
 
         public static void LoadAll() {
             all = (List<ChestData>)TRItems.Data.GetValue("ChestData", new List<ChestData>());
+            TRTools.Log($"Loading ChestData: {all.Count}");
             foreach (var item in all) { item.Load(); }
         }
 
@@ -21,9 +22,10 @@ namespace TinyResort {
             
             // Gains access to the contents of the chest
             chestPlaceable.checkIfEmpty(objectXPos, objectYPos, houseDetails);
-            
+
             // Goes through each slot in the chest, unloading and saving each custom item
             var chest = ContainerManager.manage.activeChests.First(p => p.xPos == objectXPos && p.yPos == objectYPos && p.inside == (houseDetails != null));
+
             for (var slotNo = 0; slotNo < chest.itemIds.Length; slotNo++) {
                 if (TRItems.customItemsByItemID.ContainsKey(chest.itemIds[slotNo])) {
                     all.Add(new ChestData {

@@ -16,6 +16,7 @@ namespace TinyResort {
         public static void LoadAll() {
             slots = new[] { EquipWindow.equip.hatSlot, EquipWindow.equip.faceSlot, EquipWindow.equip.shirtSlot, EquipWindow.equip.pantsSlot, EquipWindow.equip.shoeSlot };
             all = (List<EquipData>)TRItems.Data.GetValue("EquipData", new List<EquipData>());
+            TRTools.Log($"Loading EquipData: {all.Count}");
             foreach (var item in all) { item.Load(); }
         }
 

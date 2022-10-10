@@ -8,6 +8,7 @@ namespace TinyResort {
         
         [HarmonyPostfix]
         internal static void patch(SaveLoad __instance) {
+            TRTools.Log($"Running EasySaveOnTop");
             TRData.injectDataEvent?.Invoke();
             TRData.postSaveEvent?.Invoke();
         }

@@ -32,6 +32,7 @@ namespace TinyResort {
 
         public static void LoadAll() {
             all = (List<LetterData>)TRItems.Data.GetValue("LetterData", new List<LetterData>());
+            TRTools.Log($"Loading LetterData: {all.Count}");
             foreach (var item in all) { item.Load(); }
         }
 

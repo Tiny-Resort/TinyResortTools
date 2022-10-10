@@ -12,6 +12,7 @@ namespace TinyResort {
 
         public static void LoadAll() {
             all = (List<ObjectTopData>)TRItems.Data.GetValue("ObjectTopData", new List<ObjectTopData>());
+            TRTools.Log($"Loading ObjectTopData: {all.Count}");
             foreach (var item in all) { item.Load(); }
         }
 
@@ -49,7 +50,7 @@ namespace TinyResort {
             WorldManager.manageWorld.refreshAllChunksInUse(objectXPos, objectYPos);
 
             // Must check if localChar is null because it will fail on first load since HouseManager doesn't exist
-            if (NetworkMapSharer.share.localChar) {
+            if (NetworkMapSharer.share.localChar && tmpHouseDetails != null) {
                 var house = HouseManager.manage.findHousesOnDisplay(houseXPos, houseYPos);
                 house.refreshHouseTiles();
             }

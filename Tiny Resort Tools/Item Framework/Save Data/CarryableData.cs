@@ -15,6 +15,7 @@ namespace TinyResort {
         
         public static void LoadAll(bool firstLoad) {
             all = (List<CarryableData>)TRItems.Data.GetValue("CarryableData", new List<CarryableData>());
+            TRTools.Log($"Loading CarryableData: {all.Count}");
             foreach (var item in all) { item.Load(firstLoad); }
         }
 

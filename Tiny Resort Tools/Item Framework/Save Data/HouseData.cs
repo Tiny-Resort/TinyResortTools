@@ -11,6 +11,7 @@ namespace TinyResort {
 
         public static void LoadAll() {
             all = (List<HouseData>)TRItems.Data.GetValue("HouseData", new List<HouseData>());
+            TRTools.Log($"Loading HouseData: {all.Count}");
             foreach (var item in all) { item.Load(); }
         }
 

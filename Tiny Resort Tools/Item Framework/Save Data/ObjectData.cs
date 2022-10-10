@@ -10,6 +10,7 @@ namespace TinyResort {
 
         public static void LoadAll() {
             all = (List<ObjectData>)TRItems.Data.GetValue("ObjectData", new List<ObjectData>());
+            TRTools.Log($"Loading ObjectData: {all.Count}");
             foreach (var item in all) { item.Load(); }
         }
 
@@ -23,14 +24,17 @@ namespace TinyResort {
             // If the object is in a house, remove it from inside the house
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             if (houseDetails != null) {
+                TRTools.Log("Found item in house");
+
                 TRItems.customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObjectInside(objectXPos, objectYPos, rotation, houseDetails);
                 houseDetails.houseMapOnTile[objectXPos, objectYPos] = -1;
                 houseDetails.houseMapOnTileStatus[objectXPos, objectYPos] = -1;
                 
                 // Refreshes the house so that the object actually appears
+
                 var house = HouseManager.manage.findHousesOnDisplay(houseXPos, houseYPos);
-                if (house && house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture) {
-                    house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture.updateOnTileStatus(objectXPos, objectYPos, houseDetails);
+                if (house) {
+                    if (house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture) house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture.updateOnTileStatus(objectXPos, objectYPos, houseDetails);
                     house.refreshHouseTiles();
                 }
 

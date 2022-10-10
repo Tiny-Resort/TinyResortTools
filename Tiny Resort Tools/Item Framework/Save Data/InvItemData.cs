@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TinyResort {
 
     [Serializable]
     internal class InvItemData : ItemSaveData {
 
-        public static List<InvItemData> all = new List<InvItemData>();
+        public static List<InvItemData> all;
 
         public static void LoadAll() {
             all = (List<InvItemData>)TRItems.Data.GetValue("InvItemData", new List<InvItemData>());
+            TRTools.Log($"Loading InvItemData: {all.Count}");
             foreach (var item in all) { item.Load(); }
         }
 
