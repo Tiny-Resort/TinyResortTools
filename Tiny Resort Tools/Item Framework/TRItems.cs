@@ -12,6 +12,28 @@ using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace TinyResort {
+    
+    /* TODO
+     HIGH PRIORITY
+        * John: Add a chat command for giving yourself a custom item.
+        * Add try catches when loading or unloading any item to prevent one badly modded item breaking everything.
+        * If a custom item can't be loaded in, add it to a Lost and Found save file. 
+
+     MID PRIORITY
+        * Add ability to put custom items on enemy drop tables.
+        * Add ability to put custom items in mine chest loot tables.
+        * Add ability to put custom items in loot that's buried underground, both in boxes and on its own.
+        * Add ability to add a custom item recipe to Franklyn's crafting shop.
+        * Add ability to make a recipe for a custom item and to give that recipe to the player.
+        * Add ability to add custom item to items NPCs give you, as well as to the recycle bin.
+        * Handle case where a non-modded item is on top of modded furniture. 
+
+     LOW PRIORITY
+        * Stephen: Quick creating paths, house floors and wallpapers.
+        * Expand mail system so that mod authors can be make highly custom letters.
+        * Add recovering items from the lost and found if mods are reinstalled. 
+     
+     */
 
     /// <summary>Tools for working with the Dinkum inventory.</summary>
     public class TRItems {
@@ -45,21 +67,6 @@ namespace TinyResort {
 
         #endregion
 
-        /*
-        TODO: (SLOW) A chat command for giving yourself a custom item. 
-        TODO: Be able to add it to enemy drops and chests including buried underground.
-        TODO: Be able to add it to list of items that NPCs can give you, or you can find in the recycle bin.
-        TODO: Be able to add it to Franklyn's crafting list.
-        TODO: Be able to make a recipe that creates the item, and give the recipe to the player.
-        TODO: (TANY) Quick creating tiles, floors and walls with just textures.
-        TODO: Fix catalogue history
-        TODO: (TANY) Update Sending Mail to be useable for other developers. It is too basic right now.
-        TODO: (TANY) Double check adding icons works for modded items
-        TODO: Add try{}catch{} statements to protect different points of the code from modders breaking it
-        TODO: We should add a condition of saving non modded items in situations where a non modded item is on top of a modded one
-        TODO: Make it if the player loads a save after removing mods, the items that can't be put back are saved to a lost an found that can be recovered from.
-        */
-
         internal static TRModData Data;
         internal static readonly Dictionary<string, TRCustomItem> customItems = new Dictionary<string, TRCustomItem>();
         internal static readonly Dictionary<int, TRCustomItem> customItemsByItemID = new Dictionary<int, TRCustomItem>();
@@ -87,8 +94,8 @@ namespace TinyResort {
         internal static void Initialize() {
             Data = TRData.Subscribe("TR.CustomItems");
             TRData.cleanDataEvent += UnloadCustomItems;
-            TRData.injectDataEvent += LoadCustomItems;
             TRData.initialLoadEvent += LoadCustomMovables;
+            TRData.injectDataEvent += LoadCustomItems;
         }
 
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, string uniqueItemID) {
@@ -121,9 +128,7 @@ namespace TinyResort {
             vehiclePrefabsVanilla = SaveLoad.saveOrLoad.vehiclePrefabs.ToList();
             carryablePrefabsVanilla = SaveLoad.saveOrLoad.carryablePrefabs.ToList();
             tileTypesVanilla = WorldManager.manageWorld.tileTypes.ToList();
-
             CatalogueVanilla = CatalogueManager.manage.collectedItem.ToList();
-            TRTools.Log($"Catalogue size: {CatalogueManager.manage.collectedItem.Length}");
 
             // Get existing item lists
             allItemsFull = Inventory.inv.allItems.ToList();
@@ -202,7 +207,7 @@ namespace TinyResort {
             Inventory.inv.allItems = allItemsFull.ToArray();
             WorldManager.manageWorld.allObjects = tileObjectsFull.ToArray();
             WorldManager.manageWorld.allObjectSettings = tileObjectSettingsFull.ToArray();
-            CatalogueManager.manage.collectedItem = new bool[Inventory.inv.allItems.Length]; // TODO: ???
+            Array.Resize(ref CatalogueManager.manage.collectedItem, Inventory.inv.allItems.Length);
             SaveLoad.saveOrLoad.vehiclePrefabs = vehiclePrefabsFull.ToArray();
             SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabsFull.ToArray();
             WorldManager.manageWorld.tileTypes = tileTypesFull.ToArray();
@@ -215,6 +220,7 @@ namespace TinyResort {
             WorldManager.manageWorld.allObjects = tileObjectsVanilla.ToArray();
             WorldManager.manageWorld.allObjectSettings = tileObjectSettingsVanilla.ToArray();
             CatalogueManager.manage.collectedItem = CatalogueVanilla.ToArray();
+            Array.Resize(ref CatalogueManager.manage.collectedItem, CatalogueVanilla.Count);
             SaveLoad.saveOrLoad.vehiclePrefabs = vehiclePrefabsVanilla.ToArray();
             SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabsVanilla.ToArray();
             WorldManager.manageWorld.tileTypes = tileTypesVanilla.ToArray();
@@ -448,8 +454,6 @@ namespace TinyResort {
 
             #endregion
 
-            UnmodTheArrays();
-
             // Saves all the new data
             Data.SetValue("InvItemData", InvItemData.all);
             Data.SetValue("ChestData", ChestData.all);
@@ -477,6 +481,15 @@ namespace TinyResort {
             TRTools.Log($"Saving BridgeData: {BridgeData.all.Count}");
             TRTools.Log($"Saving PathData: {PathData.all.Count}");
             TRTools.Log($"Saving BuriedObjectData: {BuriedObjectData.all.Count}");
+
+            // Goes through the catalogue to find any custom items that have been unlocked
+            var SavedCatalogue = new List<string>();
+            for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
+                if (CatalogueManager.manage.collectedItem[i]) { SavedCatalogue.Add(customItemsByItemID[i].customItemID); }
+            Data.SetValue("CatalogueData", SavedCatalogue);
+
+            UnmodTheArrays();
+            
         }
 
         internal static void CurrentSaveInfo() {
@@ -532,6 +545,11 @@ namespace TinyResort {
             BridgeData.LoadAll();
             PathData.LoadAll();
             BuriedObjectData.LoadAll();
+
+            // Loads saved unlocks for custom items in the catalogue
+            var SavedCatalogue = (List<string>) TRItems.Data.GetValue("CatalogueData", new List<string>());
+            for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
+                if (SavedCatalogue.Contains(customItemsByItemID[i].customItemID)) { CatalogueManager.manage.collectedItem[i] = true; }
 
         }
 

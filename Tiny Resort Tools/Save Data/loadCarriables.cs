@@ -10,18 +10,11 @@ namespace TinyResort {
         
         [HarmonyPostfix]
         public static void Postfix() {
-            TRTools.Log($"Running loadCarriables");
-
-            if (TRTools.InMainMenu) {
-                TRTools.Log($"Running loadCarriables: Main menu");
-                TRData.initialLoadEvent?.Invoke();
-                TRTools.InMainMenu = false;
-            }
-            
+            TRData.trueLoadEvent?.Invoke();
+            if (TRTools.InMainMenu) { TRData.initialLoadEvent?.Invoke(); }
             TRData.postLoadEvent?.Invoke();
-            TRData.injectDataEvent?.Invoke(); 
-
-
+            TRData.injectDataEvent?.Invoke();
+            TRTools.InMainMenu = false;
         }
         
     }

@@ -53,17 +53,15 @@ namespace TinyResort {
         /// </summary>
         public static SaveEvent initialLoadEvent;
 
-        /// <summary>
-        /// This event will run just BEFORE a save slot is loaded from the main menu. Useful for resetting values that shouldn't persist when
-        /// loading into another save file.
-        /// </summary>
-        public static SaveEvent notInitialLoadEvent;
-
         /// <summary>This event will run just BEFORE a save slot is loaded.</summary>
         public static SaveEvent preLoadEvent;
 
         /// <summary>This event will run just AFTER a save slot is loaded, just before the ijectDataEvent.</summary>
         public static SaveEvent postLoadEvent;
+
+        // These events are only accessible to us so that we can make all custom data is fully saved or loaded before the postLoad and postSave events can be used by mod authors
+        internal static SaveEvent trueSaveEvent;
+        internal static SaveEvent trueLoadEvent;
 
         /// <summary>Subscribes to the save system so that your mod data is saved and loaded properly.</summary>
         /// <param name="fileName">The name of your save file. Could be anything unique, but I recommend using the GUID of your plugin.</param>
@@ -75,8 +73,8 @@ namespace TinyResort {
                 global = globalSave
             };
             Data[fileName].package = new DataPackage();
-            postSaveEvent += () => Save(fileName);
-            postLoadEvent += () => Load(fileName);
+            trueSaveEvent += () => Save(fileName);
+            trueLoadEvent += () => Load(fileName);
             return Data[fileName];
         }
 
@@ -84,14 +82,15 @@ namespace TinyResort {
         /// <param name="fileName">The name of your save file. Could be anything unique, but I recommend using the GUID of your plugin.</param>
         internal static void Save(string fileName) {
 
-            if (TRTools.InMainMenu) {
-                TRTools.LogError(fileName + " is trying to save while in the main menu.");
+            // If the player is in the main menu and the save file is per-slot then don't allow saving
+            if (TRTools.InMainMenu && !Data[fileName].global) {
+                TRTools.LogError(fileName + " is trying to save while in the main menu but is not a global save file. "
+                                          + "To save a non-global save file, you must be loaded into an existing save slot.");
                 return;
             }
 
-            var path = Data[fileName].global ? globalDataPath : slotDataPath;
-
             // Creates the folder and finds the save file location
+            var path = Data[fileName].global ? globalDataPath : slotDataPath;
             Directory.CreateDirectory(path);
             var savePath = Path.Combine(path, fileName + ".sav");
 
@@ -117,7 +116,12 @@ namespace TinyResort {
 
         internal static void Load(string fileName) {
 
-            if (TRTools.InMainMenu || !Data.ContainsKey(fileName)) { return; }
+            // If the player is in the main menu and the save file is per-slot then don't allow loading
+            if (TRTools.InMainMenu && !Data[fileName].global) {
+                TRTools.LogError(fileName + " is trying to load while in the main menu but is not a global save file. "
+                                          + "To load a non-global save file, you must be already loaded into an existing save slot.");
+                return;
+            }
 
             var path = Data[fileName].global ? globalDataPath : slotDataPath;
 
