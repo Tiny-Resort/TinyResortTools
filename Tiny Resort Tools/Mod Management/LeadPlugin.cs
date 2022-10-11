@@ -38,7 +38,7 @@ namespace TinyResort {
             TRModUpdater.Initialize();
             TRConflictingPlugins.Initialize();
             TRItems.ManageAllItemArray();
-            /*var TestLicense = plugin.AddLicense(1, "Test License 1",  10);
+            /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);
             TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
             TestLicense.SetLevelInfo(2, "Level 2: This is a license made for testing the framework.", 1500);
@@ -47,7 +47,7 @@ namespace TinyResort {
             TestLicense.AddSkillRequirement(2, CharLevelManager.SkillTypes.Mining, 20);
             TestLicense.AddSkillRequirement(3, CharLevelManager.SkillTypes.Mining, 30);
             
-            var TestLicense2 = plugin.AddLicense(2, "Test License 2", 2);
+            var TestLicense2 = plugin.AddLicence(2, "Test License 2", 2);
             TestLicense2.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
             TestLicense2.SetLevelInfo(2, "Level 2: This is a license made for testing the framework.", 1500);
             TestLicense2.SetLevelInfo(3, "Level 3: This is a license made for testing the framework.", 3000);
@@ -55,15 +55,14 @@ namespace TinyResort {
             TestLicense2.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
             TestLicense2.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
 
-            var TestLicense3 = plugin.AddLicense(3, "Test License 3", 3);
+            var TestLicense3 = plugin.AddLicence(3, "Test License 3", 3);
             TestLicense3.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 1000);
             TestLicense3.SetLevelInfo(2, "Level 2: This is a license made for testing the framework.", 2000);
             TestLicense3.SetLevelInfo(3, "Level 3: This is a license made for testing the framework.", 5000);
             TestLicense3.AddSkillRequirement(1, CharLevelManager.SkillTypes.Hunting, 10);
             TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
             TestLicense3.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
-            TestLicense3.AddPrerequisite(TestLicense);*/
-
+            TestLicense3.AddPrerequisite(TestLicense); */
         }
 
         private void Update() {

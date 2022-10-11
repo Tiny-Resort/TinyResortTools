@@ -318,7 +318,9 @@ namespace TinyResort {
 
             // Unload and save all custom buried items
             var buriedItems = new List<BuriedItem>(BuriedManager.manage.allBuriedItems);
-            foreach (var item in buriedItems) { BuriedObjectData.Save(item); }
+            foreach (var item in buriedItems) {
+                if (customItemsByItemID.ContainsKey(item.itemId)) BuriedObjectData.Save(item);
+            }
 
             // Unload and save all custom paths
             var tileTypeMap = WorldManager.manageWorld.tileTypeMap;

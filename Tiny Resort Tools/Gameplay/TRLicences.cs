@@ -62,7 +62,7 @@ namespace TinyResort {
         }
 
         internal static TRCustomLicence AddLicence(int nexusID, int licenceID, string licenceName, int maxLevel = 1) {
-            
+
             var NewLicence = new TRCustomLicence {
                 nexusID = nexusID,
                 info = new Licence(),
