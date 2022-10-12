@@ -41,8 +41,10 @@ namespace TinyResort {
             }
             
             // If loading in to save slot, then create the carryable object
-            NetworkMapSharer.share.spawnACarryable(customItem.invItem.spawnPlaceable, new Vector3(positionX, positionY, positionZ), false);
-            
+            TRTools.Log($"DidThisRUn?");
+            NetworkMapSharer.share.spawnACarryable(customItem.carryable.gameObject, new Vector3(positionX, positionY, positionZ), false);
+            TRTools.Log($"DidThisRun2?");
+
         }
         
     }

@@ -344,7 +344,7 @@ namespace TinyResort {
             #region World Objects & Chests
 
             // Go through every tile in the overworld and in the house to unload all custom items
-            var allObjects = WorldManager.manageWorld.allObjects;
+            var allObjects = WorldManager.manageWorld.allObjects; 
             var onTileMap = WorldManager.manageWorld.onTileMap;
             for (var x = 0; x < onTileMap.GetLength(0); x++) {
                 for (var y = 0; y < onTileMap.GetLength(1); y++) {

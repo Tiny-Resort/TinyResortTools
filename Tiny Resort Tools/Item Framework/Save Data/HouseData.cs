@@ -28,7 +28,7 @@ namespace TinyResort {
         public void Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
             var house = HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
-            if (isWall) { house.wall = customItem.invItem.itemId; } else { house.floor = customItem.invItem.itemId; }
+            if (isWall) { house.wall = customItem.invItem.getItemId(); } else { house.floor = customItem.invItem.getItemId(); }
         }
         
     }
