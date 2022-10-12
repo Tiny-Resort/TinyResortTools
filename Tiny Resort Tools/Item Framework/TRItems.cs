@@ -17,7 +17,8 @@ namespace TinyResort {
      HIGH PRIORITY
         * John: Add a chat command for giving yourself a custom item.
         * Add try catches when loading or unloading any item to prevent one badly modded item breaking everything.
-        * If a custom item can't be loaded in, add it to a Lost and Found save file. 
+        * If a custom item can't be loaded in, add it to a Lost and Found save file.
+        * Unload/load 
 
      MID PRIORITY
         * Add ability to put custom items on enemy drop tables.

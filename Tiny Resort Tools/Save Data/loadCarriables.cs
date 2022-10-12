@@ -10,11 +10,12 @@ namespace TinyResort {
         
         [HarmonyPostfix]
         public static void Postfix() {
+            var inMainMenu = TRTools.InMainMenu;
+            TRTools.InMainMenu = false;
             TRData.trueLoadEvent?.Invoke();
-            if (TRTools.InMainMenu) { TRData.initialLoadEvent?.Invoke(); }
+            if (inMainMenu) { TRData.initialLoadEvent?.Invoke(); }
             TRData.postLoadEvent?.Invoke();
             TRData.injectDataEvent?.Invoke();
-            TRTools.InMainMenu = false;
         }
         
     }
