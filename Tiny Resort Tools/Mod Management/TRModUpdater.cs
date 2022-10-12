@@ -49,13 +49,13 @@ namespace TinyResort {
             // Create mod update checker button
             var modsButtonParent = OptionsMenu.options.menuParent.transform.GetChild(10);
             modsWindowButton = TRInterface.CreateButton(ButtonTypes.MainMenu, modsButtonParent, "MODS", ToggleModWindow);
-            modsWindowButton.rectTransform.sizeDelta = new Vector2(73, 22);
-            modsWindowButton.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-            modsWindowButton.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            modsWindowButton.rectTransform.sizeDelta = new Vector2(146, 44);
+            modsWindowButton.rectTransform.anchorMin = new Vector2(0f, 0.5f);
+            modsWindowButton.rectTransform.anchorMax = new Vector2(0f, 0.5f);
             modsWindowButton.rectTransform.pivot = new Vector2(0.5f, 0.5f);
-            modsWindowButton.rectTransform.anchoredPosition = new Vector2(1.5f, 64f);
+            modsWindowButton.rectTransform.anchoredPosition = new Vector2(-1115, -5f);
             modsWindowButton.textMesh.alignment = TextAlignmentOptions.Center;
-            modsWindowButton.textMesh.fontSize = 12;
+            modsWindowButton.textMesh.fontSize = 18;
             
             // Create an update button to work with
             updateButton = TRInterface.CreateButton(ButtonTypes.MainMenu, null, "");
