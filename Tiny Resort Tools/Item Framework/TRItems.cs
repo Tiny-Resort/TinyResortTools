@@ -235,7 +235,7 @@ namespace TinyResort {
             TRTools.Log("Removing Items");
 
             // Clears all item data lists
-            InvItemData.all.Clear();
+            InvItemData.all.Clear(); 
             ChestData.all.Clear();
             EquipData.all.Clear();
             LetterData.all.Clear();
