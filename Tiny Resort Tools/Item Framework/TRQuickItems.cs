@@ -24,7 +24,7 @@ namespace TinyResort {
             var customPaths = Path.Combine(Paths.PluginPath, "custom_assets", "custom_paths");
 
             var customClothingBundle = TRAssets.LoadBundle(Path.Combine(customClothes, "clothing_bundle"));
-            var customPathBundle = TRAssets.LoadBundle(Path.Combine(customPaths, "path_bundle"));
+            //var customPathBundle = TRAssets.LoadBundle(Path.Combine(customPaths, "path_bundle"));
             SortThroughFolder(Path.Combine(customClothes, "shirts"), customClothingBundle.LoadAsset<GameObject>("shirt"));
             SortThroughFolder(Path.Combine(customClothes, "boots"), customClothingBundle.LoadAsset<GameObject>("boots"));
             SortThroughFolder(Path.Combine(customClothes, "dresses_and_coats"), customClothingBundle.LoadAsset<GameObject>("doublesideddress"));
@@ -38,7 +38,7 @@ namespace TinyResort {
             SortThroughFolder(Path.Combine(customClothes, "shoes_sneakers"), customClothingBundle.LoadAsset<GameObject>("sneakers"));
             SortThroughFolder(Path.Combine(customClothes, "shoes_standard"), customClothingBundle.LoadAsset<GameObject>("shoes"));
             SortThroughFolder(Path.Combine(customClothes, "shorts"), customClothingBundle.LoadAsset<GameObject>("shorts"));
-            SortThroughFolder(Path.Combine(customPaths, "path"), customClothingBundle.LoadAsset<GameObject>("path"));
+            //SortThroughFolder(Path.Combine(customPaths, "path"), customClothingBundle.LoadAsset<GameObject>("path"));
 
         }
         
