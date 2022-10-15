@@ -400,17 +400,16 @@ namespace TinyResort {
 
                     }
 
-                    if (allObjects[onTileMap[x, y]].tileObjectItemChanger) {
-                        TRTools.Log($"Found Item Changer: {allObjects[onTileMap[x, y]].tileObjectItemChanger}");
-                        TRTools.Log($"onTileStatusMap: {WorldManager.manageWorld.onTileStatusMap[x, y]}");
+                    else if (allObjects[onTileMap[x, y]].tileObjectItemChanger) {
+                        TRTools.Log($"Before Outside");
+
                         if (onTileMapStatus[x, y] >= 0 && Inventory.inv.allItems[onTileMapStatus[x, y]] && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
                             var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == x && i.yPos == y && i.houseX == -1 && i.houseY == -1);
-                            ItemChangerData.Save(onTileMapStatus[x, y], x, y, changer);
-                            TRTools.Log($"Input: {Inventory.inv.allItems[WorldManager.manageWorld.onTileStatusMap[x, y]].itemName}");
-                            TRTools.Log($"Output:: {Inventory.inv.allItems[Inventory.inv.allItems[WorldManager.manageWorld.onTileStatusMap[x, y]].itemChange.getChangerResultId(WorldManager.manageWorld.onTileMap[x, y])].itemName}");
+                            ItemChangerData.Save(onTileMapStatus[x, y], changer);
                         }
-                    }
+                        TRTools.Log($"After Outside");
 
+                    }
                     #endregion
 
                     // Check for objects within houses
@@ -460,16 +459,17 @@ namespace TinyResort {
 
                                 #endregion
 
-                                if (allObjects[tileObjectID].tileObjectItemChanger) {
-                                    TRTools.Log($"Found Item Changer: {allObjects[tileObjectID].tileObjectItemChanger}");
-                                    TRTools.Log($"onTileStatusMap: {houseMapOnTileStatus}");
+                                else if (allObjects[tileObjectID].tileObjectItemChanger) {
+                                    TRTools.Log($"Before Inside");
+
                                     if (houseMapOnTileStatus >= 0 && Inventory.inv.allItems[houseMapOnTileStatus] && customItemsByItemID.ContainsKey(houseMapOnTileStatus)) {
                                         var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == houseTileX && i.yPos == houseTileY && i.houseX == x && i.houseY == y);
-                                        ItemChangerData.Save(houseMapOnTileStatus, houseTileX, houseTileY, changer);
-                                        TRTools.Log($"Input: {Inventory.inv.allItems[houseMapOnTileStatus].itemName}");
-                                        TRTools.Log($"Output:: {Inventory.inv.allItems[Inventory.inv.allItems[houseMapOnTileStatus].itemChange.getChangerResultId(houseMapOnTileStatus)].itemName}");
+                                        ItemChangerData.Save(houseMapOnTileStatus, changer);
                                     }
+                                    TRTools.Log($"After Inside");
+
                                 }
+
                             }
                         }
                     }
@@ -492,6 +492,8 @@ namespace TinyResort {
             Data.SetValue("BridgeData", BridgeData.all);
             Data.SetValue("PathData", PathData.all);
             Data.SetValue("BuriedObjectData", BuriedObjectData.all);
+            Data.SetValue("ItemChangerData", ItemChangerData.all);
+
             TRTools.Log($"Saving InvItemData: {InvItemData.all.Count}");
             TRTools.Log($"Saving ChestData: {ChestData.all.Count}");
             TRTools.Log($"Saving EquipData: {EquipData.all.Count}");
@@ -505,6 +507,7 @@ namespace TinyResort {
             TRTools.Log($"Saving BridgeData: {BridgeData.all.Count}");
             TRTools.Log($"Saving PathData: {PathData.all.Count}");
             TRTools.Log($"Saving BuriedObjectData: {BuriedObjectData.all.Count}");
+            TRTools.Log($"Saving ItemChangerData: {ItemChangerData.all.Count}");
 
             // Goes through the catalogue to find any custom items that have been unlocked
             var SavedCatalogue = new List<string>();
