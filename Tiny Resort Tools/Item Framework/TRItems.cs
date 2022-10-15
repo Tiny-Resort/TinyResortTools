@@ -401,14 +401,10 @@ namespace TinyResort {
                     }
 
                     else if (allObjects[onTileMap[x, y]].tileObjectItemChanger) {
-                        TRTools.Log($"Before Outside");
-
                         if (onTileMapStatus[x, y] >= 0 && Inventory.inv.allItems[onTileMapStatus[x, y]] && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
                             var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == x && i.yPos == y && i.houseX == -1 && i.houseY == -1);
                             ItemChangerData.Save(onTileMapStatus[x, y], changer);
                         }
-                        TRTools.Log($"After Outside");
-
                     }
                     #endregion
 
@@ -460,16 +456,11 @@ namespace TinyResort {
                                 #endregion
 
                                 else if (allObjects[tileObjectID].tileObjectItemChanger) {
-                                    TRTools.Log($"Before Inside");
-
                                     if (houseMapOnTileStatus >= 0 && Inventory.inv.allItems[houseMapOnTileStatus] && customItemsByItemID.ContainsKey(houseMapOnTileStatus)) {
                                         var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == houseTileX && i.yPos == houseTileY && i.houseX == x && i.houseY == y);
                                         ItemChangerData.Save(houseMapOnTileStatus, changer);
                                     }
-                                    TRTools.Log($"After Inside");
-
                                 }
-
                             }
                         }
                     }
