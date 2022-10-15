@@ -383,6 +383,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="custom_assets\custom_clothing\clothing_bundle" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call "$(SolutionDir)..\PostBuildBat.bat" "$(SolutionDir)bin\Debug\$(TargetName).dll" "$(TargetName).dll"

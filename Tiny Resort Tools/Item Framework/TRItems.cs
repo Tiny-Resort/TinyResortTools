@@ -12,7 +12,7 @@ using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace TinyResort {
-    
+
     /* TODO
      HIGH PRIORITY
         * John: Add a chat command for giving yourself a custom item.
@@ -236,7 +236,7 @@ namespace TinyResort {
             TRTools.Log("Removing Items");
 
             // Clears all item data lists
-            InvItemData.all.Clear(); 
+            InvItemData.all.Clear();
             ChestData.all.Clear();
             EquipData.all.Clear();
             LetterData.all.Clear();
@@ -344,8 +344,9 @@ namespace TinyResort {
             #region World Objects & Chests
 
             // Go through every tile in the overworld and in the house to unload all custom items
-            var allObjects = WorldManager.manageWorld.allObjects; 
+            var allObjects = WorldManager.manageWorld.allObjects;
             var onTileMap = WorldManager.manageWorld.onTileMap;
+            var onTileMapStatus = WorldManager.manageWorld.onTileStatusMap;
             for (var x = 0; x < onTileMap.GetLength(0); x++) {
                 for (var y = 0; y < onTileMap.GetLength(1); y++) {
 
@@ -399,6 +400,17 @@ namespace TinyResort {
 
                     }
 
+                    if (allObjects[onTileMap[x, y]].tileObjectItemChanger) {
+                        TRTools.Log($"Found Item Changer: {allObjects[onTileMap[x, y]].tileObjectItemChanger}");
+                        TRTools.Log($"onTileStatusMap: {WorldManager.manageWorld.onTileStatusMap[x, y]}");
+                        if (onTileMapStatus[x, y] >= 0 && Inventory.inv.allItems[onTileMapStatus[x, y]] && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
+                            var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == x && i.yPos == y && i.houseX == -1 && i.houseY == -1);
+                            ItemChangerData.Save(onTileMapStatus[x, y], x, y, changer);
+                            TRTools.Log($"Input: {Inventory.inv.allItems[WorldManager.manageWorld.onTileStatusMap[x, y]].itemName}");
+                            TRTools.Log($"Output:: {Inventory.inv.allItems[Inventory.inv.allItems[WorldManager.manageWorld.onTileStatusMap[x, y]].itemChange.getChangerResultId(WorldManager.manageWorld.onTileMap[x, y])].itemName}");
+                        }
+                    }
+
                     #endregion
 
                     // Check for objects within houses
@@ -427,6 +439,7 @@ namespace TinyResort {
 
                                 // If nothing is on this tile, ignore it
                                 var tileObjectID = houseDetails.houseMapOnTile[houseTileX, houseTileY];
+                                var houseMapOnTileStatus = houseDetails.houseMapOnTileStatus[houseTileX, houseTileY];
                                 if (tileObjectID <= 0) continue;
 
                                 #region Chests (INSIDE a house)
@@ -447,6 +460,16 @@ namespace TinyResort {
 
                                 #endregion
 
+                                if (allObjects[tileObjectID].tileObjectItemChanger) {
+                                    TRTools.Log($"Found Item Changer: {allObjects[tileObjectID].tileObjectItemChanger}");
+                                    TRTools.Log($"onTileStatusMap: {houseMapOnTileStatus}");
+                                    if (houseMapOnTileStatus >= 0 && Inventory.inv.allItems[houseMapOnTileStatus] && customItemsByItemID.ContainsKey(houseMapOnTileStatus)) {
+                                        var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == houseTileX && i.yPos == houseTileY && i.houseX == x && i.houseY == y);
+                                        ItemChangerData.Save(houseMapOnTileStatus, houseTileX, houseTileY, changer);
+                                        TRTools.Log($"Input: {Inventory.inv.allItems[houseMapOnTileStatus].itemName}");
+                                        TRTools.Log($"Output:: {Inventory.inv.allItems[Inventory.inv.allItems[houseMapOnTileStatus].itemChange.getChangerResultId(houseMapOnTileStatus)].itemName}");
+                                    }
+                                }
                             }
                         }
                     }
@@ -490,7 +513,7 @@ namespace TinyResort {
             Data.SetValue("CatalogueData", SavedCatalogue);
 
             UnmodTheArrays();
-            
+
         }
 
         internal static void CurrentSaveInfo() {
@@ -546,9 +569,10 @@ namespace TinyResort {
             BridgeData.LoadAll();
             PathData.LoadAll();
             BuriedObjectData.LoadAll();
+            ItemChangerData.LoadAll();
 
             // Loads saved unlocks for custom items in the catalogue
-            var SavedCatalogue = (List<string>) TRItems.Data.GetValue("CatalogueData", new List<string>());
+            var SavedCatalogue = (List<string>)TRItems.Data.GetValue("CatalogueData", new List<string>());
             for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
                 if (SavedCatalogue.Contains(customItemsByItemID[i].customItemID)) { CatalogueManager.manage.collectedItem[i] = true; }
 
