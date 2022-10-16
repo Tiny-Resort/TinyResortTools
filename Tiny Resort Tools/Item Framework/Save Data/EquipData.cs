@@ -7,6 +7,7 @@ namespace TinyResort {
     internal class EquipData : ItemSaveData {
 
         public static List<EquipData> all = new List<EquipData>();
+        public static List<EquipData> lostAndFound = new List<EquipData>();
 
         internal enum EquipLocations { Hat, Face, Shirt, Pants, Shoes }
         public EquipLocations equipSlot;
@@ -15,9 +16,17 @@ namespace TinyResort {
 
         public static void LoadAll() {
             slots = new[] { EquipWindow.equip.hatSlot, EquipWindow.equip.faceSlot, EquipWindow.equip.shirtSlot, EquipWindow.equip.pantsSlot, EquipWindow.equip.shoeSlot };
+
+            lostAndFound = (List<EquipData>)TRItems.Data.GetValue("EquipDataLostAndFound", new List<EquipData>());
+            TRTools.Log($"Loading EquipData lostAndFound: {lostAndFound.Count}");
+            
             all = (List<EquipData>)TRItems.Data.GetValue("EquipData", new List<EquipData>());
             TRTools.Log($"Loading EquipData: {all.Count}");
-            foreach (var item in all) { item.Load(); }
+            foreach (var item in all) {
+                if (item.Load() == null) {
+                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                }
+            }
         }
 
         public static void Save(int stackSize, EquipLocations equipSlot) {
@@ -26,9 +35,11 @@ namespace TinyResort {
         }
 
         // DEBUG: Method was changed significantly from pre-save refactoring
-        public void Load() {
-            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+        public TRCustomItem Load() {
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             slots[(int)equipSlot].updateSlotContentsAndRefresh(customItem.invItem.getItemId(), stackSize);
+
+            return customItem;
         }
 
     }

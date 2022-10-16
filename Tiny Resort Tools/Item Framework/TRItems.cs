@@ -12,13 +12,14 @@ using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace TinyResort {
-    
+
     /* TODO
      HIGH PRIORITY
         * John: Add a chat command for giving yourself a custom item.
         * Add try catches when loading or unloading any item to prevent one badly modded item breaking everything.
-        * If a custom item can't be loaded in, add it to a Lost and Found save file.
-        * Unload/load 
+        * Unload/load
+        * Handle case where a non-modded item is on top of modded furniture.
+        * Replace custom chest with normal crate
 
      MID PRIORITY
         * Add ability to put custom items on enemy drop tables.
@@ -27,7 +28,9 @@ namespace TinyResort {
         * Add ability to add a custom item recipe to Franklyn's crafting shop.
         * Add ability to make a recipe for a custom item and to give that recipe to the player.
         * Add ability to add custom item to items NPCs give you, as well as to the recycle bin.
-        * Handle case where a non-modded item is on top of modded furniture. 
+        
+        * Confirm Lost and Found works for all types.
+
 
      LOW PRIORITY
         * Stephen: Quick creating paths, house floors and wallpapers.
@@ -236,7 +239,7 @@ namespace TinyResort {
             TRTools.Log("Removing Items");
 
             // Clears all item data lists
-            InvItemData.all.Clear(); 
+            InvItemData.all.Clear();
             ChestData.all.Clear();
             EquipData.all.Clear();
             LetterData.all.Clear();
@@ -249,6 +252,7 @@ namespace TinyResort {
             BridgeData.all.Clear();
             PathData.all.Clear();
             BuriedObjectData.all.Clear();
+            ItemChangerData.all.Clear();
 
             #region House Wallpaper/Flooring
 
@@ -344,19 +348,24 @@ namespace TinyResort {
             #region World Objects & Chests
 
             // Go through every tile in the overworld and in the house to unload all custom items
-            var allObjects = WorldManager.manageWorld.allObjects; 
+            var allObjects = WorldManager.manageWorld.allObjects;
             var onTileMap = WorldManager.manageWorld.onTileMap;
+            var onTileMapStatus = WorldManager.manageWorld.onTileStatusMap;
             for (var x = 0; x < onTileMap.GetLength(0); x++) {
                 for (var y = 0; y < onTileMap.GetLength(1); y++) {
 
                     // If the tile is empty, ignore it
                     if (onTileMap[x, y] <= -1) continue;
 
+                    if (allObjects[onTileMap[x, y]].showObjectOnStatusChange && allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing) {
+                        TRTools.Log($"Found Clothing Item...");
+                    }
+                    
+                    
                     #region Items on Top of Others (NOT in a house)
 
                     // Removes items that are on top of other items.
                     // Does this before removing ground items to prevent issues
-                    // TODO: Test stacked custom items
                     var onTopOfTile = ItemOnTopManager.manage.getAllItemsOnTop(x, y, null);
                     for (var i = 0; i < onTopOfTile.Length; i++)
                         if (customTileObjectByID.ContainsKey(onTopOfTile[i].itemId))
@@ -399,6 +408,13 @@ namespace TinyResort {
 
                     }
 
+                    else if (allObjects[onTileMap[x, y]].tileObjectItemChanger) {
+                        if (onTileMapStatus[x, y] >= 0 && Inventory.inv.allItems[onTileMapStatus[x, y]] && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
+                            var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == x && i.yPos == y && i.houseX == -1 && i.houseY == -1);
+                            TRTools.Log($"Cyles: {changer.cycles} | Seconds: {changer.counterSeconds} | Days: {changer.counterDays} | House: ({changer.houseX}, {changer.houseY}) | Cycle Time: {changer.timePerCycles}");
+                            ItemChangerData.Save(onTileMapStatus[x, y], changer);
+                        }
+                    }
                     #endregion
 
                     // Check for objects within houses
@@ -427,6 +443,7 @@ namespace TinyResort {
 
                                 // If nothing is on this tile, ignore it
                                 var tileObjectID = houseDetails.houseMapOnTile[houseTileX, houseTileY];
+                                var houseMapOnTileStatus = houseDetails.houseMapOnTileStatus[houseTileX, houseTileY];
                                 if (tileObjectID <= 0) continue;
 
                                 #region Chests (INSIDE a house)
@@ -447,6 +464,12 @@ namespace TinyResort {
 
                                 #endregion
 
+                                else if (allObjects[tileObjectID].tileObjectItemChanger) {
+                                    if (houseMapOnTileStatus >= 0 && Inventory.inv.allItems[houseMapOnTileStatus] && customItemsByItemID.ContainsKey(houseMapOnTileStatus)) {
+                                        var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == houseTileX && i.yPos == houseTileY && i.houseX == x && i.houseY == y);
+                                        ItemChangerData.Save(houseMapOnTileStatus, changer);
+                                    }
+                                }
                             }
                         }
                     }
@@ -469,6 +492,25 @@ namespace TinyResort {
             Data.SetValue("BridgeData", BridgeData.all);
             Data.SetValue("PathData", PathData.all);
             Data.SetValue("BuriedObjectData", BuriedObjectData.all);
+            Data.SetValue("ItemChangerData", ItemChangerData.all);
+
+            // Save all the new lost and found data
+            Data.SetValue("InvItemDataLostAndFound", InvItemData.lostAndFound);
+            Data.SetValue("ChestDataLostAndFound", ChestData.lostAndFound);
+            Data.SetValue("EquipDataLostAndFound", EquipData.lostAndFound);
+            Data.SetValue("LetterDataLostAndFound", LetterData.lostAndFound);
+            Data.SetValue("StashDataLostAndFound", StashData.lostAndFound);
+            Data.SetValue("HouseDataLostAndFound", HouseData.lostAndFound);
+            Data.SetValue("VehicleDataLostAndFound", VehicleData.lostAndFound);
+            Data.SetValue("CarryableDataLostAndFound", CarryableData.lostAndFound);
+            Data.SetValue("ObjectDataLostAndFound", ObjectData.lostAndFound);
+            Data.SetValue("ObjectTopDataLostAndFound", ObjectTopData.lostAndFound);
+            Data.SetValue("BridgeDataLostAndFound", BridgeData.lostAndFound);
+            Data.SetValue("PathDataLostAndFound", PathData.lostAndFound);
+            Data.SetValue("BuriedObjectDataLostAndFound", BuriedObjectData.lostAndFound);
+            Data.SetValue("ItemChangerDataLostAndFound", ItemChangerData.lostAndFound);
+
+
             TRTools.Log($"Saving InvItemData: {InvItemData.all.Count}");
             TRTools.Log($"Saving ChestData: {ChestData.all.Count}");
             TRTools.Log($"Saving EquipData: {EquipData.all.Count}");
@@ -482,6 +524,7 @@ namespace TinyResort {
             TRTools.Log($"Saving BridgeData: {BridgeData.all.Count}");
             TRTools.Log($"Saving PathData: {PathData.all.Count}");
             TRTools.Log($"Saving BuriedObjectData: {BuriedObjectData.all.Count}");
+            TRTools.Log($"Saving ItemChangerData: {ItemChangerData.all.Count}");
 
             // Goes through the catalogue to find any custom items that have been unlocked
             var SavedCatalogue = new List<string>();
@@ -490,36 +533,38 @@ namespace TinyResort {
             Data.SetValue("CatalogueData", SavedCatalogue);
 
             UnmodTheArrays();
-            
+
         }
 
         internal static void CurrentSaveInfo() {
             var test = (List<InvItemData>)Data.GetValue("InvItemData", new List<InvItemData>());
-            TRTools.Log($"CurrentInv Data: {test.Count}");
             var test1 = (List<StashData>)Data.GetValue("StashData", new List<StashData>());
-            TRTools.Log($"StashData Data: {test1.Count}");
             var test2 = (List<HouseData>)Data.GetValue("HouseData", new List<HouseData>());
-            TRTools.Log($"HouseData Data: {test2.Count}");
             var test3 = (List<VehicleData>)Data.GetValue("VehicleData", new List<VehicleData>());
-            TRTools.Log($"VehicleData Data: {test3.Count}");
             var test4 = (List<CarryableData>)Data.GetValue("CarryableData", new List<CarryableData>());
-            TRTools.Log($"CarryableData Data: {test4.Count}");
             var test5 = (List<ObjectData>)Data.GetValue("ObjectData", new List<ObjectData>());
-            TRTools.Log($"ObjectData Data: {test5.Count}");
             var test6 = (List<ObjectTopData>)Data.GetValue("ObjectTopData", new List<ObjectTopData>());
-            TRTools.Log($"ObjectTopData Data: {test6.Count}");
             var test7 = (List<BridgeData>)Data.GetValue("BridgeData", new List<BridgeData>());
-            TRTools.Log($"BridgeData Data: {test7.Count}");
             var test8 = (List<PathData>)Data.GetValue("PathData", new List<PathData>());
-            TRTools.Log($"PathData Data: {test8.Count}");
             var test9 = (List<BuriedObjectData>)Data.GetValue("BuriedObjectData", new List<BuriedObjectData>());
-            TRTools.Log($"BuriedObjectData Data: {test9.Count}");
             var test10 = (List<ChestData>)Data.GetValue("ChestData", new List<ChestData>());
-            TRTools.Log($"ChestData Data: {test10.Count}");
             var test11 = (List<EquipData>)Data.GetValue("EquipData", new List<EquipData>());
-            TRTools.Log($"EquipData Data: {test11.Count}");
             var test12 = (List<LetterData>)Data.GetValue("LetterData", new List<LetterData>());
+            var test13 = (List<BridgeData>)Data.GetValue("BridgeDataLostAndFound", new List<BridgeData>());
+            TRTools.Log($"StashData Data: {test1.Count}");
+            TRTools.Log($"CurrentInv Data: {test.Count}");
+            TRTools.Log($"HouseData Data: {test2.Count}");
+            TRTools.Log($"VehicleData Data: {test3.Count}");
+            TRTools.Log($"CarryableData Data: {test4.Count}");
+            TRTools.Log($"ObjectData Data: {test5.Count}");
+            TRTools.Log($"ObjectTopData Data: {test6.Count}");
+            TRTools.Log($"BridgeData Data: {test7.Count}");
+            TRTools.Log($"PathData Data: {test8.Count}");
+            TRTools.Log($"BuriedObjectData Data: {test9.Count}");
+            TRTools.Log($"ChestData Data: {test10.Count}");
+            TRTools.Log($"EquipData Data: {test11.Count}");
             TRTools.Log($"LetterData Data: {test12.Count}");
+            TRTools.Log($"BridgeDataLostAndFound Data: {test13.Count}");
         }
 
         // Called whenever loading or after saving
@@ -546,9 +591,10 @@ namespace TinyResort {
             BridgeData.LoadAll();
             PathData.LoadAll();
             BuriedObjectData.LoadAll();
+            ItemChangerData.LoadAll();
 
             // Loads saved unlocks for custom items in the catalogue
-            var SavedCatalogue = (List<string>) TRItems.Data.GetValue("CatalogueData", new List<string>());
+            var SavedCatalogue = (List<string>)TRItems.Data.GetValue("CatalogueData", new List<string>());
             for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
                 if (SavedCatalogue.Contains(customItemsByItemID[i].customItemID)) { CatalogueManager.manage.collectedItem[i] = true; }
 

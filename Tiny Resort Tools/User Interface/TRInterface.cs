@@ -27,11 +27,11 @@ namespace TinyResort {
 
         }
 
-        public static TRButton CreateButton(ButtonTypes type, Transform parent, string text, UnityAction clickAction = null) {
+        public static TRButton CreateButton(ButtonTypes type, Transform parent, string text, UnityAction clickAction = null) {  
 
             TRButton newButton = null;
             switch (type) {
-                case ButtonTypes.MainMenu: newButton = buttonMainMenu.Copy(parent, text, clickAction); break;
+                case ButtonTypes.MainMenu: newButton = buttonMainMenu.Copy(parent, text, clickAction); break; 
             }
 
             return newButton;
@@ -40,7 +40,9 @@ namespace TinyResort {
 
         // Creates a prefab for a specific button type
         private static TRButton LoadButton(string name) {
-            var newObject = Object.Instantiate(TRAssets.LoadBundle(Path.Combine("custom_assets", "user_interface", "ui_elements")).LoadAsset<GameObject>(name));
+            TRTools.Log($"Before ui elements");
+            //var newObject = Object.Instantiate(TRAssets.LoadBundle(Path.Combine("custom_assets", "user_interface", "ui_elements")).LoadAsset<GameObject>(name));
+            var newObject = Object.Instantiate(TRAssets.LoadAssetBundleFromDLL("ui_elements").LoadAsset<GameObject>(name));
             var newButton = newObject.AddComponent<TRButton>();
             newButton.background = newObject.GetComponentInChildren<Image>();
             newButton.button = newObject.GetComponentInChildren<InvButton>();

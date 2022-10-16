@@ -16,15 +16,14 @@ namespace TinyResort {
 
     /// <summary>Tools for quickly creating clothing items.</summary>
     public class TRQuickItems {
-        
         internal static void Initialize() {
         
             // Load Asset Bundle and Sort through all folders
+            TRTools.Log($"Before Clothing Bundle");
+            var customClothingBundle = TRAssets.LoadAssetBundleFromDLL("clothing_bundle");
             var customClothes = Path.Combine(Paths.PluginPath, "custom_assets", "custom_clothing");
-            var customPaths = Path.Combine(Paths.PluginPath, "custom_assets", "custom_paths");
-
-            var customClothingBundle = TRAssets.LoadBundle(Path.Combine(customClothes, "clothing_bundle"));
             //var customPathBundle = TRAssets.LoadBundle(Path.Combine(customPaths, "path_bundle"));
+            
             SortThroughFolder(Path.Combine(customClothes, "shirts"), customClothingBundle.LoadAsset<GameObject>("shirt"));
             SortThroughFolder(Path.Combine(customClothes, "boots"), customClothingBundle.LoadAsset<GameObject>("boots"));
             SortThroughFolder(Path.Combine(customClothes, "dresses_and_coats"), customClothingBundle.LoadAsset<GameObject>("doublesideddress"));

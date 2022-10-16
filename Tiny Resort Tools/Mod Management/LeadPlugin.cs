@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using BepInEx;
@@ -38,7 +39,15 @@ namespace TinyResort {
             TRModUpdater.Initialize();
             TRConflictingPlugins.Initialize();
             TRItems.ManageAllItemArray();
-            var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
+
+            /*ItemChangeType ict = ItemChangerRecipe.CreateICT(1005);
+            ItemChange ic = ItemChangerRecipe.CreateIC(1005);
+            List<ItemChangeType> ictl = ItemChangerRecipe.CreateICTL(ic);
+            ictl.Add(ict);
+            ic.changesAndTheirChanger = ictl.ToArray();
+            Inventory.inv.allItems[1005].itemChange = ic;*/
+            
+            /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);
             TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
             TestLicense.SetLevelInfo(2, "Level 2: This is a license made for testing the framework.", 1500);
@@ -63,7 +72,7 @@ namespace TinyResort {
             TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
             TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Hunting, 40);
             TestLicense3.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
-            TestLicense3.AddPrerequisite(TestLicense);
+            TestLicense3.AddPrerequisite(TestLicense);*/
         }
 
         private void Update() {

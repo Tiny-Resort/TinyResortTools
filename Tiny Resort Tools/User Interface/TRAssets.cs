@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using BepInEx;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -51,6 +53,13 @@ namespace TinyResort {
                 }
             }
             return isSafe;
+        }
+
+        internal static AssetBundle LoadAssetBundleFromDLL(string name) {
+            Assembly CurrentAssembly = Assembly.GetExecutingAssembly();
+            List<string> CurrentAssemblyResourcePaths = CurrentAssembly.GetManifestResourceNames().ToList();
+            string TargetResourcePath = CurrentAssemblyResourcePaths.Find(CurrentResource => CurrentResource.Contains(name));
+            return AssetBundle.LoadFromStream(CurrentAssembly.GetManifestResourceStream(TargetResourcePath));
         }
 
         /// <summary>Returns a list of all files in a folder that can be imported as a texture (or sprite).</summary>
