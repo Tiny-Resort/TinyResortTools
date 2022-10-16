@@ -7,13 +7,21 @@ namespace TinyResort {
     internal class ObjectTopData : ItemSaveData {
 
         public static List<ObjectTopData> all = new List<ObjectTopData>();
+        public static List<ObjectTopData> lostAndFound = new List<ObjectTopData>();
         public int onTopPos;
         public int status;
 
         public static void LoadAll() {
+            lostAndFound = (List<ObjectTopData>)TRItems.Data.GetValue("ObjectTopDataLostAndFound", new List<ObjectTopData>());
+            TRTools.Log($"Loading ObjectTopData lostAndFound: {lostAndFound.Count}");
+            
             all = (List<ObjectTopData>)TRItems.Data.GetValue("ObjectTopData", new List<ObjectTopData>());
             TRTools.Log($"Loading ObjectTopData: {all.Count}");
-            foreach (var item in all) { item.Load(); }
+            foreach (var item in all) {
+                if (item.Load() == null) {
+                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                }
+            }
         }
 
         public static void Save(int tileObjectID, int ObjectXPos, int ObjectYPos, int rotation, int HouseXPos, int HouseYPos, int status, int onTopPos) {
@@ -42,8 +50,8 @@ namespace TinyResort {
 
         // TODO: we still need to test removing/restoring from a custom table with a custom item
         // TODO: we should add a condition of saving non modded items in situations where a non modded item is on top of a modded one
-        public void Load() {
-            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+        public TRCustomItem Load() {
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             var tmpHouseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             ItemOnTopManager.manage.placeItemOnTop(customItem.tileObject.tileObjectId, onTopPos, status, rotation, objectXPos, objectYPos, tmpHouseDetails);
             WorldManager.manageWorld.unlockClientTile(objectXPos, objectYPos);
@@ -54,6 +62,7 @@ namespace TinyResort {
                 var house = HouseManager.manage.findHousesOnDisplay(houseXPos, houseYPos);
                 house.refreshHouseTiles();
             }
+            return customItem;
         }
 
     }

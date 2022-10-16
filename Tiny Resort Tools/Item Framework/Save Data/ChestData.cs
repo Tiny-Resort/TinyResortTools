@@ -8,11 +8,19 @@ namespace TinyResort {
     internal class ChestData : ItemSaveData {
 
         public static List<ChestData> all = new List<ChestData>();
+        public static List<ChestData> lostAndFound = new List<ChestData>();
 
         public static void LoadAll() {
+            lostAndFound = (List<ChestData>)TRItems.Data.GetValue("ChestDataLostAndFound", new List<ChestData>());
+            TRTools.Log($"Loading ChestData lostAndFound: {lostAndFound.Count}");
+            
             all = (List<ChestData>)TRItems.Data.GetValue("ChestData", new List<ChestData>());
             TRTools.Log($"Loading ChestData: {all.Count}");
-            foreach (var item in all) { item.Load(); }
+            foreach (var item in all) {
+                if (item.Load() == null) {
+                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                }
+            }
         }
 
         public static void Save(ChestPlaceable chestPlaceable, int objectXPos, int objectYPos, int houseXPos, int houseYPos) {
@@ -38,10 +46,12 @@ namespace TinyResort {
             
         }
 
-        public void Load() {
-            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+        public TRCustomItem Load() {
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             var tmpHouseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             ContainerManager.manage.changeSlotInChest(objectXPos, objectYPos, slotNo, customItem.invItem.getItemId(), stackSize, tmpHouseDetails);
+
+            return customItem;
         }
 
     }

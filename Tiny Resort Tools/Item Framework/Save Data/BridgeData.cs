@@ -8,16 +8,26 @@ namespace TinyResort {
     internal class BridgeData : ItemSaveData {
 
         public static List<BridgeData> all = new List<BridgeData>();
+        public static List<BridgeData> lostAndFound = new List<BridgeData>();
+
         public int bridgeLength;
 
         public static void LoadAll() {
+            lostAndFound = (List<BridgeData>)TRItems.Data.GetValue("BridgeDataLostAndFound", new List<BridgeData>());
+            TRTools.Log($"Loading BridgeData lostAndFound: {lostAndFound.Count}");
+
             all = (List<BridgeData>)TRItems.Data.GetValue("BridgeData", new List<BridgeData>());
             TRTools.Log($"Loading BridgeData: {all.Count}");
-            foreach (var item in all) { item.Load(); }
+            
+            foreach (var item in all) { 
+                if (item.Load() == null) {
+                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                }
+            }
+
         }
 
         public static void Save(int tileObjectID, int objectXPos, int objectYPos, int rotation, int bridgeLength) {
-            
             all.Add(new BridgeData {
                 customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID, rotation = rotation, 
                 bridgeLength = bridgeLength, objectXPos = objectXPos, objectYPos = objectYPos
@@ -31,11 +41,14 @@ namespace TinyResort {
 
         }
 
-        public void Load() {
-            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+        public TRCustomItem Load() {
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) { return null; }
+            //if (WorldManager.manageWorld.onTileMap[objectXPos, objectYPos] >= 0) { return null;}
             customItem.tileObject.placeBridgeTiledObject(objectXPos, objectYPos, rotation, bridgeLength);
             WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(objectXPos, objectYPos);
             WorldManager.manageWorld.unlockClientTile(objectXPos, objectYPos);
+
+            return customItem;
         }
 
     }
