@@ -17,8 +17,9 @@ namespace TinyResort {
      HIGH PRIORITY
         * John: Add a chat command for giving yourself a custom item.
         * Add try catches when loading or unloading any item to prevent one badly modded item breaking everything.
-        * If a custom item can't be loaded in, add it to a Lost and Found save file.
-        * Unload/load 
+        * Unload/load
+        * Handle case where a non-modded item is on top of modded furniture.
+        * Replace custom chest with normal crate
 
      MID PRIORITY
         * Add ability to put custom items on enemy drop tables.
@@ -27,7 +28,9 @@ namespace TinyResort {
         * Add ability to add a custom item recipe to Franklyn's crafting shop.
         * Add ability to make a recipe for a custom item and to give that recipe to the player.
         * Add ability to add custom item to items NPCs give you, as well as to the recycle bin.
-        * Handle case where a non-modded item is on top of modded furniture. 
+        
+        * Confirm Lost and Found works for all types.
+
 
      LOW PRIORITY
         * Stephen: Quick creating paths, house floors and wallpapers.
@@ -363,7 +366,6 @@ namespace TinyResort {
 
                     // Removes items that are on top of other items.
                     // Does this before removing ground items to prevent issues
-                    // TODO: Test stacked custom items
                     var onTopOfTile = ItemOnTopManager.manage.getAllItemsOnTop(x, y, null);
                     for (var i = 0; i < onTopOfTile.Length; i++)
                         if (customTileObjectByID.ContainsKey(onTopOfTile[i].itemId))
