@@ -40,12 +40,13 @@ namespace TinyResort {
             TRConflictingPlugins.Initialize();
             TRItems.ManageAllItemArray();
 
-            ItemChangeType ict = ItemChangerRecipe.CreateICT(1005);
+            /*ItemChangeType ict = ItemChangerRecipe.CreateICT(1005);
             ItemChange ic = ItemChangerRecipe.CreateIC(1005);
             List<ItemChangeType> ictl = ItemChangerRecipe.CreateICTL(ic);
             ictl.Add(ict);
             ic.changesAndTheirChanger = ictl.ToArray();
-            Inventory.inv.allItems[1005].itemChange = ic;
+            Inventory.inv.allItems[1005].itemChange = ic;*/
+            
             /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);
             TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);

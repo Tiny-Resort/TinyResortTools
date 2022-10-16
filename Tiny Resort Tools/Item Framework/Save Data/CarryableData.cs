@@ -8,15 +8,24 @@ namespace TinyResort {
     internal class CarryableData : ItemSaveData {
 
         public static List<CarryableData> all = new List<CarryableData>();
-
+        public static List<CarryableData> lostAndFound = new List<CarryableData>();
+        
         public float positionX;
         public float positionY;
         public float positionZ;
         
         public static void LoadAll(bool firstLoad) {
+            lostAndFound = (List<CarryableData>)TRItems.Data.GetValue("CarryableDataLostAndFound", new List<CarryableData>());
+            TRTools.Log($"Loading CarryableData lostAndFound: {lostAndFound.Count}");
+            
             all = (List<CarryableData>)TRItems.Data.GetValue("CarryableData", new List<CarryableData>());
             TRTools.Log($"Loading CarryableData: {all.Count}");
-            foreach (var item in all) { item.Load(firstLoad); }
+            
+            foreach (var item in all) {
+                if (item.Load(firstLoad) == null) {
+                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                }
+            }
         }
 
         public static void Save(PickUpAndCarry myCarry) {
@@ -30,14 +39,14 @@ namespace TinyResort {
             WorldManager.manageWorld.allCarriables.Remove(myCarry);
         }
 
-        public void Load(bool firstLoad) {
+        public TRCustomItem Load(bool firstLoad) {
             
-            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
 
             // If re-injecting data after saving, just re-add it to list
             if (!firstLoad) { 
                 WorldManager.manageWorld.allCarriables.Remove(customItem.carryable);
-                return;
+                return customItem;
             }
             
             // If loading in to save slot, then create the carryable object
@@ -45,6 +54,7 @@ namespace TinyResort {
             NetworkMapSharer.share.spawnACarryable(customItem.carryable.gameObject, new Vector3(positionX, positionY, positionZ), false);
             TRTools.Log($"DidThisRun2?");
 
+            return customItem;
         }
         
     }

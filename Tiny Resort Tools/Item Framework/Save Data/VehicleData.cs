@@ -10,6 +10,7 @@ namespace TinyResort {
     internal class VehicleData : ItemSaveData {
 
         public static List<VehicleData> all = new List<VehicleData>();
+        public static List<VehicleData> lostAndFound = new List<VehicleData>();
         public int colourVariation;
         public float positionX;
         public float positionY;
@@ -19,9 +20,16 @@ namespace TinyResort {
         public float rotationZ;
 
         public static void LoadAll(bool firstLoad) {
+            lostAndFound = (List<VehicleData>)TRItems.Data.GetValue("VehicleDataLostAndFound", new List<VehicleData>());
+            TRTools.Log($"Loading VehicleData lostAndFound: {lostAndFound.Count}");
+            
             all = (List<VehicleData>)TRItems.Data.GetValue("VehicleData", new List<VehicleData>());
             TRTools.Log($"Loading VehicleData: {all.Count}");
-            foreach (var item in all) { item.Load(firstLoad); }
+            foreach (var item in all) {
+                if (item.Load(firstLoad) == null) {
+                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                }
+            }
         }
 
         public static void Save(Vehicle toRemove) {
@@ -34,14 +42,13 @@ namespace TinyResort {
 
         }
 
-        public void Load(bool firstLoad) {
-            
-            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+        public TRCustomItem Load(bool firstLoad) {
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
 
             // If re-injecting data after saving, just re-add it to list
             if (!firstLoad) {
                 SaveLoad.saveOrLoad.vehiclesToSave.Add(customItem.vehicle);
-                return;
+                return customItem;
             }
             
             // If loading into save slot, then create the item and set it up
@@ -53,7 +60,8 @@ namespace TinyResort {
             
             gameObject.GetComponent<Vehicle>().setVariation(colourVariation);
             NetworkMapSharer.share.spawnGameObject(gameObject);
-            
+
+            return customItem;
         }
 
     }

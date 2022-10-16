@@ -7,11 +7,19 @@ namespace TinyResort {
     internal class BuriedObjectData : ItemSaveData {
 
         public static List<BuriedObjectData> all = new List<BuriedObjectData>();
-
+        public static List<BuriedObjectData> lostAndFound = new List<BuriedObjectData>();
+        
         public static void LoadAll() {
+            lostAndFound = (List<BuriedObjectData>)TRItems.Data.GetValue("BuriedObjectDataLostAndFound", new List<BuriedObjectData>());
+            TRTools.Log($"Loading BuriedObjectData lostAndFound: {lostAndFound.Count}");
+            
             all = (List<BuriedObjectData>)TRItems.Data.GetValue("BuriedObjectData", new List<BuriedObjectData>());
             TRTools.Log($"Loading BuriedObjectData: {all.Count}");
-            foreach (var item in all) { item.Load(); }
+            foreach (var item in all) {
+                if (item.Load() == null) {
+                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                }
+            }
         }
 
         // Buried items are always tileObjectID 30, so we set it to -1 to make it an empty tile
@@ -24,10 +32,12 @@ namespace TinyResort {
             WorldManager.manageWorld.onTileMap[toRemove.xPos, toRemove.yPos] = -1;
         }
 
-        public void Load() {
-            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+        public TRCustomItem Load() {
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             WorldManager.manageWorld.onTileMap[objectXPos, objectYPos] = 30;
-            BuriedManager.manage.allBuriedItems.Add(new BuriedItem(customItem.invItem.getItemId(), stackSize, objectXPos, objectYPos)); 
+            BuriedManager.manage.allBuriedItems.Add(new BuriedItem(customItem.invItem.getItemId(), stackSize, objectXPos, objectYPos));
+
+            return customItem;
         }
 
     }

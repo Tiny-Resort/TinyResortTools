@@ -7,6 +7,7 @@ namespace TinyResort {
     internal class LetterData : ItemSaveData {
 
         public static List<LetterData> all = new List<LetterData>();
+        public static List<LetterData> lostAndFound = new List<LetterData>();
         public int itemAttached;
         public int itemOriginallAttached;
         public int stackOfItemAttached;
@@ -17,6 +18,19 @@ namespace TinyResort {
         public bool hasBeenRead;
         public bool tomorrow;
 
+        public static void LoadAll() {
+            lostAndFound = (List<LetterData>)TRItems.Data.GetValue("LetterDataLostAndFound", new List<LetterData>());
+            TRTools.Log($"Loading LetterData lostAndFound: {lostAndFound.Count}");
+
+            all = (List<LetterData>)TRItems.Data.GetValue("LetterData", new List<LetterData>());
+            TRTools.Log($"Loading LetterData: {all.Count}");
+            foreach (var item in all) {
+                if (item.Load() == null) {
+                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                }
+            }
+        }
+        
         public static void Save(Letter toRemove, bool tomorrow) {
             
             all.Add(new LetterData {
@@ -29,21 +43,16 @@ namespace TinyResort {
             else { MailManager.manage.mailInBox.Remove(toRemove); }
             
         }
-
-        public static void LoadAll() {
-            all = (List<LetterData>)TRItems.Data.GetValue("LetterData", new List<LetterData>());
-            TRTools.Log($"Loading LetterData: {all.Count}");
-            foreach (var item in all) { item.Load(); }
-        }
-
-        public void Load() {
-            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+        
+        public TRCustomItem Load() {
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             Letter letter = new Letter(sentById, myType, itemAttached, stackOfItemAttached);
             letter.itemOriginallAttached = itemOriginallAttached;
             letter.seasonSent = seasonSent;
             letter.hasBeenRead = hasBeenRead;
             if (!tomorrow) { MailManager.manage.mailInBox.Add(letter); }
             else { MailManager.manage.tomorrowsLetters.Add(letter); }
+            return customItem;
         }
 
     }

@@ -7,11 +7,19 @@ namespace TinyResort {
     internal class ObjectData : ItemSaveData {
 
         public static List<ObjectData> all = new List<ObjectData>();
+        public static List<ObjectData> lostAndFound = new List<ObjectData>();
 
         public static void LoadAll() {
+            lostAndFound = (List<ObjectData>)TRItems.Data.GetValue("ObjectDataLostAndFound", new List<ObjectData>());
+            TRTools.Log($"Loading ObjectData lostAndFound: {lostAndFound.Count}");
+            
             all = (List<ObjectData>)TRItems.Data.GetValue("ObjectData", new List<ObjectData>());
             TRTools.Log($"Loading ObjectData: {all.Count}");
-            foreach (var item in all) { item.Load(); }
+            foreach (var item in all) {
+                if (item.Load() == null) {
+                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                }
+            }
         }
 
         public static void Save(int tileObjectID, int objectXPos, int objectYPos, int rotation, int houseXPos, int houseYPos) {
@@ -52,8 +60,8 @@ namespace TinyResort {
         }
 
         // TODO: Maybe remove particle/sound effects from objects outside
-        public void Load() {
-            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+        public TRCustomItem Load() {
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             var tmpHouseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             if (tmpHouseDetails != null) {
                 customItem.tileObject.placeMultiTiledObjectInside(objectXPos, objectYPos, rotation, tmpHouseDetails);
@@ -78,6 +86,7 @@ namespace TinyResort {
                 //NetworkNavMesh.nav.updateChunkInUse();
                 WorldManager.manageWorld.unlockClientTile(objectXPos, objectYPos);
             }
+            return customItem;
         }
 
     }

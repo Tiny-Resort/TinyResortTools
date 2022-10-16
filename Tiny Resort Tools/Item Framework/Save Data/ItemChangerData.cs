@@ -7,17 +7,25 @@ namespace TinyResort {
     internal class ItemChangerData : ItemSaveData {
 
         public static List<ItemChangerData> all = new List<ItemChangerData>();
+        public static List<ItemChangerData> lostAndFound = new List<ItemChangerData>();
 
         public int counterSeconds;
         public int counterDays;
         public int timePerCycles;
         public int cycles;
         public bool startedUnderground;
-        
+
         public static void LoadAll() {
+            lostAndFound = (List<ItemChangerData>)TRItems.Data.GetValue("ItemChangerDataLostAndFound", new List<ItemChangerData>());
+            TRTools.Log($"Loading ItemChangerData lostAndFound: {lostAndFound.Count}");
+            
             all = (List<ItemChangerData>)TRItems.Data.GetValue("ItemChangerData", new List<ItemChangerData>());
             TRTools.Log($"Loading ItemChangerData: {all.Count}");
-            foreach (var item in all) { item.Load(); }
+            foreach (var item in all) {
+                if (item.Load() == null) {
+                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                }
+            }
         }
 
         public static void Save(int itemID, CurrentChanger changer) {
@@ -41,9 +49,10 @@ namespace TinyResort {
             WorldManager.manageWorld.allChangers.Remove(changer);
 
         }
-        
-        public void Load() {
-            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return;
+
+        public TRCustomItem Load() {
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
+            
             if (houseXPos <= 0 && houseYPos <= 0) { WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = customItem.invItem.getItemId(); }
             else { HouseManager.manage.getHouseInfo(houseXPos, houseYPos).houseMapOnTileStatus[objectXPos, objectYPos] = customItem.invItem.getItemId();}
 
@@ -54,7 +63,12 @@ namespace TinyResort {
             restoreChanger.houseX = houseXPos;
             restoreChanger.houseY = houseYPos;
             restoreChanger.timePerCycles = timePerCycles;
-            WorldManager.manageWorld.allChangers.Add(restoreChanger);
+            
+            
+            TRTools.Log($"Cyles: {cycles} | Seconds: {counterSeconds} | Days: {counterDays} | House: ({houseXPos}, {houseYPos}) | Cycle Time: {timePerCycles}");
+            //WorldManager.manageWorld.allChangers.Add(restoreChanger);
+            WorldManager.manageWorld.loadCountDownForTile(restoreChanger);
+            return customItem;
         }
     }
 }
