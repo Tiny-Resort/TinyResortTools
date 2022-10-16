@@ -123,15 +123,16 @@ namespace TinyResort {
                 return;
             }
 
-            var path = Data[fileName].global ? globalDataPath : slotDataPath;
+            var folderPath = Data[fileName].global ? globalDataPath : slotDataPath;
+            var filePath = Path.Combine(folderPath, fileName + ".sav");
 
             // If there is no save file, create new mod data
-            if (!File.Exists(Path.Combine(path, fileName + ".sav"))) { Data[fileName].package = new DataPackage(); }
+            if (!File.Exists(filePath)) { Data[fileName].package = new DataPackage(); }
 
             else {
-                var LoadedFile = File.Open(Path.Combine(path, fileName + ".sav"), FileMode.Open);
+                var LoadedFile = File.Open(filePath, FileMode.Open);
                 var Formatter = new BinaryFormatter();
-                Data[fileName].package = (DataPackage)Formatter.Deserialize(LoadedFile);
+                Data[fileName].package = (DataPackage) Formatter.Deserialize(LoadedFile);
                 LoadedFile.Close();
             }
 
