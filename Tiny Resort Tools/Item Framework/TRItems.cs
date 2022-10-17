@@ -88,8 +88,7 @@ namespace TinyResort {
         private static List<GameObject> carryablePrefabsVanilla;
         private static List<GameObject> carryablePrefabsFull;
         private static List<bool> CatalogueVanilla;
-        
-        
+
         internal static void Initialize() {
             Data = TRData.Subscribe("TR.CustomItems");
             TRData.cleanDataEvent += UnloadCustomItems;
@@ -100,9 +99,9 @@ namespace TinyResort {
                 "give_item", "Gives you the specified number of any MODDED item. Does not work with vanilla items. To see the custom item IDs, use /tr list_items.",
                 GivePlayerItem, "CustomItemID", "Quantity"
             );
-            
+
             LeadPlugin.plugin.AddCommand("list_items", "Lists every item added by a mod.", ListItems);
-            
+
         }
 
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, int uniqueItemID) {
@@ -119,7 +118,7 @@ namespace TinyResort {
         }
 
         internal static string GivePlayerItem(string[] args) {
-            
+
             // Makes sure any arguments were supplied
             if (args.Length <= 0) return "No arguments provided.";
             var customItemID = args[0];
@@ -132,10 +131,10 @@ namespace TinyResort {
                     break;
                 }
             }
-            
+
             // If no matching item was found, return so
             if (customItem == null) { return "No matching item found."; }
-            
+
             // If no quantity was supplied or it was below 1, set the quantity to 1
             var quantity = 1;
             if (args.Length > 1) { int.TryParse(args[1], out quantity); }
@@ -145,27 +144,30 @@ namespace TinyResort {
             var emptyInvSlot = -1;
             for (var i = 0; i < Inventory.inv.invSlots.Length; i++) {
                 if (Inventory.inv.invSlots[i].slotUnlocked) {
-                    
+
                     // If the item is already in inventory and stackable, place it there
                     if (Inventory.inv.invSlots[i].itemNo == customItem.invItem.getItemId() && customItem.invItem.isStackable) {
                         Inventory.inv.invSlots[i].updateSlotContentsAndRefresh(customItem.invItem.getItemId(), Inventory.inv.invSlots[i].stack + quantity);
                         return "Successfully added " + quantity + " '" + customItem.invItem.itemName + "' to your inventory.";
                     }
-                    
+
                     // Otherwise, look for an empty slot
-                    else if (Inventory.inv.invSlots[i].itemNo == -1) { emptyInvSlot = i; break; }
-                    
+                    else if (Inventory.inv.invSlots[i].itemNo == -1) {
+                        emptyInvSlot = i;
+                        break;
+                    }
+
                 }
             }
-            
+
             // Place in an emtpy slot if available
             if (emptyInvSlot >= 0) {
                 Inventory.inv.invSlots[emptyInvSlot].updateSlotContentsAndRefresh(customItem.invItem.getItemId(), quantity);
                 return "Successfully added " + quantity + " '" + customItem.invItem.itemName + "' to your inventory.";
             }
-            
+
             return "No room in inventory for requested item.";
-            
+
         }
 
         // List all the custom items by custom item ID
@@ -179,10 +181,12 @@ namespace TinyResort {
                 TRTools.Log($"Test 4");
                 if (item.Value.isQuickItem) {
                     TRTools.Log($"Test 5");
-                    str += item.Key + "\n"; }
+                    str += item.Key + "\n";
+                }
                 else {
                     TRTools.Log($"Test 6");
-                    if (item.Value.invItem) str += item.Key + "(" + item.Value.invItem.itemName + ")\n"; }
+                    if (item.Value.invItem) str += item.Key + "(" + item.Value.invItem.itemName + ")\n";
+                }
             }
             TRTools.Log($"Test 7");
             return str;
@@ -211,6 +215,31 @@ namespace TinyResort {
 
             // Add custom items to existing item lists
             foreach (var item in customItems) {
+
+                if (item.Value.tileTypes) {
+                    if (item.Value.tileTypes.isPath) {
+                        try { var test = item.Value.tileTypes; }
+                        catch { TRTools.LogError($"Unable to load {item.Key}. tileTypes is not set correctly."); continue; }
+                    }
+                }
+                if (item.Value.invItem) {
+                    try { var test = item.Value.invItem; }
+                    catch { TRTools.LogError($"Unable to load {item.Key}. invItem is not set correctly."); continue; }
+                }
+                if (item.Value.tileObject) {
+                    try { var test = item.Value.tileObject; }
+                    catch { TRTools.LogError($"Unable to load {item.Key}. tileObject is not set correctly."); continue; }
+                    try { var test = item.Value.tileObjectSettings; }
+                    catch { TRTools.LogError($"Unable to load {item.Key}. tileObjectSettings is not set correctly."); continue; }
+                }
+                if (item.Value.vehicle) {
+                    try { var test = item.Value.invItem.spawnPlaceable; }
+                    catch { TRTools.LogError($"Unable to load {item.Key}. spawnPlaceable is not set correctly."); continue; }
+                }
+                if (item.Value.carryable) {
+                    try { var test = item.Value.carryable.gameObject; }
+                    catch { TRTools.LogError($"Unable to load {item.Key}. carryable is not set correctly."); continue; }
+                }
 
                 // Add custom paths
                 if (item.Value.tileTypes) {
@@ -255,7 +284,7 @@ namespace TinyResort {
 
             // Set the game's arrays to match the new lists that include the custom items
             ModTheArrays();
-            
+
             var cheatButton = typeof(CheatScript).GetField("cheatButtons", BindingFlags.Instance | BindingFlags.NonPublic);
             cheatButton?.SetValue(CheatScript.cheat, new GameObject[Inventory.inv.allItems.Length]);
 
@@ -410,14 +439,14 @@ namespace TinyResort {
             var allObjects = WorldManager.manageWorld.allObjects;
             var onTileMap = WorldManager.manageWorld.onTileMap;
             var onTileMapStatus = WorldManager.manageWorld.onTileStatusMap;
-            for (var x = 0; x < onTileMap.GetLength(0); x++) { 
+            for (var x = 0; x < onTileMap.GetLength(0); x++) {
                 for (var y = 0; y < onTileMap.GetLength(1); y++) {
 
                     // If the tile is empty, ignore it
                     if (onTileMap[x, y] <= -1) continue;
 
                     if (allObjects[onTileMap[x, y]].showObjectOnStatusChange) {
-                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x,y])) {
+                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
                             TRTools.Log($"MOD Found Clothing Item... {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]} | ID: {onTileMapStatus[x, y]}");
                             ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1);
                         }
@@ -508,7 +537,7 @@ namespace TinyResort {
                                 var tileObjectID = houseDetails.houseMapOnTile[houseTileX, houseTileY];
                                 var houseMapOnTileStatus = houseDetails.houseMapOnTileStatus[houseTileX, houseTileY];
                                 if (tileObjectID <= 0) continue;
-                                
+
                                 if (allObjects[tileObjectID].showObjectOnStatusChange) {
                                     if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) {
                                         TRTools.Log($"MOD Found Clothing Item... {allObjects[tileObjectID]} | {tileObjectID} | ID: {houseMapOnTileStatus}");
@@ -519,7 +548,7 @@ namespace TinyResort {
                                         ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y);
                                     }
                                 }
-                          
+
                                 #region Chests (INSIDE a house)
 
                                 // If the object on this house tile is a chest, save and unload custom items from the chest
@@ -665,7 +694,7 @@ namespace TinyResort {
             BuriedObjectData.LoadAll();
             ItemChangerData.LoadAll();
             ItemStatusData.LoadAll();
-            
+
             // Loads saved unlocks for custom items in the catalogue
             var SavedCatalogue = (List<string>)TRItems.Data.GetValue("CatalogueData", new List<string>());
             for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
