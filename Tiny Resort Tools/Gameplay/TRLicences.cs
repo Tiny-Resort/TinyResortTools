@@ -8,8 +8,6 @@ using UnityEngine;
 
 namespace TinyResort {
 
-    // TODO: Fix stretched icon when buying license.
-    // TODO: Make description say to level up skills.
     /// <summary>A framework for creating custom licences and using them to gate your mod's features behind player progression.</summary>
     public static class TRLicences {
 
@@ -128,6 +126,7 @@ namespace TinyResort {
             // Initializes certain values for licences
             __instance.setLicenceLevelsAndPrice();
             __instance.licenceIcon.preserveAspect = true;
+            GiftedItemWindow.gifted.itemIcon.preserveAspect = true;
             
             // Updates the button information
             for (int j = 0; j < licenceButtons.Count; j++) {
@@ -143,25 +142,16 @@ namespace TinyResort {
 
         }
 
+
+        // If the license is NOT at max level but can't be leveled up any higher, then set description
+        // to say that you need to level up skills
         [HarmonyPostfix]
         internal static void fillButtonPostfix(LicenceButton __instance) {
-            
-            // If not a custom license, ignore it
             if (__instance.myLicenceId < LicenceTypesCount) return;
-            
-            // If the license is NOT at max level but skills aren't high enough level to progress
-            // then make a description out of the required skills
             var currentLevel = LicenceManager.manage.allLicences[__instance.myLicenceId].getCurrentLevel();
             if (currentLevel == LicenceManager.manage.allLicences[__instance.myLicenceId].getCurrentMaxLevel() && 
-                currentLevel != LicenceManager.manage.allLicences[__instance.myLicenceId].getMaxLevel()) {
-                
-                // Only continue if there are skill requirements for this level 
-                var licence = CustomLicences[__instance.myLicenceId - LicenceTypesCount];
-                if (!licence.skillRequirements.TryGetValue(currentLevel + 1, out var levelRequirements)) return;
+                currentLevel != LicenceManager.manage.allLicences[__instance.myLicenceId].getMaxLevel())
                 __instance.licenceDesc.text = "Level up your skills to unlock further levels";
-                
-            }
-            
         }
 
         // Allows for having multiple skill requirements

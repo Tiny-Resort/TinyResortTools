@@ -100,6 +100,14 @@ namespace TinyResort {
             TRData.cleanDataEvent += UnloadCustomItems;
             TRData.initialLoadEvent += LoadCustomMovables;
             TRData.injectDataEvent += LoadCustomItems;
+
+            LeadPlugin.plugin.AddCommand(
+                "give_item", "Gives you the specified number of any MODDED item. Does not work with vanilla items. To see the custom item IDs, use /tr list_items.",
+                GivePlayerItem, "CustomItemID", "Quantity"
+            );
+            
+            LeadPlugin.plugin.AddCommand("list_items", "Lists every item added by a mod.", ListItems);
+            
         }
 
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, string uniqueItemID) {
@@ -115,10 +123,65 @@ namespace TinyResort {
 
         }
 
-        // Adds a new custom item to the dictionary but allows it to be created somewhere else
-        internal static void AddCustomItem(TRCustomItem item, string uniqueID) {
-            item.customItemID = uniqueID;
-            customItems[uniqueID] = item;
+        internal static string GivePlayerItem(string[] args) {
+            
+            // Makes sure any arguments were supplied
+            if (args.Length <= 0) return "No arguments provided.";
+            var customItemID = args[0];
+
+            // If no matching custom
+            TRCustomItem customItem = null;
+            foreach (var item in customItems) {
+                if (item.Key.ToLower() == customItemID) {
+                    customItem = item.Value;
+                    break;
+                }
+            }
+            
+            // If no matching item was found, return so
+            if (customItem == null) { return "No matching item found."; }
+            
+            // If no quantity was supplied or it was below 1, set the quantity to 1
+            var quantity = 1;
+            if (args.Length > 1) { int.TryParse(args[1], out quantity); }
+            if (quantity <= 0) { quantity = 1; }
+
+            // Go through player inventory and place custom item in empty slot if one is available
+            var emptyInvSlot = -1;
+            for (var i = 0; i < Inventory.inv.invSlots.Length; i++) {
+                if (Inventory.inv.invSlots[i].slotUnlocked) {
+                    
+                    // If the item is already in inventory and stackable, place it there
+                    if (Inventory.inv.invSlots[i].itemNo == customItem.invItem.getItemId() && customItem.invItem.isStackable) {
+                        Inventory.inv.invSlots[i].updateSlotContentsAndRefresh(customItem.invItem.getItemId(), Inventory.inv.invSlots[i].stack + quantity);
+                        return "Successfully added " + quantity + " '" + customItem.invItem.itemName + "' to your inventory.";
+                    }
+                    
+                    // Otherwise, look for an empty slot
+                    else if (Inventory.inv.invSlots[i].itemNo == -1) { emptyInvSlot = i; break; }
+                    
+                }
+            }
+            
+            // Place in an emtpy slot if available
+            if (emptyInvSlot >= 0) {
+                Inventory.inv.invSlots[emptyInvSlot].updateSlotContentsAndRefresh(customItem.invItem.getItemId(), quantity);
+                return "Successfully added " + quantity + " '" + customItem.invItem.itemName + "' to your inventory.";
+            }
+            
+            return "No room in inventory for requested item.";
+            
+        }
+
+        // List all the custom items by custom item ID
+        internal static string ListItems(string[] args) {
+            if (customItems.Count <= 0) { return "The installed mods do not add any custom items."; }
+            var str = "\nThe following items were added by installed mods:\n";
+            foreach (var item in customItems) {
+                if (item.Value.isQuickItem) { str += item.Key + "\n"; }
+                else { str += item.Key + "(" + item.Value.invItem.itemName + ")\n"; }
+            }
+            return str;
         }
 
         // Resize the array depending on the number of modded items added
@@ -611,6 +674,7 @@ namespace TinyResort {
     public class TRCustomItem {
 
         public string customItemID;
+        internal bool isQuickItem;
 
         // TODO: Implement events
         public delegate void TileObjectEvent();
