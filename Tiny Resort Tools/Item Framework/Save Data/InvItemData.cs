@@ -17,9 +17,12 @@ namespace TinyResort {
             all = (List<InvItemData>)TRItems.Data.GetValue("InvItemData", new List<InvItemData>());
             TRTools.Log($"Loading InvItemData: {all.Count}");
             foreach (var item in all) {
-                if (item.Load() == null) {
-                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                try {
+                    if (item.Load() == null) {
+                        if (!lostAndFound.Contains(item)) { lostAndFound.Add(item); }
+                    }
                 }
+                catch { TRTools.LogError($"Failed to load item: {item.customItemID}"); }
             }
         }
 

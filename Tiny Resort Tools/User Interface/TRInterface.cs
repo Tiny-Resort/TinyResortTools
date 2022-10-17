@@ -34,6 +34,14 @@ namespace TinyResort {
 
         }
 
+        /// <summary>
+        /// Create a button using pre-determined assets in the API.
+        /// </summary>
+        /// <param name="type">The only current option is MainMenu. This looks like the main buttons on the screen (i.e. Main Menu).</param>
+        /// <param name="parent">Put the transform of what you want to attach the new button too.</param>
+        /// <param name="text">The text on top of the button.</param>
+        /// <param name="clickAction">The method you want to run when clicking the button.</param>
+        /// <returns></returns>
         public static TRButton CreateButton(ButtonTypes type, Transform parent, string text, UnityAction clickAction = null) {  
 
             TRButton newButton = null;
@@ -47,8 +55,6 @@ namespace TinyResort {
 
         // Creates a prefab for a specific button type
         private static TRButton LoadButton(string name) {
-            TRTools.Log($"Before ui elements");
-            //var newObject = Object.Instantiate(TRAssets.LoadBundle(Path.Combine("custom_assets", "user_interface", "ui_elements")).LoadAsset<GameObject>(name));
             var newObject = Object.Instantiate(UIBundle.LoadAsset<GameObject>(name));
             var newButton = newObject.AddComponent<TRButton>();
             newButton.background = newObject.GetComponentInChildren<Image>();

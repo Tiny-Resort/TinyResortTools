@@ -25,9 +25,12 @@ namespace TinyResort {
             all = (List<LetterData>)TRItems.Data.GetValue("LetterData", new List<LetterData>());
             TRTools.Log($"Loading LetterData: {all.Count}");
             foreach (var item in all) {
-                if (item.Load() == null) {
-                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                try {
+                    if (item.Load() == null) {
+                        if (!lostAndFound.Contains(item)) { lostAndFound.Add(item); }
+                    }
                 }
+                catch { TRTools.LogError($"Failed to load item: {item.customItemID}"); }
             }
         }
         

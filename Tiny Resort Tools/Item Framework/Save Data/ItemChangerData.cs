@@ -22,9 +22,12 @@ namespace TinyResort {
             all = (List<ItemChangerData>)TRItems.Data.GetValue("ItemChangerData", new List<ItemChangerData>());
             TRTools.Log($"Loading ItemChangerData: {all.Count}");
             foreach (var item in all) {
-                if (item.Load() == null) {
-                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                try {
+                    if (item.Load() == null) {
+                        if (!lostAndFound.Contains(item)) { lostAndFound.Add(item); }
+                    }
                 }
+                catch { TRTools.LogError($"Failed to load item: {item.customItemID}"); }
             }
         }
 

@@ -20,11 +20,14 @@ namespace TinyResort {
             
             all = (List<CarryableData>)TRItems.Data.GetValue("CarryableData", new List<CarryableData>());
             TRTools.Log($"Loading CarryableData: {all.Count}");
-            
+
             foreach (var item in all) {
-                if (item.Load(firstLoad) == null) {
-                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                try {
+                    if (item.Load(firstLoad) == null) {
+                        if (!lostAndFound.Contains(item)) { lostAndFound.Add(item); }
+                    }
                 }
+                catch { TRTools.LogError($"Failed to load item: {item.customItemID}"); }
             }
         }
 

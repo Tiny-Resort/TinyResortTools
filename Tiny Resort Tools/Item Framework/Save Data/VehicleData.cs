@@ -26,9 +26,12 @@ namespace TinyResort {
             all = (List<VehicleData>)TRItems.Data.GetValue("VehicleData", new List<VehicleData>());
             TRTools.Log($"Loading VehicleData: {all.Count}");
             foreach (var item in all) {
-                if (item.Load(firstLoad) == null) {
-                    if (!lostAndFound.Contains(item)) lostAndFound.Add(item);
+                try {
+                    if (item.Load(firstLoad) == null) {
+                        if (!lostAndFound.Contains(item)) { lostAndFound.Add(item); }
+                    }
                 }
+                catch { TRTools.LogError($"Failed to load item: {item.customItemID}"); }
             }
         }
 
