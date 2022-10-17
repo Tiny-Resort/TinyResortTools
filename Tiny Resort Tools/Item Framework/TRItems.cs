@@ -100,16 +100,16 @@ namespace TinyResort {
             TRData.injectDataEvent += LoadCustomItems;
         }
 
-        internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, string uniqueItemID) {
+        internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, int uniqueItemID) {
 
             if (customItemsInitialized) {
                 TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
                 return null;
             }
 
-            customItems[plugin.nexusID + uniqueItemID] = TRCustomItem.Create(assetBundlePath);
-            customItems[plugin.nexusID + uniqueItemID].customItemID = plugin.nexusID + uniqueItemID;
-            return customItems[plugin.nexusID + uniqueItemID];
+            customItems[plugin.nexusID + uniqueItemID.ToString()] = TRCustomItem.Create(assetBundlePath);
+            customItems[plugin.nexusID + uniqueItemID.ToString()].customItemID = plugin.nexusID + uniqueItemID.ToString();
+            return customItems[plugin.nexusID + uniqueItemID.ToString()];
 
         }
 
