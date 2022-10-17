@@ -17,9 +17,7 @@ namespace TinyResort {
      HIGH PRIORITY
         * John: Add a chat command for giving yourself a custom item.
         * Add try catches when loading or unloading any item to prevent one badly modded item breaking everything.
-        * Handle case where a non-modded item is on top of modded furniture.
-        * Replace custom chest with normal crate
-        * FIX SIGNS HOLDING PICTURE OF CUSTOM ITEM 
+        * Handle case where a non-modded item is on top of modded furniture. -- Semi Handled
 
      MID PRIORITY
         * Add ability to put custom items on enemy drop tables.
@@ -29,13 +27,10 @@ namespace TinyResort {
         * Add ability to make a recipe for a custom item and to give that recipe to the player.
         * Add ability to add custom item to items NPCs give you, as well as to the recycle bin.
         
-        * Confirm Lost and Found works for all types.
-
      LOW PRIORITY
         * Stephen: Quick creating paths, house floors and wallpapers.
         * Expand mail system so that mod authors can be make highly custom letters.
-        * Add recovering items from the lost and found if mods are reinstalled. 
-     
+        * Add recovering items from the lost and found if mods are reinstalled.  
      */
 
     /// <summary>Tools for working with the Dinkum inventory.</summary>
@@ -260,15 +255,7 @@ namespace TinyResort {
 
             // Set the game's arrays to match the new lists that include the custom items
             ModTheArrays();
-
-            // TODO:
-            // Resize and/or add mod save data of if they have obtained it or not
-            // In a pre-save event, go through all items in catalogue array past vanilla items and check which are true and set them. 
-            // set on inject data event (after saving and loading)
-            //CatalogueManager.manage.collectedItem = new bool[Inventory.inv.allItems.Length];
-
-            //CheatScript.cheat.cheatButtons = new GameObject[Inventory.inv.allItems.Length];
-            // This works and doesn't get saved so oh well
+            
             var cheatButton = typeof(CheatScript).GetField("cheatButtons", BindingFlags.Instance | BindingFlags.NonPublic);
             cheatButton?.SetValue(CheatScript.cheat, new GameObject[Inventory.inv.allItems.Length]);
 
@@ -423,7 +410,7 @@ namespace TinyResort {
             var allObjects = WorldManager.manageWorld.allObjects;
             var onTileMap = WorldManager.manageWorld.onTileMap;
             var onTileMapStatus = WorldManager.manageWorld.onTileStatusMap;
-            for (var x = 0; x < onTileMap.GetLength(0); x++) {
+            for (var x = 0; x < onTileMap.GetLength(0); x++) { 
                 for (var y = 0; y < onTileMap.GetLength(1); y++) {
 
                     // If the tile is empty, ignore it
