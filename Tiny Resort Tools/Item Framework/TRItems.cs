@@ -117,9 +117,9 @@ namespace TinyResort {
                 return null;
             }
 
-            customItems[plugin.nexusID + uniqueItemID.ToString()] = TRCustomItem.Create(assetBundlePath);
-            customItems[plugin.nexusID + uniqueItemID.ToString()].customItemID = plugin.nexusID + uniqueItemID.ToString();
-            return customItems[plugin.nexusID + uniqueItemID.ToString()];
+            customItems[plugin.nexusID.Value + uniqueItemID.ToString()] = TRCustomItem.Create(assetBundlePath);
+            customItems[plugin.nexusID.Value + uniqueItemID.ToString()].customItemID = plugin.nexusID.Value + uniqueItemID.ToString();
+            return customItems[plugin.nexusID.Value + uniqueItemID.ToString()];
 
         }
 
@@ -175,12 +175,21 @@ namespace TinyResort {
 
         // List all the custom items by custom item ID
         internal static string ListItems(string[] args) {
+            TRTools.Log($"Test 1");
             if (customItems.Count <= 0) { return "The installed mods do not add any custom items."; }
+            TRTools.Log($"Test 2");
             var str = "\nThe following items were added by installed mods:\n";
+            TRTools.Log($"Test 3");
             foreach (var item in customItems) {
-                if (item.Value.isQuickItem) { str += item.Key + "\n"; }
-                else { str += item.Key + "(" + item.Value.invItem.itemName + ")\n"; }
+                TRTools.Log($"Test 4");
+                if (item.Value.isQuickItem) {
+                    TRTools.Log($"Test 5");
+                    str += item.Key + "\n"; }
+                else {
+                    TRTools.Log($"Test 6");
+                    if (item.Value.invItem) str += item.Key + "(" + item.Value.invItem.itemName + ")\n"; }
             }
+            TRTools.Log($"Test 7");
             return str;
         }
 
