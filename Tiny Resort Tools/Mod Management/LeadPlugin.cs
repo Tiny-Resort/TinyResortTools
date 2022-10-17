@@ -47,6 +47,9 @@ namespace TinyResort {
             ic.changesAndTheirChanger = ictl.ToArray();
             Inventory.inv.allItems[1005].itemChange = ic;*/
             
+            // Remove before production
+            ItemChangerRecipe.AddItemChangerRecipe(1005,1005,50,1,2,0,1,DailyTaskGenerator.genericTaskType.SmeltOre,true, CharLevelManager.SkillTypes.Mining);
+            
             /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);
             TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);

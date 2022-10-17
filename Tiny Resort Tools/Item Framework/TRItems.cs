@@ -17,7 +17,6 @@ namespace TinyResort {
      HIGH PRIORITY
         * John: Add a chat command for giving yourself a custom item.
         * Add try catches when loading or unloading any item to prevent one badly modded item breaking everything.
-        * Unload/load
         * Handle case where a non-modded item is on top of modded furniture.
         * Replace custom chest with normal crate
 
@@ -30,7 +29,6 @@ namespace TinyResort {
         * Add ability to add custom item to items NPCs give you, as well as to the recycle bin.
         
         * Confirm Lost and Found works for all types.
-
 
      LOW PRIORITY
         * Stephen: Quick creating paths, house floors and wallpapers.
@@ -356,7 +354,7 @@ namespace TinyResort {
 
                     // If the tile is empty, ignore it
                     if (onTileMap[x, y] <= -1) continue;
-
+                    
                     if (allObjects[onTileMap[x, y]].showObjectOnStatusChange && allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing) {
                         TRTools.Log($"Found Clothing Item...");
                     }
@@ -376,10 +374,6 @@ namespace TinyResort {
                     #region Chests (NOT in a house)
 
                     // If the tile has a chest on it, save and unload custom items from the chest
-                    // TODO: Make also unload custom chest itself, if it is custom
-                    // TODO: It's possible that we need to also remove vanilla items from custom chests
-                    // Chest.cs -> Data structure that holds the items it has and stuff
-                    // ChestPlaceable.cs -> Actual object placed in the world.
                     if (allObjects[onTileMap[x, y]].tileObjectChest) { ChestData.Save(allObjects[onTileMap[x, y]].tileObjectChest, x, y, -1, -1); }
 
                     #endregion
@@ -387,14 +381,20 @@ namespace TinyResort {
                     #region World Object & Bridges (NOT in a house)
 
                     // If the tile contains a custom world object, unload and save it
-                    else if (customTileObjectByID.ContainsKey(onTileMap[x, y])) {
-
+                    if (customTileObjectByID.ContainsKey(onTileMap[x, y])) {
                         // If not a bridge, save as an overworld object
                         var rotation = WorldManager.manageWorld.rotationMap[x, y];
-                        if (!allObjects[onTileMap[x, y]].tileObjectBridge) { ObjectData.Save(onTileMap[x, y], x, y, rotation, -1, -1); }
-
-                        // If it is a bridge, find the length and save the bridge
-                        else {
+              
+                        if (allObjects[onTileMap[x, y]].tileObjectItemChanger) {
+                            if (onTileMapStatus[x, y] >= 0 && Inventory.inv.allItems[onTileMapStatus[x, y]] && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
+                                var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == x && i.yPos == y && i.houseX == -1 && i.houseY == -1);
+                                TRTools.Log($"Cyles: {changer.cycles} | Seconds: {changer.counterSeconds} | Days: {changer.counterDays} | House: ({changer.houseX}, {changer.houseY}) | Cycle Time: {changer.timePerCycles}");
+                                ItemChangerData.Save(onTileMapStatus[x, y], changer);
+                            }
+                        }
+                        
+                        // If it is a bridge or tileObjectItemChanger, find the length and save the bridge
+                        else if (allObjects[onTileMap[x, y]].tileObjectBridge) {
                             var bridgeLength = -1;
                             if (rotation == 1)
                                 bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, -1);
@@ -405,20 +405,19 @@ namespace TinyResort {
                             else if (rotation == 4) bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 1);
                             BridgeData.Save(onTileMap[x, y], x, y, rotation, bridgeLength);
                         }
-
-                    }
-
-                    else if (allObjects[onTileMap[x, y]].tileObjectItemChanger) {
-                        if (onTileMapStatus[x, y] >= 0 && Inventory.inv.allItems[onTileMapStatus[x, y]] && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
-                            var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == x && i.yPos == y && i.houseX == -1 && i.houseY == -1);
-                            TRTools.Log($"Cyles: {changer.cycles} | Seconds: {changer.counterSeconds} | Days: {changer.counterDays} | House: ({changer.houseX}, {changer.houseY}) | Cycle Time: {changer.timePerCycles}");
-                            ItemChangerData.Save(onTileMapStatus[x, y], changer);
+                        else {
+                            ObjectData.Save(onTileMap[x, y], x, y, rotation, -1, -1);
                         }
+
                     }
+
+                    
                     #endregion
 
                     // Check for objects within houses
+
                     else if (allObjects[onTileMap[x, y]].displayPlayerHouseTiles) {
+
                         var houseDetails = HouseManager.manage.getHouseInfo(x, y);
 
                         #region Items on Top of Others (INSIDE a house)
@@ -449,10 +448,6 @@ namespace TinyResort {
                                 #region Chests (INSIDE a house)
 
                                 // If the object on this house tile is a chest, save and unload custom items from the chest
-                                // TODO: Make also unload custom chest itself, if it is custom
-                                // TODO: It's possible that we need to also remove vanilla items from custom chests
-                                // Chest.cs -> Data structure that holds the items it has and stuff
-                                // ChestPlaceable.cs -> Actual object placed in the world.
                                 if (allObjects[tileObjectID].tileObjectChest) { ChestData.Save(allObjects[tileObjectID].tileObjectChest, houseTileX, houseTileY, x, y); }
 
                                 #endregion
@@ -460,16 +455,17 @@ namespace TinyResort {
                                 #region World Objects (INSIDE a house)
 
                                 // If it's a custom item, save and unload it
-                                else if (customTileObjectByID.ContainsKey(tileObjectID)) ObjectData.Save(tileObjectID, houseTileX, houseTileY, houseDetails.houseMapRotation[houseTileX, houseTileY], x, y);
+                                if (customTileObjectByID.ContainsKey(tileObjectID)) ObjectData.Save(tileObjectID, houseTileX, houseTileY, houseDetails.houseMapRotation[houseTileX, houseTileY], x, y);
 
                                 #endregion
 
-                                else if (allObjects[tileObjectID].tileObjectItemChanger) {
+                                if (allObjects[tileObjectID].tileObjectItemChanger) {
                                     if (houseMapOnTileStatus >= 0 && Inventory.inv.allItems[houseMapOnTileStatus] && customItemsByItemID.ContainsKey(houseMapOnTileStatus)) {
                                         var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == houseTileX && i.yPos == houseTileY && i.houseX == x && i.houseY == y);
                                         ItemChangerData.Save(houseMapOnTileStatus, changer);
                                     }
                                 }
+
                             }
                         }
                     }
