@@ -357,22 +357,16 @@ namespace TinyResort {
                     // If the tile is empty, ignore it
                     if (onTileMap[x, y] <= -1) continue;
 
-                    TRTools.Log("Test 1");
                     if (allObjects[onTileMap[x, y]].showObjectOnStatusChange) {
-                        TRTools.Log("Test 3");
                         if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x,y])) {
-                            //TRTools.Log($"MOD Found Clothing Item... {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]} | ID: {onTileMapStatus[x, y]}");
-                            TRTools.Log("Test 4");
+                            TRTools.Log($"MOD Found Clothing Item... {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]} | ID: {onTileMapStatus[x, y]}");
                             ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1);
                         }
                         else if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
-                            //TRTools.Log($"MOD Found Sign Item... {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]} | ID: {onTileMapStatus[x, y]}");
-                            TRTools.Log("Test 5");
+                            TRTools.Log($"MOD Found Sign Item... {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]} | ID: {onTileMapStatus[x, y]}");
                             ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1);
                         }
-                        TRTools.Log("Test 5");
                     }
-                    TRTools.Log("Test 6");
 
                     #region Items on Top of Others (NOT in a house)
 
