@@ -50,16 +50,18 @@ namespace TinyResort {
                 SaveLoad.saveOrLoad.vehiclesToSave.Add(customItem.vehicle);
                 return customItem;
             }
-            
+            TRTools.Log($"Did this run?");
             // If loading into save slot, then create the item and set it up
             GameObject gameObject = Object.Instantiate(
                 customItem.invItem.spawnPlaceable,
                 new Vector3(positionX, positionY, positionZ),
                 Quaternion.Euler(rotationX, rotationY, rotationZ)
             );
-            
+            TRTools.Log($"Game object: {gameObject}?");
+
             gameObject.GetComponent<Vehicle>().setVariation(colourVariation);
             NetworkMapSharer.share.spawnGameObject(gameObject);
+            TRTools.Log($"Did this run? 2");
 
             return customItem;
         }

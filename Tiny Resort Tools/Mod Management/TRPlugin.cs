@@ -70,7 +70,7 @@ namespace TinyResort {
         /// <returns>Creates a new item.</returns>
         /// /// <param name="assetBundlePath">The path to your asset bundle, relative to the plugins folder.</param>
         /// <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
-        public TRCustomItem AddCustomItem(string assetBundlePath, string uniqueItemID) { return TRItems.AddCustomItem(this, assetBundlePath, uniqueItemID); }
+        public TRCustomItem AddCustomItem(string assetBundlePath, int uniqueItemID) { return TRItems.AddCustomItem(this, assetBundlePath, uniqueItemID); }
 
         /// <summary>Adds a custom licence to the system. Must be done for each custom licence.</summary>
         /// <param name="licenceID">A unique string you are assigning this licence only. Changing this after save data has been made WILL result in save data mixups. Spaces in this are replaced with underscores.</param>

@@ -13,7 +13,11 @@ namespace TinyResort {
             var inMainMenu = TRTools.InMainMenu;
             TRTools.InMainMenu = false;
             TRData.trueLoadEvent?.Invoke();
-            if (inMainMenu) { TRData.initialLoadEvent?.Invoke(); }
+            if (inMainMenu) {
+                TRTools.Log($"Test Initial Load");
+                TRData.initialLoadEvent?.Invoke();
+                TRTools.Log($"After Initial Load");
+            }
             TRData.postLoadEvent?.Invoke();
             TRData.injectDataEvent?.Invoke();
         }
