@@ -73,8 +73,9 @@ namespace TinyResort {
             TestLicense3.SetLevelInfo(3, "Level 3: This is a license made for testing the framework.", 5000);
             TestLicense3.AddSkillRequirement(1, CharLevelManager.SkillTypes.Hunting, 10);
             TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
+            TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Hunting, 40);
             TestLicense3.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
-            TestLicense3.AddPrerequisite(TestLicense); */
+            TestLicense3.AddPrerequisite(TestLicense);*/
         }
 
         private void Update() {

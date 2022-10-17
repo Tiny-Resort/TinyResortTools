@@ -27,6 +27,7 @@ namespace TinyResort {
             TRTools.QuickPatch(typeof(Licence), "getNextLevelPrice", typeof(TRLicences), "getNextLevelPricePrefix");
             TRTools.QuickPatch(typeof(Licence), "canAffordNextLevel", typeof(TRLicences), "canAffordNextlevelPrefix");
             TRTools.QuickPatch(typeof(Licence), "getCurrentMaxLevel", typeof(TRLicences), "getCurrentMaxLevelPrefix");
+            TRTools.QuickPatch(typeof(LicenceButton), "fillButton", typeof(TRLicences), null, "fillButtonPostfix");
 
             LeadPlugin.plugin.AddCommand("unlock_licence", "Unlocks the specified licence at no cost. Use the list_licences command to get the licence names.", UnlockLicence, "LicenceName", "Level");
             LeadPlugin.plugin.AddCommand("list_licences", "Lists all custom licences added by any mods.", ListLicences);
@@ -140,6 +141,27 @@ namespace TinyResort {
 
             return false;
 
+        }
+
+        [HarmonyPostfix]
+        internal static void fillButtonPostfix(LicenceButton __instance) {
+            
+            // If not a custom license, ignore it
+            if (__instance.myLicenceId < LicenceTypesCount) return;
+            
+            // If the license is NOT at max level but skills aren't high enough level to progress
+            // then make a description out of the required skills
+            var currentLevel = LicenceManager.manage.allLicences[__instance.myLicenceId].getCurrentLevel();
+            if (currentLevel == LicenceManager.manage.allLicences[__instance.myLicenceId].getCurrentMaxLevel() && 
+                currentLevel != LicenceManager.manage.allLicences[__instance.myLicenceId].getMaxLevel()) {
+                
+                // Only continue if there are skill requirements for this level 
+                var licence = CustomLicences[__instance.myLicenceId - LicenceTypesCount];
+                if (!licence.skillRequirements.TryGetValue(currentLevel + 1, out var levelRequirements)) return;
+                __instance.licenceDesc.text = "Level up your skills to unlock further levels";
+                
+            }
+            
         }
 
         // Allows for having multiple skill requirements
@@ -289,8 +311,8 @@ namespace TinyResort {
         internal static void LoadLicenceData() {
             for (var i = 0; i < CustomLicences.Count; i++) {
                 var val = Data.GetValue(CustomLicences[i].nexusID + "." + CustomLicences[i].licenceID);
-                if (val == null) continue;
-                CustomLicences[i].info.currentLevel = (int) val;
+                if (val == null) { CustomLicences[i].info.currentLevel = 0; }
+                else { CustomLicences[i].info.currentLevel = (int) val; }
                 CustomLicences[i].SetInfo();
             }
         }
