@@ -40,15 +40,8 @@ namespace TinyResort {
             TRConflictingPlugins.Initialize();
             TRItems.ManageAllItemArray();
 
-            /*ItemChangeType ict = ItemChangerRecipe.CreateICT(1005);
-            ItemChange ic = ItemChangerRecipe.CreateIC(1005);
-            List<ItemChangeType> ictl = ItemChangerRecipe.CreateICTL(ic);
-            ictl.Add(ict);
-            ic.changesAndTheirChanger = ictl.ToArray();
-            Inventory.inv.allItems[1005].itemChange = ic;*/
-            
             // Remove before production
-            ItemChangerRecipe.AddItemChangerRecipe(1005,1005,50,1,2,0,1,DailyTaskGenerator.genericTaskType.SmeltOre,true, CharLevelManager.SkillTypes.Mining);
+            //ItemChangerRecipe.AddItemChangerRecipe(1005,1005,50,1,2,0,1,DailyTaskGenerator.genericTaskType.SmeltOre,true, CharLevelManager.SkillTypes.Mining);
             
             /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);
@@ -73,6 +66,7 @@ namespace TinyResort {
             TestLicense3.SetLevelInfo(3, "Level 3: This is a license made for testing the framework.", 5000);
             TestLicense3.AddSkillRequirement(1, CharLevelManager.SkillTypes.Hunting, 10);
             TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
+            TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Hunting, 40);
             TestLicense3.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
             TestLicense3.AddPrerequisite(TestLicense); */
         }
