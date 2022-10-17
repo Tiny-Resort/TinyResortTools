@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1626841832
+CRC: 3534901863
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 349e57961051530650fe488327102556
+    Hash: 65c510db2bc97a02109c3a84431f3ecb
   TypeTreeHash:
     serializedVersion: 2
     Hash: 8604b7ad5f20123de117157729cf77d0
@@ -39,5 +39,6 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
+- Assets/prefabs/mod_logo.png
 - Assets/prefabs/Main Menu Button.prefab
 Dependencies: []

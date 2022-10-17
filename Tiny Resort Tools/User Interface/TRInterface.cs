@@ -14,13 +14,17 @@ using Object = UnityEngine.Object;
 namespace TinyResort {
 
     public class TRInterface : MonoBehaviour {
-        
+
+        internal static AssetBundle UIBundle;
+        internal static Sprite ModLogo;
         internal static TRButton buttonMainMenu;
         internal static GameObject scrollBar;
 
         internal static void Initialize() {
 
             // Load Button Asset Bundles
+            UIBundle = TRAssets.LoadAssetBundleFromDLL("ui_elements");
+            ModLogo = UIBundle.LoadAsset<Sprite>("mod_logo");
             buttonMainMenu = LoadButton("Main Menu Button");
 
             //var newScrollbar = GameObject.Instantiate()
@@ -42,7 +46,7 @@ namespace TinyResort {
         private static TRButton LoadButton(string name) {
             TRTools.Log($"Before ui elements");
             //var newObject = Object.Instantiate(TRAssets.LoadBundle(Path.Combine("custom_assets", "user_interface", "ui_elements")).LoadAsset<GameObject>(name));
-            var newObject = Object.Instantiate(TRAssets.LoadAssetBundleFromDLL("ui_elements").LoadAsset<GameObject>(name));
+            var newObject = Object.Instantiate(UIBundle.LoadAsset<GameObject>(name));
             var newButton = newObject.AddComponent<TRButton>();
             newButton.background = newObject.GetComponentInChildren<Image>();
             newButton.button = newObject.GetComponentInChildren<InvButton>();

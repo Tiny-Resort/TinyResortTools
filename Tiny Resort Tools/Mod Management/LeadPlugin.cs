@@ -39,9 +39,6 @@ namespace TinyResort {
             TRModUpdater.Initialize();
             TRConflictingPlugins.Initialize();
             TRItems.ManageAllItemArray();
-
-            // Remove before production
-            //ItemChangerRecipe.AddItemChangerRecipe(1005,1005,50,1,2,0,1,DailyTaskGenerator.genericTaskType.SmeltOre,true, CharLevelManager.SkillTypes.Mining);
             
             /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);
@@ -68,7 +65,7 @@ namespace TinyResort {
             TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
             TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Hunting, 40);
             TestLicense3.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
-            TestLicense3.AddPrerequisite(TestLicense); */
+            TestLicense3.AddPrerequisite(TestLicense);*/
         }
 
         private void Update() {

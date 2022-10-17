@@ -123,7 +123,7 @@ namespace TinyResort {
                     var modLogo = ConflictingModsWindow.transform.GetChild(0).GetChild(7).GetComponent<Image>();
                     modLogo.rectTransform.anchoredPosition += new Vector2(0, -30);
                     modLogo.rectTransform.sizeDelta = new Vector2(modLogo.rectTransform.sizeDelta.x, 250);
-                    modLogo.sprite = TRAssets.LoadSprite("custom_assets/user_interface/mod_logo.png", Vector2.one * 0.5f);
+                    modLogo.sprite = TRInterface.ModLogo;
 
                     // Destroy all unused children
                     Object.Destroy(ConflictingModsWindow.transform.GetChild(0).GetChild(2).gameObject); // Title  

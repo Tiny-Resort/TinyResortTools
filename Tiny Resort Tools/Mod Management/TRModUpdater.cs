@@ -96,7 +96,7 @@ namespace TinyResort {
                     var modLogo = modsWindow.transform.GetChild(0).GetChild(7).GetComponent<Image>();
                     modLogo.rectTransform.anchoredPosition += new Vector2(0, -30);
                     modLogo.rectTransform.sizeDelta = new Vector2(modLogo.rectTransform.sizeDelta.x, 250);
-                    modLogo.sprite = TRAssets.LoadSprite("custom_assets/user_interface/mod_logo.png", Vector2.one * 0.5f);
+                    modLogo.sprite = TRInterface.ModLogo;
 
                     // Add credits at the bottom of the dinkum mods window
                     var modCredits = Object.Instantiate(modsWindow.transform.GetChild(0).GetChild(2), modsWindow.transform.GetChild(0));
