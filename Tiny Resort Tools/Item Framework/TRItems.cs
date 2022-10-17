@@ -19,6 +19,7 @@ namespace TinyResort {
         * Add try catches when loading or unloading any item to prevent one badly modded item breaking everything.
         * Handle case where a non-modded item is on top of modded furniture.
         * Replace custom chest with normal crate
+        * FIX SIGNS HOLDING PICTURE OF CUSTOM ITEM 
 
      MID PRIORITY
         * Add ability to put custom items on enemy drop tables.
@@ -92,7 +93,8 @@ namespace TinyResort {
         private static List<GameObject> carryablePrefabsVanilla;
         private static List<GameObject> carryablePrefabsFull;
         private static List<bool> CatalogueVanilla;
-
+        
+        
         internal static void Initialize() {
             Data = TRData.Subscribe("TR.CustomItems");
             TRData.cleanDataEvent += UnloadCustomItems;
@@ -354,12 +356,24 @@ namespace TinyResort {
 
                     // If the tile is empty, ignore it
                     if (onTileMap[x, y] <= -1) continue;
-                    
-                    if (allObjects[onTileMap[x, y]].showObjectOnStatusChange && allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing) {
-                        TRTools.Log($"Found Clothing Item...");
+
+                    TRTools.Log("Test 1");
+                    if (allObjects[onTileMap[x, y]].showObjectOnStatusChange) {
+                        TRTools.Log("Test 3");
+                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x,y])) {
+                            //TRTools.Log($"MOD Found Clothing Item... {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]} | ID: {onTileMapStatus[x, y]}");
+                            TRTools.Log("Test 4");
+                            ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1);
+                        }
+                        else if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
+                            //TRTools.Log($"MOD Found Sign Item... {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]} | ID: {onTileMapStatus[x, y]}");
+                            TRTools.Log("Test 5");
+                            ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1);
+                        }
+                        TRTools.Log("Test 5");
                     }
-                    
-                    
+                    TRTools.Log("Test 6");
+
                     #region Items on Top of Others (NOT in a house)
 
                     // Removes items that are on top of other items.
@@ -384,7 +398,7 @@ namespace TinyResort {
                     if (customTileObjectByID.ContainsKey(onTileMap[x, y])) {
                         // If not a bridge, save as an overworld object
                         var rotation = WorldManager.manageWorld.rotationMap[x, y];
-              
+
                         if (allObjects[onTileMap[x, y]].tileObjectItemChanger) {
                             if (onTileMapStatus[x, y] >= 0 && Inventory.inv.allItems[onTileMapStatus[x, y]] && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
                                 var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == x && i.yPos == y && i.houseX == -1 && i.houseY == -1);
@@ -392,7 +406,7 @@ namespace TinyResort {
                                 ItemChangerData.Save(onTileMapStatus[x, y], changer);
                             }
                         }
-                        
+
                         // If it is a bridge or tileObjectItemChanger, find the length and save the bridge
                         else if (allObjects[onTileMap[x, y]].tileObjectBridge) {
                             var bridgeLength = -1;
@@ -405,13 +419,10 @@ namespace TinyResort {
                             else if (rotation == 4) bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 1);
                             BridgeData.Save(onTileMap[x, y], x, y, rotation, bridgeLength);
                         }
-                        else {
-                            ObjectData.Save(onTileMap[x, y], x, y, rotation, -1, -1);
-                        }
+                        else { ObjectData.Save(onTileMap[x, y], x, y, rotation, -1, -1); }
 
                     }
 
-                    
                     #endregion
 
                     // Check for objects within houses
@@ -444,7 +455,18 @@ namespace TinyResort {
                                 var tileObjectID = houseDetails.houseMapOnTile[houseTileX, houseTileY];
                                 var houseMapOnTileStatus = houseDetails.houseMapOnTileStatus[houseTileX, houseTileY];
                                 if (tileObjectID <= 0) continue;
-
+                                
+                                if (allObjects[tileObjectID].showObjectOnStatusChange) {
+                                    if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) {
+                                        TRTools.Log($"MOD Found Clothing Item... {allObjects[tileObjectID]} | {tileObjectID} | ID: {houseMapOnTileStatus}");
+                                        ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y);
+                                    }
+                                    else if (allObjects[tileObjectID].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) {
+                                        TRTools.Log($"MOD Found Sign Item... {allObjects[tileObjectID]} | {tileObjectID} | ID: {houseMapOnTileStatus}");
+                                        ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y);
+                                    }
+                                }
+                          
                                 #region Chests (INSIDE a house)
 
                                 // If the object on this house tile is a chest, save and unload custom items from the chest
@@ -489,6 +511,7 @@ namespace TinyResort {
             Data.SetValue("PathData", PathData.all);
             Data.SetValue("BuriedObjectData", BuriedObjectData.all);
             Data.SetValue("ItemChangerData", ItemChangerData.all);
+            Data.SetValue("ItemStatusData", ItemStatusData.all);
 
             // Save all the new lost and found data
             Data.SetValue("InvItemDataLostAndFound", InvItemData.lostAndFound);
@@ -505,7 +528,7 @@ namespace TinyResort {
             Data.SetValue("PathDataLostAndFound", PathData.lostAndFound);
             Data.SetValue("BuriedObjectDataLostAndFound", BuriedObjectData.lostAndFound);
             Data.SetValue("ItemChangerDataLostAndFound", ItemChangerData.lostAndFound);
-
+            Data.SetValue("ItemStatusDataLostAndFound", ItemStatusData.lostAndFound);
 
             TRTools.Log($"Saving InvItemData: {InvItemData.all.Count}");
             TRTools.Log($"Saving ChestData: {ChestData.all.Count}");
@@ -588,7 +611,8 @@ namespace TinyResort {
             PathData.LoadAll();
             BuriedObjectData.LoadAll();
             ItemChangerData.LoadAll();
-
+            ItemStatusData.LoadAll();
+            
             // Loads saved unlocks for custom items in the catalogue
             var SavedCatalogue = (List<string>)TRItems.Data.GetValue("CatalogueData", new List<string>());
             for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)

@@ -23,6 +23,7 @@ namespace TinyResort {
         }
 
         public static void Save(int tileObjectID, int objectXPos, int objectYPos, int rotation, int houseXPos, int houseYPos) {
+            
             all.Add(new ObjectData {
                 customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID, rotation = rotation, 
                 objectXPos = objectXPos, objectYPos = objectYPos, houseXPos = houseXPos, houseYPos = houseYPos
