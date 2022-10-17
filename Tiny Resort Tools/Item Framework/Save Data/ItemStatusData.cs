@@ -36,7 +36,13 @@ namespace TinyResort {
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
 
             if (houseDetails != null) houseDetails.houseMapOnTileStatus[objectXPos, objectYPos] = customItem.invItem.getItemId();
-            else WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = customItem.invItem.getItemId(); 
+            else {
+                WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = customItem.invItem.getItemId();
+                WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(objectXPos, objectYPos);
+                NetworkNavMesh.nav.updateChunkInUse(); 
+                //WorldManager.manageWorld.allObjects[WorldManager.manageWorld.onTileMap[objectXPos, objectYPos]].showObjectOnStatusChange.showGameObject(customItem.invItem.getItemId());
+            }
+
             return customItem;
         }
 
