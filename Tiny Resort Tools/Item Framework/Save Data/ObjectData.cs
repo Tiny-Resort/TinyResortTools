@@ -23,20 +23,22 @@ namespace TinyResort {
         }
 
         public static void Save(int tileObjectID, int objectXPos, int objectYPos, int rotation, int houseXPos, int houseYPos) {
-            
             all.Add(new ObjectData {
                 customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID, rotation = rotation, 
                 objectXPos = objectXPos, objectYPos = objectYPos, houseXPos = houseXPos, houseYPos = houseYPos
             });
-            
+
+            var tileID = WorldManager.manageWorld.allObjects[tileObjectID].tileObjectChest ? 23 : -1;
+            var tileStatus = WorldManager.manageWorld.allObjects[tileObjectID].tileObjectChest ? WorldManager.manageWorld.onTileStatusMap[objectXPos,objectYPos] : -1;
+
             // If the object is in a house, remove it from inside the house
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             if (houseDetails != null) {
                 TRTools.Log("Found item in house");
 
                 TRItems.customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObjectInside(objectXPos, objectYPos, rotation, houseDetails);
-                houseDetails.houseMapOnTile[objectXPos, objectYPos] = -1;
-                houseDetails.houseMapOnTileStatus[objectXPos, objectYPos] = -1;
+                houseDetails.houseMapOnTile[objectXPos, objectYPos] = tileID;
+                houseDetails.houseMapOnTileStatus[objectXPos, objectYPos] = tileStatus;
                 
                 // Refreshes the house so that the object actually appears
 
@@ -51,8 +53,8 @@ namespace TinyResort {
             // If the object is not in a house, remove it from the overworld
             else {
                 TRItems.customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObject(objectXPos, objectYPos, rotation);
-                WorldManager.manageWorld.onTileMap[objectXPos, objectYPos] = -1;
-                WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = -1;
+                WorldManager.manageWorld.onTileMap[objectXPos, objectYPos] = tileID;
+                WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = tileStatus;
                 WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(objectXPos, objectYPos);
                 NetworkNavMesh.nav.updateChunkInUse();
             }

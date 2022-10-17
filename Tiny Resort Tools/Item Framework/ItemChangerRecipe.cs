@@ -4,46 +4,46 @@ using System.Linq;
 namespace TinyResort {
 
     internal class ItemChangerRecipe {
+        internal static ItemChangeType ict;
+        internal static ItemChange ic;
+        internal static List<ItemChangeType> ictl = new List<ItemChangeType>();
 
-        internal static ItemChangeType CreateICT(int output) {
-            
-            ItemChangeType ict = new ItemChangeType() {
-                depositInto = WorldManager.manageWorld.allObjects[50],
-                amountNeededed = 1,
-                secondsToComplete = 0,
-                daysToComplete = 2,
-                cycles = 1,
+        
+        // Need to be able to have TRCustomItems included in this...
+        internal static void AddItemChangerRecipe(
+            int output, int input, int machine,
+            int requiredAmount, int daysToComplete,
+            int secondsToComplete, int cycles,
+            DailyTaskGenerator.genericTaskType taskType, bool givesXP,
+            CharLevelManager.SkillTypes xpType, InventoryItemLootTable lootTable = null
+        ) {
+            ict = new ItemChangeType() {
+                depositInto = WorldManager.manageWorld.allObjects[machine], // Furnace = 50
+                amountNeededed = requiredAmount,
+                secondsToComplete = secondsToComplete,
+                daysToComplete = daysToComplete,
+                cycles = cycles,
                 changesWhenComplete = Inventory.inv.allItems[output],
-                changesWhenCompleteTable = null,
-                taskType = DailyTaskGenerator.genericTaskType.SmeltOre,
-                givesXp = true,
-                xPType = CharLevelManager.SkillTypes.Mining
+                changesWhenCompleteTable = lootTable,
+                taskType = taskType,
+                givesXp = givesXP,
+                xPType = xpType
             };
-
-            return ict;
-        }
-
-        internal static ItemChange CreateIC(int input) {
-            ItemChange ic;
 
             if (Inventory.inv.allItems[input].itemChange != null)
                 ic = Inventory.inv.allItems[input].itemChange;
             else
                 ic = Inventory.inv.allItems[input].gameObject.AddComponent<ItemChange>();
 
-            return ic;
+            if (ic.changesAndTheirChanger != null) { ictl = ic.changesAndTheirChanger.ToList(); }
+            else { ictl = new List<ItemChangeType>(); }
+
+            ictl.Add(ict);
+            ic.changesAndTheirChanger = ictl.ToArray();
+            Inventory.inv.allItems[input].itemChange = ic;
+
         }
 
-        internal static List<ItemChangeType> CreateICTL(ItemChange ic) {
-            List<ItemChangeType> ictl;
-
-            if (ic.changesAndTheirChanger != null)
-                ictl = ic.changesAndTheirChanger.ToList();
-            else
-                ictl = new List<ItemChangeType>();
-
-            return ictl;
-        }
     }
 
 }
