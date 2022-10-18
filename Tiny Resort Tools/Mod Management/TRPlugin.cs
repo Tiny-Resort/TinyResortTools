@@ -14,7 +14,7 @@ namespace TinyResort {
         /// <summary>A harmony instance created specifically for your plugin to use.</summary>
         public Harmony harmony;
         internal BaseUnityPlugin plugin;
-        
+
         internal ManualLogSource Logger;
         internal ConfigEntry<int> nexusID;
         internal ConfigEntry<bool> debugMode;
@@ -63,9 +63,7 @@ namespace TinyResort {
         /// <param name="method">Method to run when chat command is done.</param>
         /// <param name="argumentNames">The names of each argument your command takes. Used purely for the help description.</param>
         /// <returns>A reference to all the commands for your mod.</returns>
-        public void AddCommand(string command, string description, Func<string[], string> method, params string[] argumentNames) {
-            TRChat.AddCommand(plugin.Info.Metadata.Name, chatTrigger.Value.ToLower(), command, description, method, argumentNames);
-        }
+        public void AddCommand(string command, string description, Func<string[], string> method, params string[] argumentNames) { TRChat.AddCommand(plugin.Info.Metadata.Name, chatTrigger.Value.ToLower(), command, description, method, argumentNames); }
 
         /// <returns>Creates a new item.</returns>
         /// /// <param name="assetBundlePath">The path to your asset bundle, relative to the plugins folder.</param>
@@ -79,18 +77,32 @@ namespace TinyResort {
         /// <returns>The custom licence that is created. Save a reference to this in order to access its state at any time.</returns>
         public TRCustomLicence AddLicence(int licenceID, string licenceName, int maxLevel = 1) {
             if (maxLevel > 5) {
-                maxLevel = 5; 
+                maxLevel = 5;
                 TRTools.LogError("Custom Licence " + nexusID.Value + "." + licenceID + " " + licenceName + " can not have a max level above 5.");
             }
             return TRLicences.AddLicence(nexusID.Value, licenceID, licenceName, maxLevel);
         }
+        
+        /// <summary>
+        /// Looks for a custom item that is currently using the item ID.
+        /// </summary>
+        /// <param name="ID">The ID of the item.</param>
+        /// <returns>A string of the custom item's uniqueID or the item's ID. It returns null if one isn't found.</returns>
+        public string GetSaveableItemID(int ID) { return TRItems.GetSaveableItemID(ID); } 
+
+        /// <summary>
+        /// Finds the current item ID for the item based on the uniqueID given.
+        /// </summary>
+        /// <param name="uniqueID">Takes in a uniqueID (normally obtained by GetSaveableItemID().</param>
+        /// <returns>Returns the custom item's unique ID or the vanilla item if item id is passed in as a string. This returns -2 if it wasn't found. This is either due to the custom item being removed or a string being used that is neither a custom item or vanilla item. </returns>
+        public int GetLoadableItemID(string uniqueID) { return TRItems.GetLoadableItemID(uniqueID); }
 
         /// <summary>
         /// Set a conflicting plugin to warn the user's about if they have it in their folder. 
         /// </summary>
         /// <param name="conflictingPlugin">The GUID for the conflicting plugin.</param>
         public void AddConflictingPlugin(string conflictingPlugin) { TRConflictingPlugins.AddConflictingPlugin(plugin.Info, conflictingPlugin); }
-        
+
         /// <summary>
         /// If you want to do something specific if they ignore the warning, use this to check in Start()
         /// </summary>

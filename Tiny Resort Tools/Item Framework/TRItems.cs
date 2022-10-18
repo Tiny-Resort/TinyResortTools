@@ -32,6 +32,22 @@ namespace TinyResort {
         * Expand mail system so that mod authors can be make highly custom letters.
         * Add recovering items from the lost and found if mods are reinstalled.  
      */
+    
+    
+    /*
+     * Adding Custom Tree Support:
+     * 1. Tree final stage Tile Object
+     * 2. Tree final stage Tile Object Settings
+     * 3. Tree's Growing Log World Object 
+     * 4. Tree's Stump Tile Object Settings
+     * 5. Tree's Growing Tile Object + Tile Object Growth Stages
+     * The stump has its own Tile Object ID that is referred to in #2 by its ID.
+     * The Growing version has a bunch of connected stages on it that are (untested) referred to by the OnTileStatusMap
+     * * On the last stage, it automatically turns into the final stage's version
+     * Growing Log seems to be the falling tree animation and drops 1 of the wood specificed on the object.
+     * Final Stage Object also holds the InventoryItemLoottable
+     * 
+     */
 
     /// <summary>Tools for working with the Dinkum inventory.</summary>
     public class TRItems {
@@ -104,6 +120,36 @@ namespace TinyResort {
 
         }
 
+        internal static string GetSaveableItemID(int itemID) {
+            string saveableID;
+            
+            // Check if itemID is greater than the count of vanilla items -1 (accounting for 0)
+            if (itemID > allItemsVanilla.Count - 1) {
+                try { saveableID = customItemsByItemID[itemID].customItemID; }
+                catch { saveableID = null; }
+            }
+            // Return the itemID as a string if its a vanilla item.s
+            else { saveableID = itemID.ToString(); }
+            return saveableID;
+        }
+
+        internal static int GetLoadableItemID(string itemID) {
+            int loadableID;
+            // Check if it is a custom item by checking if the period exists in the string, return -1 if it fails.. 
+            if (itemID.Contains(".")) {
+                try { loadableID = customItems[itemID].invItem.getItemId(); }
+                catch { loadableID = -2; }
+                return loadableID;
+            }
+            // Try to parse the int of a vanilla item and if it passes return ID, if it fails return -1. 
+            else {
+                var ifPassed = int.TryParse(itemID, out loadableID);
+                loadableID = ifPassed ? loadableID : -2;
+                return loadableID;
+            }
+        }
+        
+        
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, int uniqueItemID) {
 
             if (customItemsInitialized) {
@@ -172,23 +218,16 @@ namespace TinyResort {
 
         // List all the custom items by custom item ID
         internal static string ListItems(string[] args) {
-            TRTools.Log($"Test 1");
             if (customItems.Count <= 0) { return "The installed mods do not add any custom items."; }
-            TRTools.Log($"Test 2");
             var str = "\nThe following items were added by installed mods:\n";
-            TRTools.Log($"Test 3");
             foreach (var item in customItems) {
-                TRTools.Log($"Test 4");
                 if (item.Value.isQuickItem) {
-                    TRTools.Log($"Test 5");
                     str += item.Key + "\n";
                 }
                 else {
-                    TRTools.Log($"Test 6");
                     if (item.Value.invItem) str += item.Key + "(" + item.Value.invItem.itemName + ")\n";
                 }
             }
-            TRTools.Log($"Test 7");
             return str;
         }
 
@@ -296,6 +335,7 @@ namespace TinyResort {
         // This is used to restore the modded items into the lists after saving. It just takes the list of items we have
         // and adds them to the games arrays. 
         internal static void ModTheArrays() {
+            TRTools.LogError($"Remodding the array");
             Inventory.inv.allItems = allItemsFull.ToArray();
             WorldManager.manageWorld.allObjects = tileObjectsFull.ToArray();
             WorldManager.manageWorld.allObjectSettings = tileObjectSettingsFull.ToArray();
@@ -303,6 +343,7 @@ namespace TinyResort {
             SaveLoad.saveOrLoad.vehiclePrefabs = vehiclePrefabsFull.ToArray();
             SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabsFull.ToArray();
             WorldManager.manageWorld.tileTypes = tileTypesFull.ToArray();
+            TRTools.LogError($"Remodding the array2");
         }
 
         // Restores the vanilla versions of item lists to avoid custom items leaking into save data and corrupting files
@@ -385,7 +426,10 @@ namespace TinyResort {
             }
 
             // Unloads (and saves) items from the player's stash
-            for (var j = 0; j < ContainerManager.manage.privateStashes.Count; j++) {
+            //for (var j = 0; j < ContainerManager.manage.privateStashes.Count; j++) {
+            // Manually set to two until the StorageData class is completed by SlowCircuit. 
+            // This is to prevent duplication when people are using ender storage. 
+            for (var j = 0; j < 2; j++) {
                 for (var i = 0; i < ContainerManager.manage.privateStashes[j].itemIds.Length; i++) {
                     TRTools.Log($"Found Item: {ContainerManager.manage.privateStashes[j].itemIds[i]}");
                     if (customItemsByItemID.ContainsKey(ContainerManager.manage.privateStashes[j].itemIds[i])) { StashData.Save(ContainerManager.manage.privateStashes[j].itemStacks[i], j, i); }
@@ -455,6 +499,10 @@ namespace TinyResort {
                             ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1);
                         }
                     }
+
+                    /*if (allObjects[onTileMap[x, y]].tileObjectGrowthStages) {
+                        TRTools.Log($"Found: {allObjects[onTileMap[x, y]].name}");
+                    }*/
 
                     #region Items on Top of Others (NOT in a house)
 
