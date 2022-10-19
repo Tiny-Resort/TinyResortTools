@@ -117,7 +117,7 @@ namespace TinyResort {
         internal static void Load(string fileName) {
 
             // If the player is in the main menu and the save file is per-slot then don't allow loading
-            if (TRTools.InMainMenu && !Data[fileName].global) {
+            if (!TRTools.LeavingMainMenu && !Data[fileName].global) {
                 TRTools.LogError(fileName + " is trying to load while in the main menu but is not a global save file. "
                                           + "To load a non-global save file, you must be already loaded into an existing save slot.");
                 return;

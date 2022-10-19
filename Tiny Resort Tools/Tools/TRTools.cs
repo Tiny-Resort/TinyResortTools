@@ -19,6 +19,7 @@ namespace TinyResort {
 
         /// <summary>Tells you if the player is in the main menu or not.</summary>
         public static bool InMainMenu = true;
+        internal static bool LeavingMainMenu;
 
         /// <summary> Initializes the Tiny Resort toolset </summary>
         /// <param name="plugin">Your plugin. When calling this from your plugin, simply use 'this'.</param>

@@ -107,6 +107,7 @@ namespace TinyResort {
         private static List<Chest> privateStashesVanilla;
 
         internal static void Initialize() {
+            
             Data = TRData.Subscribe("TR.CustomItems");
             TRData.cleanDataEvent += UnloadCustomItems;
             TRData.initialLoadEvent += LoadCustomMovables;
@@ -120,8 +121,15 @@ namespace TinyResort {
             LeadPlugin.plugin.AddCommand("list_items", "Lists every item added by a mod.", ListItems);
 
         }
-
-        internal static string GetSaveableItemID(int itemID) {
+        
+        /// <summary>
+        /// Use this to get an ID that can be saved for both vanilla and modded items.
+        /// If you manually save items in special storage slots, then save this value instead of the itemID.
+        /// Then when loading data, call GetLoadableItemID() with the saved value to get the itemID of the item in that slot.
+        /// </summary>
+        /// <param name="itemID">The itemID of the item. This its index in the Inventory.inv.allItems array.</param>
+        /// <returns>A string that is either the vanilla itemID or the customItemID for modded items.</returns>
+        public static string GetSaveableItemID(int itemID) {
             string saveableID;
             
             // Check if itemID is greater than the count of vanilla items -1 (accounting for 0)
@@ -133,24 +141,30 @@ namespace TinyResort {
             else { saveableID = itemID.ToString(); }
             return saveableID;
         }
-
-        internal static int GetLoadableItemID(string itemID) {
-            int loadableID;
+        
+        /// <summary>
+        /// Use this to get the current itemID that matches a saved ID. If you manually save items in special storage slots,
+        /// then use GetSaveableItemID for saving the item, and this method for loading it back in.
+        /// </summary>
+        /// <param name="savedID">The ID that was saved for this item.</param>
+        /// <returns>
+        /// An int that is the current itemID for this item. It matches the index of the item in the Inventory.inv.allItems array.
+        /// Keep in mind that this value will change if a new mod is added or the mod loader has changed. So, if you want to save this value,
+        /// you have to pass it through GetSaveableItemID() first and save the returned value instead.
+        /// </returns>
+        public static int GetLoadableItemID(string savedID) {
+            
             // Check if it is a custom item by checking if the period exists in the string, return -1 if it fails.. 
-            if (itemID.Contains(".")) {
-                try { loadableID = customItems[itemID].invItem.getItemId(); }
-                catch { loadableID = -2; }
-                return loadableID;
+            if (savedID.Contains(".")) {
+                try { return customItems[savedID].invItem.getItemId(); }
+                catch { return -2; }
             }
-            // Try to parse the int of a vanilla item and if it passes return ID, if it fails return -1. 
-            else {
-                var ifPassed = int.TryParse(itemID, out loadableID);
-                loadableID = ifPassed ? loadableID : -2;
-                return loadableID;
-            }
+            
+            // Try to parse the int of a vanilla item and if it passes return ID, if it fails return -2. 
+            else return int.TryParse(savedID, out var loadableID) ? loadableID : -2;
+            
         }
-        
-        
+
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, int uniqueItemID) {
 
             if (customItemsInitialized) {
