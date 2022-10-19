@@ -57,6 +57,7 @@ namespace TinyResort {
                 var fileName = Path.GetFileNameWithoutExtension(file);
                 var newItem = new TRCustomItem();
                 newItem.invItem = Object.Instantiate(obj).GetComponent<InventoryItem>();
+                GameObject.DontDestroyOnLoad(newItem.invItem);
                 newItem.invItem.itemName = fileName;
                 
                 // Sets the texture for the item (TODO: Would need to be set up to work with non-clothing quick items)
@@ -67,9 +68,17 @@ namespace TinyResort {
                 newItem.customItemID = "QI." + fileName.Replace(" ", "");
                 TRItems.customItems[newItem.customItemID] = newItem;
                 newItem.invItem.value = 1000;
-
             }
             
+        }
+
+        internal static void MainMenuInitialization() {
+            foreach (var item in TRItems.customItems) {
+                if (item.Key.Contains("QI.")) {
+                    //item.Value.invItem;
+                    //TRItems.customItemsByItemID[]
+                }
+            }
         }
 
     }

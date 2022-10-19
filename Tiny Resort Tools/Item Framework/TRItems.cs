@@ -107,7 +107,8 @@ namespace TinyResort {
         private static List<Chest> privateStashesVanilla;
 
         internal static void Initialize() {
-            
+            TRTools.LogError($"Initializing TRItems...");
+
             Data = TRData.Subscribe("TR.CustomItems");
             TRData.cleanDataEvent += UnloadCustomItems;
             TRData.initialLoadEvent += LoadCustomMovables;
@@ -119,6 +120,7 @@ namespace TinyResort {
             );
 
             LeadPlugin.plugin.AddCommand("list_items", "Lists every item added by a mod.", ListItems);
+            TRTools.LogError($"End Initialization TRItems...");
 
         }
         
@@ -232,6 +234,7 @@ namespace TinyResort {
         // Resize the array depending on the number of modded items added
         // Ignore modded items saved if it doesnt exist in customItems
         internal static void ManageAllItemArray() {
+            TRTools.LogError($"Running ManageAllItemArray...");
 
             // Saves the default arrays for existing item lists
             allItemsVanilla = Inventory.inv.allItems.ToList();
@@ -329,13 +332,15 @@ namespace TinyResort {
 
             customItemsInitialized = true;
             InitializeItemDetails();
+            
+            TRTools.LogError($"Ending ManageAllItemArray...");
 
         }
 
         // This is used to restore the modded items into the lists after saving. It just takes the list of items we have
         // and adds them to the games arrays. 
         internal static void ModTheArrays() {
-            TRTools.LogError($"Remodding the array");
+            TRTools.Log($"Running ModTheArrays...");
             Inventory.inv.allItems = allItemsFull.ToArray();
             WorldManager.manageWorld.allObjects = tileObjectsFull.ToArray();
             WorldManager.manageWorld.allObjectSettings = tileObjectSettingsFull.ToArray();
@@ -343,12 +348,16 @@ namespace TinyResort {
             SaveLoad.saveOrLoad.vehiclePrefabs = vehiclePrefabsFull.ToArray();
             SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabsFull.ToArray();
             WorldManager.manageWorld.tileTypes = tileTypesFull.ToArray();
-            TRTools.LogError($"Remodding the array2");
+            
+            var cheatButton = typeof(CheatScript).GetField("cheatButtons", BindingFlags.Instance | BindingFlags.NonPublic);
+            cheatButton?.SetValue(CheatScript.cheat, new GameObject[Inventory.inv.allItems.Length]);
+            
+            TRTools.Log($"Ending ModTheArrays...");
         }
 
         // Restores the vanilla versions of item lists to avoid custom items leaking into save data and corrupting files
         internal static void UnmodTheArrays() {
-            TRTools.Log($"Items: {Inventory.inv.allItems.Length} | Objects: {WorldManager.manageWorld.allObjects.Length} & {WorldManager.manageWorld.allObjectSettings.Length} | Catalogue: {CatalogueManager.manage.collectedItem.Length}");
+            TRTools.Log($"Running UnmodTheArrays...");
             Inventory.inv.allItems = allItemsVanilla.ToArray();
             WorldManager.manageWorld.allObjects = tileObjectsVanilla.ToArray();
             WorldManager.manageWorld.allObjectSettings = tileObjectSettingsVanilla.ToArray();
@@ -357,7 +366,8 @@ namespace TinyResort {
             SaveLoad.saveOrLoad.vehiclePrefabs = vehiclePrefabsVanilla.ToArray();
             SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabsVanilla.ToArray();
             WorldManager.manageWorld.tileTypes = tileTypesVanilla.ToArray();
-            TRTools.Log($"Items: {Inventory.inv.allItems.Length} | Objects: {WorldManager.manageWorld.allObjects.Length} & {WorldManager.manageWorld.allObjectSettings.Length} | Catalogue: {CatalogueManager.manage.collectedItem.Length}");
+            TRTools.Log($"Ending UnmodTheArrays...");
+
         }
 
         // One large method to go through all modded items in the game and remove them. 
@@ -636,7 +646,8 @@ namespace TinyResort {
             }
 
             #endregion
-
+            
+            #region Save All Data (All and LostAndFound Lists)
             // Saves all the new data
             Data.SetValue("InvItemData", InvItemData.all);
             Data.SetValue("ChestData", ChestData.all);
@@ -689,6 +700,8 @@ namespace TinyResort {
             TRTools.Log($"Saving ItemChangerData: {ItemChangerData.all.Count}");
             TRTools.Log($"Saving PlantData: {PlantData.all.Count}"); 
 
+            #endregion
+            
             // Goes through the catalogue to find any custom items that have been unlocked
             var SavedCatalogue = new List<string>();
             for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
@@ -701,20 +714,23 @@ namespace TinyResort {
         
         // Called whenever loading or after saving
         internal static void LoadCustomItems() {
-            TRTools.LogError($"Size of Stash before: {ContainerManager.manage.privateStashes.Count}");
+            TRTools.Log($"Loading all Stashes: Required to parse them later.");
             ContainerManager.manage.loadStashes();
             privateStashesVanilla = ContainerManager.manage.privateStashes.ToList();
-            TRTools.LogError($"Size of Stash before: {ContainerManager.manage.privateStashes.Count} | {privateStashesVanilla.Count}");
-            TRTools.Log("Re-adding Items"); 
+            
+            TRTools.Log($"Start adding in all Saved Custom Items...");
+            TRTools.Log($"Making sure the array sizes are the appropriate size...");
             ModTheArrays();
 
             // If just re-injecting data, then these only need to be added back to lists
             if (!TRTools.InMainMenu) {
+                TRTools.Log($"Loading in Vehicle and Carryables...");
                 VehicleData.LoadAll(false);
                 CarryableData.LoadAll(false);
             }
 
             // Loads all other items normally
+            TRTools.Log($"Loading in the rest of the data...");
             InvItemData.LoadAll();
             ChestData.LoadAll();
             EquipData.LoadAll();
@@ -731,6 +747,7 @@ namespace TinyResort {
             PlantData.LoadAll();
 
             // Loads saved unlocks for custom items in the catalogue
+            TRTools.Log($"Loading in the saved Catalogue data and adding to list...");
             var SavedCatalogue = (List<string>)TRItems.Data.GetValue("CatalogueData", new List<string>());
             for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
                 if (SavedCatalogue.Contains(customItemsByItemID[i].customItemID)) { CatalogueManager.manage.collectedItem[i] = true; }
@@ -739,6 +756,7 @@ namespace TinyResort {
 
         // Only called when loading a save slot, not when sleeping
         internal static void LoadCustomMovables() {
+            TRTools.Log($"Loading in custom movables...");
             VehicleData.LoadAll(true);
             CarryableData.LoadAll(true); // Do we need to check if this is on a scale? o.o
         }
