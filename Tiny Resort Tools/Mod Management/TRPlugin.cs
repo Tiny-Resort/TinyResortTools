@@ -82,20 +82,27 @@ namespace TinyResort {
             }
             return TRLicences.AddLicence(nexusID.Value, licenceID, licenceName, maxLevel);
         }
-        
-        /// <summary>
-        /// Looks for a custom item that is currently using the item ID.
-        /// </summary>
-        /// <param name="ID">The ID of the item.</param>
-        /// <returns>A string of the custom item's uniqueID or the item's ID. It returns null if one isn't found.</returns>
-        public string GetSaveableItemID(int ID) { return TRItems.GetSaveableItemID(ID); } 
 
         /// <summary>
-        /// Finds the current item ID for the item based on the uniqueID given.
+        /// Use this to get an ID that can be saved for both vanilla and modded items.
+        /// If you manually save items in special storage slots, then save this value instead of the itemID.
+        /// Then when loading data, call GetLoadableItemID() with the saved value to get the itemID of the item in that slot.
         /// </summary>
-        /// <param name="uniqueID">Takes in a uniqueID (normally obtained by GetSaveableItemID().</param>
-        /// <returns>Returns the custom item's unique ID or the vanilla item if item id is passed in as a string. This returns -2 if it wasn't found. This is either due to the custom item being removed or a string being used that is neither a custom item or vanilla item. </returns>
-        public int GetLoadableItemID(string uniqueID) { return TRItems.GetLoadableItemID(uniqueID); }
+        /// <param name="itemID">The itemID of the item. This its index in the Inventory.inv.allItems array.</param>
+        /// <returns>A string that is either the vanilla itemID or the customItemID for modded items.</returns>
+        public string GetSaveableItemID(int itemID) { return TRItems.GetSaveableItemID(itemID); }
+
+        /// <summary>
+        /// Use this to get the current itemID that matches a saved ID. If you manually save items in special storage slots,
+        /// then use GetSaveableItemID for saving the item, and this method for loading it back in.
+        /// </summary>
+        /// <param name="savedID">The ID that was saved for this item.</param>
+        /// <returns>
+        /// An int that is the current itemID for this item. It matches the index of the item in the Inventory.inv.allItems array.
+        /// Keep in mind that this value will change if a new mod is added or the mod loader has changed. So, if you want to save this value,
+        /// you have to pass it through GetSaveableItemID() first and save the returned value instead.
+        /// </returns>
+        public int GetLoadableItemID(string savedID) { return TRItems.GetLoadableItemID(savedID); }
 
         /// <summary>
         /// Set a conflicting plugin to warn the user's about if they have it in their folder. 
