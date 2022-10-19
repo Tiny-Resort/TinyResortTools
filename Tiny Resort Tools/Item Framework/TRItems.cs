@@ -107,7 +107,7 @@ namespace TinyResort {
         private static List<Chest> privateStashesVanilla;
 
         internal static void Initialize() {
-            TRTools.LogError($"Initializing TRItems...");
+            TRTools.Log($"Initializing TRItems...");
 
             Data = TRData.Subscribe("TR.CustomItems");
             TRData.cleanDataEvent += UnloadCustomItems;
@@ -120,7 +120,7 @@ namespace TinyResort {
             );
 
             LeadPlugin.plugin.AddCommand("list_items", "Lists every item added by a mod.", ListItems);
-            TRTools.LogError($"End Initialization TRItems...");
+            TRTools.Log($"End Initialization TRItems...");
 
         }
         
@@ -243,7 +243,7 @@ namespace TinyResort {
         // Resize the array depending on the number of modded items added
         // Ignore modded items saved if it doesnt exist in customItems
         internal static void ManageAllItemArray() {
-            TRTools.LogError($"Running ManageAllItemArray...");
+            TRTools.Log($"Running ManageAllItemArray...");
 
             // Saves the default arrays for existing item lists
             allItemsVanilla = Inventory.inv.allItems.ToList();
@@ -342,7 +342,7 @@ namespace TinyResort {
             customItemsInitialized = true;
             InitializeItemDetails();
             
-            TRTools.LogError($"Ending ManageAllItemArray...");
+            TRTools.Log($"Ending ManageAllItemArray...");
 
         }
 
@@ -449,7 +449,7 @@ namespace TinyResort {
             //for (var j = 0; j < ContainerManager.manage.privateStashes.Count; j++) {
             // Manually set to two until the StorageData class is completed by SlowCircuit. 
             // This is to prevent duplication when people are using ender storage. 
-            TRTools.LogError($"Size of Stash: {privateStashesVanilla.Count}");
+            TRTools.Log($"Size of Stash: {privateStashesVanilla.Count}");
             for (var j = 0; j < privateStashesVanilla.Count; j++) {
                 for (var i = 0; i < ContainerManager.manage.privateStashes[j].itemIds.Length; i++) {
                     TRTools.Log($"Found Item: {ContainerManager.manage.privateStashes[j].itemIds[i]}");
@@ -572,7 +572,7 @@ namespace TinyResort {
                             BridgeData.Save(onTileMap[x, y], x, y, rotation, bridgeLength);
                         }
                         else if (allObjects[onTileMap[x, y]].tileObjectGrowthStages) {
-                            TRTools.LogError($"Before plantdata");
+                            TRTools.Log($"Before plantdata");
                             TRTools.Log($"Found: {allObjects[onTileMap[x, y]].name} | Status: {onTileMapStatus[x, y]}");
                             PlantData.Save(onTileMap[x, y], x, y, onTileMapStatus[x, y]);
                         }
