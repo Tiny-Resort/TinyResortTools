@@ -129,7 +129,12 @@ namespace TinyResort {
             
             // Check if itemID is greater than the count of vanilla items -1 (accounting for 0)
             if (itemID > allItemsVanilla.Count - 1) {
-                try { saveableID = customItemsByItemID[itemID].customItemID; }
+                try {
+                    if (customItemsByItemID.ContainsKey(itemID))
+                        saveableID = customItemsByItemID[itemID].customItemID;
+                    else
+                        saveableID = null;
+                }
                 catch { saveableID = null; }
             }
             // Return the itemID as a string if its a vanilla item.s
@@ -141,13 +146,17 @@ namespace TinyResort {
             
             // Check if it is a custom item by checking if the period exists in the string, return -1 if it fails.. 
             if (savedID.Contains(".")) {
-                try { return customItems[savedID].invItem.getItemId(); }
+                try {
+                    if (customItems.ContainsKey(savedID))
+                        return customItems[savedID].invItem.getItemId();
+                    else
+                        return -2;
+                }
                 catch { return -2; }
             }
             
             // Try to parse the int of a vanilla item and if it passes return ID, if it fails return -2. 
             else return int.TryParse(savedID, out var loadableID) ? loadableID : -2;
-            
         }
 
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, int uniqueItemID) {

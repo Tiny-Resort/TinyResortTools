@@ -55,6 +55,10 @@ namespace TinyResort {
                 
                 // Creates a new instance of the item
                 var fileName = Path.GetFileNameWithoutExtension(file);
+                var folderName = Path.GetDirectoryName(file);
+                if (string.IsNullOrEmpty(folderName)) { folderName = "unknown"; }
+                else { folderName = folderName.Split('\\').Last().Replace(" ", ""); }
+                var ext = Path.GetExtension(file);
                 var newItem = new TRCustomItem();
                 newItem.invItem = Object.Instantiate(obj).GetComponent<InventoryItem>();
                 GameObject.DontDestroyOnLoad(newItem.invItem);
@@ -65,7 +69,7 @@ namespace TinyResort {
                 newItem.invItem.equipable.material.mainTexture = texture;
 
                 newItem.isQuickItem = true;
-                newItem.customItemID = "QI." + fileName.Replace(" ", "");
+                newItem.customItemID = "QI." + folderName + "_" + fileName.Replace(" ", "") + ext.Replace(".", "_");
                 TRItems.customItems[newItem.customItemID] = newItem;
                 newItem.invItem.value = 1000;
             }

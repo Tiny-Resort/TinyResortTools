@@ -6,6 +6,7 @@ using UnityEngine;
 namespace TinyResort {
 
     [HarmonyPatch(typeof(SaveLoad), "loadCarriables")]
+    [HarmonyPriority(1)]
     internal class loadCarriables {
         
         [HarmonyPostfix]
@@ -19,7 +20,7 @@ namespace TinyResort {
             }
             TRData.postLoadEvent?.Invoke();
             TRData.injectDataEvent?.Invoke();
-            TRTools.InMainMenu = false;
+            TRTools.InMainMenu = false; 
         }
         
     }

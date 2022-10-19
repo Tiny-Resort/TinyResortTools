@@ -35,6 +35,7 @@ namespace TinyResort {
         
         private static float scrollPosition;
         private static float scrollMaxPosition;
+
         
         private static string configDirectory = Application.dataPath.Replace("Dinkum_Data", "BepInEx/config/");
 
@@ -80,14 +81,13 @@ namespace TinyResort {
             
         }
 
-        private static void CreateModUpdateButton() {
+        internal static void CreateModUpdateButton() {
             
             if (!creditsWindow) { 
                 
                 creditsWindow = GameObject.Find("MapCanvas/MenuScreen/Credits"); 
 
                 if (creditsWindow) {
-
                     // Create and setup a window for displaying update buttons for mods
                     modsWindow = Object.Instantiate(creditsWindow, creditsWindow.transform.parent);
                     modsWindow.name = "Mod Loader Window";
