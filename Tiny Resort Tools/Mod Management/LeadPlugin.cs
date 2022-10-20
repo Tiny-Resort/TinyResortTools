@@ -28,7 +28,6 @@ namespace TinyResort {
             useSlashToOpenChat = Config.Bind("Chat", "UseSlashToOpenChat", true, "If true, then pressing forward slash on the keyboard will open the chat box with a slash already in place.");
             
             TRLicences.Initialize();
-            TRIcons.Initialize();
             TRItems.Initialize();
             TRQuickItems.Initialize();
         }
@@ -39,7 +38,8 @@ namespace TinyResort {
             TRModUpdater.Initialize();
             TRConflictingPlugins.Initialize();
             TRItems.ManageAllItemArray();
-            
+            TRIcons.Initialize();
+
             /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);
             TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);

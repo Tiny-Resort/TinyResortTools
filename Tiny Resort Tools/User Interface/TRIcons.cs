@@ -63,6 +63,7 @@ namespace TinyResort {
             // Fix names of items that didn't match
             Inventory.inv.allItems[56].itemName = "Wooden Seat"; // It was named Wooden Chair for some reason
             Inventory.inv.allItems[144].itemName = "Long White Coffee Table"; // Coffee was spelled wrong
+            Inventory.inv.allItems[977].itemName = "Dark P.I Hat"; // P.I Hat already exists
         }
         #endregion
         
@@ -131,8 +132,8 @@ namespace TinyResort {
         internal static void DebugIcons() {
 
             var files = TRAssets.ListAllTextures(relativePath);
-            //var files = Directory.GetFiles(iconPath);
-            for (int i = 0; i < files.Count; i++) { FolderList.Add(Path.GetFileName(files[i]).Replace(".png", "")); }
+            //var files = Directory.GetFiles(iconPath); 
+            for (int i = 0; i < files.Count; i++) { FolderList.Add(Path.GetFileName(files[i]).Replace(".png", "").Replace(" ", "_")); }
 
             string notInItemList = "";
             notInItemList += $"Incorrectly Named Files (Or don't exist):\n";
@@ -147,7 +148,9 @@ namespace TinyResort {
                 var spriteName = Inventory.inv.allItems[k].itemSprite.name;
 
                 // if (Inventory.inv.allItems[k].itemSprite == null) { itemsWithoutIcons += $"{Inventory.inv.allItems[k].itemName}\n"; }
-                if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName)) && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower().Replace(" ", "_"))) { itemsWithoutIcons += $"{k} {Inventory.inv.allItems[k].itemName}\n"; }
+                if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName)) && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower().Replace(" ", "_"))) {
+                    itemsWithoutIcons += $"{k} {Inventory.inv.allItems[k].itemName}\n";
+                }
             }
 
             TRTools.Log(notInItemList);
