@@ -131,6 +131,11 @@ namespace TinyResort {
         }
 
         #endregion
+        
+        #region Remote Commands
+        
+        
+        #endregion
 
         /*#region Version Checking
 
