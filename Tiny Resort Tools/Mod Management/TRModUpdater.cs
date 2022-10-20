@@ -42,7 +42,7 @@ namespace TinyResort {
         public static void Initialize() {
             
             createEmptyConfigFiles = LeadPlugin.instance.Config.Bind(
-                "Mod Management", "Create Empty Config Files", false, 
+                "ModManagement", "CreateEmptyConfigFiles", false, 
                 "If true and no config file exists for a mod, one will automatically be created for you to add a nexusID setting to manually.");
             
             ScanPlugins();
