@@ -19,7 +19,8 @@ namespace TinyResort {
 		
          */
 
-        public void CmdSendMessageToClient(string message) {
+        [Command]
+        public void CmdSendMessageToHost(string message) {
 	        PooledNetworkWriter writer = NetworkWriterPool.GetWriter();
 	        writer.WriteString(message);
 	        SendCommandInternal(typeof(TRNetwork), "CmdSendMessageToClient", writer, 0, true);
@@ -27,21 +28,21 @@ namespace TinyResort {
 	        
         }
 
-        internal void UserCode_CmdSendMessageToClient(NetworkConnection con, string message) {
+        internal void UserCode_CmdSendMessageToHost(NetworkConnection con, string message) {
 	        TRTools.LogError($"Sending message to client: {message}");
         }
 
 
-        internal static void InvokeUserCode_CmdSendMessageToClient(NetworkBehaviour obj, NetworkReader reader, NetworkConnectionToClient senderConnection) {
+        internal static void InvokeUserCode_CmdSendMessageToHost(NetworkBehaviour obj, NetworkReader reader, NetworkConnectionToClient senderConnection) {
             if (!NetworkServer.active) {
-                TRTools.LogError("Command CmdSendMessageToClient called on client.");
+                TRTools.LogError("Command CmdSendMessageToHost called on client.");
                 return;
             }
-            ((TRNetwork)obj).UserCode_CmdSendMessageToClient(NetworkClient.connection, reader.ReadString());
+            ((TRNetwork)obj).UserCode_CmdSendMessageToHost(NetworkClient.connection, reader.ReadString());
 
         }
 
-        static TRNetwork() { RemoteCallHelper.RegisterCommandDelegate(typeof(TRNetwork), "CmdSendMessageToClient", new CmdDelegate(TRNetwork.InvokeUserCode_CmdSendMessageToClient), true); }
+        static TRNetwork() { RemoteCallHelper.RegisterCommandDelegate(typeof(TRNetwork), "CmdSendMessageToHost", new CmdDelegate(TRNetwork.InvokeUserCode_CmdSendMessageToHost), true); }
 
         #endregion
     }

@@ -9,8 +9,6 @@ using BepInEx.Configuration;
 using BepInEx.Core.Logging.Interpolation;
 using BepInEx.Logging;
 using HarmonyLib;
-using Mirror;
-using Mirror.RemoteCalls;
 using UnityEngine;
 
 namespace TinyResort {
@@ -134,7 +132,6 @@ namespace TinyResort {
 
         #endregion
         
-
 
         /*#region Version Checking
 
