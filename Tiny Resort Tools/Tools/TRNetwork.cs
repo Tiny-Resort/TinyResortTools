@@ -7,18 +7,6 @@ namespace TinyResort {
 
         #region Remote Commands
 
-        /*
-         
-         [Command]
-	public void CmdActivateTrap(uint animalToTrapId, int xPos, int yPos)
-	{
-		
-	}
-	
-
-		
-         */
-
         [Command]
         public void CmdSendMessageToHost(string message) {
 	        PooledNetworkWriter writer = NetworkWriterPool.GetWriter();
@@ -29,7 +17,7 @@ namespace TinyResort {
         }
 
         internal void UserCode_CmdSendMessageToHost(NetworkConnection con, string message) {
-	        TRTools.LogError($"Sending message to client: {message}");
+	        TRTools.LogError($"Sending message to host: {message}");
         }
 
 
