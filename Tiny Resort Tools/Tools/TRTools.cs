@@ -45,7 +45,7 @@ namespace TinyResort {
             HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
             if (!string.IsNullOrEmpty(chatTrigger) && chatTrigger.ToLower() != "help") {
                 HookedPlugins[plugin].chatTrigger =
-                    plugin.Config.Bind("Developer", "Chat Trigger", chatTrigger.ToLower(), "What comes after the / in the chat when using chat commands for this mod. Example: If the chat trigger is 'tr' then all chat commands for this mod would start with /tr");
+                    plugin.Config.Bind("Developer", "ChatTrigger", chatTrigger.ToLower(), "What comes after the / in the chat when using chat commands for this mod. Example: If the chat trigger is 'tr' then all chat commands for this mod would start with /tr");
             }
 
             HookedPlugins[plugin].Logger = BepInEx.Logging.Logger.CreateLogSource(plugin.Info.Metadata.Name);
