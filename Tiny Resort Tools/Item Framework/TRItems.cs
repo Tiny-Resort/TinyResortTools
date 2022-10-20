@@ -12,27 +12,6 @@ using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace TinyResort {
-
-    /* TODO
-     HIGH PRIORITY
-        * John: Add a chat command for giving yourself a custom item.
-        * Add try catches when loading or unloading any item to prevent one badly modded item breaking everything.
-        * Handle case where a non-modded item is on top of modded furniture. -- Semi Handled
-
-     MID PRIORITY
-        * Add ability to put custom items on enemy drop tables.
-        * Add ability to put custom items in mine chest loot tables.
-        * Add ability to put custom items in loot that's buried underground, both in boxes and on its own.
-        * Add ability to add a custom item recipe to Franklyn's crafting shop.
-        * Add ability to make a recipe for a custom item and to give that recipe to the player.
-        * Add ability to add custom item to items NPCs give you, as well as to the recycle bin.
-        
-     LOW PRIORITY
-        * Stephen: Quick creating paths, house floors and wallpapers.
-        * Expand mail system so that mod authors can be make highly custom letters.
-        * Add recovering items from the lost and found if mods are reinstalled.  
-     */
-    
     
     /*
      * Adding Custom Tree Support:
@@ -51,35 +30,6 @@ namespace TinyResort {
 
     /// <summary>Tools for working with the Dinkum inventory.</summary>
     public class TRItems {
-
-        #region Vanilla Item Tools
-
-        internal static readonly Dictionary<int, InventoryItem> itemDetails = new Dictionary<int, InventoryItem>();
-
-        private static void InitializeItemDetails() {
-            foreach (var item in Inventory.inv.allItems) {
-                var id = item.getItemId();
-                itemDetails[id] = item;
-            }
-        }
-
-        /// <returns>Whether or not the item exists.</returns>
-        public static bool DoesItemExist(int itemID) {
-            if (itemDetails.Count <= 0) InitializeItemDetails();
-            return itemID >= 0 && itemDetails.ContainsKey(itemID);
-        }
-
-        /// <returns>The details for an item with the given item ID.</returns>
-        public static InventoryItem GetItemDetails(int itemID) {
-            if (itemDetails.Count <= 0) InitializeItemDetails();
-            if (itemID < 0) {
-                TRTools.LogError("Attempting to get item details for item with ID of " + itemID + " which does not exist.");
-                return null;
-            }
-            return itemDetails[itemID];
-        }
-
-        #endregion
 
         internal static TRModData Data;
         internal static readonly Dictionary<string, TRCustomItem> customItems = new Dictionary<string, TRCustomItem>();
@@ -105,6 +55,13 @@ namespace TinyResort {
         private static List<GameObject> carryablePrefabsFull;
         private static List<bool> CatalogueVanilla;
         private static List<Chest> privateStashesVanilla;
+
+        /// <returns>The details for an item with the given item ID.</returns>
+        public static InventoryItem GetItemDetails(int itemID) {
+            if (itemID >= 0 && itemID < Inventory.inv.allItems.Length) return Inventory.inv.allItems[itemID];
+            TRTools.LogError("Attempting to get item details for item with ID of " + itemID + " which does not exist.");
+            return null;
+        }
 
         internal static void Initialize() {
             TRTools.Log($"Initializing TRItems...");
@@ -340,7 +297,6 @@ namespace TinyResort {
             cheatButton?.SetValue(CheatScript.cheat, new GameObject[Inventory.inv.allItems.Length]);
 
             customItemsInitialized = true;
-            InitializeItemDetails();
             
             TRTools.Log($"Ending ManageAllItemArray...");
 
