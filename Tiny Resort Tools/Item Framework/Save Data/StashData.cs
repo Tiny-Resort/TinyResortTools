@@ -34,7 +34,6 @@ namespace TinyResort {
                 customItemID = TRItems.customItemsByItemID[ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo]].customItemID, 
                 stackSize = stackSize, stashPostition = stashPostition, slotNo = slotNo
             });
-            TRTools.LogError($"Stash Position: {stashPostition} | Unique ID: {TRItems.customItemsByItemID[ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo]].customItemID} | Slot {slotNo} | Stack: {stackSize}");
 
             ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo] = -1; 
             ContainerManager.manage.privateStashes[stashPostition].itemStacks[slotNo] = 0;
@@ -42,7 +41,6 @@ namespace TinyResort {
 
         public TRCustomItem Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
-            TRTools.LogError($"Stash Position: {stashPostition} | Item ID: {customItem.invItem.getItemId()} | Slot {slotNo} | Stack: {stackSize}");
             ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo] = customItem.invItem.getItemId();
             ContainerManager.manage.privateStashes[stashPostition].itemStacks[slotNo] = stackSize;
             return customItem;

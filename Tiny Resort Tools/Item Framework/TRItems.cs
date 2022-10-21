@@ -406,7 +406,6 @@ namespace TinyResort {
             //for (var j = 0; j < ContainerManager.manage.privateStashes.Count; j++) {
             // Manually set to two until the StorageData class is completed by SlowCircuit. 
             // This is to prevent duplication when people are using ender storage. 
-            TRTools.LogError($"Size of Stash: {privateStashesVanilla.Count} | Hardcoded to 2 (which is done in vanilla code)");
             for (var j = 0; j < 2; j++) {
                 for (var i = 0; i < ContainerManager.manage.privateStashes[j].itemIds.Length; i++) {
                     TRTools.Log($"Found Item: {ContainerManager.manage.privateStashes[j].itemIds[i]}");
@@ -682,16 +681,13 @@ namespace TinyResort {
         
         // Called whenever loading or after saving
         internal static void LoadCustomItems() {
-            TRTools.Log($"Loading all Stashes: Required to parse them later.");
             if (!loadedStashes) {
-                TRTools.LogError($"Size of Stash before loading: {ContainerManager.manage.privateStashes.Count}");
+                TRTools.Log($"Loading all Stashes: Required to parse them later.");
                 ContainerManager.manage.loadStashes();
                 loadedStashes = true;
-                TRTools.LogError($"Size of Stash after loading: {ContainerManager.manage.privateStashes.Count}");
 
             }
             privateStashesVanilla = ContainerManager.manage.privateStashes.ToList();
-            TRTools.LogError($"Size of vanilla Stash variable: {privateStashesVanilla.Count}");
 
             TRTools.Log($"Start adding in all Saved Custom Items...");
             TRTools.Log($"Making sure the array sizes are the appropriate size...");
