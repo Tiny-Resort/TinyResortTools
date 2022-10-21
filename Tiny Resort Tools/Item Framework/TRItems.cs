@@ -40,6 +40,7 @@ namespace TinyResort {
         internal static readonly Dictionary<int, TRCustomItem> customCarryableByID = new Dictionary<int, TRCustomItem>();
 
         internal static bool customItemsInitialized;
+        internal static bool loadedStashes;
 
         private static List<InventoryItem> allItemsVanilla;
         private static List<InventoryItem> allItemsFull;
@@ -55,7 +56,7 @@ namespace TinyResort {
         private static List<GameObject> carryablePrefabsFull;
         private static List<bool> CatalogueVanilla;
         private static List<Chest> privateStashesVanilla;
-
+        
         /// <returns>The details for an item with the given item ID.</returns>
         public static InventoryItem GetItemDetails(int itemID) {
             if (itemID >= 0 && itemID < Inventory.inv.allItems.Length) return Inventory.inv.allItems[itemID];
@@ -339,7 +340,7 @@ namespace TinyResort {
         // This might be worth breaking up. Specifically, anything that is done before the Loops of the tiles can be put into
         // their own methods. 
         internal static void UnloadCustomItems() {
-
+            
             TRTools.Log("Removing Items");
 
             // Clears all item data lists
@@ -405,11 +406,13 @@ namespace TinyResort {
             //for (var j = 0; j < ContainerManager.manage.privateStashes.Count; j++) {
             // Manually set to two until the StorageData class is completed by SlowCircuit. 
             // This is to prevent duplication when people are using ender storage. 
-            TRTools.Log($"Size of Stash: {privateStashesVanilla.Count}");
-            for (var j = 0; j < privateStashesVanilla.Count; j++) {
+            TRTools.LogError($"Size of Stash: {privateStashesVanilla.Count} | Hardcoded to 2 (which is done in vanilla code)");
+            for (var j = 0; j < 2; j++) {
                 for (var i = 0; i < ContainerManager.manage.privateStashes[j].itemIds.Length; i++) {
                     TRTools.Log($"Found Item: {ContainerManager.manage.privateStashes[j].itemIds[i]}");
-                    if (customItemsByItemID.ContainsKey(ContainerManager.manage.privateStashes[j].itemIds[i])) { StashData.Save(ContainerManager.manage.privateStashes[j].itemStacks[i], j, i); }
+                    if (customItemsByItemID.ContainsKey(ContainerManager.manage.privateStashes[j].itemIds[i])) {
+                        StashData.Save(ContainerManager.manage.privateStashes[j].itemStacks[i], j, i);
+                    }
                 }
             }
 
@@ -680,9 +683,16 @@ namespace TinyResort {
         // Called whenever loading or after saving
         internal static void LoadCustomItems() {
             TRTools.Log($"Loading all Stashes: Required to parse them later.");
-            ContainerManager.manage.loadStashes();
+            if (!loadedStashes) {
+                TRTools.LogError($"Size of Stash before loading: {ContainerManager.manage.privateStashes.Count}");
+                ContainerManager.manage.loadStashes();
+                loadedStashes = true;
+                TRTools.LogError($"Size of Stash after loading: {ContainerManager.manage.privateStashes.Count}");
+
+            }
             privateStashesVanilla = ContainerManager.manage.privateStashes.ToList();
-            
+            TRTools.LogError($"Size of vanilla Stash variable: {privateStashesVanilla.Count}");
+
             TRTools.Log($"Start adding in all Saved Custom Items...");
             TRTools.Log($"Making sure the array sizes are the appropriate size...");
             ModTheArrays();
@@ -716,7 +726,7 @@ namespace TinyResort {
             var SavedCatalogue = (List<string>)TRItems.Data.GetValue("CatalogueData", new List<string>());
             for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
                 if (SavedCatalogue.Contains(customItemsByItemID[i].customItemID)) { CatalogueManager.manage.collectedItem[i] = true; }
-            
+
         }
 
         // Only called when loading a save slot, not when sleeping
