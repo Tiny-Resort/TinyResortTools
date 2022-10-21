@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -391,8 +392,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(SolutionDir)..\MoveAssetsFolderTools.bat" "$(SolutionDir)custom_assets" custom_assets
-      call "$(SolutionDir)..\PostBuildBatTools.bat" "$(SolutionDir)bin\Debug\$(TargetName).dll" "$(TargetName).dll"
-call "$(SolutionDir)..\PostBuildBatTools.bat" "$(SolutionDir)bin\Debug\$(TargetName).xml" "$(TargetName).xml"</PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(SolutionDir)bin\Debug\$(TargetName).dll" "$(SolutionDir)TR Tools\$(TargetName).dll"
+copy /Y "$(SolutionDir)bin\Debug\$(TargetName).xml" "$(SolutionDir)TR Tools\$(TargetName).xml"
+call "$(SolutionDir)..\MoveAssetsFolderTools.bat" "$(SolutionDir)TR Tools"</PostBuildEvent>
   </PropertyGroup>
 </Project>

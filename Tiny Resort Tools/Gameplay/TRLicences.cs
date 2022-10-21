@@ -38,7 +38,7 @@ namespace TinyResort {
             TRData.postLoadEvent += LoadLicenceData;
             TRData.injectDataEvent += LoadLicences;
 
-            defaultLicenceSprite = TRAssets.LoadSprite(Path.Combine(TRTools.customAssetPath, "default_licence.png"), Vector2.one * 0.5f);
+            defaultLicenceSprite = TRAssets.LoadSprite(Path.Combine("TR Tools", "default_licence.png"), Vector2.one * 0.5f);
 
         }
 
@@ -340,8 +340,8 @@ namespace TinyResort {
         public void SetColor(Color col) { color = col; }
 
         /// <summary>Sets the icon used to represent the licence.</summary>
-        /// <param name="iconFileName">The name (including extension) of the image file you want to use as an icon for the licence. This file must be placed in the custom_assets/licence_icons/ folder.</param>
-        public void SetIcon(string iconFileName) { licenceIcon = TRAssets.LoadSprite(Path.Combine("TR Tools", "custom_assets", "licence_icons", iconFileName), Vector2.one * 0.5f); }
+        /// <param name="relativePath">The path to the image file (including file name and extension) you want to use as an icon for the licence, relative to the BepinEX plugins folder.</param>
+        public void SetIcon(string relativePath) { licenceIcon = TRAssets.LoadSprite(relativePath, Vector2.one * 0.5f); }
 
         /// <summary>Sets the description and cost for a specific level of the licence.</summary>
         /// <param name="setLevel">What level of the licence is being changed.</param>

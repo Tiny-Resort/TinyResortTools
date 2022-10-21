@@ -24,8 +24,7 @@ namespace TinyResort {
         internal static List<string> FolderList = new List<string>();
         internal static List<string> defaultSprites = new List<string>();
         
-        internal static string iconPath = Path.Combine(Application.dataPath.Replace("Dinkum_Data", ""), "BepInEx", "plugins", "TR Tools", "custom_assets", "item_icons");
-        internal static string relativePath = Path.Combine("TR Tools", "custom_assets", "item_icons");
+        internal static string relativePath = Path.Combine("TR Tools", "item_icons");
         
         internal class CustomSprites {
             internal string itemName;
@@ -134,29 +133,24 @@ namespace TinyResort {
         internal static void DebugIcons() {
 
             var files = TRAssets.ListAllTextures(relativePath);
-            //var files = Directory.GetFiles(iconPath); 
             for (int i = 0; i < files.Count; i++) { FolderList.Add(Path.GetFileName(files[i]).Replace(".png", "").Replace(" ", "_")); }
 
-            string notInItemList = "";
-            notInItemList += $"Incorrectly Named Files (Or don't exist):\n";
-
+            var oddItems = new List<string>();
             for (int j = 0; j < FolderList.Count; j++) {
-                if (!itemList.Contains(FolderList[j])) { notInItemList += $"{FolderList[j]}\n"; }
+                if (!itemList.Contains(FolderList[j])) { oddItems.Add( $"{FolderList[j]}"); }
             }
 
-            string itemsWithoutIcons = "";
-            itemsWithoutIcons = $"Item has no unique sprite:\n";
+            var invalidItems = new List<string>();
             for (int k = 0; k < Inventory.inv.allItems.Length; k++) {
                 var spriteName = Inventory.inv.allItems[k].itemSprite.name;
-
-                // if (Inventory.inv.allItems[k].itemSprite == null) { itemsWithoutIcons += $"{Inventory.inv.allItems[k].itemName}\n"; }
                 if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName)) && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower().Replace(" ", "_"))) {
-                    itemsWithoutIcons += $"{k} {Inventory.inv.allItems[k].itemName}\n";
+                    invalidItems.Add($"{k} {Inventory.inv.allItems[k].itemName}");
                 }
             }
 
-            TRTools.Log(notInItemList);
-            TRTools.Log(itemsWithoutIcons);
+            if (oddItems.Count > 0) { TRTools.LogError($"Item Icon Issue - The following icons found in the item_icons folder have a name that does not match any items:\n" + string.Join("\n", oddItems)); }
+            if (invalidItems.Count > 0) { TRTools.Log($"Item Icon Issue - Item has no unique sprite:\n" + string.Join("\n", invalidItems), false); }
+            
         }
 
         #endregion

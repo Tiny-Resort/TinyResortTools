@@ -21,7 +21,7 @@ namespace TinyResort {
             // Load Asset Bundle and Sort through all folders
             TRTools.Log($"Before Clothing Bundle");
             var customClothingBundle = TRAssets.LoadAssetBundleFromDLL("clothing_bundle");
-            var quickItems = Path.Combine(Paths.PluginPath, "TR Tools", "custom_assets", "quick_items");
+            var quickItems = Path.Combine(Paths.PluginPath, "TR Tools", "quick_items");
             //var customPathBundle = TRAssets.LoadBundle(Path.Combine(customPaths, "path_bundle"));
 
             // TODO: Create wallpaper and flooring bundles to support those

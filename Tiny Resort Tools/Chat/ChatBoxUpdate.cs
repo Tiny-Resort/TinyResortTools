@@ -37,9 +37,15 @@ namespace TinyResort {
             
             if (!__instance.chatBox.text.StartsWith("/") || __instance.chatBox.text == "/") return;
 
-            // Get the parameters entered for the chat command and clear the entry
+            // Get the parameters entered for the chat command
             string[] parameters = __instance.chatBox.text.ToLower().Split(' ');
             var trigger = parameters[0].Remove(0, 1);
+            
+            // Updates the history of the chat box and clears the entry
+            var history = AccessTools.Field(typeof(ChatBox), "history");
+            var historyList = (List<string>) history.GetValue(__instance);
+            historyList.Add(__instance.chatBox.text);
+            history.SetValue(__instance, historyList);
             __instance.chatBox.text = null;
             
             var args = parameters.Length > 2 ? parameters.Skip(2).ToArray() : new string[0];
