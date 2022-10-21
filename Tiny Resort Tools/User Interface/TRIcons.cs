@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using BepInEx;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -13,7 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace TinyResort {
 
-    public class TRIcons : MonoBehaviour {
+    internal class TRIcons : MonoBehaviour {
 
 
         internal static bool notParsed = true;
@@ -23,8 +24,8 @@ namespace TinyResort {
         internal static List<string> FolderList = new List<string>();
         internal static List<string> defaultSprites = new List<string>();
         
-        internal static string iconPath = Application.dataPath.Replace("Dinkum_Data", "BepInEx/plugins/custom_assets/item_icons/");
-        internal static string relativePath = "custom_assets/item_icons";
+        internal static string iconPath = Path.Combine(Application.dataPath.Replace("Dinkum_Data", ""), "BepInEx", "plugins", "TR Tools", "custom_assets", "item_icons");
+        internal static string relativePath = Path.Combine("TR Tools", "custom_assets", "item_icons");
         
         internal class CustomSprites {
             internal string itemName;
@@ -67,8 +68,8 @@ namespace TinyResort {
         }
         #endregion
         
-        internal static bool IsInFolder(string spriteName) {
-            if (File.Exists(iconPath + spriteName + ".png")) { return true; } 
+        internal static bool IsInFolder(string itemName) {
+            if (File.Exists(Path.Combine(Paths.PluginPath, relativePath, itemName + ".png"))) { return true; } 
             return false;
         }
         
@@ -98,7 +99,8 @@ namespace TinyResort {
 
         internal static bool getSpritePrefix(InventoryItem __instance, ref Sprite __result) {
 
-            var FindSprite = proccessedItemList.Find(i => i.itemName == __instance.itemName.ToLower());
+            var itemName = __instance.itemName.ToLower().Replace(" ", "_");
+            var FindSprite = proccessedItemList.Find(i => i.itemName == itemName);
 
             if (FindSprite != null) {
                 __result = FindSprite.customSprite;
@@ -106,9 +108,9 @@ namespace TinyResort {
             }
 
             //Plugin.Log($"getSprite Prefab Name = {__instance.itemName}");
-            if (IsInFolder(__instance.itemName.ToLower())) {
+            if (IsInFolder(itemName)) {
                 //Plugin.Log($"inside getSprite Prefab Name = {__instance.itemName}");
-                Sprite sprite = TRAssets.LoadSprite(Path.Combine(relativePath, __instance.itemName + ".png"), Vector2.one * 0.5f);
+                Sprite sprite = TRAssets.LoadSprite(Path.Combine(relativePath, itemName + ".png"), Vector2.one * 0.5f);
                 if (sprite != null) { __instance.itemSprite = sprite; }
                 __result = sprite;
                 return false;

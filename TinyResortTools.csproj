@@ -391,8 +391,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(SolutionDir)..\PostBuildBat.bat" "$(SolutionDir)bin\Debug\$(TargetName).dll" "$(TargetName).dll"
-call "$(SolutionDir)..\PostBuildBat.bat" "$(SolutionDir)bin\Debug\$(TargetName).xml" "$(TargetName).xml"
-call "$(SolutionDir)..\MoveAssetsFolder.bat" "$(SolutionDir)custom_assets" custom_assets</PostBuildEvent>
+    <PostBuildEvent>call "$(SolutionDir)..\MoveAssetsFolderTools.bat" "$(SolutionDir)custom_assets" custom_assets
+      call "$(SolutionDir)..\PostBuildBatTools.bat" "$(SolutionDir)bin\Debug\$(TargetName).dll" "$(TargetName).dll"
+call "$(SolutionDir)..\PostBuildBatTools.bat" "$(SolutionDir)bin\Debug\$(TargetName).xml" "$(TargetName).xml"</PostBuildEvent>
   </PropertyGroup>
 </Project>

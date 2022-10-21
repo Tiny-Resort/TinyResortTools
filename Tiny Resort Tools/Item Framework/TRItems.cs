@@ -54,7 +54,6 @@ namespace TinyResort {
         private static List<GameObject> vehiclePrefabsFull;
         private static List<GameObject> carryablePrefabsVanilla;
         private static List<GameObject> carryablePrefabsFull;
-        private static List<bool> CatalogueVanilla;
         private static List<Chest> privateStashesVanilla;
         
         /// <returns>The details for an item with the given item ID.</returns>
@@ -210,9 +209,6 @@ namespace TinyResort {
             vehiclePrefabsVanilla = SaveLoad.saveOrLoad.vehiclePrefabs.ToList();
             carryablePrefabsVanilla = SaveLoad.saveOrLoad.carryablePrefabs.ToList();
             tileTypesVanilla = WorldManager.manageWorld.tileTypes.ToList();
-            CatalogueVanilla = CatalogueManager.manage.collectedItem.ToList();
-
-
 
             // Get existing item lists
             allItemsFull = Inventory.inv.allItems.ToList();
@@ -327,13 +323,11 @@ namespace TinyResort {
             Inventory.inv.allItems = allItemsVanilla.ToArray();
             WorldManager.manageWorld.allObjects = tileObjectsVanilla.ToArray();
             WorldManager.manageWorld.allObjectSettings = tileObjectSettingsVanilla.ToArray();
-            CatalogueManager.manage.collectedItem = CatalogueVanilla.ToArray();
-            Array.Resize(ref CatalogueManager.manage.collectedItem, CatalogueVanilla.Count);
+            Array.Resize(ref CatalogueManager.manage.collectedItem, allItemsVanilla.Count);
             SaveLoad.saveOrLoad.vehiclePrefabs = vehiclePrefabsVanilla.ToArray();
             SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabsVanilla.ToArray();
             WorldManager.manageWorld.tileTypes = tileTypesVanilla.ToArray();
             TRTools.Log($"Ending UnmodTheArrays...");
-
         }
 
         // One large method to go through all modded items in the game and remove them. 

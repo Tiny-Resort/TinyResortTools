@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
@@ -15,6 +16,7 @@ namespace TinyResort {
     /// <summary>Used mostly for initialization and internal control of the API's features.</summary>
     public static class TRTools {
 
+        internal static string customAssetPath => Path.Combine("TR Tools", "custom_assets");
         private static Dictionary<BaseUnityPlugin, TRPlugin> HookedPlugins = new Dictionary<BaseUnityPlugin, TRPlugin>();
 
         /// <summary>Tells you if the player is in the main menu or not.</summary>

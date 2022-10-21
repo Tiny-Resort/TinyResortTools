@@ -38,7 +38,7 @@ namespace TinyResort {
             TRData.postLoadEvent += LoadLicenceData;
             TRData.injectDataEvent += LoadLicences;
 
-            defaultLicenceSprite = TRAssets.LoadSprite(Path.Combine("custom_assets", "licence_icons", "default_licence.png"), Vector2.one * 0.5f);
+            defaultLicenceSprite = TRAssets.LoadSprite(Path.Combine(TRTools.customAssetPath, "default_licence.png"), Vector2.one * 0.5f);
 
         }
 
@@ -341,7 +341,7 @@ namespace TinyResort {
 
         /// <summary>Sets the icon used to represent the licence.</summary>
         /// <param name="iconFileName">The name (including extension) of the image file you want to use as an icon for the licence. This file must be placed in the custom_assets/licence_icons/ folder.</param>
-        public void SetIcon(string iconFileName) { licenceIcon = TRAssets.LoadSprite(Path.Combine("custom_assets", "licence_icons", iconFileName), Vector2.one * 0.5f); }
+        public void SetIcon(string iconFileName) { licenceIcon = TRAssets.LoadSprite(Path.Combine("TR Tools", "custom_assets", "licence_icons", iconFileName), Vector2.one * 0.5f); }
 
         /// <summary>Sets the description and cost for a specific level of the licence.</summary>
         /// <param name="setLevel">What level of the licence is being changed.</param>

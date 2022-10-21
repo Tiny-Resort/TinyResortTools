@@ -62,7 +62,7 @@ namespace TinyResort {
             return AssetBundle.LoadFromStream(CurrentAssembly.GetManifestResourceStream(TargetResourcePath));
         }
 
-        /// <summary>Returns a list of all files in a folder that can be imported as a texture (or sprite).</summary>
+        /// <summary>Returns a list of all files in a folder that can be imported as a texture (or sprite). Includes subdirectories.</summary>
         /// <param name="relativePath">Path to the folder that you want to be scanned, relative to the BepInEx plugins folder.</param>
         public static List<string> ListAllTextures(string relativePath) => ListAllFiles(relativePath, textureFormats);
 
@@ -70,16 +70,16 @@ namespace TinyResort {
         /// <param name="folderPath">Path to the folder that you want to be scanned, relative to the BepInEx plugins folder.</param>
         public static List<string> ListAllAudioClips(string folderPath) => ListAllFiles(folderPath, audioFormats);*/
 
-        /// <summary>Returns a list of all files in a folder that have one of the specified extensions.</summary>
+        /// <summary>Returns a list of all files in a folder that have one of the specified extensions. Includes subdirectories.</summary>
         /// <param name="relativePath">Path to the folder that you want to be scanned, relative to the BepInEx plugins folder.</param>
         /// <param name="validExtensions">Any number of file extensions (without the dot).</param>
         public static List<string> ListAllFiles(string relativePath, params string[] validExtensions) {
 
-            var path = Path.Combine(BepInEx.Paths.PluginPath, relativePath);
+            var path = Path.Combine(Paths.PluginPath, relativePath);
             var list = new List<string>();
 
             if (Directory.Exists(path)) {
-                var files = Directory.GetFiles(path);
+                var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
                 foreach (var file in files) {
                     var ext = Path.GetExtension(file).Remove(0, 1).ToLower();
                     if (validExtensions.Any(i => i == ext)) { list.Add(file); }
