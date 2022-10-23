@@ -156,7 +156,7 @@ namespace TinyResort {
             
         }
 
-        private static void openWebpage(int id) { Application.OpenURL(string.Format("https://www.nexusmods.com/dinkum/mods/{0}/?tab=files", id)); }
+        private static void openWebpage(string url) { Application.OpenURL(url); }
 
         private static void PopulateModList() {
 
@@ -169,18 +169,30 @@ namespace TinyResort {
                 if (mod.updateButton != null) continue;
 
                 // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
-                mod.updateButton = updateButton.Copy(
-                    updateButtonGrid.transform,
-                    mod.outOfDate
-                        ? $"<size=15>{mod.name}</size>\n<color=#00ff00ff><b>UPDATE AVAILABLE</b></color> (<color=#ff7226ff>{mod.modVersion}</color> -> <color=#00ff00ff>{mod.nexusVersion}</color>)"
-                        : $"<size=15>{mod.name}</size>\n<color=#787877FF>UP TO DATE ({mod.modVersion})</color>", 
-                    delegate { openWebpage(mod.id); }
-                );
+                if (mod.updateState == PluginUpdateState.NotSetUp) {
+                    mod.updateButton = updateButton.Copy(
+                        updateButtonGrid.transform,
+                        $"<size=15>{mod.name}</size>\n<color=#787877FF>Status Unknown: Missing NexusID</color>",
+                        delegate { openWebpage("https://modding.wiki/en/dinkum/TRTools/ModManager#why-isnt-x-mod-showing-up-in-the-update-checker"); }
+                    );
+                }
+
+                // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
+                else {
+                    mod.updateButton = updateButton.Copy(
+                        updateButtonGrid.transform,
+                        mod.updateState == PluginUpdateState.UpdateAvailable
+                            ? $"<size=15>{mod.name}</size>\n<color=#00ff00ff><b>UPDATE AVAILABLE</b></color> (<color=#ff7226ff>{mod.modVersion}</color> -> <color=#00ff00ff>{mod.nexusVersion}</color>)"
+                            : $"<size=15>{mod.name}</size>\n<color=#787877FF>UP TO DATE ({mod.modVersion})</color>",
+                        delegate { openWebpage(string.Format("https://www.nexusmods.com/dinkum/mods/{0}/?tab=files", mod.id)); }
+
+                    );
+                }
 
             }
 
             // Organize the mod update buttons with mods that have an update available at the top
-            loadedPlugins = loadedPlugins.OrderByDescending(i => i.outOfDate).ThenBy(i => i.name).ToList();
+            loadedPlugins = loadedPlugins.OrderBy(i => i.updateState).ThenBy(i => i.name).ToList();
             for (var i = 0; i < loadedPlugins.Count; i++) { loadedPlugins[i].updateButton.transform.SetSiblingIndex(i); }
 
         }
@@ -214,7 +226,7 @@ namespace TinyResort {
                 }
                 
                 // If a nexusID was found for this plugin, then get it's version information from the webpage
-                if (id == -1) { continue; }
+                if (id == -1) { loadedPlugins.Add(new NexusPlugin(kvp.Metadata.Name, id, kvp.Metadata.Version, null, PluginUpdateState.NotSetUp)); }
                 LeadPlugin.instance.StartCoroutine(GetNexusInfo(kvp.Metadata.Name, id, kvp.Metadata.Version));
 
                 //TRTools.Log($"{kvp.Metadata.Name} {id} current version: {kvp.Metadata.Version}");
@@ -240,7 +252,7 @@ namespace TinyResort {
                     Match match = Regex.Match(line, "<[^>]+>[^0-9.]*([0-9.]+)[^0-9.]*<[^>]+>");
                     if (!match.Success) { break; }
                     Version nexusVersion = new Version(match.Groups[1].Value);
-                    loadedPlugins.Add(new NexusPlugin(plugName, id, modVersion, nexusVersion, nexusVersion > modVersion));
+                    loadedPlugins.Add(new NexusPlugin(plugName, id, modVersion, nexusVersion, nexusVersion > modVersion ? PluginUpdateState.UpdateAvailable : PluginUpdateState.UpToDate));
                     break;
                 }
                 if (line.Contains("<li class=\"stat-version\">")) { check = true; }
@@ -253,22 +265,24 @@ namespace TinyResort {
 
         private class NexusPlugin {
 
-            public NexusPlugin(string name, int id, Version modVersion, Version nexusVersion, bool outOfDate) {
+            public NexusPlugin(string name, int id, Version modVersion, Version nexusVersion, PluginUpdateState state) {
                 this.name = name;
                 this.id = id;
                 this.modVersion = modVersion;
                 this.nexusVersion = nexusVersion;
-                this.outOfDate = outOfDate;
+                this.updateState = state;
             }
 
             public string name;
             public int id;
             public Version modVersion;
             public Version nexusVersion;
-            public bool outOfDate;
+            public PluginUpdateState updateState;
             public TRButton updateButton;
 
         }
+        
+        public enum PluginUpdateState { UpdateAvailable, UpToDate, NotSetUp }
         
     }
 
