@@ -38,9 +38,9 @@ namespace TinyResort {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
 
-            if (houseDetails != null) houseDetails.houseMapOnTileStatus[objectXPos, objectYPos] = customItem.invItem.getItemId();
+            if (houseDetails != null) houseDetails.houseMapOnTileStatus[objectXPos, objectYPos] = customItem.inventoryItem.getItemId();
             else {
-                WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = customItem.invItem.getItemId();
+                WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = customItem.inventoryItem.getItemId();
                 WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(objectXPos, objectYPos);
                 NetworkNavMesh.nav.updateChunkInUse(); 
                 //WorldManager.manageWorld.allObjects[WorldManager.manageWorld.onTileMap[objectXPos, objectYPos]].showObjectOnStatusChange.showGameObject(customItem.invItem.getItemId());

@@ -80,8 +80,16 @@ namespace TinyResort {
             TRTools.Log($"End Initialization TRItems...");
 
         }
-        
-        internal static string GetSaveableItemID(int itemID) {
+
+
+        /// <summary>
+        /// Use this to get an ID that can be saved for both vanilla and modded items.
+        /// If you manually save items in special storage slots, then save this value instead of the itemID.
+        /// Then when loading data, call GetLoadableItemID() with the saved value to get the itemID of the item in that slot.
+        /// </summary>
+        /// <param name="itemID">The itemID of the item. This its index in the Inventory.inv.allItems array.</param>
+        /// <returns>A string that is either the vanilla itemID or the customItemID for modded items.</returns>
+        public static string GetSaveableItemID(int itemID) {
             string saveableID;
             
             // Check if itemID is greater than the count of vanilla items -1 (accounting for 0)
@@ -99,13 +107,24 @@ namespace TinyResort {
             return saveableID;
         }
 
-        internal static int GetLoadableItemID(string savedID) {
+
+        /// <summary>
+        /// Use this to get the current itemID that matches a saved ID. If you manually save items in special storage slots,
+        /// then use GetSaveableItemID for saving the item, and this method for loading it back in.
+        /// </summary>
+        /// <param name="savedID">The ID that was saved for this item.</param>
+        /// <returns>
+        /// An int that is the current itemID for this item. It matches the index of the item in the Inventory.inv.allItems array.
+        /// Keep in mind that this value will change if a new mod is added or the mod loader has changed. So, if you want to save this value,
+        /// you have to pass it through GetSaveableItemID() first and save the returned value instead.
+        /// </returns>
+        public static int GetLoadableItemID(string savedID) {
             
             // Check if it is a custom item by checking if the period exists in the string, return -1 if it fails.. 
             if (savedID.Contains(".")) {
                 try {
                     if (customItems.ContainsKey(savedID))
-                        return customItems[savedID].invItem.getItemId();
+                        return customItems[savedID].inventoryItem.getItemId();
                     else
                         return -2;
                 }
@@ -158,9 +177,9 @@ namespace TinyResort {
                 if (Inventory.inv.invSlots[i].slotUnlocked) {
 
                     // If the item is already in inventory and stackable, place it there
-                    if (Inventory.inv.invSlots[i].itemNo == customItem.invItem.getItemId() && customItem.invItem.isStackable) {
-                        Inventory.inv.invSlots[i].updateSlotContentsAndRefresh(customItem.invItem.getItemId(), Inventory.inv.invSlots[i].stack + quantity);
-                        return "Successfully added " + quantity + " '" + customItem.invItem.itemName + "' to your inventory.";
+                    if (Inventory.inv.invSlots[i].itemNo == customItem.inventoryItem.getItemId() && customItem.inventoryItem.isStackable) {
+                        Inventory.inv.invSlots[i].updateSlotContentsAndRefresh(customItem.inventoryItem.getItemId(), Inventory.inv.invSlots[i].stack + quantity);
+                        return "Successfully added " + quantity + " '" + customItem.inventoryItem.itemName + "' to your inventory.";
                     }
 
                     // Otherwise, look for an empty slot
@@ -174,8 +193,8 @@ namespace TinyResort {
 
             // Place in an emtpy slot if available
             if (emptyInvSlot >= 0) {
-                Inventory.inv.invSlots[emptyInvSlot].updateSlotContentsAndRefresh(customItem.invItem.getItemId(), quantity);
-                return "Successfully added " + quantity + " '" + customItem.invItem.itemName + "' to your inventory.";
+                Inventory.inv.invSlots[emptyInvSlot].updateSlotContentsAndRefresh(customItem.inventoryItem.getItemId(), quantity);
+                return "Successfully added " + quantity + " '" + customItem.inventoryItem.itemName + "' to your inventory.";
             }
 
             return "No room in inventory for requested item.";
@@ -191,7 +210,7 @@ namespace TinyResort {
                     str += item.Key + "\n";
                 }
                 else {
-                    if (item.Value.invItem) str += item.Key + "(" + item.Value.invItem.itemName + ")\n";
+                    if (item.Value.inventoryItem) str += item.Key + "(" + item.Value.inventoryItem.itemName + ")\n";
                 }
             }
             return str;
@@ -227,8 +246,8 @@ namespace TinyResort {
                         catch { TRTools.LogError($"Unable to load {item.Key}. tileTypes is not set correctly."); continue; }
                     }
                 }
-                if (item.Value.invItem) {
-                    try { var test = item.Value.invItem; }
+                if (item.Value.inventoryItem) {
+                    try { var test = item.Value.inventoryItem; }
                     catch { TRTools.LogError($"Unable to load {item.Key}. invItem is not set correctly."); continue; }
                 }
                 if (item.Value.tileObject) {
@@ -238,11 +257,11 @@ namespace TinyResort {
                     catch { TRTools.LogError($"Unable to load {item.Key}. tileObjectSettings is not set correctly."); continue; }
                 }
                 if (item.Value.vehicle) {
-                    try { var test = item.Value.invItem.spawnPlaceable; }
+                    try { var test = item.Value.inventoryItem.spawnPlaceable; }
                     catch { TRTools.LogError($"Unable to load {item.Key}. spawnPlaceable is not set correctly."); continue; }
                 }
-                if (item.Value.carryable) {
-                    try { var test = item.Value.carryable.gameObject; }
+                if (item.Value.pickUpAndCarry) {
+                    try { var test = item.Value.pickUpAndCarry.gameObject; }
                     catch { TRTools.LogError($"Unable to load {item.Key}. carryable is not set correctly."); continue; }
                 }
 
@@ -250,15 +269,15 @@ namespace TinyResort {
                 if (item.Value.tileTypes) {
                     if (item.Value.tileTypes.isPath) {
                         tileTypesFull.Add(item.Value.tileTypes);
-                        item.Value.invItem.placeableTileType = tileTypesFull.Count - 1;
+                        item.Value.inventoryItem.placeableTileType = tileTypesFull.Count - 1;
                         customTileTypeByID[tileTypesFull.Count - 1] = item.Value;
                     }
                 }
 
                 // Add custom inventory item
-                if (item.Value.invItem) {
-                    allItemsFull.Add(item.Value.invItem);
-                    item.Value.invItem.setItemId(allItemsFull.Count - 1);
+                if (item.Value.inventoryItem) {
+                    allItemsFull.Add(item.Value.inventoryItem);
+                    item.Value.inventoryItem.setItemId(allItemsFull.Count - 1);
                     customItemsByItemID[allItemsFull.Count - 1] = item.Value;
                 }
 
@@ -273,15 +292,15 @@ namespace TinyResort {
 
                 // Add custom vehicles
                 if (item.Value.vehicle) {
-                    vehiclePrefabsFull.Add(item.Value.invItem.spawnPlaceable);
+                    vehiclePrefabsFull.Add(item.Value.inventoryItem.spawnPlaceable);
                     item.Value.vehicle.saveId = vehiclePrefabsFull.Count - 1;
                     customVehicleByID[vehiclePrefabsFull.Count - 1] = item.Value;
                 }
 
                 // Add custom carryable items
-                if (item.Value.carryable) {
-                    carryablePrefabsFull.Add(item.Value.carryable.gameObject);
-                    item.Value.carryable.prefabId = carryablePrefabsFull.Count - 1;
+                if (item.Value.pickUpAndCarry) {
+                    carryablePrefabsFull.Add(item.Value.pickUpAndCarry.gameObject);
+                    item.Value.pickUpAndCarry.prefabId = carryablePrefabsFull.Count - 1;
                     customCarryableByID[carryablePrefabsFull.Count - 1] = item.Value;
                 }
 
@@ -392,7 +411,7 @@ namespace TinyResort {
             // Unloads (and saves) items from the player's inventory
             for (var i = 0; i < Inventory.inv.invSlots.Length; i++) {
                 if (customItemsByItemID.ContainsKey(Inventory.inv.invSlots[i].itemNo)) {
-                    TRTools.Log($"Found Custom Item: {customItemsByItemID[Inventory.inv.invSlots[i].itemNo].invItem.itemName}");
+                    TRTools.Log($"Found Custom Item: {customItemsByItemID[Inventory.inv.invSlots[i].itemNo].inventoryItem.itemName}");
                     InvItemData.Save(i, Inventory.inv.invSlots[i].stack);
                 }
             }
@@ -546,7 +565,7 @@ namespace TinyResort {
                         var onTopOfTileInside = ItemOnTopManager.manage.getAllItemsOnTopInHouse(houseDetails);
                         for (var i = 0; i < onTopOfTileInside.Length; i++) {
                             if (customTileObjectByID.ContainsKey(onTopOfTileInside[i].getTileObjectId())) {
-                                TRTools.Log($"Found {customTileObjectByID[onTopOfTileInside[i].getTileObjectId()].invItem.itemName}");
+                                TRTools.Log($"Found {customTileObjectByID[onTopOfTileInside[i].getTileObjectId()].inventoryItem.itemName}");
                                 ObjectTopData.Save(
                                     onTopOfTileInside[i].itemId, onTopOfTileInside[i].sittingOnX, onTopOfTileInside[i].sittingOnY,
                                     onTopOfTileInside[i].itemRotation, x, y, onTopOfTileInside[i].itemStatus, onTopOfTileInside[i].onTopPosition
@@ -728,21 +747,25 @@ namespace TinyResort {
 
     }
 
+    /// <summary> Contains various references to components important to your custom item. </summary>
     public class TRCustomItem {
 
-        public string customItemID;
+        /// <returns>Returns the unique ID of your custom item. This will be a combination of your nexus ID and the item ID you gave when adding it.</returns>
+        public string GetUniqueID() => customItemID;
+
+        internal string customItemID;
         internal bool isQuickItem;
 
         // TODO: Implement events
-        public delegate void TileObjectEvent();
-        public TileObjectEvent interactEvent;
+        //public delegate void TileObjectEvent();
+        //public TileObjectEvent interactEvent;
 
-        public InventoryItem invItem;
+        public InventoryItem inventoryItem;
         public TileObject tileObject;
         public TileObjectSettings tileObjectSettings;
         public TileTypes tileTypes;
         public Vehicle vehicle;
-        public PickUpAndCarry carryable;
+        public PickUpAndCarry pickUpAndCarry;
 
         internal static TRCustomItem Create(string assetBundlePath) {
 
@@ -753,12 +776,12 @@ namespace TinyResort {
 
             var AllAssets = bundle.LoadAllAssets<GameObject>();
             for (var i = 0; i < AllAssets.Length; i++) {
-                if (newItem.invItem == null) { newItem.invItem = AllAssets[i].GetComponent<InventoryItem>(); }
+                if (newItem.inventoryItem == null) { newItem.inventoryItem = AllAssets[i].GetComponent<InventoryItem>(); }
                 if (newItem.tileObject == null) { newItem.tileObject = AllAssets[i].GetComponent<TileObject>(); }
                 if (newItem.tileObjectSettings == null) { newItem.tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>(); }
                 if (newItem.tileTypes == null) { newItem.tileTypes = AllAssets[i].GetComponent<TileTypes>(); }
                 if (newItem.vehicle == null) { newItem.vehicle = AllAssets[i].GetComponent<Vehicle>(); }
-                if (newItem.carryable == null) { newItem.carryable = AllAssets[i].GetComponent<PickUpAndCarry>(); }
+                if (newItem.pickUpAndCarry == null) { newItem.pickUpAndCarry = AllAssets[i].GetComponent<PickUpAndCarry>(); }
             }
 
             bundle.Unload(false);

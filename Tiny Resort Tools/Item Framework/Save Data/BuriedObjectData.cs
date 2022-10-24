@@ -38,7 +38,7 @@ namespace TinyResort {
         public TRCustomItem Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             WorldManager.manageWorld.onTileMap[objectXPos, objectYPos] = 30;
-            BuriedManager.manage.allBuriedItems.Add(new BuriedItem(customItem.invItem.getItemId(), stackSize, objectXPos, objectYPos));
+            BuriedManager.manage.allBuriedItems.Add(new BuriedItem(customItem.inventoryItem.getItemId(), stackSize, objectXPos, objectYPos));
 
             return customItem;
         }

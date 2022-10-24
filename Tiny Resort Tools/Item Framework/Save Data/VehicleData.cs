@@ -55,7 +55,7 @@ namespace TinyResort {
             }
             // If loading into save slot, then create the item and set it up
             GameObject gameObject = Object.Instantiate(
-                customItem.invItem.spawnPlaceable,
+                customItem.inventoryItem.spawnPlaceable,
                 new Vector3(positionX, positionY, positionZ),
                 Quaternion.Euler(rotationX, rotationY, rotationZ)
             );

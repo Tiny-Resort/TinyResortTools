@@ -56,8 +56,8 @@ namespace TinyResort {
         public TRCustomItem Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             
-            if (houseXPos <= 0 && houseYPos <= 0) { WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = customItem.invItem.getItemId(); }
-            else { HouseManager.manage.getHouseInfo(houseXPos, houseYPos).houseMapOnTileStatus[objectXPos, objectYPos] = customItem.invItem.getItemId();}
+            if (houseXPos <= 0 && houseYPos <= 0) { WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = customItem.inventoryItem.getItemId(); }
+            else { HouseManager.manage.getHouseInfo(houseXPos, houseYPos).houseMapOnTileStatus[objectXPos, objectYPos] = customItem.inventoryItem.getItemId();}
 
             CurrentChanger restoreChanger = new CurrentChanger(objectXPos, objectYPos);
             restoreChanger.cycles = cycles;

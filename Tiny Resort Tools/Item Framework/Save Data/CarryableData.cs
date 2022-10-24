@@ -48,13 +48,13 @@ namespace TinyResort {
 
             // If re-injecting data after saving, just re-add it to list
             if (!firstLoad) { 
-                WorldManager.manageWorld.allCarriables.Remove(customItem.carryable);
+                WorldManager.manageWorld.allCarriables.Remove(customItem.pickUpAndCarry);
                 return customItem;
             }
             
             // If loading in to save slot, then create the carryable object
             TRTools.Log($"DidThisRUn?");
-            NetworkMapSharer.share.spawnACarryable(customItem.carryable.gameObject, new Vector3(positionX, positionY, positionZ), false);
+            NetworkMapSharer.share.spawnACarryable(customItem.pickUpAndCarry.gameObject, new Vector3(positionX, positionY, positionZ), false);
             TRTools.Log($"DidThisRun2?");
 
             return customItem;

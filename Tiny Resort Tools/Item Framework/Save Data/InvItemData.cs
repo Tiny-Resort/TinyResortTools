@@ -36,7 +36,7 @@ namespace TinyResort {
 
         public TRCustomItem Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
-            Inventory.inv.invSlots[slotNo].updateSlotContentsAndRefresh(customItem.invItem.getItemId(), stackSize);
+            Inventory.inv.invSlots[slotNo].updateSlotContentsAndRefresh(customItem.inventoryItem.getItemId(), stackSize);
 
             return customItem;
         }

@@ -40,7 +40,7 @@ namespace TinyResort {
         // DEBUG: Method was changed significantly from pre-save refactoring
         public TRCustomItem Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
-            slots[(int)equipSlot].updateSlotContentsAndRefresh(customItem.invItem.getItemId(), stackSize);
+            slots[(int)equipSlot].updateSlotContentsAndRefresh(customItem.inventoryItem.getItemId(), stackSize);
 
             return customItem;
         }

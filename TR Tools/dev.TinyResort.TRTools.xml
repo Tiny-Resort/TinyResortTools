@@ -67,6 +67,33 @@
         <member name="M:TinyResort.TRItems.GetItemDetails(System.Int32)">
             <returns>The details for an item with the given item ID.</returns>
         </member>
+        <member name="M:TinyResort.TRItems.GetSaveableItemID(System.Int32)">
+            <summary>
+            Use this to get an ID that can be saved for both vanilla and modded items.
+            If you manually save items in special storage slots, then save this value instead of the itemID.
+            Then when loading data, call GetLoadableItemID() with the saved value to get the itemID of the item in that slot.
+            </summary>
+            <param name="itemID">The itemID of the item. This its index in the Inventory.inv.allItems array.</param>
+            <returns>A string that is either the vanilla itemID or the customItemID for modded items.</returns>
+        </member>
+        <member name="M:TinyResort.TRItems.GetLoadableItemID(System.String)">
+            <summary>
+            Use this to get the current itemID that matches a saved ID. If you manually save items in special storage slots,
+            then use GetSaveableItemID for saving the item, and this method for loading it back in.
+            </summary>
+            <param name="savedID">The ID that was saved for this item.</param>
+            <returns>
+            An int that is the current itemID for this item. It matches the index of the item in the Inventory.inv.allItems array.
+            Keep in mind that this value will change if a new mod is added or the mod loader has changed. So, if you want to save this value,
+            you have to pass it through GetSaveableItemID() first and save the returned value instead.
+            </returns>
+        </member>
+        <member name="T:TinyResort.TRCustomItem">
+            <summary> Contains various references to components important to your custom item. </summary>
+        </member>
+        <member name="M:TinyResort.TRCustomItem.GetUniqueID">
+            <returns>Returns the unique ID of your custom item. This will be a combination of your nexus ID and the item ID you gave when adding it.</returns>
+        </member>
         <member name="T:TinyResort.TRMail">
             <summary> Tools for sending the player custom mail. </summary>
         </member>
@@ -143,27 +170,6 @@
             <param name="licenceName">The name that will appear on the licence in-game. (Can be changed at any time without issue)</param>
             <param name="maxLevel">The highest unlockable level for this licence. The true maximum is 5 since the game only shows up to 5 dots.</param>
             <returns>The custom licence that is created. Save a reference to this in order to access its state at any time.</returns>
-        </member>
-        <member name="M:TinyResort.TRPlugin.GetSaveableItemID(System.Int32)">
-            <summary>
-            Use this to get an ID that can be saved for both vanilla and modded items.
-            If you manually save items in special storage slots, then save this value instead of the itemID.
-            Then when loading data, call GetLoadableItemID() with the saved value to get the itemID of the item in that slot.
-            </summary>
-            <param name="itemID">The itemID of the item. This its index in the Inventory.inv.allItems array.</param>
-            <returns>A string that is either the vanilla itemID or the customItemID for modded items.</returns>
-        </member>
-        <member name="M:TinyResort.TRPlugin.GetLoadableItemID(System.String)">
-            <summary>
-            Use this to get the current itemID that matches a saved ID. If you manually save items in special storage slots,
-            then use GetSaveableItemID for saving the item, and this method for loading it back in.
-            </summary>
-            <param name="savedID">The ID that was saved for this item.</param>
-            <returns>
-            An int that is the current itemID for this item. It matches the index of the item in the Inventory.inv.allItems array.
-            Keep in mind that this value will change if a new mod is added or the mod loader has changed. So, if you want to save this value,
-            you have to pass it through GetSaveableItemID() first and save the returned value instead.
-            </returns>
         </member>
         <member name="M:TinyResort.TRPlugin.AddConflictingPlugin(System.String)">
             <summary>

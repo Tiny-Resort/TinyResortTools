@@ -34,7 +34,7 @@ namespace TinyResort {
 
         public TRCustomItem Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
-            WorldManager.manageWorld.tileTypeMap[objectXPos, objectYPos] = customItem.invItem.placeableTileType;
+            WorldManager.manageWorld.tileTypeMap[objectXPos, objectYPos] = customItem.inventoryItem.placeableTileType;
             WorldManager.manageWorld.refreshAllChunksInUse(objectXPos, objectYPos);
             return customItem;
         }

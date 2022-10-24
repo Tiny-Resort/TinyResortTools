@@ -52,7 +52,7 @@ namespace TinyResort {
         public TRCustomItem Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             var tmpHouseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
-            ContainerManager.manage.changeSlotInChest(objectXPos, objectYPos, slotNo, customItem.invItem.getItemId(), stackSize, tmpHouseDetails);
+            ContainerManager.manage.changeSlotInChest(objectXPos, objectYPos, slotNo, customItem.inventoryItem.getItemId(), stackSize, tmpHouseDetails);
 
             return customItem;
         }

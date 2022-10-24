@@ -41,7 +41,7 @@ namespace TinyResort {
 
         public TRCustomItem Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
-            ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo] = customItem.invItem.getItemId();
+            ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo] = customItem.inventoryItem.getItemId();
             ContainerManager.manage.privateStashes[stashPostition].itemStacks[slotNo] = stackSize;
             return customItem;
         }

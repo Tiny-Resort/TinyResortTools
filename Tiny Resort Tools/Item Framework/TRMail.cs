@@ -12,7 +12,7 @@ namespace TinyResort {
         /// <param name="immediate">Normally, the player will recieve this letter upon waking up the following day. Set this to true to make it immediately arrive.</param>
         /// <param name="NPC">The ID of the NPC you want to have sent the letter. 1 = John</param>
         public static void SendItemInMail(TRCustomItem itemToSend, int quantity, bool immediate = false, int NPC = 1) {
-            var letter = new Letter(NPC, Letter.LetterType.AnimalTrapReturn, itemToSend.invItem.getItemId(), quantity);
+            var letter = new Letter(NPC, Letter.LetterType.AnimalTrapReturn, itemToSend.inventoryItem.getItemId(), quantity);
             if (immediate) { MailManager.manage.mailInBox.Add(letter); }
             else { MailManager.manage.tomorrowsLetters.Add(letter); }
         }
