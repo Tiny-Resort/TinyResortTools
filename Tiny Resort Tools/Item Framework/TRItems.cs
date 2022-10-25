@@ -421,7 +421,6 @@ namespace TinyResort {
             // This is to prevent duplication when people are using ender storage. 
             for (var j = 0; j < 2; j++) {
                 for (var i = 0; i < ContainerManager.manage.privateStashes[j].itemIds.Length; i++) {
-                    TRTools.Log($"Found Item: {ContainerManager.manage.privateStashes[j].itemIds[i]}");
                     if (customItemsByItemID.ContainsKey(ContainerManager.manage.privateStashes[j].itemIds[i])) {
                         StashData.Save(ContainerManager.manage.privateStashes[j].itemStacks[i], j, i);
                     }
@@ -507,8 +506,7 @@ namespace TinyResort {
                     #endregion
 
                     #region Chests (NOT in a house)
-
-
+                    
                     // If the tile has a chest on it, save and unload custom items from the chest
                     if (allObjects[onTileMap[x, y]].tileObjectChest) { ChestData.Save(allObjects[onTileMap[x, y]].tileObjectChest, x, y, -1, -1); }
 

@@ -27,7 +27,6 @@ namespace TinyResort {
         }
 
         public static void Save(ChestPlaceable chestPlaceable, int objectXPos, int objectYPos, int houseXPos, int houseYPos) {
-            
             // Checks if the chest is in a house
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             
@@ -52,6 +51,7 @@ namespace TinyResort {
         public TRCustomItem Load() {
             if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
             var tmpHouseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
+            ContainerManager.manage.checkIfEmpty(objectXPos, objectYPos, tmpHouseDetails);
             ContainerManager.manage.changeSlotInChest(objectXPos, objectYPos, slotNo, customItem.inventoryItem.getItemId(), stackSize, tmpHouseDetails);
 
             return customItem;
