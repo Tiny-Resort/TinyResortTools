@@ -70,6 +70,23 @@ namespace TinyResort {
         /// <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
         public TRCustomItem AddCustomItem(string assetBundlePath, int uniqueItemID) { return TRItems.AddCustomItem(this, assetBundlePath, uniqueItemID); }
 
+        
+        /// <summary>
+        /// Creates a new item. The preferred method is to use an asset bundle, but this method allows you to condense the number of assetbundles you create.
+        /// </summary>
+        /// <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
+        /// <param name="inventoryItem">The InvItem script of an item.</param>
+        /// <param name="tileObject">The tileObject script of an item.</param>
+        /// <param name="tileObjectSettings">The tileObjectSettings script of an item.</param>
+        /// <param name="tileTypes">The tileTypes script of an item.</param>
+        /// <param name="vehicle">The vehicle script of an item.</param>
+        /// <param name="pickUpAndCarry">The pickUpAndCarry script of an item.</param>
+        /// <returns></returns>
+        public TRCustomItem AddCustomItem(int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null,
+                                          TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null) {
+            return TRItems.AddCustomItem(this, uniqueItemID, inventoryItem, tileObject, tileObjectSettings, tileTypes, vehicle, pickUpAndCarry);
+        }
+
         /// <summary>Adds a custom licence to the system. Must be done for each custom licence.</summary>
         /// <param name="licenceID">A unique string you are assigning this licence only. Changing this after save data has been made WILL result in save data mixups. Spaces in this are replaced with underscores.</param>
         /// <param name="licenceName">The name that will appear on the licence in-game. (Can be changed at any time without issue)</param>

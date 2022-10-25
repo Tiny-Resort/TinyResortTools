@@ -164,6 +164,19 @@
             /// <param name="assetBundlePath">The path to your asset bundle, relative to the plugins folder.</param>
             <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
         </member>
+        <member name="M:TinyResort.TRPlugin.AddCustomItem(System.Int32,InventoryItem,TileObject,TileObjectSettings,TileTypes,Vehicle,PickUpAndCarry)">
+            <summary>
+            Creates a new item. The preferred method is to use an asset bundle, but this method allows you to condense the number of assetbundles you create.
+            </summary>
+            <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
+            <param name="inventoryItem">The InvItem script of an item.</param>
+            <param name="tileObject">The tileObject script of an item.</param>
+            <param name="tileObjectSettings">The tileObjectSettings script of an item.</param>
+            <param name="tileTypes">The tileTypes script of an item.</param>
+            <param name="vehicle">The vehicle script of an item.</param>
+            <param name="pickUpAndCarry">The pickUpAndCarry script of an item.</param>
+            <returns></returns>
+        </member>
         <member name="M:TinyResort.TRPlugin.AddLicence(System.Int32,System.String,System.Int32)">
             <summary>Adds a custom licence to the system. Must be done for each custom licence.</summary>
             <param name="licenceID">A unique string you are assigning this licence only. Changing this after save data has been made WILL result in save data mixups. Spaces in this are replaced with underscores.</param>

@@ -148,6 +148,21 @@ namespace TinyResort {
 
         }
 
+        internal static TRCustomItem AddCustomItem(TRPlugin plugin, int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null, 
+                                                   TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null, 
+                                                   PickUpAndCarry pickUpAndCarry = null) {
+
+            if (customItemsInitialized) {
+                TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
+                return null;
+            }
+
+            customItems[plugin.nexusID.Value + "." + uniqueItemID.ToString()] = TRCustomItem.Create(inventoryItem, tileObject, tileObjectSettings, tileTypes, vehicle, pickUpAndCarry);
+            customItems[plugin.nexusID.Value + "." + uniqueItemID.ToString()].customItemID = plugin.nexusID.Value + "." + uniqueItemID.ToString();
+            return customItems[plugin.nexusID.Value + "." + uniqueItemID.ToString()];
+
+        }
+
         internal static string GivePlayerItem(string[] args) {
 
             // Makes sure any arguments were supplied
@@ -785,6 +800,25 @@ namespace TinyResort {
             bundle.Unload(false);
             return newItem;
 
+        }
+
+        internal static TRCustomItem Create(InventoryItem inventoryItem = null, TileObject tileObject = null, TileObjectSettings tileObjectSettings = null,
+                                            TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null) {
+
+            if (inventoryItem == null && tileObject == null && tileObjectSettings == null && tileTypes == null && vehicle == null && pickUpAndCarry == null) {
+                return null;
+            }
+            
+            var newItem = new TRCustomItem();
+
+            newItem.inventoryItem = inventoryItem;
+            newItem.tileObject = tileObject;
+            newItem.tileObjectSettings = tileObjectSettings;
+            newItem.tileTypes = tileTypes;
+            newItem.vehicle = vehicle;
+            newItem.pickUpAndCarry = pickUpAndCarry;
+
+            return newItem;
         }
 
     }
