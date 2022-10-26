@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace TinyResort {
 
+    // LoadCarriables is only run OnServerStart, so all of these will only run when loading your file. 
+    
     [HarmonyPatch(typeof(SaveLoad), "loadCarriables")]
     [HarmonyPriority(1)]
     internal class loadCarriables {
@@ -13,11 +15,7 @@ namespace TinyResort {
         public static void Postfix() {
             TRTools.LeavingMainMenu = true;
             TRData.trueLoadEvent?.Invoke();
-            if (TRTools.InMainMenu) {
-                TRTools.Log($"Test Initial Load");
-                TRData.initialLoadEvent?.Invoke();
-                TRTools.Log($"After Initial Load");
-            }
+            if (TRTools.InMainMenu) { TRData.initialLoadEvent?.Invoke(); }
             TRData.postLoadEvent?.Invoke();
             TRData.injectDataEvent?.Invoke();
             TRTools.InMainMenu = false; 

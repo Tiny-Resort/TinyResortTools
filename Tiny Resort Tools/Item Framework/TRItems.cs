@@ -406,7 +406,7 @@ namespace TinyResort {
             var vehicles = new List<Vehicle>(SaveLoad.saveOrLoad.vehiclesToSave);
             foreach (var vehicle in vehicles) {
                 if (customVehicleByID.ContainsKey(vehicle.saveId)) {
-                    TRTools.Log($"Found a vehicle item {vehicle.saveId}");
+                    //TRTools.Log($"Found a vehicle item {vehicle.saveId}");
                     VehicleData.Save(vehicle);
                 }
             }
@@ -415,7 +415,7 @@ namespace TinyResort {
             var carryables = new List<PickUpAndCarry>(WorldManager.manageWorld.allCarriables);
             foreach (var carryable in carryables) {
                 if (customCarryableByID.ContainsKey(carryable.prefabId)) {
-                    TRTools.Log($"Found a modded carryable");
+                    //TRTools.Log($"Found a modded carryable");
                     CarryableData.Save(carryable);
                 }
             }
@@ -427,7 +427,7 @@ namespace TinyResort {
             // Unloads (and saves) items from the player's inventory
             for (var i = 0; i < Inventory.inv.invSlots.Length; i++) {
                 if (customItemsByItemID.ContainsKey(Inventory.inv.invSlots[i].itemNo)) {
-                    TRTools.Log($"Found Custom Item: {customItemsByItemID[Inventory.inv.invSlots[i].itemNo].inventoryItem.itemName}");
+                    //TRTools.Log($"Found Custom Item: {customItemsByItemID[Inventory.inv.invSlots[i].itemNo].inventoryItem.itemName}");
                     InvItemData.Save(i, Inventory.inv.invSlots[i].stack);
                 }
             }
@@ -498,11 +498,9 @@ namespace TinyResort {
 
                     if (allObjects[onTileMap[x, y]].showObjectOnStatusChange) {
                         if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
-                            TRTools.Log($"MOD Found Clothing Item... {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]} | ID: {onTileMapStatus[x, y]}");
                             ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1);
                         }
                         else if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
-                            TRTools.Log($"MOD Found Sign Item... {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]} | ID: {onTileMapStatus[x, y]}");
                             ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1);
                         }
                     }
@@ -539,7 +537,6 @@ namespace TinyResort {
                         if (allObjects[onTileMap[x, y]].tileObjectItemChanger) {
                             if (onTileMapStatus[x, y] >= 0 && Inventory.inv.allItems[onTileMapStatus[x, y]] && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
                                 var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == x && i.yPos == y && i.houseX == -1 && i.houseY == -1);
-                                TRTools.Log($"Cyles: {changer.cycles} | Seconds: {changer.counterSeconds} | Days: {changer.counterDays} | House: ({changer.houseX}, {changer.houseY}) | Cycle Time: {changer.timePerCycles}");
                                 ItemChangerData.Save(onTileMapStatus[x, y], changer);
                             }
                         }
@@ -557,8 +554,6 @@ namespace TinyResort {
                             BridgeData.Save(onTileMap[x, y], x, y, rotation, bridgeLength);
                         }
                         else if (allObjects[onTileMap[x, y]].tileObjectGrowthStages) {
-                            TRTools.Log($"Before plantdata");
-                            TRTools.Log($"Found: {allObjects[onTileMap[x, y]].name} | Status: {onTileMapStatus[x, y]}");
                             PlantData.Save(onTileMap[x, y], x, y, onTileMapStatus[x, y]);
                         }
                         
@@ -579,7 +574,6 @@ namespace TinyResort {
                         var onTopOfTileInside = ItemOnTopManager.manage.getAllItemsOnTopInHouse(houseDetails);
                         for (var i = 0; i < onTopOfTileInside.Length; i++) {
                             if (customTileObjectByID.ContainsKey(onTopOfTileInside[i].getTileObjectId())) {
-                                TRTools.Log($"Found {customTileObjectByID[onTopOfTileInside[i].getTileObjectId()].inventoryItem.itemName}");
                                 ObjectTopData.Save(
                                     onTopOfTileInside[i].itemId, onTopOfTileInside[i].sittingOnX, onTopOfTileInside[i].sittingOnY,
                                     onTopOfTileInside[i].itemRotation, x, y, onTopOfTileInside[i].itemStatus, onTopOfTileInside[i].onTopPosition
@@ -606,11 +600,9 @@ namespace TinyResort {
 
                                 if (allObjects[tileObjectID].showObjectOnStatusChange) {
                                     if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) {
-                                        TRTools.Log($"MOD Found Clothing Item... {allObjects[tileObjectID]} | {tileObjectID} | ID: {houseMapOnTileStatus}");
                                         ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y);
                                     }
                                     else if (allObjects[tileObjectID].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) {
-                                        TRTools.Log($"MOD Found Sign Item... {allObjects[tileObjectID]} | {tileObjectID} | ID: {houseMapOnTileStatus}");
                                         ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y);
                                     }
                                 }
@@ -678,7 +670,7 @@ namespace TinyResort {
             Data.SetValue("ItemStatusDataLostAndFound", ItemStatusData.lostAndFound);
             Data.SetValue("PlantDataLostAndFound", PlantData.lostAndFound);
 
-            TRTools.Log($"Saving InvItemData: {InvItemData.all.Count}");
+            /*TRTools.Log($"Saving InvItemData: {InvItemData.all.Count}");
             TRTools.Log($"Saving ChestData: {ChestData.all.Count}");
             TRTools.Log($"Saving EquipData: {EquipData.all.Count}");
             TRTools.Log($"Saving LetterData: {LetterData.all.Count}");
@@ -692,7 +684,7 @@ namespace TinyResort {
             TRTools.Log($"Saving PathData: {PathData.all.Count}");
             TRTools.Log($"Saving BuriedObjectData: {BuriedObjectData.all.Count}");
             TRTools.Log($"Saving ItemChangerData: {ItemChangerData.all.Count}");
-            TRTools.Log($"Saving PlantData: {PlantData.all.Count}"); 
+            TRTools.Log($"Saving PlantData: {PlantData.all.Count}"); */
 
             #endregion
             

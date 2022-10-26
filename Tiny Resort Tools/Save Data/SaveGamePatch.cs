@@ -3,12 +3,13 @@ using UnityEngine;
 
 namespace TinyResort {
 
+    // This is run before the SaveGame method (first save method and before the coroutine) is started. 
+    
     [HarmonyPatch(typeof(SaveLoad), "SaveGame")]
     internal class SaveGamePatch {
 
         [HarmonyPrefix]
         internal static void Prefix(SaveLoad __instance) {
-            TRTools.Log($"Running SaveGame");
             TRData.preSaveEvent?.Invoke();
             TRData.cleanDataEvent?.Invoke();
         }
