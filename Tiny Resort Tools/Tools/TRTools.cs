@@ -34,13 +34,13 @@ namespace TinyResort {
             HookedPlugins[plugin].plugin = plugin;
             HookedPlugins[plugin].harmony = new Harmony(plugin.Info.Metadata.GUID);
             
-            if (nexusID > 0) {
+            if (nexusID > 0 || nexusID == -1) {
                 HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus.");
                 // Enforce nexus ID if the developer set one
                 HookedPlugins[plugin].nexusID.Value = nexusID;
                 HookedPlugins[plugin].plugin.Config.Save();
             }
-            else {
+            if (nexusID == -1) {
                 TRTools.LogError($"We highly recommend adding the nexusID from the URL of your mod page. This will allow you to use all of the TR Tool's features and shows users when there is an update for your mod. This error can be safely ignored if you are in a testing phase, but please add one before the release.", useASCII:true);
             }
             HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
@@ -70,6 +70,20 @@ namespace TinyResort {
             asciiArt += "==========================================================================================================\n\n";
 
             return asciiArt;
+        }
+
+        internal static string TRDeveloperMode() {
+            string devArt;
+            devArt = "\n==========================================================================================================\n";
+            devArt += "______ _____ _   _ _____ _     ___________ ___________  ___  ______________ _____ \n";
+            devArt += "|  _  \\  ___| | | |  ___| |   |  _  | ___ \\  ___| ___ \\ |  \\/  |  _  |  _  \\  ___|\n";
+            devArt += "| | | | |__ | | | | |__ | |   | | | | |_/ / |__ | |_/ / | .  . | | | | | | | |__  \n";
+            devArt += "| | | |  __|| | | |  __|| |   | | | |  __/|  __||    /  | |\\/| | | | | | | |  __| \n";
+            devArt += "| |/ /| |___\\ \\_/ / |___| |___\\ \\_/ / |   | |___| |\\ \\  | |  | \\ \\_/ / |/ /| |___ \n";
+            devArt += "|___/ \\____/ \\___/\\____/\\_____/\\___/\\_|   \\____/\\_| \\_| \\_|  |_/\\___/|___/ \\____/ \n\n";
+            devArt += "==========================================================================================================\n\n";
+            
+            return devArt;
         }
 
         internal static void Log(string text, bool debugModeOnly = true, bool useASCII = false) {

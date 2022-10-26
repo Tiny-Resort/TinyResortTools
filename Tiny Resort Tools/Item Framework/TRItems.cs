@@ -137,7 +137,7 @@ namespace TinyResort {
         }
 
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, int uniqueItemID) {
-
+            
             if (customItemsInitialized) {
                 TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
                 return null;
@@ -152,6 +152,7 @@ namespace TinyResort {
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null, 
                                                    TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null, 
                                                    PickUpAndCarry pickUpAndCarry = null) {
+            
 
             if (customItemsInitialized) {
                 TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
