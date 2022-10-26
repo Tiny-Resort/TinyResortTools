@@ -12,7 +12,7 @@ using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace TinyResort {
-    
+
     /*
      * Adding Custom Tree Support:
      * 1. Tree final stage Tile Object
@@ -56,7 +56,7 @@ namespace TinyResort {
         private static List<GameObject> carryablePrefabsVanilla;
         private static List<GameObject> carryablePrefabsFull;
         private static List<Chest> privateStashesVanilla;
-        
+
         /// <returns>The details for an item with the given item ID.</returns>
         public static InventoryItem GetItemDetails(int itemID) {
             if (itemID >= 0 && itemID < Inventory.inv.allItems.Length) return Inventory.inv.allItems[itemID];
@@ -82,7 +82,6 @@ namespace TinyResort {
 
         }
 
-
         /// <summary>
         /// Use this to get an ID that can be saved for both vanilla and modded items.
         /// If you manually save items in special storage slots, then save this value instead of the itemID.
@@ -92,7 +91,7 @@ namespace TinyResort {
         /// <returns>A string that is either the vanilla itemID or the customItemID for modded items.</returns>
         public static string GetSaveableItemID(int itemID) {
             string saveableID;
-            
+
             // Check if itemID is greater than the count of vanilla items -1 (accounting for 0)
             if (itemID > allItemsVanilla.Count - 1) {
                 try {
@@ -103,11 +102,11 @@ namespace TinyResort {
                 }
                 catch { saveableID = null; }
             }
+
             // Return the itemID as a string if its a vanilla item.s
             else { saveableID = itemID.ToString(); }
             return saveableID;
         }
-
 
         /// <summary>
         /// Use this to get the current itemID that matches a saved ID. If you manually save items in special storage slots,
@@ -120,7 +119,7 @@ namespace TinyResort {
         /// you have to pass it through GetSaveableItemID() first and save the returned value instead.
         /// </returns>
         public static int GetLoadableItemID(string savedID) {
-            
+
             // Check if it is a custom item by checking if the period exists in the string, return -1 if it fails.. 
             if (savedID.Contains(".")) {
                 try {
@@ -131,37 +130,46 @@ namespace TinyResort {
                 }
                 catch { return -2; }
             }
-            
+
             // Try to parse the int of a vanilla item and if it passes return ID, if it fails return -2. 
-            else return int.TryParse(savedID, out var loadableID) ? loadableID : -2;
+            else
+                return int.TryParse(savedID, out var loadableID) ? loadableID : -2;
         }
 
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, int uniqueItemID) {
+
+            string nexusID = plugin.nexusID.Value.ToString();
             
             if (customItemsInitialized) {
                 TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
                 return null;
             }
 
-            customItems[plugin.nexusID.Value + "." + uniqueItemID.ToString()] = TRCustomItem.Create(assetBundlePath);
-            customItems[plugin.nexusID.Value + "." + uniqueItemID.ToString()].customItemID = plugin.nexusID.Value + "." + uniqueItemID.ToString();
-            return customItems[plugin.nexusID.Value + "." + uniqueItemID.ToString()];
+            if (plugin.nexusID.Value == -1 && TRPlugin.developerMode.Value) { nexusID = plugin.plugin.Info.Metadata.Name.Replace(" ", "_");}
+            
+            customItems[nexusID + "." + uniqueItemID.ToString()] = TRCustomItem.Create(assetBundlePath);
+            customItems[nexusID + "." + uniqueItemID.ToString()].customItemID = nexusID + "." + uniqueItemID.ToString();
+            return customItems[nexusID + "." + uniqueItemID.ToString()];
 
         }
 
-        internal static TRCustomItem AddCustomItem(TRPlugin plugin, int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null, 
-                                                   TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null, 
-                                                   PickUpAndCarry pickUpAndCarry = null) {
+        internal static TRCustomItem AddCustomItem(
+            TRPlugin plugin, int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null,
+            TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null,
+            PickUpAndCarry pickUpAndCarry = null) {
             
+            string nexusID = plugin.nexusID.Value.ToString();
 
             if (customItemsInitialized) {
                 TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
                 return null;
             }
+            
+            if (plugin.nexusID.Value == -1 && TRPlugin.developerMode.Value) { nexusID = plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_"); }
 
-            customItems[plugin.nexusID.Value + "." + uniqueItemID.ToString()] = TRCustomItem.Create(inventoryItem, tileObject, tileObjectSettings, tileTypes, vehicle, pickUpAndCarry);
-            customItems[plugin.nexusID.Value + "." + uniqueItemID.ToString()].customItemID = plugin.nexusID.Value + "." + uniqueItemID.ToString();
-            return customItems[plugin.nexusID.Value + "." + uniqueItemID.ToString()];
+            customItems[nexusID + "." + uniqueItemID.ToString()] = TRCustomItem.Create(inventoryItem, tileObject, tileObjectSettings, tileTypes, vehicle, pickUpAndCarry);
+            customItems[nexusID + "." + uniqueItemID.ToString()].customItemID = nexusID + "." + uniqueItemID.ToString();
+            return customItems[nexusID + "." + uniqueItemID.ToString()];
 
         }
 
@@ -223,11 +231,9 @@ namespace TinyResort {
             if (customItems.Count <= 0) { return "The installed mods do not add any custom items."; }
             var str = "\nThe following items were added by installed mods:\n";
             foreach (var item in customItems) {
-                if (item.Value.isQuickItem) {
-                    str += item.Key + "\n";
-                }
+                if (item.Value.isQuickItem) { str += item.Key + "\n"; }
                 else {
-                    if (item.Value.inventoryItem) str += item.Key + "(" + item.Value.inventoryItem.itemName + ")\n";
+                    if (item.Value.inventoryItem) str += item.Key + " (" + item.Value.inventoryItem.itemName + ")\n";
                 }
             }
             return str;
@@ -259,27 +265,57 @@ namespace TinyResort {
 
                 if (item.Value.tileTypes) {
                     if (item.Value.tileTypes.isPath) {
-                        try { var test = item.Value.tileTypes; }
-                        catch { TRTools.LogError($"Unable to load {item.Key}. tileTypes is not set correctly."); continue; }
+                        try {
+                            var test = item.Value.tileTypes;
+                        }
+                        catch {
+                            TRTools.LogError($"Unable to load {item.Key}. tileTypes is not set correctly.");
+                            continue;
+                        }
                     }
                 }
                 if (item.Value.inventoryItem) {
-                    try { var test = item.Value.inventoryItem; }
-                    catch { TRTools.LogError($"Unable to load {item.Key}. invItem is not set correctly."); continue; }
+                    try {
+                        var test = item.Value.inventoryItem;
+                    }
+                    catch {
+                        TRTools.LogError($"Unable to load {item.Key}. invItem is not set correctly.");
+                        continue;
+                    }
                 }
                 if (item.Value.tileObject) {
-                    try { var test = item.Value.tileObject; }
-                    catch { TRTools.LogError($"Unable to load {item.Key}. tileObject is not set correctly."); continue; }
-                    try { var test = item.Value.tileObjectSettings; }
-                    catch { TRTools.LogError($"Unable to load {item.Key}. tileObjectSettings is not set correctly."); continue; }
+                    try {
+                        var test = item.Value.tileObject;
+                    }
+                    catch {
+                        TRTools.LogError($"Unable to load {item.Key}. tileObject is not set correctly.");
+                        continue;
+                    }
+                    try {
+                        var test = item.Value.tileObjectSettings;
+                    }
+                    catch {
+                        TRTools.LogError($"Unable to load {item.Key}. tileObjectSettings is not set correctly.");
+                        continue;
+                    }
                 }
                 if (item.Value.vehicle) {
-                    try { var test = item.Value.inventoryItem.spawnPlaceable; }
-                    catch { TRTools.LogError($"Unable to load {item.Key}. spawnPlaceable is not set correctly."); continue; }
+                    try {
+                        var test = item.Value.inventoryItem.spawnPlaceable;
+                    }
+                    catch {
+                        TRTools.LogError($"Unable to load {item.Key}. spawnPlaceable is not set correctly.");
+                        continue;
+                    }
                 }
                 if (item.Value.pickUpAndCarry) {
-                    try { var test = item.Value.pickUpAndCarry.gameObject; }
-                    catch { TRTools.LogError($"Unable to load {item.Key}. carryable is not set correctly."); continue; }
+                    try {
+                        var test = item.Value.pickUpAndCarry.gameObject;
+                    }
+                    catch {
+                        TRTools.LogError($"Unable to load {item.Key}. carryable is not set correctly.");
+                        continue;
+                    }
                 }
 
                 // Add custom paths
@@ -330,7 +366,7 @@ namespace TinyResort {
             cheatButton?.SetValue(CheatScript.cheat, new GameObject[Inventory.inv.allItems.Length]);
 
             customItemsInitialized = true;
-            
+
             TRTools.Log($"Ending ManageAllItemArray...");
 
         }
@@ -346,10 +382,10 @@ namespace TinyResort {
             SaveLoad.saveOrLoad.vehiclePrefabs = vehiclePrefabsFull.ToArray();
             SaveLoad.saveOrLoad.carryablePrefabs = carryablePrefabsFull.ToArray();
             WorldManager.manageWorld.tileTypes = tileTypesFull.ToArray();
-            
+
             var cheatButton = typeof(CheatScript).GetField("cheatButtons", BindingFlags.Instance | BindingFlags.NonPublic);
             cheatButton?.SetValue(CheatScript.cheat, new GameObject[Inventory.inv.allItems.Length]);
-            
+
             TRTools.Log($"Ending ModTheArrays...");
         }
 
@@ -370,7 +406,7 @@ namespace TinyResort {
         // This might be worth breaking up. Specifically, anything that is done before the Loops of the tiles can be put into
         // their own methods. 
         internal static void UnloadCustomItems() {
-            
+
             TRTools.Log("Removing Items");
 
             // Clears all item data lists
@@ -389,7 +425,6 @@ namespace TinyResort {
             BuriedObjectData.all.Clear();
             ItemChangerData.all.Clear();
             PlantData.all.Clear();
-                
 
             #region House Wallpaper/Flooring
 
@@ -432,15 +467,14 @@ namespace TinyResort {
                     InvItemData.Save(i, Inventory.inv.invSlots[i].stack);
                 }
             }
+
             // Unloads (and saves) items from the player's stash
             //for (var j = 0; j < ContainerManager.manage.privateStashes.Count; j++) {
             // Manually set to two until the StorageData class is completed by SlowCircuit. 
             // This is to prevent duplication when people are using ender storage. 
             for (var j = 0; j < 2; j++) {
                 for (var i = 0; i < ContainerManager.manage.privateStashes[j].itemIds.Length; i++) {
-                    if (customItemsByItemID.ContainsKey(ContainerManager.manage.privateStashes[j].itemIds[i])) {
-                        StashData.Save(ContainerManager.manage.privateStashes[j].itemStacks[i], j, i);
-                    }
+                    if (customItemsByItemID.ContainsKey(ContainerManager.manage.privateStashes[j].itemIds[i])) { StashData.Save(ContainerManager.manage.privateStashes[j].itemStacks[i], j, i); }
                 }
             }
 
@@ -498,14 +532,9 @@ namespace TinyResort {
                     if (onTileMap[x, y] <= -1) continue;
 
                     if (allObjects[onTileMap[x, y]].showObjectOnStatusChange) {
-                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
-                            ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1);
-                        }
-                        else if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
-                            ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1);
-                        }
+                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) { ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1); }
+                        else if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) { ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1); }
                     }
-
 
                     #region Items on Top of Others (NOT in a house)
 
@@ -521,14 +550,13 @@ namespace TinyResort {
                     #endregion
 
                     #region Chests (NOT in a house)
-                    
+
                     // If the tile has a chest on it, save and unload custom items from the chest
                     if (allObjects[onTileMap[x, y]].tileObjectChest) { ChestData.Save(allObjects[onTileMap[x, y]].tileObjectChest, x, y, -1, -1); }
 
                     #endregion
 
                     #region World Object & Bridges (NOT in a house)
-
 
                     // If the tile contains a custom world object, unload and save it
                     if (customTileObjectByID.ContainsKey(onTileMap[x, y])) {
@@ -554,15 +582,14 @@ namespace TinyResort {
                             else if (rotation == 4) bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 1);
                             BridgeData.Save(onTileMap[x, y], x, y, rotation, bridgeLength);
                         }
-                        else if (allObjects[onTileMap[x, y]].tileObjectGrowthStages) {
-                            PlantData.Save(onTileMap[x, y], x, y, onTileMapStatus[x, y]);
-                        }
-                        
+                        else if (allObjects[onTileMap[x, y]].tileObjectGrowthStages) { PlantData.Save(onTileMap[x, y], x, y, onTileMapStatus[x, y]); }
+
                         else { ObjectData.Save(onTileMap[x, y], x, y, rotation, -1, -1); }
 
                     }
 
                     #endregion
+
                     // Check for objects within houses
 
                     else if (allObjects[onTileMap[x, y]].displayPlayerHouseTiles) {
@@ -587,7 +614,7 @@ namespace TinyResort {
                         // Checks every tile inside a house to find custom objects
                         for (var houseTileX = 0; houseTileX < houseDetails.houseMapOnTile.GetLength(0); houseTileX++) {
                             for (var houseTileY = 0; houseTileY < houseDetails.houseMapOnTile.GetLength(1); houseTileY++) {
-                                
+
                                 // If nothing is on this tile, ignore it
                                 var tileObjectID = houseDetails.houseMapOnTile[houseTileX, houseTileY];
                                 var houseMapOnTileStatus = houseDetails.houseMapOnTileStatus[houseTileX, houseTileY];
@@ -600,16 +627,11 @@ namespace TinyResort {
                                 }
 
                                 if (allObjects[tileObjectID].showObjectOnStatusChange) {
-                                    if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) {
-                                        ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y);
-                                    }
-                                    else if (allObjects[tileObjectID].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) {
-                                        ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y);
-                                    }
+                                    if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) { ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y); }
+                                    else if (allObjects[tileObjectID].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) { ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y); }
                                 }
 
                                 #region Chests (INSIDE a house)
-
 
                                 // If the object on this house tile is a chest, save and unload custom items from the chest
                                 if (allObjects[tileObjectID].tileObjectChest) { ChestData.Save(allObjects[tileObjectID].tileObjectChest, houseTileX, houseTileY, x, y); }
@@ -618,13 +640,10 @@ namespace TinyResort {
 
                                 #region World Objects (INSIDE a house)
 
-
                                 // If it's a custom item, save and unload it
                                 if (customTileObjectByID.ContainsKey(tileObjectID)) ObjectData.Save(tileObjectID, houseTileX, houseTileY, houseDetails.houseMapRotation[houseTileX, houseTileY], x, y);
 
                                 #endregion
-
-                                
 
                             }
                         }
@@ -633,8 +652,9 @@ namespace TinyResort {
             }
 
             #endregion
-            
+
             #region Save All Data (All and LostAndFound Lists)
+
             // Saves all the new data
             Data.SetValue("InvItemData", InvItemData.all);
             Data.SetValue("ChestData", ChestData.all);
@@ -688,7 +708,7 @@ namespace TinyResort {
             TRTools.Log($"Saving PlantData: {PlantData.all.Count}"); */
 
             #endregion
-            
+
             // Goes through the catalogue to find any custom items that have been unlocked
             var SavedCatalogue = new List<string>();
             for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
@@ -698,7 +718,7 @@ namespace TinyResort {
             UnmodTheArrays();
 
         }
-        
+
         // Called whenever loading or after saving
         internal static void LoadCustomItems() {
             if (!loadedStashes) {
@@ -796,13 +816,13 @@ namespace TinyResort {
 
         }
 
-        internal static TRCustomItem Create(InventoryItem inventoryItem = null, TileObject tileObject = null, TileObjectSettings tileObjectSettings = null,
-                                            TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null) {
+        internal static TRCustomItem Create(
+            InventoryItem inventoryItem = null, TileObject tileObject = null, TileObjectSettings tileObjectSettings = null,
+            TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null
+        ) {
 
-            if (inventoryItem == null && tileObject == null && tileObjectSettings == null && tileTypes == null && vehicle == null && pickUpAndCarry == null) {
-                return null;
-            }
-            
+            if (inventoryItem == null && tileObject == null && tileObjectSettings == null && tileTypes == null && vehicle == null && pickUpAndCarry == null) { return null; }
+
             var newItem = new TRCustomItem();
 
             newItem.inventoryItem = inventoryItem;
