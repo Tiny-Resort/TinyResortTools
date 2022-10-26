@@ -134,7 +134,8 @@ namespace TinyResort {
             var week = date.week;
             islandName = Inventory.inv.islandName.Trim();
             var playerName = Inventory.inv.playerName.Trim();
-            var backupName = !clientInServer ? $"{islandName}-{playerName}-Y{year}-S{season}-W{week}-D{day}.zip" : $"Server-{playerName}-{string.Format("{0:yyyyMMdd'-'HHmmss}.zip", DateTime.Now)}.zip";
+            string dateTime = DateTime.Now.ToString().Replace("/", "-").Replace(" ", "-").Replace(":", "-");
+            var backupName = !clientInServer ? $"{islandName}-{playerName}-Y{year}-S{season}-W{week}-D{day}-{dateTime}.zip" : $"Server-{playerName}-{string.Format("{0:yyyyMMdd'-'HHmmss}.zip", DateTime.Now)}.zip";
 
             try {
                 ZipFile.CreateFromDirectory(savePath, Path.Combine(saveDestinationSlot, backupName));
