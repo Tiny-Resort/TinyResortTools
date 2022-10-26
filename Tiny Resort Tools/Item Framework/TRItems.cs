@@ -69,7 +69,7 @@ namespace TinyResort {
 
             Data = TRData.Subscribe("TR.CustomItems");
             TRData.cleanDataEvent += UnloadCustomItems;
-            TRData.initialLoadEvent += LoadCustomMovables;
+            TRData.postLoadEvent += LoadCustomMovables;
             TRData.injectDataEvent += LoadCustomItems;
 
             LeadPlugin.plugin.AddCommand(

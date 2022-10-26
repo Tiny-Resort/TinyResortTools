@@ -46,13 +46,13 @@ namespace TinyResort {
         /// actually give it to the player.
         /// </summary>
         public static SaveEvent injectDataEvent;
-
+/*
         /// <summary>
         /// This event will run just AFTER a save slot is loaded from the main menu. Useful for resetting values that shouldn't persist when
         /// loading into another save file.
         /// </summary>
         public static SaveEvent initialLoadEvent;
-
+*/
         /// <summary>This event will run just BEFORE a save slot is loaded.</summary>
         public static SaveEvent preLoadEvent;
 

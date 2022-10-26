@@ -15,7 +15,7 @@ namespace TinyResort {
         public static void Postfix() {
             TRTools.LeavingMainMenu = true;
             TRData.trueLoadEvent?.Invoke();
-            if (TRTools.InMainMenu) { TRData.initialLoadEvent?.Invoke(); }
+          //  if (TRTools.InMainMenu) { TRData.initialLoadEvent?.Invoke(); }
             TRData.postLoadEvent?.Invoke();
             TRData.injectDataEvent?.Invoke();
             TRTools.InMainMenu = false; 

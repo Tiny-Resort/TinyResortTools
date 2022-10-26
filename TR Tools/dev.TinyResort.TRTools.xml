@@ -223,12 +223,6 @@
             actually give it to the player.
             </summary>
         </member>
-        <member name="F:TinyResort.TRData.initialLoadEvent">
-            <summary>
-            This event will run just AFTER a save slot is loaded from the main menu. Useful for resetting values that shouldn't persist when
-            loading into another save file.
-            </summary>
-        </member>
         <member name="F:TinyResort.TRData.preLoadEvent">
             <summary>This event will run just BEFORE a save slot is loaded.</summary>
         </member>
