@@ -179,6 +179,8 @@ namespace TinyResort {
 
                 // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
                 else {
+                    var tmp = mod.nexusVersion == null ? "No Version" : mod.nexusVersion.ToString();
+                    
                     mod.updateButton = updateButton.Copy(
                         updateButtonGrid.transform,
                         mod.updateState == PluginUpdateState.UpdateAvailable
@@ -219,6 +221,7 @@ namespace TinyResort {
                 int id = -1;
                 foreach (string line in File.ReadAllLines(cfgFile)) {
                     if (line.Trim().ToLower().StartsWith("nexusid")) {
+                        if (line.Contains("-")) { continue; }
                         Match match = Regex.Match(line, "[0-9]+");
                         if (match.Success) { id = int.Parse(match.Value); }
                         break;
