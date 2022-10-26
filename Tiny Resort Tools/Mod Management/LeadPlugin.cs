@@ -40,6 +40,7 @@ namespace TinyResort {
             TRConflictingPlugins.Initialize();
             TRItems.ManageAllItemArray();
             TRIcons.Initialize();
+            TRBackup.Initialize();
 
             /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);

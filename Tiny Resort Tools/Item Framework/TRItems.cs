@@ -32,6 +32,7 @@ namespace TinyResort {
     public class TRItems {
 
         internal static TRModData Data;
+
         internal static readonly Dictionary<string, TRCustomItem> customItems = new Dictionary<string, TRCustomItem>();
         internal static readonly Dictionary<int, TRCustomItem> customItemsByItemID = new Dictionary<int, TRCustomItem>();
         internal static readonly Dictionary<int, TRCustomItem> customTileObjectByID = new Dictionary<int, TRCustomItem>();

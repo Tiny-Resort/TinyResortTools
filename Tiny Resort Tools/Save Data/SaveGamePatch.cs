@@ -7,12 +7,12 @@ namespace TinyResort {
     internal class SaveGamePatch {
 
         [HarmonyPrefix]
-        internal static void patch(SaveLoad __instance) {
+        internal static void Prefix(SaveLoad __instance) {
             TRTools.Log($"Running SaveGame");
             TRData.preSaveEvent?.Invoke();
             TRData.cleanDataEvent?.Invoke();
         }
-
+        
     }
 
 }
