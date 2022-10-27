@@ -35,6 +35,8 @@ namespace TinyResort {
             var tileID = WorldManager.manageWorld.allObjects[tileObjectID].tileObjectChest ? 23 : -1;
             var tileStatus = WorldManager.manageWorld.allObjects[tileObjectID].tileObjectChest ? WorldManager.manageWorld.onTileStatusMap[objectXPos,objectYPos] : -1;
 
+            if (WorldManager.manageWorld.allObjects[tileObjectID].tileObjectConnect) { tileID = WorldManager.manageWorld.allObjects[tileObjectID].tileObjectConnect.isFence ? 323 : tileID; }
+
             // If the object is in a house, remove it from inside the house
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             if (houseDetails != null) {
