@@ -1,8 +1,0 @@
-{
-  "name": "Mirror",
-  "references": [
-    "kcp2k",
-    "Telepathy"
-  ],
-  "allowUnsafeCode": true
-}

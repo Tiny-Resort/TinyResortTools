@@ -1,7 +1,0 @@
-{
-  "name": "Mirror.Components",
-  "references": [
-    "Mirror"
-  ],
-  "allowUnsafeCode": true
-}

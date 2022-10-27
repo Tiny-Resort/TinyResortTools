@@ -1,7 +1,0 @@
-{
-  "name": "SimpleWebTransport",
-  "references": [
-    "Mirror"
-  ],
-  "allowUnsafeCode": true
-}
