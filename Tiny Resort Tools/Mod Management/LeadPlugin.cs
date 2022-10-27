@@ -14,6 +14,7 @@ namespace TinyResort {
         public static TRPlugin plugin;
         internal static LeadPlugin instance;
 
+        internal static ConfigEntry<bool> developerMode;
         public static ConfigEntry<bool> useSlashToOpenChat;
         
         
@@ -28,13 +29,15 @@ namespace TinyResort {
             plugin.harmony.PatchAll();
 
             useSlashToOpenChat = Config.Bind("Chat", "UseSlashToOpenChat", true, "If true, then pressing forward slash on the keyboard will open the chat box with a slash already in place.");
-            TRPlugin.developerMode = Config.Bind("Developer", "Developer Mode", false, "If true, allows the use of nexusID being set to '-1'. Default is false, so you will need to update nexusID before releasing for the enduser.");
+            developerMode = Config.Bind("Developer", "DeveloperMode", false, "If true, allows the use of nexusID being set to '-1'. Default is false, so you will need to update nexusID before releasing for the enduser.");
             
             TRLicences.Initialize();
             TRItems.Initialize();
             TRQuickItems.Initialize();
 
-            if (TRPlugin.developerMode.Value) { TRTools.LogError(TRTools.TRDeveloperMode()); }
+            // If in developer mode, give a big warning about nexus ID usage
+            if (developerMode.Value) { TRTools.LogError(TRTools.TRDeveloperMode()); }
+            
         }
 
         private void Start() {

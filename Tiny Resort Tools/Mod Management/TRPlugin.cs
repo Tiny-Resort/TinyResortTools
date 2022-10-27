@@ -19,7 +19,6 @@ namespace TinyResort {
         internal ConfigEntry<int> nexusID;
         internal ConfigEntry<bool> debugMode;
         internal ConfigEntry<string> chatTrigger;
-        internal static ConfigEntry<bool> developerMode;
         
         /// <summary>Logs to the BepInEx console.</summary>
         /// <param name="text">The text to post in the console.</param>
@@ -70,12 +69,14 @@ namespace TinyResort {
         /// /// <param name="assetBundlePath">The path to your asset bundle, relative to the plugins folder.</param>
         /// <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
         public TRCustomItem AddCustomItem(string assetBundlePath, int uniqueItemID) {
-            if (!developerMode.Value && nexusID.Value == -1) {
+            
+            
+            if (!LeadPlugin.developerMode.Value && nexusID.Value == -1) {
                 TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID.");
                 return null;
             }
 
-            if (developerMode.Value && nexusID.Value == -1) {
+            if (LeadPlugin.developerMode.Value && nexusID.Value == -1) {
                 TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod.");
             }
             return TRItems.AddCustomItem(this, assetBundlePath, uniqueItemID); }
@@ -94,12 +95,12 @@ namespace TinyResort {
         /// <returns></returns>
         public TRCustomItem AddCustomItem( int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null,
                                           TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null) {
-            if (!developerMode.Value && nexusID.Value == -1) {
+            if (!LeadPlugin.developerMode.Value && nexusID.Value == -1) {
                 TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID.");
                 return null;
             }
 
-            if (developerMode.Value && nexusID.Value == -1) {
+            if (LeadPlugin.developerMode.Value && nexusID.Value == -1) {
                 TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod.");
             } 
 
@@ -112,11 +113,11 @@ namespace TinyResort {
         /// <param name="maxLevel">The highest unlockable level for this licence. The true maximum is 5 since the game only shows up to 5 dots.</param>
         /// <returns>The custom licence that is created. Save a reference to this in order to access its state at any time.</returns>
         public TRCustomLicence AddLicence(int licenceID, string licenceName, int maxLevel = 1) {
-            if (!developerMode.Value && nexusID.Value == -1) {
+            if (!LeadPlugin.developerMode.Value && nexusID.Value == -1) {
                 TRTools.LogError($"Attempting to create a custom licence with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID.");
                 return null;
             }
-            if (developerMode.Value && nexusID.Value == -1) {
+            if (LeadPlugin.developerMode.Value && nexusID.Value == -1) {
                 TRTools.LogError($"Attempting to create a custom licence with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod.");
             }         
            
@@ -124,7 +125,7 @@ namespace TinyResort {
                 maxLevel = 5;
                 TRTools.LogError("Custom Licence " + nexusID.Value + "." + licenceID + " " + licenceName + " can not have a max level above 5.");
             }
-            return TRLicences.AddLicence(nexusID.Value, licenceID, licenceName, maxLevel);
+            return TRLicences.AddLicence(this, licenceID, licenceName, maxLevel);
         }
 
         /// <summary>

@@ -52,20 +52,21 @@ namespace TinyResort {
         internal static string UnlockLicence(string[] args) {
             if (args.Length <= 0) { return "<color=red>No licence specified.</color> " + ListLicences(null); }
             foreach (var li in CustomLicences) {
-                if ((li.nexusID + "." + li.licenceID).ToLower() == args[0]) {
+                if ((li.uniqueID).ToLower() == args[0]) {
                     li.info.currentLevel = li.info.maxLevel;
-                    return $"Unlocking all levels of licence \"{li.title}\" (ID: {li.nexusID}.{li.licenceID})";
+                    return $"Unlocking all levels of licence \"{li.title}\" (ID: {li.uniqueID})";
                 }
             }
             return "<color=red>Could not find a licence with the specified ID.</color>";
         }
 
-        internal static TRCustomLicence AddLicence(int nexusID, int licenceID, string licenceName, int maxLevel = 1) {
+        internal static TRCustomLicence AddLicence(TRPlugin plugin, int licenceID, string licenceName, int maxLevel = 1) {
+            
+            var nexusID = plugin.nexusID.Value == -1 ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_") : plugin.nexusID.Value.ToString(); 
 
             var NewLicence = new TRCustomLicence {
-                nexusID = nexusID,
+                uniqueID = nexusID + "." + licenceID,
                 info = new Licence(),
-                licenceID = licenceID,
                 licenceIcon = defaultLicenceSprite,
                 title = licenceName,
                 maxLevel = maxLevel,
@@ -293,13 +294,13 @@ namespace TinyResort {
 
         internal static void SaveLicenceData() {
             for (var i = 0; i < CustomLicences.Count; i++) {
-                Data.SetValue(CustomLicences[i].nexusID + "." + CustomLicences[i].licenceID, CustomLicences[i].info.currentLevel);
+                Data.SetValue(CustomLicences[i].uniqueID, CustomLicences[i].info.currentLevel);
             }
         }
 
         internal static void LoadLicenceData() {
             for (var i = 0; i < CustomLicences.Count; i++) {
-                var val = Data.GetValue(CustomLicences[i].nexusID + "." + CustomLicences[i].licenceID);
+                var val = Data.GetValue(CustomLicences[i].uniqueID);
                 if (val == null) { CustomLicences[i].info.currentLevel = 0; }
                 else { CustomLicences[i].info.currentLevel = (int) val; }
                 CustomLicences[i].SetInfo();
@@ -318,9 +319,7 @@ namespace TinyResort {
         public int level => info.currentLevel;
         internal Licence info;
 
-        internal string uniqueID => nexusID + "." + licenceID;
-        internal int nexusID;
-        internal int licenceID;
+        internal string uniqueID;
         internal int licenceIndex;
         
         // Appearance

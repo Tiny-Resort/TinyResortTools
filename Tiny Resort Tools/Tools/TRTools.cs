@@ -33,16 +33,25 @@ namespace TinyResort {
             HookedPlugins[plugin] = new TRPlugin();
             HookedPlugins[plugin].plugin = plugin;
             HookedPlugins[plugin].harmony = new Harmony(plugin.Info.Metadata.GUID);
-            
-            if (nexusID > 0 || nexusID == -1) {
-                HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", nexusID, "Nexus Mod ID. You can find it on the mod's page on Nexus.");
-                // Enforce nexus ID if the developer set one
-                HookedPlugins[plugin].nexusID.Value = nexusID;
+
+            // Add config entry for nexus ID. If the nexus ID is invalid, set it to -1
+            var id = nexusID <= 0 ? -1 : nexusID;
+            HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", id, "Nexus Mod ID. You can find it in the URL on the mod's Nexus page.");
+
+            // If the nexus ID passed by initialize is valid, then force that value into the config
+            if (id > 0 || HookedPlugins[plugin].nexusID.Value < -1) {
+                HookedPlugins[plugin].nexusID.Value = id;
                 HookedPlugins[plugin].plugin.Config.Save();
             }
-            if (nexusID == -1) {
-                TRTools.LogError($"We highly recommend adding the nexusID from the URL of your mod page. This will allow you to use all of the TR Tool's features and shows users when there is an update for your mod. This error can be safely ignored if you are in a testing phase, but please add one before the release.", useASCII:true);
+            
+            // If the ID was invalid give a warning
+            if (id == -1) {
+                TRTools.LogError($"We highly recommend adding the nexusID from the URL of your mod page. "
+                               + $"This will allow you to use all of the TR Tool's features and shows users when there is an update for your mod. "
+                               + $"This error can be safely ignored if you are in a testing phase, but please add one before the release.", useASCII:true);
             }
+            
+            // Add debugmode and chat command config entries
             HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
             if (!string.IsNullOrEmpty(chatTrigger) && chatTrigger.ToLower() != "help") {
                 HookedPlugins[plugin].chatTrigger =

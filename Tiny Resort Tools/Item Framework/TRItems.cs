@@ -138,14 +138,13 @@ namespace TinyResort {
 
         internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, int uniqueItemID) {
 
-            string nexusID = plugin.nexusID.Value.ToString();
+            // If the nexusID is invalid and we got here, it must be in developer mode so use the mod name instead
+            var nexusID = plugin.nexusID.Value == -1 ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_") : plugin.nexusID.Value.ToString();
             
             if (customItemsInitialized) {
                 TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
                 return null;
             }
-
-            if (plugin.nexusID.Value == -1 && TRPlugin.developerMode.Value) { nexusID = plugin.plugin.Info.Metadata.Name.Replace(" ", "_");}
             
             customItems[nexusID + "." + uniqueItemID.ToString()] = TRCustomItem.Create(assetBundlePath);
             customItems[nexusID + "." + uniqueItemID.ToString()].customItemID = nexusID + "." + uniqueItemID.ToString();
@@ -158,14 +157,13 @@ namespace TinyResort {
             TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null,
             PickUpAndCarry pickUpAndCarry = null) {
             
-            string nexusID = plugin.nexusID.Value.ToString();
+            // If the nexusID is invalid and we got here, it must be in developer mode so use the mod name instead
+            var nexusID = plugin.nexusID.Value == -1 ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_") : plugin.nexusID.Value.ToString();
 
             if (customItemsInitialized) {
                 TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
                 return null;
             }
-            
-            if (plugin.nexusID.Value == -1 && TRPlugin.developerMode.Value) { nexusID = plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_"); }
 
             customItems[nexusID + "." + uniqueItemID.ToString()] = TRCustomItem.Create(inventoryItem, tileObject, tileObjectSettings, tileTypes, vehicle, pickUpAndCarry);
             customItems[nexusID + "." + uniqueItemID.ToString()].customItemID = nexusID + "." + uniqueItemID.ToString();
