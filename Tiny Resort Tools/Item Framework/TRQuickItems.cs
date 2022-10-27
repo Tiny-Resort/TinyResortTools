@@ -17,101 +17,77 @@ namespace TinyResort {
 
     /// <summary>Tools for quickly creating clothing items.</summary>
     public class TRQuickItems {
-        internal static void Initialize() {
-
-            // Load Asset Bundle and Sort through all folders
-            TRTools.Log($"Before Clothing Bundle");
-            var customClothingBundle = TRAssets.LoadAssetBundleFromDLL("clothing_bundle");
-            var quickItems = Path.Combine(Paths.PluginPath, "TR Tools", "quick_items");
-
-            //var customPathBundle = TRAssets.LoadBundle(Path.Combine(customPaths, "path_bundle"));
-
-            // TODO: Create wallpaper and flooring bundles to support those
-            SortThroughFolder(Path.Combine(quickItems, "shirts"), customClothingBundle.LoadAsset<GameObject>("shirt"));
-            SortThroughFolder(Path.Combine(quickItems, "boots"), customClothingBundle.LoadAsset<GameObject>("boots"));
-            SortThroughFolder(Path.Combine(quickItems, "dresses_and_coats"), customClothingBundle.LoadAsset<GameObject>("doublesideddress"));
-            SortThroughFolder(Path.Combine(quickItems, "hats_baseball"), customClothingBundle.LoadAsset<GameObject>("baseballcap"));
-            SortThroughFolder(Path.Combine(quickItems, "hats_beanie"), customClothingBundle.LoadAsset<GameObject>("beanie"));
-            SortThroughFolder(Path.Combine(quickItems, "hats_bow"), customClothingBundle.LoadAsset<GameObject>("bowhat"));
-            SortThroughFolder(Path.Combine(quickItems, "hats_bucket"), customClothingBundle.LoadAsset<GameObject>("buckethat"));
-            SortThroughFolder(Path.Combine(quickItems, "hats_flatcap"), customClothingBundle.LoadAsset<GameObject>("flatcap"));
-            SortThroughFolder(Path.Combine(quickItems, "pants"), customClothingBundle.LoadAsset<GameObject>("pants"));
-            SortThroughFolder(Path.Combine(quickItems, "shoes_flippers"), customClothingBundle.LoadAsset<GameObject>("flippers"));
-            SortThroughFolder(Path.Combine(quickItems, "shoes_sneakers"), customClothingBundle.LoadAsset<GameObject>("sneakers"));
-            SortThroughFolder(Path.Combine(quickItems, "shoes_standard"), customClothingBundle.LoadAsset<GameObject>("shoes"));
-            SortThroughFolder(Path.Combine(quickItems, "shorts"), customClothingBundle.LoadAsset<GameObject>("shorts"));
-
-            //SortThroughFolder(Path.Combine(customPaths, "path"), customClothingBundle.LoadAsset<GameObject>("path"));
-
-        }
-
-        // Goes through all textures in a specific folder and tries to load them as custom items
-        internal static void SortThroughFolder(string path, GameObject obj) {
-
-            var files = TRAssets.ListAllTextures(path);
-
-            foreach (var file in files) {
-
-                // If no texture could be loaded, skip this one
-                var texture = TRAssets.LoadTexture(file);
-                if (!texture) continue;
-
-                // Creates a new instance of the item
-                var fileName = Path.GetFileNameWithoutExtension(file);
-                var folderName = Path.GetDirectoryName(file);
-                if (string.IsNullOrEmpty(folderName)) { folderName = "unknown"; }
-                else { folderName = folderName.Split('\\').Last().Replace(" ", ""); }
-                var ext = Path.GetExtension(file);
-                var newItem = new TRCustomItem();
-                newItem.inventoryItem = Object.Instantiate(obj).GetComponent<InventoryItem>();
-                GameObject.DontDestroyOnLoad(newItem.inventoryItem);
-                newItem.inventoryItem.itemName = fileName;
-
-                // Sets the texture for the item (TODO: Would need to be set up to work with non-clothing quick items)
-                newItem.inventoryItem.equipable.material = new Material(newItem.inventoryItem.equipable.material);
-                newItem.inventoryItem.equipable.material.mainTexture = texture;
-
-                newItem.isQuickItem = true;
-                newItem.customItemID = "QI." + folderName + "_" + fileName.Replace(" ", "") + ext.Replace(".", "_");
-                TRItems.customItems[newItem.customItemID] = newItem;
-                newItem.inventoryItem.value = 1000;
-            }
-
-        }
-
-        internal static void MainMenuInitialization() {
-            foreach (var item in TRItems.customItems) {
-                if (item.Key.Contains("QI.")) {
-                    //item.Value.invItem;
-                    //TRItems.customItemsByItemID[]
+        internal static List<string> pathsArray = new List<string>();
+        internal static List<string> paths = new List<string>();
+        internal static AssetBundle customClothingBundle = TRAssets.LoadAssetBundleFromDLL("clothing_bundle");
+        
+        internal static void FindAllPaths(string initialDir) {
+            foreach (string file in Directory.GetFiles(initialDir)) {
+                if (Path.GetExtension(file) == ".qitem") {
+                    if (Path.GetFileNameWithoutExtension(file) == "items") { pathsArray.Add(file); }
+                    else { paths.Add(file); }
                 }
             }
+            foreach (string dir in Directory.GetDirectories(initialDir)) { FindAllPaths(dir); }
         }
 
-        internal static void TestJson() {
-
-            string filePath = Path.Combine(Paths.PluginPath, "TR Tools", "quick_items");
-            
-            string json1 = File.ReadAllText(Path.Combine(filePath, "quickitems.json"));
-            TRTools.Log(json1);
-            string jsonEdit = "{\"Items\":" + json1 + "}";
-            // QuickItems[] QIArray = JsonHelper.FromJson<QuickItems>(json);
-            var QIArray = JsonUtility.FromJson<RootQuickItems>(json1);
-            //var QIArray = JSONArray.LoadFromFile(Path.Combine(filePath, "quickitems.json"));
-            
-            TRTools.Log($"Starting Check...");
-            TRTools.Log($"Multi...: QI Array: {QIArray}");
-            TRTools.Log($"Multi...: QI Array: {QIArray.items}");
-            TRTools.Log($"Multi...: QI Array: {QIArray.items.Count}"); 
-
-            
+        internal static void LoadItem(string path) {
             // This works for single items...
-            string json = File.ReadAllText(Path.Combine(filePath, "quickitemsSingle.json")); 
+            string json = File.ReadAllText(path);
             var oneItem = QuickItems.CreateFromJson(json);
+            TRTools.Log($"Test {Paths.PluginPath}");
 
-            TRTools.Log($"Single Item: {oneItem.fileName}");
+            string relativePath = path.Remove(0,Paths.PluginPath.Length).Replace(Path.GetFileName(path), oneItem.fileName);
+            TRTools.Log($"Test2 {Paths.PluginPath}");
+            InitializeCustomItem(relativePath, customClothingBundle.LoadAsset<GameObject>(oneItem.itemType), oneItem);
+
+            TRTools.Log($"Single Item: {oneItem.fileName} | {oneItem.itemName} | {oneItem.itemType} | {oneItem.itemValue}");
         }
 
+        internal static void InitializeCustomItem(string path, GameObject obj, QuickItems item) {
+
+            // If no texture could be loaded, skip this one
+            // Path Combine doesn't seem to work here? Acts like PLuginPath is empty...
+            var texture = TRAssets.LoadTexture(Paths.PluginPath + path.Trim());
+            if (!texture) return;
+
+            // Creates a new instance of the item
+            var fileName = Path.GetFileNameWithoutExtension(path);
+            var folderName = Path.GetDirectoryName(path);
+            
+            if (string.IsNullOrEmpty(folderName)) { folderName = "unknown"; }
+            else { folderName = folderName.Split('\\').Last().Replace(" ", ""); }
+            
+            var ext = Path.GetExtension(path);
+            
+            var newItem = new TRCustomItem();
+            newItem.inventoryItem = Object.Instantiate(obj).GetComponent<InventoryItem>();
+            GameObject.DontDestroyOnLoad(newItem.inventoryItem);
+            newItem.inventoryItem.itemName = item.itemName;
+
+            // Sets the texture for the item (TODO: Would need to be set up to work with non-clothing quick items)
+            newItem.inventoryItem.equipable.material = new Material(newItem.inventoryItem.equipable.material);
+            newItem.inventoryItem.equipable.material.mainTexture = texture;
+
+            newItem.isQuickItem = true;
+            newItem.customItemID = "QI." + folderName + "_" + fileName.Replace(" ", "") + ext.Replace(".", "_");
+            TRTools.Log($"Custom ID: {newItem.customItemID}");
+            TRItems.customItems[newItem.customItemID] = newItem;
+            newItem.inventoryItem.value = item.itemValue;
+
+        }
+
+        internal static void LoadAllQuickItems() {
+            FindAllPaths(Paths.PluginPath);
+            
+            foreach (var item in paths) {
+                TRTools.Log(item);
+                LoadItem(item);
+            }
+            foreach (var items in pathsArray) {
+                // Load Array
+            }
+        }
     }
 
     [Serializable]
@@ -156,3 +132,29 @@ namespace TinyResort {
     }
 
 }
+
+/*internal static void MainMenuInitialization() {
+    foreach (var item in TRItems.customItems) {
+        if (item.Key.Contains("QI.")) {
+            //item.Value.invItem;
+            //TRItems.customItemsByItemID[]
+        }
+    }
+}
+         
+            
+            /*
+            foreach (var path in paths) { TRTools.Log(path); }
+            
+            string filePath = Path.Combine(Paths.PluginPath, "TR Tools", "quick_items");
+            
+            string json1 = File.ReadAllText(Path.Combine(filePath, "quickitems.qitem"));
+            TRTools.Log(json1);
+
+            var QIArray = JsonUtility.FromJson<RootQuickItems>(json1);
+            
+            TRTools.Log($"Starting Check...");
+            TRTools.Log($"Multi...: QI Array: {QIArray}");
+            TRTools.Log($"Multi...: QI Array: {QIArray.items}");
+            TRTools.Log($"Multi...: QI Array: {QIArray.items.Count}");  
+            */

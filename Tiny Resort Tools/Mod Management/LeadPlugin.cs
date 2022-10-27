@@ -33,7 +33,7 @@ namespace TinyResort {
             
             TRLicences.Initialize();
             TRItems.Initialize();
-            TRQuickItems.Initialize();
+            TRQuickItems.LoadAllQuickItems();
 
             // If in developer mode, give a big warning about nexus ID usage
             if (developerMode.Value) { TRTools.LogError(TRTools.TRDeveloperMode()); }
@@ -48,7 +48,6 @@ namespace TinyResort {
             TRItems.ManageAllItemArray();
             TRIcons.Initialize();
             TRBackup.Initialize();
-            TRQuickItems.TestJson();
             /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);
             TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
