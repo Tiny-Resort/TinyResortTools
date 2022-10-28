@@ -57,7 +57,8 @@ namespace TinyResort {
                 TRTools.Log($"SAVE BACKUP MANAGER: Adding from API");
                 TRData.postSaveEvent += CreateBackup;
             }
-            else { TRTools.LogError($"Save Manager Backup is loaded."); }
+            else if (!UseBackupManager.Value) { TRTools.Log("Loaded Save Backup Manager Mod (Not API)."); }
+            else { TRTools.Log($"Save Manager Backup is loaded."); }
 
         }
 
