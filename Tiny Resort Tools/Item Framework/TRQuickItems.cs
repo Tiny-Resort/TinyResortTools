@@ -58,12 +58,16 @@ namespace TinyResort {
 
             newItem.isQuickItem = true;
             if (item.nexusID <= 0 && LeadPlugin.developerMode.Value) {
+                TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. This is allowed since you are in the developer mode, but please update the files before release.(or notify mod author).");
                 newItem.customItemID = "QI." + folderName + "_" + item.itemName.Replace(" ", "") + ext.Replace(".", "_");
                 TRItems.customItems[newItem.customItemID] = newItem;
             }
             else if (!LeadPlugin.developerMode.Value && item.nexusID > 0) { 
                 newItem.customItemID = item.nexusID + "." + item.uniqueID;
                 TRItems.customItems[newItem.customItemID] = newItem;
+            }
+            else {
+                TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. THis is not allowed and will be blocked. If you are a developer, please turn on developer mode.");
             }
             
             TRTools.Log($"Custom ID: {newItem.customItemID}");
