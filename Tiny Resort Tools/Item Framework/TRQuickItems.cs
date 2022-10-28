@@ -147,7 +147,7 @@ namespace TinyResort {
         }
 
         [Serializable]
-        private class Wrapper<T> {
+        public class Wrapper<T> {
             public T[] Items;
         }
     }
