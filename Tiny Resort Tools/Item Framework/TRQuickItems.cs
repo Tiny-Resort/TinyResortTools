@@ -20,7 +20,7 @@ namespace TinyResort {
         internal static List<string> pathsArray = new List<string>();
         internal static List<string> paths = new List<string>();
         internal static AssetBundle customClothingBundle = TRAssets.LoadAssetBundleFromDLL("clothing_bundle");
-        
+
         internal static void FindAllPaths(string initialDir) {
             foreach (string file in Directory.GetFiles(initialDir)) {
                 if (Path.GetExtension(file) == ".qitem") {
@@ -29,19 +29,6 @@ namespace TinyResort {
                 }
             }
             foreach (string dir in Directory.GetDirectories(initialDir)) { FindAllPaths(dir); }
-        }
-
-        internal static void LoadItem(string path) {
-            // This works for single items...
-            string json = File.ReadAllText(path);
-            var oneItem = QuickItems.CreateFromJson(json);
-            TRTools.Log($"Test {Paths.PluginPath}");
-
-            string relativePath = path.Remove(0,Paths.PluginPath.Length).Replace(Path.GetFileName(path), oneItem.fileName);
-            TRTools.Log($"Test2 {Paths.PluginPath}");
-            InitializeCustomItem(relativePath, customClothingBundle.LoadAsset<GameObject>(oneItem.itemType), oneItem);
-
-            TRTools.Log($"Single Item: {oneItem.fileName} | {oneItem.itemName} | {oneItem.itemType} | {oneItem.itemValue}");
         }
 
         internal static void InitializeCustomItem(string path, GameObject obj, QuickItems item) {
@@ -54,12 +41,12 @@ namespace TinyResort {
             // Creates a new instance of the item
             var fileName = Path.GetFileNameWithoutExtension(path);
             var folderName = Path.GetDirectoryName(path);
-            
+
             if (string.IsNullOrEmpty(folderName)) { folderName = "unknown"; }
             else { folderName = folderName.Split('\\').Last().Replace(" ", ""); }
-            
+
             var ext = Path.GetExtension(path);
-            
+
             var newItem = new TRCustomItem();
             newItem.inventoryItem = Object.Instantiate(obj).GetComponent<InventoryItem>();
             GameObject.DontDestroyOnLoad(newItem.inventoryItem);
@@ -70,29 +57,52 @@ namespace TinyResort {
             newItem.inventoryItem.equipable.material.mainTexture = texture;
 
             newItem.isQuickItem = true;
-            newItem.customItemID = "QI." + folderName + "_" + fileName.Replace(" ", "") + ext.Replace(".", "_");
+            newItem.customItemID = item.nexusID <= 0 ? "QI." + folderName + "_" + item.itemName.Replace(" ", "") + ext.Replace(".", "_") : item.nexusID + "." + item.uniqueID;
             TRTools.Log($"Custom ID: {newItem.customItemID}");
             TRItems.customItems[newItem.customItemID] = newItem;
             newItem.inventoryItem.value = item.itemValue;
 
         }
 
+        internal static void LoadItem(string path) {
+            string json = File.ReadAllText(path);
+            var oneItem = QuickItems.CreateFromJson(json);
+
+            string relativePath = path.Remove(0, Paths.PluginPath.Length).Replace(Path.GetFileName(path), oneItem.fileName);
+            InitializeCustomItem(relativePath, customClothingBundle.LoadAsset<GameObject>(oneItem.itemType), oneItem);
+
+            TRTools.Log($"Single Item: {oneItem.fileName} | {oneItem.itemName} | {oneItem.itemType} | {oneItem.itemValue}");
+        }
+
+        // This doesn't work yet...
+        internal static void LoadArrayItem(string path) {
+            string json = File.ReadAllText(path);
+            var allItems = JsonUtility.FromJson<RootQuickItems>(json);
+
+            try {
+                TRTools.LogError($"Paths Array Size: {allItems.items.Count}");
+                foreach (var item in allItems.items) {
+                    string relativePath = path.Remove(0, Paths.PluginPath.Length).Replace(Path.GetFileName(path), item.fileName);
+                    TRTools.LogError($"Multilisted Item: {item.fileName} | {item.itemName} | {item.itemType} | {item.itemValue}");
+                    //InitializeCustomItem(relativePath, customClothingBundle.LoadAsset<GameObject>(item.itemType), item);
+                }
+            }
+            catch { TRTools.LogError($"MultiItems Failed"); }
+        }
+
         internal static void LoadAllQuickItems() {
             FindAllPaths(Paths.PluginPath);
-            
-            foreach (var item in paths) {
-                TRTools.Log(item);
-                LoadItem(item);
-            }
-            foreach (var items in pathsArray) {
-                // Load Array
-            }
+
+            foreach (var item in paths) { LoadItem(item); }
+            foreach (var items in pathsArray) { LoadArrayItem(items); }
         }
     }
 
     [Serializable]
     public class QuickItems {
 
+        public int nexusID;
+        public int uniqueID;
         public string fileName;
         public int itemValue;
         public string itemName;
