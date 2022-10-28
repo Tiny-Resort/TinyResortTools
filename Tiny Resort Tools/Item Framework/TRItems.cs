@@ -229,10 +229,7 @@ namespace TinyResort {
             if (customItems.Count <= 0) { return "The installed mods do not add any custom items."; }
             var str = "\nThe following items were added by installed mods:\n";
             foreach (var item in customItems) {
-                if (item.Value.isQuickItem) { str += item.Key + "\n"; }
-                else {
-                    if (item.Value.inventoryItem) str += item.Key + " (" + item.Value.inventoryItem.itemName + ")\n";
-                }
+                if (item.Value.inventoryItem) str += item.Key + " (" + item.Value.inventoryItem.itemName + ")\n";
             }
             return str;
         }
