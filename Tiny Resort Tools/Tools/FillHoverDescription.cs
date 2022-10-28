@@ -14,17 +14,19 @@ namespace TinyResort {
         [HarmonyPriority(999)]
         [HarmonyAfter(new string[] { "spicy.museumtooltip", "Octr_ValueTooltip" })]
         internal static void postfix(ref Inventory __instance, InventorySlot rollOverSlot) {
-
-            // This broke when hovering over an item in crafting menu and/or mail window
-            if (CraftingManager.manage.craftMenuOpen
-             || MailManager.manage.mailWindow.activeSelf
-             || !__instance.allItems[rollOverSlot.itemNo]
-             || DeedManager.manage.deedWindowOpen)
-                return;
-
-            if (!Inventory.inv.invOpen) { return; }
-
+           
+            if (rollOverSlot == null) { return;}
+            if (rollOverSlot.itemNo < 0) { return; }
             try {
+                // This broke when hovering over an item in crafting menu and/or mail window
+                if (CraftingManager.manage.craftMenuOpen
+                 || MailManager.manage.mailWindow.activeSelf
+                 || !__instance.allItems[rollOverSlot.itemNo]
+                 || DeedManager.manage.deedWindowOpen)
+                    return;
+
+                if (!Inventory.inv.invOpen) { return; }
+
                 itemID = rollOverSlot.itemNo;
                 bool stackable = __instance.allItems[rollOverSlot.itemNo].isStackable;
                 int maxStack = __instance.allItems[rollOverSlot.itemNo].maxStack;
