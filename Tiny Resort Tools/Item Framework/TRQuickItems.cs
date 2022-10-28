@@ -57,9 +57,16 @@ namespace TinyResort {
             newItem.inventoryItem.equipable.material.mainTexture = texture;
 
             newItem.isQuickItem = true;
-            newItem.customItemID = item.nexusID <= 0 ? "QI." + folderName + "_" + item.itemName.Replace(" ", "") + ext.Replace(".", "_") : item.nexusID + "." + item.uniqueID;
+            if (item.nexusID <= 0 && LeadPlugin.developerMode.Value) {
+                newItem.customItemID = "QI." + folderName + "_" + item.itemName.Replace(" ", "") + ext.Replace(".", "_");
+                TRItems.customItems[newItem.customItemID] = newItem;
+            }
+            else if (!LeadPlugin.developerMode.Value && item.nexusID > 0) { 
+                newItem.customItemID = item.nexusID + "." + item.uniqueID;
+                TRItems.customItems[newItem.customItemID] = newItem;
+            }
+            
             TRTools.Log($"Custom ID: {newItem.customItemID}");
-            TRItems.customItems[newItem.customItemID] = newItem;
             newItem.inventoryItem.value = item.itemValue;
 
         }
