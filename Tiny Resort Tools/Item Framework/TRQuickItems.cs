@@ -22,15 +22,7 @@ namespace TinyResort {
         internal static AssetBundle customClothingBundle = TRAssets.LoadAssetBundleFromDLL("clothing_bundle");
 
         internal static void FindAllPaths(string initialDir) {
-            foreach (string file in Directory.GetFiles(initialDir)) {
-                if (Path.GetExtension(file) == ".qitem") {
-                    //if (Path.GetFileNameWithoutExtension(file) == "items") { pathsArray.Add(file); }
-                    //else
-                    //{
-                    paths.Add(file);
-                    //}
-                }
-            }
+            foreach (string file in Directory.GetFiles(initialDir)) { if (Path.GetExtension(file) == ".qitem") { paths.Add(file); } }
             foreach (string dir in Directory.GetDirectories(initialDir)) { FindAllPaths(dir); }
         }
 
@@ -42,7 +34,6 @@ namespace TinyResort {
             if (!texture) return;
 
             // Creates a new instance of the item
-            var fileName = Path.GetFileNameWithoutExtension(path);
             var folderName = Path.GetDirectoryName(path);
 
             if (string.IsNullOrEmpty(folderName)) { folderName = "unknown"; }
@@ -105,7 +96,5 @@ namespace TinyResort {
         public string type;
 
         public static QuickItems CreateFromJson(string jsonString) { return JsonUtility.FromJson<QuickItems>(jsonString); }
-
     }
-
 }
