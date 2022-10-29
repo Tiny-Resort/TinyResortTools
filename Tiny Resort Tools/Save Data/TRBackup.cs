@@ -81,14 +81,14 @@ namespace TinyResort {
             }
 
             // Create new list from currentBackups iff its included in BackupListInfo (from config file)
-            for (int i = 0; i < currentBackups.Count; i++) { TRTools.Log($"CurrentBackup Name List: {currentBackups[i].Name}"); }
+            //for (int i = 0; i < currentBackups.Count; i++) { TRTools.Log($"CurrentBackup Name List: {currentBackups[i].Name}"); }
             var filesFromMod = currentBackups.Where(i => backupList.Any(l => l.Contains(i.Name))).ToList();
             filesFromMod = filesFromMod.OrderBy(i => i.CreationTime).ToList();
 
-            // Print out all lists to make sure all info is correct
+            /*// Print out all lists to make sure all info is correct
             for (int i = 0; i < currentBackups.Count; i++) { TRTools.Log($"currentBackups List: {currentBackups[i].FullName}"); }
             for (int i = 0; i < backupList.Count; i++) { TRTools.Log($"Backup Info List: {backupList[i]}"); }
-            for (int i = 0; i < filesFromMod.Count; i++) { TRTools.Log($"Temp List: {filesFromMod[i].FullName}"); }
+            for (int i = 0; i < filesFromMod.Count; i++) { TRTools.Log($"Temp List: {filesFromMod[i].FullName}"); }*/
 
             // If the final list is larger than the max backup count, delete the first created file and remove from backupList
             if (filesFromMod.Count >= BackupCount.Value) {
@@ -97,8 +97,8 @@ namespace TinyResort {
             }
 
             SaveBackupList();
-            for (int i = 0; i < filesFromMod.Count; i++) { TRTools.Log($"AFTER Temp List: {filesFromMod[i].FullName}"); }
-            for (int i = 0; i < backupList.Count; i++) { TRTools.Log($"AFTER Backup Info List: {backupList[i]}"); }
+            //for (int i = 0; i < filesFromMod.Count; i++) { TRTools.Log($"AFTER Temp List: {filesFromMod[i].FullName}"); }
+            //for (int i = 0; i < backupList.Count; i++) { TRTools.Log($"AFTER Backup Info List: {backupList[i]}"); }
 
         }
 
