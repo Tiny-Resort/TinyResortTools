@@ -21,10 +21,10 @@ namespace TinyResort {
 
         public static void LoadAll(bool firstLoad) {
             lostAndFound = (List<VehicleData>)TRItems.Data.GetValue("VehicleDataLostAndFound", new List<VehicleData>());
-            TRTools.Log($"Loading VehicleData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading VehicleData lostAndFound: {lostAndFound.Count}");
             
             all = (List<VehicleData>)TRItems.Data.GetValue("VehicleData", new List<VehicleData>());
-            TRTools.Log($"Loading VehicleData: {all.Count}");
+            //TRTools.Log($"Loading VehicleData: {all.Count}");
             foreach (var item in all) {
                 try {
                     if (item.Load(firstLoad) == null) {

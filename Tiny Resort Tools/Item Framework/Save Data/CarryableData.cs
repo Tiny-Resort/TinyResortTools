@@ -16,10 +16,10 @@ namespace TinyResort {
         
         public static void LoadAll(bool firstLoad) {
             lostAndFound = (List<CarryableData>)TRItems.Data.GetValue("CarryableDataLostAndFound", new List<CarryableData>());
-            TRTools.Log($"Loading CarryableData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading CarryableData lostAndFound: {lostAndFound.Count}");
             
             all = (List<CarryableData>)TRItems.Data.GetValue("CarryableData", new List<CarryableData>());
-            TRTools.Log($"Loading CarryableData: {all.Count}");
+            //TRTools.Log($"Loading CarryableData: {all.Count}");
 
             foreach (var item in all) {
                 try {
@@ -32,7 +32,6 @@ namespace TinyResort {
         }
 
         public static void Save(PickUpAndCarry myCarry) {
-            TRTools.Log($"Attempting to remove: {myCarry.name}");
             all.Add(new CarryableData {
                 customItemID = TRItems.customCarryableByID[myCarry.prefabId].customItemID, 
                 positionX = myCarry.transform.position.x, 
@@ -53,9 +52,7 @@ namespace TinyResort {
             }
             
             // If loading in to save slot, then create the carryable object
-            TRTools.Log($"DidThisRUn?");
             NetworkMapSharer.share.spawnACarryable(customItem.pickUpAndCarry.gameObject, new Vector3(positionX, positionY, positionZ), false);
-            TRTools.Log($"DidThisRun2?");
 
             return customItem;
         }

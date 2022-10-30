@@ -26,9 +26,9 @@ namespace TinyResort {
             foreach (string dir in Directory.GetDirectories(initialDir)) { FindAllPaths(dir); }
         }
 
-        internal static void InitializeCustomItem(string path, GameObject obj, QuickItems item) {
+        internal static void InitializeCustomItem(string path, GameObject obj, QuickItemInfo itemInfo) {
 
-            if (item.uniqueID < 0 || string.IsNullOrEmpty(item.fileName)) {
+            if (itemInfo.uniqueID < 0 || string.IsNullOrEmpty(itemInfo.fileName)) {
                 TRTools.LogError($"The unique ID or filename is missing from the .qitem file.");
                 return;
             }
@@ -41,7 +41,6 @@ namespace TinyResort {
                 return;
             }
 
-
             // Creates a new instance of the item
             var folderName = Path.GetDirectoryName(path);
 
@@ -53,32 +52,32 @@ namespace TinyResort {
             var newItem = new TRCustomItem();
             newItem.inventoryItem = Object.Instantiate(obj).GetComponent<InventoryItem>();
             GameObject.DontDestroyOnLoad(newItem.inventoryItem);
-            newItem.inventoryItem.itemName = item.itemName;
-            newItem.inventoryItem.itemDescription = item.description;
+            newItem.inventoryItem.itemName = itemInfo.itemName;
+            newItem.inventoryItem.itemDescription = itemInfo.description;
             // Sets the texture for the item (TODO: Would need to be set up to work with non-clothing quick items)
             newItem.inventoryItem.equipable.material = new Material(newItem.inventoryItem.equipable.material);
             newItem.inventoryItem.equipable.material.mainTexture = texture;
-            newItem.inventoryItem.equipable.material.name = item.fileName;
+            newItem.inventoryItem.equipable.material.name = itemInfo.fileName;
             newItem.isQuickItem = true;
-            if (item.nexusID <= 0 && LeadPlugin.developerMode.Value) {
+            if (itemInfo.nexusID <= 0 && LeadPlugin.developerMode.Value) {
                 TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. This is allowed since you are in the developer mode, but please update the files before release.(or notify mod author).");
-                newItem.customItemID = "QI." + folderName + "_" + item.itemName.Replace(" ", "") + ext.Replace(".", "_");
+                newItem.customItemID = "QI." + folderName + "_" + itemInfo.itemName.Replace(" ", "") + ext.Replace(".", "_");
                 TRItems.customItems[newItem.customItemID] = newItem;
             }
-            else if (item.nexusID > 0) { 
-                newItem.customItemID = item.nexusID + "." + item.uniqueID;
+            else if (itemInfo.nexusID > 0) { 
+                newItem.customItemID = itemInfo.nexusID + "." + itemInfo.uniqueID;
                 TRItems.customItems[newItem.customItemID] = newItem;
             }
             else { TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. THis is not allowed and will be blocked. If you are a developer, please turn on developer mode."); }
             
             TRTools.Log($"Custom ID: {newItem.customItemID}");
-            newItem.inventoryItem.value = item.value;
+            newItem.inventoryItem.value = itemInfo.value;
 
         }
 
         internal static void LoadItem(string path) {
             string json = File.ReadAllText(path);
-            var oneItem = QuickItems.CreateFromJson(json);
+            var oneItem = QuickItemInfo.CreateFromJson(json);
 
             string relativePath = path.Remove(0, Paths.PluginPath.Length).Replace(Path.GetFileName(path), oneItem.fileName);
             try {
@@ -95,8 +94,9 @@ namespace TinyResort {
         }
     }
 
+    /// <summary> Please ignore! This is only for internal use but must be public in order for it to be loadable from JSON. </summary>
     [Serializable]
-    public class QuickItems {
+    public class QuickItemInfo {
 
         public int nexusID;
         public int uniqueID = -1;
@@ -106,6 +106,8 @@ namespace TinyResort {
         public int value = 1000;
         public string type;
 
-        public static QuickItems CreateFromJson(string jsonString) { return JsonUtility.FromJson<QuickItems>(jsonString); }
+        public static QuickItemInfo CreateFromJson(string jsonString) { return JsonUtility.FromJson<QuickItemInfo>(jsonString); }
+        
     }
+    
 }

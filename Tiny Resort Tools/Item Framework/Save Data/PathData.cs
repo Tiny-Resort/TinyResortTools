@@ -11,10 +11,10 @@ namespace TinyResort {
 
         public static void LoadAll() {
             lostAndFound = (List<PathData>)TRItems.Data.GetValue("PathDataLostAndFound", new List<PathData>());
-            TRTools.Log($"Loading PathData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading PathData lostAndFound: {lostAndFound.Count}");
             
             all = (List<PathData>)TRItems.Data.GetValue("PathData", new List<PathData>());
-            TRTools.Log($"Loading PathData: {all.Count}");
+            //TRTools.Log($"Loading PathData: {all.Count}");
             foreach (var item in all) {
                 try {
                     if (item.Load() == null) {

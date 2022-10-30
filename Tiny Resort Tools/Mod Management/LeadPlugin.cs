@@ -33,7 +33,7 @@ namespace TinyResort {
             
             TRLicences.Initialize();
             TRItems.Initialize();
-            TRQuickItems.LoadAllQuickItems();
+            TRQuickItems.LoadAllQuickItems(); 
 
             // If in developer mode, give a big warning about nexus ID usage
             if (developerMode.Value) { TRTools.LogError(TRTools.TRDeveloperMode()); }

@@ -36,7 +36,7 @@ namespace TinyResort {
         internal static void Initialize() {
             TRTools.QuickPatch(typeof(InventoryItem), "getSprite", typeof(TRIcons), "getSpritePrefix");
             TRTools.QuickPatch(typeof(ItemSign), "updateStatus", typeof(TRIcons), null, "updateStatusPostfix");
-            LeadPlugin.plugin.AddCommand("reloadicons", "This will reload all icons in the custom icon's folder. The default command is \"/tr reloadicons\".", UpdateSprites);
+            LeadPlugin.plugin.AddCommand("reload_icons", "This will reload all icons in the custom icon's folder.", UpdateSprites);
         }
         
         internal static void InitializeIcons() {

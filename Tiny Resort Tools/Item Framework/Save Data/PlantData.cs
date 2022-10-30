@@ -13,10 +13,10 @@ namespace TinyResort {
 
         public static void LoadAll() {
             lostAndFound = (List<PlantData>)TRItems.Data.GetValue("PlantDataLostAndFound", new List<PlantData>());
-            TRTools.Log($"Loading PlantData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading PlantData lostAndFound: {lostAndFound.Count}");
 
             all = (List<PlantData>)TRItems.Data.GetValue("PlantData", new List<PlantData>());
-            TRTools.Log($"Loading PlantData: {all.Count}");
+            //TRTools.Log($"Loading PlantData: {all.Count}");
 
             foreach (var item in all) {
                 try {

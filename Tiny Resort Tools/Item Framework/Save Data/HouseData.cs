@@ -12,10 +12,10 @@ namespace TinyResort {
 
         public static void LoadAll() {
             lostAndFound = (List<HouseData>)TRItems.Data.GetValue("HouseDataLostAndFound", new List<HouseData>());
-            TRTools.Log($"Loading HouseData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading HouseData lostAndFound: {lostAndFound.Count}");
             
             all = (List<HouseData>)TRItems.Data.GetValue("HouseData", new List<HouseData>());
-            TRTools.Log($"Loading HouseData: {all.Count}");
+            //TRTools.Log($"Loading HouseData: {all.Count}");
             foreach (var item in all) {
                 try {
                     if (item.Load() == null) {

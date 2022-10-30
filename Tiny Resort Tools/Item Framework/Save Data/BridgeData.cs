@@ -14,10 +14,10 @@ namespace TinyResort {
 
         public static void LoadAll() {
             lostAndFound = (List<BridgeData>)TRItems.Data.GetValue("BridgeDataLostAndFound", new List<BridgeData>());
-            TRTools.Log($"Loading BridgeData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading BridgeData lostAndFound: {lostAndFound.Count}");
 
             all = (List<BridgeData>)TRItems.Data.GetValue("BridgeData", new List<BridgeData>());
-            TRTools.Log($"Loading BridgeData: {all.Count}");
+            //TRTools.Log($"Loading BridgeData: {all.Count}");
 
             foreach (var item in all) {
                 try {

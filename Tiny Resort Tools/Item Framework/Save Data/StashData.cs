@@ -13,10 +13,10 @@ namespace TinyResort {
 
         public static void LoadAll() {
             lostAndFound = (List<StashData>)TRItems.Data.GetValue("StashDataLostAndFound", new List<StashData>());
-            TRTools.Log($"Loading StashData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading StashData lostAndFound: {lostAndFound.Count}");
             
             all = (List<StashData>)TRItems.Data.GetValue("StashData", new List<StashData>());
-            TRTools.Log($"Loading StashData: {all.Count}");
+            //TRTools.Log($"Loading StashData: {all.Count}");
             
             ContainerManager.manage.loadStashes();
             foreach (var item in all) {

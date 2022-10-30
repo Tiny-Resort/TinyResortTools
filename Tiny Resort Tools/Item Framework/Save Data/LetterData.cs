@@ -20,10 +20,10 @@ namespace TinyResort {
 
         public static void LoadAll() {
             lostAndFound = (List<LetterData>)TRItems.Data.GetValue("LetterDataLostAndFound", new List<LetterData>());
-            TRTools.Log($"Loading LetterData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading LetterData lostAndFound: {lostAndFound.Count}");
 
             all = (List<LetterData>)TRItems.Data.GetValue("LetterData", new List<LetterData>());
-            TRTools.Log($"Loading LetterData: {all.Count}");
+            //TRTools.Log($"Loading LetterData: {all.Count}");
             foreach (var item in all) {
                 try {
                     if (item.Load() == null) {

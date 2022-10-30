@@ -29,8 +29,6 @@ namespace TinyResort {
 
             LeadPlugin.plugin.AddCommand("unlock_licence", "Unlocks the specified licence at no cost. Use the list_licences command to get the licence names.", UnlockLicence, "LicenceName", "Level");
             LeadPlugin.plugin.AddCommand("list_licences", "Lists all custom licences added by any mods.", ListLicences);
-            LeadPlugin.plugin.AddCommand("unlock_license", "Unlocks the specified licence at no cost. Use the list_licences command to get the licence names.", UnlockLicence, "LicenceName", "Level");
-            LeadPlugin.plugin.AddCommand("list_licenses", "Lists all custom licences added by any mods.", ListLicences);
 
             Data = TRData.Subscribe("TR.CustomLicences");
             TRData.cleanDataEvent += UnloadLicences;
@@ -45,7 +43,7 @@ namespace TinyResort {
         internal static string ListLicences(string[] args) {
             if (CustomLicences.Count <= 0) { return "None of the installed mods have a custom licence."; }
             var str = "\nThe following custom licences exist:\n";
-            foreach (var li in CustomLicences) { str += li.title + " (ID: " + li.uniqueID + ")" + "\n"; }
+            foreach (var li in CustomLicences) { str += li.uniqueID + " (" + li.title + ")" + "\n"; }
             return str;
         }
 

@@ -18,10 +18,10 @@ namespace TinyResort {
             slots = new[] { EquipWindow.equip.hatSlot, EquipWindow.equip.faceSlot, EquipWindow.equip.shirtSlot, EquipWindow.equip.pantsSlot, EquipWindow.equip.shoeSlot };
 
             lostAndFound = (List<EquipData>)TRItems.Data.GetValue("EquipDataLostAndFound", new List<EquipData>());
-            TRTools.Log($"Loading EquipData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading EquipData lostAndFound: {lostAndFound.Count}");
             
             all = (List<EquipData>)TRItems.Data.GetValue("EquipData", new List<EquipData>());
-            TRTools.Log($"Loading EquipData: {all.Count}");
+            //TRTools.Log($"Loading EquipData: {all.Count}");
             foreach (var item in all) {
                 try {
                     if (item.Load() == null) {

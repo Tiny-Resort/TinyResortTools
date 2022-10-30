@@ -11,10 +11,10 @@ namespace TinyResort {
 
         public static void LoadAll() {
             lostAndFound = (List<ObjectData>)TRItems.Data.GetValue("ObjectDataLostAndFound", new List<ObjectData>());
-            TRTools.Log($"Loading ObjectData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading ObjectData lostAndFound: {lostAndFound.Count}");
             
             all = (List<ObjectData>)TRItems.Data.GetValue("ObjectData", new List<ObjectData>());
-            TRTools.Log($"Loading ObjectData: {all.Count}");
+            //TRTools.Log($"Loading ObjectData: {all.Count}");
             foreach (var item in all) {
                 try {
                     if (item.Load() == null) {
@@ -40,7 +40,6 @@ namespace TinyResort {
             // If the object is in a house, remove it from inside the house
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
             if (houseDetails != null) {
-                TRTools.Log("Found item in house");
 
                 TRItems.customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObjectInside(objectXPos, objectYPos, rotation, houseDetails);
                 houseDetails.houseMapOnTile[objectXPos, objectYPos] = tileID;

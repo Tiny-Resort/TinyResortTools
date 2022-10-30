@@ -17,10 +17,10 @@ namespace TinyResort {
 
         public static void LoadAll() {
             lostAndFound = (List<ItemChangerData>)TRItems.Data.GetValue("ItemChangerDataLostAndFound", new List<ItemChangerData>());
-            TRTools.Log($"Loading ItemChangerData lostAndFound: {lostAndFound.Count}");
+            //TRTools.Log($"Loading ItemChangerData lostAndFound: {lostAndFound.Count}");
             
             all = (List<ItemChangerData>)TRItems.Data.GetValue("ItemChangerData", new List<ItemChangerData>());
-            TRTools.Log($"Loading ItemChangerData: {all.Count}");
+            //TRTools.Log($"Loading ItemChangerData: {all.Count}");
             foreach (var item in all) {
                 try {
                     if (item.Load() == null) {

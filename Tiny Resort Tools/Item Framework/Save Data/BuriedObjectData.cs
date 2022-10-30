@@ -11,10 +11,10 @@ namespace TinyResort {
         
         public static void LoadAll() {
             lostAndFound = (List<BuriedObjectData>)TRItems.Data.GetValue("BuriedObjectDataLostAndFound", new List<BuriedObjectData>());
-            TRTools.Log($"Loading BuriedObjectData lostAndFound: {lostAndFound.Count}");
+           // TRTools.Log($"Loading BuriedObjectData lostAndFound: {lostAndFound.Count}");
             
             all = (List<BuriedObjectData>)TRItems.Data.GetValue("BuriedObjectData", new List<BuriedObjectData>());
-            TRTools.Log($"Loading BuriedObjectData: {all.Count}");
+            //TRTools.Log($"Loading BuriedObjectData: {all.Count}");
             foreach (var item in all) {
                 try {
                     if (item.Load() == null) {
