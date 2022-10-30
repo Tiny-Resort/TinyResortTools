@@ -161,14 +161,14 @@ namespace TinyResort {
             //TRTools.LogError($"API Version: ({majorVersion}.{minorVersion}.{patchVersion})");
 
             if (majorVersion < majorCompareVersion) {
-                TRTools.LogError($"API Minimum Version Mismatch: {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion} < {majorVersion}.{minorVersion}.{patchVersion}");
+                TRTools.LogError($"{plugin.Info.Metadata.Name} has an API Minimum version of {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion}. Please update the TR Tools API.");
                 return false;
             }
             else if (majorVersion == majorCompareVersion && minorVersion < minorCompareVersion) {
-                TRTools.LogError($"API Minimum Version Mismatch: {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion} < {majorVersion}.{minorVersion}.{patchVersion}");
+                TRTools.LogError($"{plugin.Info.Metadata.Name} has an API Minimum version of {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion}. Please update the TR Tools API.");
                 return false; }
             else if (majorVersion == majorCompareVersion && minorVersion == minorCompareVersion && patchVersion < patchCompareVersion) {
-                TRTools.LogError($"API Minimum Version Mismatch: {majorVersion}.{minorVersion}.{patchVersion} < {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion}");
+                TRTools.LogError($"{plugin.Info.Metadata.Name} has an API Minimum version of {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion}. Please update the TR Tools API.");
                 return false; }
             else { return true; }
         }
