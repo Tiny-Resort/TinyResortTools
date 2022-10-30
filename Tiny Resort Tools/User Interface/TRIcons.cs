@@ -16,19 +16,21 @@ namespace TinyResort {
 
     internal class TRIcons : MonoBehaviour {
 
-
         internal static bool notParsed = true;
         internal static List<string> itemList = new List<string>();
         internal static List<CustomSprites> proccessedItemList = new List<CustomSprites>();
+        internal static List<CustomSprites> proccessedQIItemList = new List<CustomSprites>();
 
         internal static List<string> FolderList = new List<string>();
         internal static List<string> defaultSprites = new List<string>();
-        
+
         internal static string relativePath = Path.Combine("TR Tools", "item_icons");
-        
+
         internal class CustomSprites {
             internal string itemName;
             internal Sprite customSprite;
+            internal string spritePath;
+            internal InventoryItem item;
         }
 
         #region Required Initializations
@@ -36,14 +38,14 @@ namespace TinyResort {
         internal static void Initialize() {
             TRTools.QuickPatch(typeof(InventoryItem), "getSprite", typeof(TRIcons), "getSpritePrefix");
             TRTools.QuickPatch(typeof(ItemSign), "updateStatus", typeof(TRIcons), null, "updateStatusPostfix");
-            LeadPlugin.plugin.AddCommand("reload_icons", "This will reload all icons in the custom icon's folder.", UpdateSprites);
+            LeadPlugin.plugin.AddCommand("reload_icons", "This will reload all icons in the custom icon's folder.", UpdateAllSprites);
         }
-        
+
         internal static void InitializeIcons() {
             if (notParsed) {
                 string[] defaultArg = new[] { "all" };
                 InitializeDefaults();
-                UpdateSprites(defaultArg);
+                UpdateAllSprites(defaultArg);
                 DebugIcons();
                 notParsed = false;
             }
@@ -65,14 +67,15 @@ namespace TinyResort {
             Inventory.inv.allItems[144].itemName = "Long White Coffee Table"; // Coffee was spelled wrong
             Inventory.inv.allItems[977].itemName = "Dark P.I Hat"; // P.I Hat already exists
         }
+
         #endregion
-        
+
         internal static bool IsInFolder(string itemName) {
-            if (File.Exists(Path.Combine(Paths.PluginPath, relativePath, itemName + ".png"))) { return true; } 
+            if (File.Exists(Path.Combine(Paths.PluginPath, relativePath, itemName.Replace(" ", "_") + ".png"))) { return true; }
             return false;
         }
-        
-        internal static string UpdateSprites(string[] args) {
+
+        internal static string UpdateAllSprites(string[] args) {
             itemList.Clear();
             proccessedItemList.Clear();
 
@@ -85,7 +88,7 @@ namespace TinyResort {
                     Sprite sprite = TRAssets.LoadSprite(Path.Combine(relativePath, itemName + ".png"), Vector2.one * 0.5f);
                     if (sprite != null) {
                         items[i].itemSprite = sprite;
-                        addNewSprite.itemName = items[i].itemName.ToLower();
+                        addNewSprite.itemName = items[i].itemName.ToLower().Replace(" ", "_");
                         addNewSprite.customSprite = sprite;
                         proccessedItemList.Add(addNewSprite);
                     }
@@ -100,9 +103,16 @@ namespace TinyResort {
 
             var itemName = __instance.itemName.ToLower().Replace(" ", "_");
             var FindSprite = proccessedItemList.Find(i => i.itemName == itemName);
+            var FindQISprite = proccessedQIItemList.Find(i => i.itemName == itemName);
 
             if (FindSprite != null) {
+                //TRTools.LogError($"\nItem Name: {itemName}");
                 __result = FindSprite.customSprite;
+                return false;
+            }
+            if (FindQISprite != null) {
+                //TRTools.LogError($"\nItem Name: {itemName}");
+                __result = FindQISprite.customSprite;
                 return false;
             }
 
@@ -126,9 +136,9 @@ namespace TinyResort {
         }
 
         #endregion
-        
+
         #region Debugging Methods
-  
+
         // Shows which files are incorrectly named and which files are missing a sprite
         internal static void DebugIcons() {
 
@@ -137,24 +147,22 @@ namespace TinyResort {
 
             var oddItems = new List<string>();
             for (int j = 0; j < FolderList.Count; j++) {
-                if (!itemList.Contains(FolderList[j])) { oddItems.Add( $"{FolderList[j]}"); }
+                if (!itemList.Contains(FolderList[j])) { oddItems.Add($"{FolderList[j]}"); }
             }
 
             var invalidItems = new List<string>();
             for (int k = 0; k < Inventory.inv.allItems.Length; k++) {
                 var spriteName = Inventory.inv.allItems[k].itemSprite.name;
-                if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName)) && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower().Replace(" ", "_"))) {
-                    invalidItems.Add($"{k} {Inventory.inv.allItems[k].itemName}");
-                }
+                if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName)) && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower().Replace(" ", "_"))) { invalidItems.Add($"{k} {Inventory.inv.allItems[k].itemName}"); }
             }
 
             if (oddItems.Count > 0) { TRTools.LogError($"Item Icon Issue - The following icons found in the item_icons folder have a name that does not match any items:\n" + string.Join("\n", oddItems)); }
             if (invalidItems.Count > 0) { TRTools.Log($"Item Icon Issue - Item has no unique sprite:\n" + string.Join("\n", invalidItems), false); }
-            
+
         }
 
         #endregion
-        
+
     }
 
 }
