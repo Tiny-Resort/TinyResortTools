@@ -28,10 +28,19 @@ namespace TinyResort {
 
         internal static void InitializeCustomItem(string path, GameObject obj, QuickItems item) {
 
+            if (item.uniqueID < 0 || string.IsNullOrEmpty(item.fileName)) {
+                TRTools.LogError($"The unique ID or filename is missing from the .qitem file.");
+                return;
+            }
+
             // If no texture could be loaded, skip this one
             // Path Combine doesn't seem to work here? Acts like PLuginPath is empty...
             var texture = TRAssets.LoadTexture(Paths.PluginPath + path.Trim());
-            if (!texture) return;
+            if (!texture) {
+                TRTools.LogError($"No texture was found at {Paths.PluginPath + path.Trim()}.");
+                return;
+            }
+
 
             // Creates a new instance of the item
             var folderName = Path.GetDirectoryName(path);
@@ -45,23 +54,21 @@ namespace TinyResort {
             newItem.inventoryItem = Object.Instantiate(obj).GetComponent<InventoryItem>();
             GameObject.DontDestroyOnLoad(newItem.inventoryItem);
             newItem.inventoryItem.itemName = item.itemName;
-
+            newItem.inventoryItem.itemDescription = item.description;
             // Sets the texture for the item (TODO: Would need to be set up to work with non-clothing quick items)
             newItem.inventoryItem.equipable.material = new Material(newItem.inventoryItem.equipable.material);
             newItem.inventoryItem.equipable.material.mainTexture = texture;
-
+            newItem.inventoryItem.equipable.material.name = item.fileName;
             newItem.isQuickItem = true;
             if (item.nexusID <= 0 && LeadPlugin.developerMode.Value) {
                 TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. This is allowed since you are in the developer mode, but please update the files before release.(or notify mod author).");
                 newItem.customItemID = "QI." + folderName + "_" + item.itemName.Replace(" ", "") + ext.Replace(".", "_");
                 TRItems.customItems[newItem.customItemID] = newItem;
             }
-            
-            else if (!LeadPlugin.developerMode.Value && item.nexusID > 0) { 
+            else if (item.nexusID > 0) { 
                 newItem.customItemID = item.nexusID + "." + item.uniqueID;
                 TRItems.customItems[newItem.customItemID] = newItem;
             }
-            
             else { TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. THis is not allowed and will be blocked. If you are a developer, please turn on developer mode."); }
             
             TRTools.Log($"Custom ID: {newItem.customItemID}");
@@ -74,9 +81,12 @@ namespace TinyResort {
             var oneItem = QuickItems.CreateFromJson(json);
 
             string relativePath = path.Remove(0, Paths.PluginPath.Length).Replace(Path.GetFileName(path), oneItem.fileName);
-            InitializeCustomItem(relativePath, customClothingBundle.LoadAsset<GameObject>(oneItem.type), oneItem);
-
-            TRTools.Log($"Single Item: {oneItem.fileName} | {oneItem.itemName} | {oneItem.type} | {oneItem.value}");
+            try {
+                var asset = customClothingBundle.LoadAsset<GameObject>(oneItem.type.ToLower().Replace(" ", ""));
+                InitializeCustomItem(relativePath, asset, oneItem);
+            }
+            catch { TRTools.LogError($"Missing or incorrect Item Type. Please refer to the documentation for a list of available options."); }
+            //TRTools.Log($"Single Item: {oneItem.fileName} | {oneItem.itemName} | {oneItem.type} | {oneItem.value}");
         }
 
         internal static void LoadAllQuickItems() {
@@ -89,10 +99,11 @@ namespace TinyResort {
     public class QuickItems {
 
         public int nexusID;
-        public int uniqueID;
-        public string itemName;
+        public int uniqueID = -1;
         public string fileName;
-        public int value;
+        public string itemName = "Defaulted Item Name";
+        public string description = "What a wonderful use of a quick item's description!";
+        public int value = 1000;
         public string type;
 
         public static QuickItems CreateFromJson(string jsonString) { return JsonUtility.FromJson<QuickItems>(jsonString); }

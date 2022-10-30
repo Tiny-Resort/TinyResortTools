@@ -14,7 +14,8 @@ namespace TinyResort {
         [HarmonyPriority(999)]
         [HarmonyAfter(new string[] { "spicy.museumtooltip", "Octr_ValueTooltip" })]
         internal static void postfix(ref Inventory __instance, InventorySlot rollOverSlot) {
-           
+
+            if (!__instance) { return; }
             if (rollOverSlot == null) { return;}
             if (rollOverSlot.itemNo < 0) { return; }
             try {
@@ -124,14 +125,13 @@ namespace TinyResort {
                 if (!string.IsNullOrEmpty(FoodMessages)) DebugMessage += FoodMessages;
                 if (!string.IsNullOrEmpty(ClothingMessages)) DebugMessage += ClothingMessages;
                 if (!string.IsNullOrEmpty(FurnitureMessages)) DebugMessage += FurnitureMessages;
-            }
-            catch {
-                TRTools.LogError($"Failed To Parse Data for Hover Description. WIP.");
-                return;
-            }
 
-            //TODO: Set an option to have this always turned on(?)
-            if (Input.GetKey(KeyCode.LeftAlt) && !__instance.InvDescriptionText.text.Contains(DebugMessage)) __instance.InvDescriptionText.text += DebugMessage;
+                //TODO: Set an option to have this always turned on(?)
+                if (Input.GetKey(KeyCode.LeftAlt) && __instance && !__instance.InvDescriptionText.text.Contains(DebugMessage)) __instance.InvDescriptionText.text += DebugMessage;
+
+            }
+            catch { TRTools.LogError($"Failed To Parse Data for Hover Description. WIP."); }
+
         }
     }
 
