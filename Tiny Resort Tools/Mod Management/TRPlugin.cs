@@ -19,7 +19,7 @@ namespace TinyResort {
         internal ConfigEntry<int> nexusID;
         internal ConfigEntry<bool> debugMode;
         internal ConfigEntry<string> chatTrigger;
-        
+
         /// <summary>Logs to the BepInEx console.</summary>
         /// <param name="text">The text to post in the console.</param>
         /// <param name="debugModeOnly">If true, this message will only show in the console if the config file has DebugMode set to true.</param>
@@ -69,19 +69,16 @@ namespace TinyResort {
         /// /// <param name="assetBundlePath">The path to your asset bundle, relative to the plugins folder.</param>
         /// <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
         public TRCustomItem AddCustomItem(string assetBundlePath, int uniqueItemID) {
-            
-            
+
             if (!LeadPlugin.developerMode.Value && nexusID.Value == -1) {
                 TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID.");
                 return null;
             }
 
-            if (LeadPlugin.developerMode.Value && nexusID.Value == -1) {
-                TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod.");
-            }
-            return TRItems.AddCustomItem(this, assetBundlePath, uniqueItemID); }
+            if (LeadPlugin.developerMode.Value && nexusID.Value == -1) { TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod."); }
+            return TRItems.AddCustomItem(this, assetBundlePath, uniqueItemID);
+        }
 
-        
         /// <summary>
         /// Creates a new item. The preferred method is to use an asset bundle, but this method allows you to condense the number of assetbundles you create.
         /// </summary>
@@ -93,16 +90,16 @@ namespace TinyResort {
         /// <param name="vehicle">The vehicle script of an item.</param>
         /// <param name="pickUpAndCarry">The pickUpAndCarry script of an item.</param>
         /// <returns></returns>
-        public TRCustomItem AddCustomItem( int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null,
-                                          TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null) {
+        public TRCustomItem AddCustomItem(
+            int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null,
+            TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null
+        ) {
             if (!LeadPlugin.developerMode.Value && nexusID.Value == -1) {
                 TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID.");
                 return null;
             }
 
-            if (LeadPlugin.developerMode.Value && nexusID.Value == -1) {
-                TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod.");
-            } 
+            if (LeadPlugin.developerMode.Value && nexusID.Value == -1) { TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod."); }
 
             return TRItems.AddCustomItem(this, uniqueItemID, inventoryItem, tileObject, tileObjectSettings, tileTypes, vehicle, pickUpAndCarry);
         }
@@ -117,10 +114,8 @@ namespace TinyResort {
                 TRTools.LogError($"Attempting to create a custom licence with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID.");
                 return null;
             }
-            if (LeadPlugin.developerMode.Value && nexusID.Value == -1) {
-                TRTools.LogError($"Attempting to create a custom licence with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod.");
-            }         
-           
+            if (LeadPlugin.developerMode.Value && nexusID.Value == -1) { TRTools.LogError($"Attempting to create a custom licence with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod."); }
+
             if (maxLevel > 5) {
                 maxLevel = 5;
                 TRTools.LogError("Custom Licence " + nexusID.Value + "." + licenceID + " " + licenceName + " can not have a max level above 5.");
@@ -140,6 +135,49 @@ namespace TinyResort {
         /// <returns></returns>
         public bool PlayingWithConflicts() { return TRConflictingPlugins.PlayingWithConflicts(plugin.Info); }
 
+        /// <summary>
+        /// Lets you set a minimum version of the API required for your mod. 
+        /// </summary>
+        /// <param name="version">The version you want to set as the minimum. This needs to be in the format X.X.X</param>
+        /// <returns>Returns true or false and will throw an error in the BepInEx logs.</returns>
+        public bool MinimumAPIVersion(string version) {
+
+            string[] compareVersion = version.Split('.');
+            if (compareVersion.Length < 3) {
+                TRTools.LogError($"Version must be in the format: X.X.X");
+                return false;
+            }
+
+            int.TryParse(compareVersion[0], out int majorCompareVersion);
+            int.TryParse(compareVersion[1], out int minorCompareVersion);
+            int.TryParse(compareVersion[2], out int patchCompareVersion);
+
+            string[] versions = LeadPlugin.pluginVersion.Split('.');
+            int.TryParse(versions[0], out int majorVersion);
+            int.TryParse(versions[1], out int minorVersion);
+            int.TryParse(versions[2], out int patchVersion);
+
+            //TRTools.LogError($"Compare Version: ({majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion})");
+            //TRTools.LogError($"API Version: ({majorVersion}.{minorVersion}.{patchVersion})");
+
+            if (majorVersion < majorCompareVersion) {
+                TRTools.LogError($"API Minimum Version Mismatch: {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion} < {majorVersion}.{minorVersion}.{patchVersion}");
+                return false;
+            }
+            else if (majorVersion == majorCompareVersion && minorVersion < minorCompareVersion) {
+                TRTools.LogError($"API Minimum Version Mismatch: {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion} < {majorVersion}.{minorVersion}.{patchVersion}");
+                return false; }
+            else if (majorVersion == majorCompareVersion && minorVersion == minorCompareVersion && patchVersion < patchCompareVersion) {
+                TRTools.LogError($"API Minimum Version Mismatch: {majorVersion}.{minorVersion}.{patchVersion} < {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion}");
+                return false; }
+            else { return true; }
+        }
+
+        /// <summary>
+        /// Returns the current plugin version, so you can customize your mod depending on specific versions.
+        /// </summary>
+        /// <returns>A string in the format X.X.X, where X are numbers.</returns>
+        public string APIVersion() { return LeadPlugin.pluginVersion; }
     }
 
 }
