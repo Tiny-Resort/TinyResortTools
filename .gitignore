@@ -8,3 +8,5 @@ Asset Bundle Creator/obj/*
 Asset Bundle Creator/Logs/*
 Asset Bundle Creator/.idea/*
 Asset Bundle Creator/Temp/*
+*.zip
+*.dll
