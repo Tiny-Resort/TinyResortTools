@@ -173,7 +173,7 @@ namespace TinyResort {
 
         internal static bool PlayingWithConflicts(PluginInfo currentMod) {
             var foundMod = conflictingMods.Find(i => i.newMod == currentMod && i.conflictingModsList.Count > 0);
-            TRTools.Log($"Checking if I found a mod: {foundMod}");
+            //TRTools.Log($"Checking if I found a mod: {foundMod}");
             if (foundMod != null) return true;
             return false;
         }

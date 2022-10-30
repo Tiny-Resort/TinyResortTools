@@ -65,7 +65,7 @@ namespace TinyResort {
         }
 
         internal static void Initialize() {
-            TRTools.Log($"Initializing TRItems...");
+            //TRTools.Log($"Initializing TRItems...");
 
             Data = TRData.Subscribe("TR.CustomItems");
             TRData.cleanDataEvent += UnloadCustomItems;
@@ -78,7 +78,7 @@ namespace TinyResort {
             );
 
             LeadPlugin.plugin.AddCommand("list_items", "Lists every item added by a mod.", ListItems);
-            TRTools.Log($"End Initialization TRItems...");
+            //TRTools.Log($"End Initialization TRItems...");
 
         }
 
@@ -237,7 +237,7 @@ namespace TinyResort {
         // Resize the array depending on the number of modded items added
         // Ignore modded items saved if it doesnt exist in customItems
         internal static void ManageAllItemArray() {
-            TRTools.Log($"Running ManageAllItemArray...");
+            //TRTools.Log($"Running ManageAllItemArray...");
 
             // Saves the default arrays for existing item lists
             allItemsVanilla = Inventory.inv.allItems.ToList();

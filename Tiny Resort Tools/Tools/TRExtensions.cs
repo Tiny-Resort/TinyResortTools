@@ -40,7 +40,6 @@ namespace TinyResort {
             
             var minimumModifications = results.Min(j => j.Value);
             var AllMinimumRequired = results.Where(i => i.Value == minimumModifications && minimumModifications <= (baseString.Length / 1.5f));
-            TRTools.Log($"{baseString.Length / 1.5f}");
             List<string> list = new List<string>();
             foreach (var compared in AllMinimumRequired) {
                 list.Add(compared.Key);

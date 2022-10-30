@@ -70,7 +70,7 @@ namespace TinyResort {
             }
             else { TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. THis is not allowed and will be blocked. If you are a developer, please turn on developer mode."); }
             
-            TRTools.Log($"Custom ID: {newItem.customItemID}");
+            //TRTools.Log($"Custom ID: {newItem.customItemID}");
             newItem.inventoryItem.value = itemInfo.value;
 
         }

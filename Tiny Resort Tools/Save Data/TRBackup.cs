@@ -53,12 +53,9 @@ namespace TinyResort {
 
             pluginInfos = UnityChainloader.Instance.Plugins.Values.ToList();
             TRData.postLoadEvent += CreateInitialBackup;
-            if (pluginInfos.Find(i => i.Metadata.GUID == "dev.TinyResort.SaveBackupManager") == null && UseBackupManager.Value) {
-                TRTools.Log($"SAVE BACKUP MANAGER: Adding from API");
-                TRData.postSaveEvent += CreateBackup;
-            }
-            else if (!UseBackupManager.Value) { TRTools.Log("Loaded Save Backup Manager Mod (Not API)."); }
-            else { TRTools.Log($"Save Manager Backup is loaded."); }
+            var plugInfo = pluginInfos.Find(i => i.Metadata.GUID == "dev.TinyResort.SaveBackupManager");
+            if (plugInfo == null && UseBackupManager.Value) { TRData.postSaveEvent += CreateBackup; }
+            else if (plugInfo != null) { TRTools.Log("Loaded Save Backup Manager Mod (Not API)."); }
 
         }
 

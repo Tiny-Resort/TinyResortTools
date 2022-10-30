@@ -25,7 +25,7 @@ namespace TinyResort {
             // Load Button Asset Bundles
             UIBundle = TRAssets.LoadAssetBundleFromDLL("ui_elements");
             foreach (var asset in UIBundle.LoadAllAssets()) {
-                TRTools.Log($"Asset: {asset.name}");
+                //TRTools.Log($"Asset: {asset.name}");
             }
             ModLogo = UIBundle.LoadAsset<Sprite>("mod_logo");
             buttonMainMenu = LoadButton("Main Menu Button");
