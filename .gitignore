@@ -10,4 +10,5 @@ Asset Bundle Creator/.idea/*
 Asset Bundle Creator/Temp/*
 *.zip
 *.dll
-~$angelog.docx
+~$*
+*.tmp
