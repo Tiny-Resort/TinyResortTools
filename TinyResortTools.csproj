@@ -390,6 +390,9 @@
     <ItemGroup>
         <EmbeddedResource Include="Embedded Resources\ui_elements" />
     </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Embedded Resources\quickitems_bundle" />
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <PropertyGroup>
         <PostBuildEvent>copy /Y "$(SolutionDir)bin\Debug\$(TargetName).dll" "$(SolutionDir)TR Tools\$(TargetName).dll"

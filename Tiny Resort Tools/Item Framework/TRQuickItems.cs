@@ -19,7 +19,7 @@ namespace TinyResort {
     public class TRQuickItems {
 
         internal static List<string> paths = new List<string>();
-        internal static AssetBundle customClothingBundle = TRAssets.LoadAssetBundleFromDLL("clothing_bundle");
+        internal static AssetBundle quickItemsBundle = TRAssets.LoadAssetBundleFromDLL("quickitems_bundle"); 
         internal static List<string> currentCustomIDs = new List<string>();
 
         internal static void FindAllPaths(string initialDir) {
@@ -89,6 +89,14 @@ namespace TinyResort {
             }
             else { TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. THis is not allowed and will be blocked. If you are a developer, please turn on developer mode."); }
 
+            TRTools.LogError($"Tile Type: Contained?: {TRItems.customItems.ContainsKey(newItem.customItemID)} | {itemInfo.type.ToLower().Replace(" ", "" )}");
+            if (TRItems.customItems.ContainsKey(newItem.customItemID) && itemInfo.type.ToLower().Replace(" ", "").Trim() == "path") {
+                TRTools.LogError($"Tile Type: {newItem.tileTypes}");
+                newItem.tileTypes = quickItemsBundle.LoadAsset<GameObject>("pathTileObject").GetComponent<TileTypes>();
+                TRTools.LogError($"Tile Type: {newItem.tileTypes}");
+                newItem.tileTypes.myTileMaterial = new Material(newItem.inventoryItem.equipable.material);
+            }
+            
             //TRTools.Log($"Custom ID: {newItem.customItemID}");
             newItem.inventoryItem.value = itemInfo.value;
 
@@ -113,7 +121,7 @@ namespace TinyResort {
 
             string relativePath = path.Remove(0, Paths.PluginPath.Length).Replace(Path.GetFileName(path), oneItem.fileName);
             try {
-                var asset = customClothingBundle.LoadAsset<GameObject>(oneItem.type.ToLower().Replace(" ", ""));
+                var asset = quickItemsBundle.LoadAsset<GameObject>(oneItem.type.ToLower().Replace(" ", ""));
                 InitializeCustomItem(relativePath, asset, oneItem);
             }
             catch { TRTools.LogError($"Missing or incorrect Item Type. Please refer to the documentation for a list of available options."); }
@@ -152,7 +160,6 @@ namespace TinyResort {
         // For setting custom icon name instead of using item_icons folder
         public string iconFileName;
 
-        
         public static QuickItemInfo CreateFromJson(string jsonString) { return JsonUtility.FromJson<QuickItemInfo>(jsonString); }
 
     }
