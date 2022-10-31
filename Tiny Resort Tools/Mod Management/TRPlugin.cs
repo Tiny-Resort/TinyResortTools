@@ -138,11 +138,11 @@ namespace TinyResort {
         /// <summary>
         /// Lets you set a minimum version of the API required for your mod. 
         /// </summary>
-        /// <param name="version">The version you want to set as the minimum. This needs to be in the format X.X.X</param>
+        /// <param name="minVersion">The version you want to set as the minimum. This needs to be in the format X.X.X</param>
         /// <returns>Returns true or false and will throw an error in the BepInEx logs.</returns>
-        public bool MinimumAPIVersion(string version) {
+        public bool RequireAPIVersion(string minVersion) {
 
-            string[] compareVersion = version.Split('.');
+            string[] compareVersion = minVersion.Split('.');
             if (compareVersion.Length < 3) {
                 TRTools.LogError($"Version must be in the format: X.X.X");
                 return false;
@@ -177,7 +177,7 @@ namespace TinyResort {
         /// Returns the current plugin version, so you can customize your mod depending on specific versions.
         /// </summary>
         /// <returns>A string in the format X.X.X, where X are numbers.</returns>
-        public string APIVersion() { return LeadPlugin.pluginVersion; }
+        public string GetAPIVersion() { return LeadPlugin.pluginVersion; }
     }
 
 }
