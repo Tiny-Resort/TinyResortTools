@@ -133,7 +133,7 @@ namespace TinyResort {
         /// If you want to do something specific if they ignore the warning, use this to check in Start()
         /// </summary>
         /// <returns></returns>
-        public bool PlayingWithConflicts() { return TRConflictingPlugins.PlayingWithConflicts(plugin.Info); }
+        internal bool PlayingWithConflicts() { return TRConflictingPlugins.PlayingWithConflicts(plugin.Info); }
 
         /// <summary>
         /// Lets you set a minimum version of the API required for your mod. 
