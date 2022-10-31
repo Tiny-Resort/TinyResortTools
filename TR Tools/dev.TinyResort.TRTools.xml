@@ -199,14 +199,14 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:TinyResort.TRPlugin.MinimumAPIVersion(System.String)">
+        <member name="M:TinyResort.TRPlugin.RequireAPIVersion(System.String)">
             <summary>
             Lets you set a minimum version of the API required for your mod. 
             </summary>
-            <param name="version">The version you want to set as the minimum. This needs to be in the format X.X.X</param>
+            <param name="minVersion">The version you want to set as the minimum. This needs to be in the format X.X.X</param>
             <returns>Returns true or false and will throw an error in the BepInEx logs.</returns>
         </member>
-        <member name="M:TinyResort.TRPlugin.APIVersion">
+        <member name="M:TinyResort.TRPlugin.GetAPIVersion">
             <summary>
             Returns the current plugin version, so you can customize your mod depending on specific versions.
             </summary>
