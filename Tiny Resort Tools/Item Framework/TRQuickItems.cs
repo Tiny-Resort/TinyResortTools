@@ -71,7 +71,6 @@ namespace TinyResort {
 
             newItem.inventoryItem.equipable.material.name = itemInfo.fileName;
             
-            
             newItem.isQuickItem = true;
             
             if (currentCustomIDs.Contains(itemInfo.nexusID + "." + itemInfo.uniqueID)) { TRTools.LogError($"The file {itemInfo.fileName} has the same unique ID as another item.");}
