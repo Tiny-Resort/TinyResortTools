@@ -18,13 +18,13 @@ namespace TinyResort {
     /// <summary>Tools for quickly creating clothing items.</summary>
     public class TRQuickItems {
 
-        internal static List<string> paths = new List<string>();
+        internal static List<string> filePaths = new List<string>();
         internal static AssetBundle quickItemsBundle = TRAssets.LoadAssetBundleFromDLL("quickitems_bundle"); 
         internal static List<string> currentCustomIDs = new List<string>();
 
         internal static void FindAllPaths(string initialDir) {
             foreach (string file in Directory.GetFiles(initialDir)) {
-                if (Path.GetExtension(file) == ".qitem") { paths.Add(file); }
+                if (Path.GetExtension(file) == ".qitem") { filePaths.Add(file); }
             }
             foreach (string dir in Directory.GetDirectories(initialDir)) { FindAllPaths(dir); }
         }
@@ -128,7 +128,7 @@ namespace TinyResort {
 
         internal static void LoadAllQuickItems() {
             FindAllPaths(Paths.PluginPath);
-            foreach (var item in paths) { LoadItem(item); }
+            foreach (var item in filePaths) { LoadItem(item); }
         }
     }
 
