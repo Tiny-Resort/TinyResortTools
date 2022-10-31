@@ -89,11 +89,8 @@ namespace TinyResort {
             }
             else { TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. THis is not allowed and will be blocked. If you are a developer, please turn on developer mode."); }
 
-            TRTools.LogError($"Tile Type: Contained?: {TRItems.customItems.ContainsKey(newItem.customItemID)} | {itemInfo.type.ToLower().Replace(" ", "" )}");
             if (TRItems.customItems.ContainsKey(newItem.customItemID) && itemInfo.type.ToLower().Replace(" ", "").Trim() == "path") {
-                TRTools.LogError($"Tile Type: {newItem.tileTypes}");
-                newItem.tileTypes = quickItemsBundle.LoadAsset<GameObject>("pathTileObject").GetComponent<TileTypes>();
-                TRTools.LogError($"Tile Type: {newItem.tileTypes}");
+                newItem.tileTypes = quickItemsBundle.LoadAsset<GameObject>("pathTileType").GetComponent<TileTypes>();
                 newItem.tileTypes.myTileMaterial = new Material(newItem.inventoryItem.equipable.material);
             }
             
