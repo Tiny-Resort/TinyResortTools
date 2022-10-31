@@ -1,9 +1,16 @@
 {
+
 	"nexusID": 0,
 	"uniqueID": 0,
-	"fileName": "example.png",
+	
 	"itemName": "Example Shirt",
 	"description": "Looks rad!",
 	"value": 2500,
-	"type": "Shirt"
+	"type": "Shirt",
+	
+	"fileName": "example.png",
+	"iconFileName": "example_icon.png",
+	"normalMapFileName": ""
+	"metallicFileName": ""
+	
 }
