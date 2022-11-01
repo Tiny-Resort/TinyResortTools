@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+/*using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
@@ -12,8 +12,6 @@ namespace TinyResort {
         
         public static bool Prefix(InventoryItem __instance) {
             if (runByAPI) {
-                TRTools.LogError($"Running getItemID by API");
-                //int itemID = Traverse.Create(InventoryIte).Field("itemId").GetValue() as int;
                 var cheatButton = typeof(InventoryItem).GetField("itemId", BindingFlags.Instance | BindingFlags.NonPublic);
                 var itemId = (int?)cheatButton?.GetValue(__instance);
                 TRItems.itemNeedsRepaired = false;
@@ -27,4 +25,4 @@ namespace TinyResort {
             return true;
         }
     }
-}
+}*/

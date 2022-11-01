@@ -104,7 +104,7 @@ namespace TinyResort {
         }
 
         internal static void FixRecipeItemID(InventoryItem material) {
-            getItemId.runByAPI = true;
+            //getItemId.runByAPI = true;
             if (material.getItemId() == -1) {
                 foreach (var item in Inventory.inv.allItems) {
                     if (item.itemName == material.itemName) { material.setItemId(item.getItemId()); }
