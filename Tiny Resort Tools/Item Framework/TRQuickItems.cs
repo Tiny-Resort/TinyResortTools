@@ -19,7 +19,7 @@ namespace TinyResort {
     public class TRQuickItems {
 
         internal static List<string> filePaths = new List<string>();
-        internal static AssetBundle quickItemsBundle = TRAssets.LoadAssetBundleFromDLL("quickitems_bundle"); 
+        internal static AssetBundle quickItemsBundle = TRAssets.LoadAssetBundleFromDLL("quickitems_bundle");
         internal static List<string> currentCustomIDs = new List<string>();
 
         internal static void FindAllPaths(string initialDir) {
@@ -37,7 +37,7 @@ namespace TinyResort {
             }
 
             var fileName = Path.GetFileName(path);
-            
+
             // If no texture could be loaded, skip this one
             // Path Combine doesn't seem to work here? Acts like PLuginPath is empty...
             var texture = TRAssets.LoadTexture(Paths.PluginPath + path.Trim());
@@ -64,18 +64,18 @@ namespace TinyResort {
             // Sets the texture for the item (TODO: Would need to be set up to work with non-clothing quick items)
             newItem.inventoryItem.equipable.material = new Material(newItem.inventoryItem.equipable.material);
             newItem.inventoryItem.equipable.material.mainTexture = texture;
-            
+
             if (normalMap != null) { newItem.inventoryItem.equipable.material.EnableKeyword("_NORMALMAP"); }
             else { newItem.inventoryItem.equipable.material.DisableKeyword("_NORMALMAP"); }
             newItem.inventoryItem.equipable.material.SetTexture("_BumpMap", normalMap);
 
             newItem.inventoryItem.equipable.material.name = itemInfo.fileName;
-            
+
             newItem.isQuickItem = true;
-            
-            if (currentCustomIDs.Contains(itemInfo.nexusID + "." + itemInfo.uniqueID)) { TRTools.LogError($"The file {itemInfo.fileName} has the same unique ID as another item.");}
+
+            if (currentCustomIDs.Contains(itemInfo.nexusID + "." + itemInfo.uniqueID)) { TRTools.LogError($"The file {itemInfo.fileName} has the same unique ID as another item."); }
             else { currentCustomIDs.Add(itemInfo.nexusID + "." + itemInfo.uniqueID); }
-            
+
             if (itemInfo.nexusID <= 0 && LeadPlugin.developerMode.Value) {
                 TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. This is allowed since you are in the developer mode, but please update the files before release.(or notify mod author).");
                 newItem.customItemID = "QI." + folderName + "_" + itemInfo.itemName.Replace(" ", "") + ext.Replace(".", "_");
@@ -96,7 +96,7 @@ namespace TinyResort {
                 GameObject.DontDestroyOnLoad(newItem.inventoryItem.craftable);
                 TRTools.LogError($"Tile Recipe: {newItem.inventoryItem.craftable.itemsInRecipe[0]}");
             }
-            
+
             //TRTools.Log($"Custom ID: {newItem.customItemID}");
             newItem.inventoryItem.value = itemInfo.value;
 
@@ -142,10 +142,10 @@ namespace TinyResort {
         // Mod Info
         public int nexusID;
         public int uniqueID = -1;
-        
+
         // The file name for the default texture
         public string fileName;
-       
+
         // The type of item being used
         public string type;
 
@@ -158,7 +158,7 @@ namespace TinyResort {
         public string normalMapFileName;
 
         // For setting custom icon name instead of using item_icons folder
-        public string iconFileName; 
+        public string iconFileName;
 
         public static QuickItemInfo CreateFromJson(string jsonString) { return JsonUtility.FromJson<QuickItemInfo>(jsonString); }
 

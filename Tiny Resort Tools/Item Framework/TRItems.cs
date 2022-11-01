@@ -57,15 +57,14 @@ namespace TinyResort {
         private static List<GameObject> carryablePrefabsFull;
         private static List<Chest> privateStashesVanilla;
 
-
         internal static bool fixedRecipes;
+
         /// <returns>The details for an item with the given item ID.</returns>
         public static InventoryItem GetItemDetails(int itemID) {
             if (itemID >= 0 && itemID < Inventory.inv.allItems.Length) return Inventory.inv.allItems[itemID];
             TRTools.LogError("Attempting to get item details for item with ID of " + itemID + " which does not exist.");
             return null;
         }
-
 
         internal static void Initialize() {
             //TRTools.Log($"Initializing TRItems...");
@@ -81,6 +80,7 @@ namespace TinyResort {
             );
 
             LeadPlugin.plugin.AddCommand("list_items", "Lists every item added by a mod.", ListItems);
+
             //TRTools.Log($"End Initialization TRItems...");
 
         }
@@ -101,7 +101,7 @@ namespace TinyResort {
             }
             fixedRecipes = true;
         }
-        
+
         internal static void FixRecipeItemID(InventoryItem material) {
             if (material.getItemId() == -1) {
                 foreach (var item in Inventory.inv.allItems) {
@@ -168,12 +168,12 @@ namespace TinyResort {
 
             // If the nexusID is invalid and we got here, it must be in developer mode so use the mod name instead
             var nexusID = plugin.nexusID.Value == -1 ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_") : plugin.nexusID.Value.ToString();
-            
+
             if (customItemsInitialized) {
                 TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
                 return null;
             }
-            
+
             customItems[nexusID + "." + uniqueItemID.ToString()] = TRCustomItem.Create(assetBundlePath);
             customItems[nexusID + "." + uniqueItemID.ToString()].customItemID = nexusID + "." + uniqueItemID.ToString();
             return customItems[nexusID + "." + uniqueItemID.ToString()];
@@ -183,8 +183,9 @@ namespace TinyResort {
         internal static TRCustomItem AddCustomItem(
             TRPlugin plugin, int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null,
             TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null,
-            PickUpAndCarry pickUpAndCarry = null) {
-            
+            PickUpAndCarry pickUpAndCarry = null
+        ) {
+
             // If the nexusID is invalid and we got here, it must be in developer mode so use the mod name instead
             var nexusID = plugin.nexusID.Value == -1 ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_") : plugin.nexusID.Value.ToString();
 
@@ -288,7 +289,9 @@ namespace TinyResort {
 
                 if (item.Value.tileTypes) {
                     if (item.Value.tileTypes.isPath) {
-                        try { var test = item.Value.tileTypes; }
+                        try {
+                            var test = item.Value.tileTypes;
+                        }
                         catch {
                             TRTools.LogError($"Unable to load {item.Key}. tileTypes is not set correctly.");
                             continue;
@@ -296,33 +299,43 @@ namespace TinyResort {
                     }
                 }
                 if (item.Value.inventoryItem) {
-                    try { var test = item.Value.inventoryItem; }
+                    try {
+                        var test = item.Value.inventoryItem;
+                    }
                     catch {
                         TRTools.LogError($"Unable to load {item.Key}. invItem is not set correctly.");
                         continue;
                     }
                 }
                 if (item.Value.tileObject) {
-                    try { var test = item.Value.tileObject; }
+                    try {
+                        var test = item.Value.tileObject;
+                    }
                     catch {
                         TRTools.LogError($"Unable to load {item.Key}. tileObject is not set correctly.");
                         continue;
                     }
-                    try { var test = item.Value.tileObjectSettings; }
+                    try {
+                        var test = item.Value.tileObjectSettings;
+                    }
                     catch {
                         TRTools.LogError($"Unable to load {item.Key}. tileObjectSettings is not set correctly.");
                         continue;
                     }
                 }
                 if (item.Value.vehicle) {
-                    try { var test = item.Value.inventoryItem.spawnPlaceable; }
+                    try {
+                        var test = item.Value.inventoryItem.spawnPlaceable;
+                    }
                     catch {
                         TRTools.LogError($"Unable to load {item.Key}. spawnPlaceable is not set correctly.");
                         continue;
                     }
                 }
                 if (item.Value.pickUpAndCarry) {
-                    try { var test = item.Value.pickUpAndCarry.gameObject; }
+                    try {
+                        var test = item.Value.pickUpAndCarry.gameObject;
+                    }
                     catch {
                         TRTools.LogError($"Unable to load {item.Key}. carryable is not set correctly.");
                         continue;
@@ -367,7 +380,7 @@ namespace TinyResort {
                     item.Value.pickUpAndCarry.prefabId = carryablePrefabsFull.Count - 1;
                     customCarryableByID[carryablePrefabsFull.Count - 1] = item.Value;
                 }
-                
+
             }
 
             // Set the game's arrays to match the new lists that include the custom items
@@ -381,7 +394,6 @@ namespace TinyResort {
             TRTools.Log($"Ending ManageAllItemArray...");
 
         }
-        
 
         // This is used to restore the modded items into the lists after saving. It just takes the list of items we have
         // and adds them to the games arrays. 
