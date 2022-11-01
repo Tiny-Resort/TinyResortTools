@@ -16,11 +16,10 @@ namespace TinyResort {
 
         internal static ConfigEntry<bool> developerMode;
         public static ConfigEntry<bool> useSlashToOpenChat;
-        
-        
+
         public const string pluginName = "TRTools";
         public const string pluginGuid = "dev.TinyResort." + pluginName;
-        public const string pluginVersion = "0.7.4";
+        public const string pluginVersion = "0.7.5";
 
         private void Awake() {
 
@@ -30,18 +29,18 @@ namespace TinyResort {
 
             useSlashToOpenChat = Config.Bind("Chat", "UseSlashToOpenChat", true, "If true, then pressing forward slash on the keyboard will open the chat box with a slash already in place.");
             developerMode = Config.Bind("Developer", "DeveloperMode", false, "If true, allows the use of nexusID being set to '-1'. Default is false, so you will need to update nexusID before releasing for the enduser.");
-            
+
             TRLicences.Initialize();
             TRItems.Initialize();
-            TRQuickItems.LoadAllQuickItems(); 
+            TRQuickItems.LoadAllQuickItems();
 
             // If in developer mode, give a big warning about nexus ID usage
             if (developerMode.Value) { TRTools.LogError(TRTools.TRDeveloperMode()); }
-            
+
         }
 
         private void Start() {
-            
+
             TRInterface.Initialize();
             TRModUpdater.Initialize();
             TRConflictingPlugins.Initialize();
@@ -77,21 +76,22 @@ namespace TinyResort {
         }
 
         private void Update() {
-            
+
             TRModUpdater.Update();
             TRConflictingPlugins.Update();
 
             if (NetworkMapSharer.share.localChar) TRIcons.InitializeIcons();
-            
+            if (NetworkMapSharer.share.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
+
             //if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems(); }
             //if (Input.GetKeyDown(KeyCode.F12)) { TRItems.CurrentSaveInfo(); }
             //if (Input.GetKeyDown(KeyCode.F10)) { TRItems.LoadCustomItems(); }
             //if (Input.GetKeyDown(KeyCode.F9)) { 
-           //     TRTools.Log($"Size: {SaveLoad.saveOrLoad.carryablePrefabs.Length}");
-           //     NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[10], NetworkMapSharer.share.localChar.transform.position, true);
-           // }
+            //     TRTools.Log($"Size: {SaveLoad.saveOrLoad.carryablePrefabs.Length}");
+            //     NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[10], NetworkMapSharer.share.localChar.transform.position, true);
+            // }
         }
-        
+
     }
 
 }

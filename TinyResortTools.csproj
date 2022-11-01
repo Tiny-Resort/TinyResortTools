@@ -385,10 +385,10 @@
         <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Embedded Resources\clothing_bundle" />
+        <EmbeddedResource Include="Embedded Resources\ui_elements" />
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Embedded Resources\ui_elements" />
+      <EmbeddedResource Include="Embedded Resources\quickitems_bundle" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <PropertyGroup>

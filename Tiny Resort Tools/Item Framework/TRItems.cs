@@ -57,6 +57,9 @@ namespace TinyResort {
         private static List<GameObject> carryablePrefabsFull;
         private static List<Chest> privateStashesVanilla;
 
+        internal static bool fixedRecipes;
+        internal static bool itemNeedsRepaired;
+
         /// <returns>The details for an item with the given item ID.</returns>
         public static InventoryItem GetItemDetails(int itemID) {
             if (itemID >= 0 && itemID < Inventory.inv.allItems.Length) return Inventory.inv.allItems[itemID];
@@ -78,8 +81,37 @@ namespace TinyResort {
             );
 
             LeadPlugin.plugin.AddCommand("list_items", "Lists every item added by a mod.", ListItems);
+
             //TRTools.Log($"End Initialization TRItems...");
 
+        }
+
+        internal static void FixRecipes() {
+            if (Inventory.inv) {
+                for (int i = 0; i < Inventory.inv.allItems.Length; i++) {
+                    if (Inventory.inv.allItems[i].craftable) {
+                        foreach (var material in Inventory.inv.allItems[i].craftable.itemsInRecipe) TRItems.FixRecipeItemID(material);
+
+                        if (Inventory.inv.allItems[i].craftable.altRecipes.Length > 0) {
+                            foreach (var recipe in Inventory.inv.allItems[i].craftable.altRecipes) {
+                                foreach (var material in recipe.itemsInRecipe) TRItems.FixRecipeItemID(material);
+                            }
+                        }
+                    }
+                }
+            }
+            fixedRecipes = true;
+        }
+
+        internal static void FixRecipeItemID(InventoryItem material) {
+            //getItemId.runByAPI = true;
+            var itemIDField = typeof(InventoryItem).GetField("itemId", BindingFlags.Instance | BindingFlags.NonPublic);
+            var itemId = (int?)itemIDField?.GetValue(material);
+            if (itemId == -1) {
+                foreach (var item in Inventory.inv.allItems) {
+                    if (item.itemName == material.itemName) { material.setItemId(item.getItemId()); }
+                }
+            }
         }
 
         /// <summary>
@@ -140,12 +172,12 @@ namespace TinyResort {
 
             // If the nexusID is invalid and we got here, it must be in developer mode so use the mod name instead
             var nexusID = plugin.nexusID.Value == -1 ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_") : plugin.nexusID.Value.ToString();
-            
+
             if (customItemsInitialized) {
                 TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
                 return null;
             }
-            
+
             customItems[nexusID + "." + uniqueItemID.ToString()] = TRCustomItem.Create(assetBundlePath);
             customItems[nexusID + "." + uniqueItemID.ToString()].customItemID = nexusID + "." + uniqueItemID.ToString();
             return customItems[nexusID + "." + uniqueItemID.ToString()];
@@ -155,8 +187,9 @@ namespace TinyResort {
         internal static TRCustomItem AddCustomItem(
             TRPlugin plugin, int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null,
             TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null,
-            PickUpAndCarry pickUpAndCarry = null) {
-            
+            PickUpAndCarry pickUpAndCarry = null
+        ) {
+
             // If the nexusID is invalid and we got here, it must be in developer mode so use the mod name instead
             var nexusID = plugin.nexusID.Value == -1 ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_") : plugin.nexusID.Value.ToString();
 
