@@ -92,6 +92,9 @@ namespace TinyResort {
             if (TRItems.customItems.ContainsKey(newItem.customItemID) && itemInfo.type.ToLower().Replace(" ", "").Trim() == "path") {
                 newItem.tileTypes = quickItemsBundle.LoadAsset<GameObject>("pathTileType").GetComponent<TileTypes>();
                 newItem.tileTypes.myTileMaterial = new Material(newItem.inventoryItem.equipable.material);
+                newItem.inventoryItem.craftable = GameObject.Instantiate(newItem.inventoryItem.craftable);
+                GameObject.DontDestroyOnLoad(newItem.inventoryItem.craftable);
+                TRTools.LogError($"Tile Recipe: {newItem.inventoryItem.craftable.itemsInRecipe[0]}");
             }
             
             //TRTools.Log($"Custom ID: {newItem.customItemID}");
@@ -155,7 +158,7 @@ namespace TinyResort {
         public string normalMapFileName;
 
         // For setting custom icon name instead of using item_icons folder
-        public string iconFileName;
+        public string iconFileName; 
 
         public static QuickItemInfo CreateFromJson(string jsonString) { return JsonUtility.FromJson<QuickItemInfo>(jsonString); }
 

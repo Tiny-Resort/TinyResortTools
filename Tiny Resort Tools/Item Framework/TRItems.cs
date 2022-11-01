@@ -57,12 +57,15 @@ namespace TinyResort {
         private static List<GameObject> carryablePrefabsFull;
         private static List<Chest> privateStashesVanilla;
 
+
+        internal static bool fixedRecipes;
         /// <returns>The details for an item with the given item ID.</returns>
         public static InventoryItem GetItemDetails(int itemID) {
             if (itemID >= 0 && itemID < Inventory.inv.allItems.Length) return Inventory.inv.allItems[itemID];
             TRTools.LogError("Attempting to get item details for item with ID of " + itemID + " which does not exist.");
             return null;
         }
+
 
         internal static void Initialize() {
             //TRTools.Log($"Initializing TRItems...");
@@ -80,6 +83,31 @@ namespace TinyResort {
             LeadPlugin.plugin.AddCommand("list_items", "Lists every item added by a mod.", ListItems);
             //TRTools.Log($"End Initialization TRItems...");
 
+        }
+
+        internal static void FixRecipes() {
+            if (Inventory.inv) {
+                for (int i = 0; i < Inventory.inv.allItems.Length; i++) {
+                    if (Inventory.inv.allItems[i].craftable) {
+                        foreach (var material in Inventory.inv.allItems[i].craftable.itemsInRecipe) TRItems.FixRecipeItemID(material);
+
+                        if (Inventory.inv.allItems[i].craftable.altRecipes.Length > 0) {
+                            foreach (var recipe in Inventory.inv.allItems[i].craftable.altRecipes) {
+                                foreach (var material in recipe.itemsInRecipe) TRItems.FixRecipeItemID(material);
+                            }
+                        }
+                    }
+                }
+            }
+            fixedRecipes = true;
+        }
+        
+        internal static void FixRecipeItemID(InventoryItem material) {
+            if (material.getItemId() == -1) {
+                foreach (var item in Inventory.inv.allItems) {
+                    if (item.itemName == material.itemName) { material.setItemId(item.getItemId()); }
+                }
+            }
         }
 
         /// <summary>
@@ -260,9 +288,7 @@ namespace TinyResort {
 
                 if (item.Value.tileTypes) {
                     if (item.Value.tileTypes.isPath) {
-                        try {
-                            var test = item.Value.tileTypes;
-                        }
+                        try { var test = item.Value.tileTypes; }
                         catch {
                             TRTools.LogError($"Unable to load {item.Key}. tileTypes is not set correctly.");
                             continue;
@@ -270,43 +296,33 @@ namespace TinyResort {
                     }
                 }
                 if (item.Value.inventoryItem) {
-                    try {
-                        var test = item.Value.inventoryItem;
-                    }
+                    try { var test = item.Value.inventoryItem; }
                     catch {
                         TRTools.LogError($"Unable to load {item.Key}. invItem is not set correctly.");
                         continue;
                     }
                 }
                 if (item.Value.tileObject) {
-                    try {
-                        var test = item.Value.tileObject;
-                    }
+                    try { var test = item.Value.tileObject; }
                     catch {
                         TRTools.LogError($"Unable to load {item.Key}. tileObject is not set correctly.");
                         continue;
                     }
-                    try {
-                        var test = item.Value.tileObjectSettings;
-                    }
+                    try { var test = item.Value.tileObjectSettings; }
                     catch {
                         TRTools.LogError($"Unable to load {item.Key}. tileObjectSettings is not set correctly.");
                         continue;
                     }
                 }
                 if (item.Value.vehicle) {
-                    try {
-                        var test = item.Value.inventoryItem.spawnPlaceable;
-                    }
+                    try { var test = item.Value.inventoryItem.spawnPlaceable; }
                     catch {
                         TRTools.LogError($"Unable to load {item.Key}. spawnPlaceable is not set correctly.");
                         continue;
                     }
                 }
                 if (item.Value.pickUpAndCarry) {
-                    try {
-                        var test = item.Value.pickUpAndCarry.gameObject;
-                    }
+                    try { var test = item.Value.pickUpAndCarry.gameObject; }
                     catch {
                         TRTools.LogError($"Unable to load {item.Key}. carryable is not set correctly.");
                         continue;
@@ -351,7 +367,7 @@ namespace TinyResort {
                     item.Value.pickUpAndCarry.prefabId = carryablePrefabsFull.Count - 1;
                     customCarryableByID[carryablePrefabsFull.Count - 1] = item.Value;
                 }
-
+                
             }
 
             // Set the game's arrays to match the new lists that include the custom items
@@ -365,6 +381,7 @@ namespace TinyResort {
             TRTools.Log($"Ending ManageAllItemArray...");
 
         }
+        
 
         // This is used to restore the modded items into the lists after saving. It just takes the list of items we have
         // and adds them to the games arrays. 
@@ -788,6 +805,7 @@ namespace TinyResort {
         public TileTypes tileTypes;
         public Vehicle vehicle;
         public PickUpAndCarry pickUpAndCarry;
+        public Recipe recipe;
 
         internal static TRCustomItem Create(string assetBundlePath) {
 
@@ -804,6 +822,7 @@ namespace TinyResort {
                 if (newItem.tileTypes == null) { newItem.tileTypes = AllAssets[i].GetComponent<TileTypes>(); }
                 if (newItem.vehicle == null) { newItem.vehicle = AllAssets[i].GetComponent<Vehicle>(); }
                 if (newItem.pickUpAndCarry == null) { newItem.pickUpAndCarry = AllAssets[i].GetComponent<PickUpAndCarry>(); }
+                if (newItem.recipe == null) { newItem.recipe = AllAssets[i].GetComponent<Recipe>(); }
             }
 
             bundle.Unload(false);
@@ -813,10 +832,10 @@ namespace TinyResort {
 
         internal static TRCustomItem Create(
             InventoryItem inventoryItem = null, TileObject tileObject = null, TileObjectSettings tileObjectSettings = null,
-            TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null
+            TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null, Recipe recipe = null
         ) {
 
-            if (inventoryItem == null && tileObject == null && tileObjectSettings == null && tileTypes == null && vehicle == null && pickUpAndCarry == null) { return null; }
+            if (inventoryItem == null && tileObject == null && tileObjectSettings == null && tileTypes == null && vehicle == null && pickUpAndCarry == null && recipe == null) { return null; }
 
             var newItem = new TRCustomItem();
 
@@ -826,6 +845,7 @@ namespace TinyResort {
             newItem.tileTypes = tileTypes;
             newItem.vehicle = vehicle;
             newItem.pickUpAndCarry = pickUpAndCarry;
+            newItem.recipe = recipe;
 
             return newItem;
         }
