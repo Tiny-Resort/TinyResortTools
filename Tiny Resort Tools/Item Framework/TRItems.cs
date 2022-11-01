@@ -58,6 +58,7 @@ namespace TinyResort {
         private static List<Chest> privateStashesVanilla;
 
         internal static bool fixedRecipes;
+        internal static bool itemNeedsRepaired;
 
         /// <returns>The details for an item with the given item ID.</returns>
         public static InventoryItem GetItemDetails(int itemID) {
@@ -103,6 +104,7 @@ namespace TinyResort {
         }
 
         internal static void FixRecipeItemID(InventoryItem material) {
+            getItemId.runByAPI = true;
             if (material.getItemId() == -1) {
                 foreach (var item in Inventory.inv.allItems) {
                     if (item.itemName == material.itemName) { material.setItemId(item.getItemId()); }
