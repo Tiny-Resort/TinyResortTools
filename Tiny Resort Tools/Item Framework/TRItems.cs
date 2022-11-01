@@ -805,7 +805,6 @@ namespace TinyResort {
         public TileTypes tileTypes;
         public Vehicle vehicle;
         public PickUpAndCarry pickUpAndCarry;
-        public Recipe recipe;
 
         internal static TRCustomItem Create(string assetBundlePath) {
 
@@ -822,7 +821,6 @@ namespace TinyResort {
                 if (newItem.tileTypes == null) { newItem.tileTypes = AllAssets[i].GetComponent<TileTypes>(); }
                 if (newItem.vehicle == null) { newItem.vehicle = AllAssets[i].GetComponent<Vehicle>(); }
                 if (newItem.pickUpAndCarry == null) { newItem.pickUpAndCarry = AllAssets[i].GetComponent<PickUpAndCarry>(); }
-                if (newItem.recipe == null) { newItem.recipe = AllAssets[i].GetComponent<Recipe>(); }
             }
 
             bundle.Unload(false);
@@ -832,10 +830,10 @@ namespace TinyResort {
 
         internal static TRCustomItem Create(
             InventoryItem inventoryItem = null, TileObject tileObject = null, TileObjectSettings tileObjectSettings = null,
-            TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null, Recipe recipe = null
+            TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null
         ) {
 
-            if (inventoryItem == null && tileObject == null && tileObjectSettings == null && tileTypes == null && vehicle == null && pickUpAndCarry == null && recipe == null) { return null; }
+            if (inventoryItem == null && tileObject == null && tileObjectSettings == null && tileTypes == null && vehicle == null && pickUpAndCarry == null) { return null; }
 
             var newItem = new TRCustomItem();
 
@@ -845,7 +843,6 @@ namespace TinyResort {
             newItem.tileTypes = tileTypes;
             newItem.vehicle = vehicle;
             newItem.pickUpAndCarry = pickUpAndCarry;
-            newItem.recipe = recipe;
 
             return newItem;
         }
