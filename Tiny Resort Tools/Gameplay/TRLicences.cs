@@ -36,7 +36,7 @@ namespace TinyResort {
             TRData.postLoadEvent += LoadLicenceData;
             TRData.injectDataEvent += LoadLicences;
 
-            defaultLicenceSprite = TRAssets.LoadSprite(Path.Combine("TR Tools", "default_licence.png"), Vector2.one * 0.5f);
+            defaultLicenceSprite = TRAssets.LoadTextureFromAssetBundle(TRAssets.LoadAssetBundleFromDLL("licenceimages"), "default_licence", Vector2.one*0.5f);
         }
 
         internal static string ListLicences(string[] args) {

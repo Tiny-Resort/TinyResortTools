@@ -391,7 +391,7 @@
       <EmbeddedResource Include="Embedded Resources\quickitems_bundle" />
     </ItemGroup>
     <ItemGroup>
-      <EmbeddedResource Include="Embedded Resources\default_licence.png" />
+      <EmbeddedResource Include="Embedded Resources\licenceimages" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <PropertyGroup>
