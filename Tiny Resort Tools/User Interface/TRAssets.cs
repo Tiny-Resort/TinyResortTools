@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using BepInEx;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -61,7 +63,7 @@ namespace TinyResort {
             string TargetResourcePath = CurrentAssemblyResourcePaths.Find(CurrentResource => CurrentResource.Contains(name));
             return AssetBundle.LoadFromStream(CurrentAssembly.GetManifestResourceStream(TargetResourcePath));
         }
-
+        
         /// <summary>Returns a list of all files in a folder that can be imported as a texture (or sprite). Includes subdirectories.</summary>
         /// <param name="relativePath">Path to the folder that you want to be scanned, relative to the BepInEx plugins folder.</param>
         public static List<string> ListAllTextures(string relativePath) => ListAllFiles(relativePath, textureFormats);
