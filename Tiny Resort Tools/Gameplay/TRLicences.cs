@@ -35,7 +35,7 @@ namespace TinyResort {
             TRData.preSaveEvent += SaveLicenceData;
             TRData.postLoadEvent += LoadLicenceData;
             TRData.injectDataEvent += LoadLicences;
-            
+
             defaultLicenceSprite = TRAssets.LoadTextureFromAssetBundle(TRAssets.LoadAssetBundleFromDLL("licenceimages"), "default_licence", Vector2.one*0.5f);
         }
 

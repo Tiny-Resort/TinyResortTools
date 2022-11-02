@@ -63,6 +63,7 @@ namespace TinyResort {
             string TargetResourcePath = CurrentAssemblyResourcePaths.Find(CurrentResource => CurrentResource.Contains(name));
             return AssetBundle.LoadFromStream(CurrentAssembly.GetManifestResourceStream(TargetResourcePath));
         }
+
         internal static Sprite LoadTextureFromAssetBundle(AssetBundle myAssetBundle, string textureName, Vector2 pivot) {
             Texture2D tex = myAssetBundle.LoadAsset<Texture2D>(textureName);
             Sprite mySprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), pivot, 100.0f);
