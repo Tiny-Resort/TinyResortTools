@@ -19,7 +19,9 @@ namespace TinyResort {
         private static Dictionary<BaseUnityPlugin, TRPlugin> HookedPlugins = new Dictionary<BaseUnityPlugin, TRPlugin>();
 
         /// <summary>Tells you if the player is in the main menu or not.</summary>
-        public static bool InMainMenu = true;
+        public static bool InMainMenu => _InMainMenu;
+        internal static bool _InMainMenu = true;
+
         internal static bool LeavingMainMenu;
 
         /// <summary> Initializes the Tiny Resort toolset </summary>
@@ -43,14 +45,16 @@ namespace TinyResort {
                 HookedPlugins[plugin].nexusID.Value = id;
                 HookedPlugins[plugin].plugin.Config.Save();
             }
-            
+
             // If the ID was invalid give a warning
             if (id == -1) {
-                TRTools.LogError($"We highly recommend adding the nexusID from the URL of your mod page. "
-                               + $"This will allow you to use all of the TR Tool's features and shows users when there is an update for your mod. "
-                               + $"This error can be safely ignored if you are in a testing phase, but please add one before the release.", useASCII:true);
+                TRTools.LogError(
+                    $"We highly recommend adding the nexusID from the URL of your mod page. "
+                  + $"This will allow you to use all of the TR Tool's features and shows users when there is an update for your mod. "
+                  + $"This error can be safely ignored if you are in a testing phase, but please add one before the release.", useASCII: true
+                );
             }
-            
+
             // Add debugmode and chat command config entries
             HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
             if (!string.IsNullOrEmpty(chatTrigger) && chatTrigger.ToLower() != "help") {
@@ -91,7 +95,7 @@ namespace TinyResort {
             devArt += "| |/ /| |___\\ \\_/ / |___| |___\\ \\_/ / |   | |___| |\\ \\  | |  | \\ \\_/ / |/ /| |___ \n";
             devArt += "|___/ \\____/ \\___/\\____/\\_____/\\___/\\_|   \\____/\\_| \\_| \\_|  |_/\\___/|___/ \\____/ \n\n";
             devArt += "==========================================================================================================\n\n";
-            
+
             return devArt;
         }
 
@@ -112,7 +116,7 @@ namespace TinyResort {
         }
 
         internal static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") { LeadPlugin.plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod); }
-        
+
         #region Easy Notifications
 
         /// <summary> Displays a notification at the top of the screen right away rather than waiting on any previous notifications. </summary>
@@ -145,6 +149,6 @@ namespace TinyResort {
         
         #endregion*/
 
-        
     }
+
 }

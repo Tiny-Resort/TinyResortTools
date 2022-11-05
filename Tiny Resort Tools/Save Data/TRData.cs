@@ -59,6 +59,7 @@ namespace TinyResort {
         /// <summary>This event will run just AFTER a save slot is loaded, just before the ijectDataEvent.</summary>
         public static SaveEvent postLoadEvent;
 
+        public static SaveEvent postClientLoadEvent;
         // These events are only accessible to us so that we can make all custom data is fully saved or loaded before the postLoad and postSave events can be used by mod authors
         internal static SaveEvent trueSaveEvent;
         internal static SaveEvent trueLoadEvent;

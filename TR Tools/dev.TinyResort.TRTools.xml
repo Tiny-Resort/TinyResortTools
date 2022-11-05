@@ -319,7 +319,7 @@
         <member name="T:TinyResort.TRTools">
             <summary>Used mostly for initialization and internal control of the API's features.</summary>
         </member>
-        <member name="F:TinyResort.TRTools.InMainMenu">
+        <member name="P:TinyResort.TRTools.InMainMenu">
             <summary>Tells you if the player is in the main menu or not.</summary>
         </member>
         <member name="M:TinyResort.TRTools.Initialize(BepInEx.BaseUnityPlugin,System.Int32,System.String)">
