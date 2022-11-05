@@ -61,7 +61,7 @@ namespace TinyResort {
             newItem.inventoryItem.itemName = itemInfo.itemName;
             newItem.inventoryItem.itemDescription = itemInfo.description;
 
-            // Sets the texture for the item (TODO: Would need to be set up to work with non-clothing quick items)
+            // Sets the texture for the item
             newItem.inventoryItem.equipable.material = new Material(newItem.inventoryItem.equipable.material);
             newItem.inventoryItem.equipable.material.mainTexture = texture;
 
