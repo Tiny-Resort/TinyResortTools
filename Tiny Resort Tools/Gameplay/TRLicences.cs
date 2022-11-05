@@ -36,8 +36,7 @@ namespace TinyResort {
             TRData.postLoadEvent += LoadLicenceData;
             TRData.injectDataEvent += LoadLicences;
 
-            defaultLicenceSprite = TRAssets.LoadSprite(Path.Combine("TR Tools", "default_licence.png"), Vector2.one * 0.5f);
-
+            defaultLicenceSprite = TRAssets.LoadTextureFromAssetBundle(TRAssets.LoadAssetBundleFromDLL("licenceimages"), "default_licence", Vector2.one*0.5f);
         }
 
         internal static string ListLicences(string[] args) {
@@ -46,7 +45,7 @@ namespace TinyResort {
             foreach (var li in CustomLicences) { str += li.uniqueID + " (" + li.title + ")" + "\n"; }
             return str;
         }
-
+ 
         internal static string UnlockLicence(string[] args) {
             if (args.Length <= 0) { return "<color=red>No licence specified.</color> " + ListLicences(null); }
             foreach (var li in CustomLicences) {

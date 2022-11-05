@@ -90,8 +90,10 @@ namespace TinyResort {
             else { TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. THis is not allowed and will be blocked. If you are a developer, please turn on developer mode."); }
 
             if (TRItems.customItems.ContainsKey(newItem.customItemID) && itemInfo.type.ToLower().Replace(" ", "").Trim() == "path") {
-                newItem.tileTypes = quickItemsBundle.LoadAsset<GameObject>("pathTileType").GetComponent<TileTypes>();
+                newItem.tileTypes = GameObject.Instantiate(quickItemsBundle.LoadAsset<GameObject>("pathTileType").GetComponent<TileTypes>());
+                GameObject.DontDestroyOnLoad(newItem.tileTypes);
                 newItem.tileTypes.myTileMaterial = new Material(newItem.inventoryItem.equipable.material);
+                newItem.tileTypes.dropOnChange = newItem.inventoryItem; 
             }
 
             //TRTools.Log($"Custom ID: {newItem.customItemID}");
