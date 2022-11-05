@@ -6,73 +6,71 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace TinyResort {
+namespace TinyResort; 
 
-    internal class TRObjects {
+internal class TRObjects {
 
-        internal static Dictionary<string, GameObject> currentObjects = new Dictionary<string, GameObject>();
+    internal static Dictionary<string, GameObject> currentObjects = new();
 
-        public static void Initialize() {
+    public static void Initialize() {
 
-            Type transformType = typeof(Transform);
-            Transform[] toFind = (Transform[])Resources.FindObjectsOfTypeAll(transformType);
+        var transformType = typeof(Transform);
+        var toFind = (Transform[])Resources.FindObjectsOfTypeAll(transformType);
 
-            foreach (var trans in toFind) {
-                string path = trans.gameObject.name;
-                if (trans.parent != null) {
-                    Transform parent = trans.parent;
-                    while (parent != null) {
-                        path = parent.gameObject.name + "/" + path;
-                        parent = parent.parent;
-                    }
-                    currentObjects[path] = trans.gameObject;
+        foreach (var trans in toFind) {
+            var path = trans.gameObject.name;
+            if (trans.parent != null) {
+                var parent = trans.parent;
+                while (parent != null) {
+                    path = parent.gameObject.name + "/" + path;
+                    parent = parent.parent;
                 }
+                currentObjects[path] = trans.gameObject;
             }
         }
+    }
 
-        /// <summary>Searches for and instantiates an object while storing it in a Dictionary to avoid duplication.</summary>
-        /// <param name="location">Location of the GameObject you would like to instantiate, i.e. "MapCanvas/Menu".</param>
-        /// <param name="parentObject">Parent object you would like to attach your button too.</param>
-        public static GameObject InstantiateObject(string location, GameObject parentObject) {
-            var toReturn = Object.Instantiate(currentObjects[location], parentObject.transform);
-            return toReturn;
+    /// <summary>Searches for and instantiates an object while storing it in a Dictionary to avoid duplication.</summary>
+    /// <param name="location">Location of the GameObject you would like to instantiate, i.e. "MapCanvas/Menu".</param>
+    /// <param name="parentObject">Parent object you would like to attach your button too.</param>
+    public static GameObject InstantiateObject(string location, GameObject parentObject) {
+        var toReturn = Object.Instantiate(currentObjects[location], parentObject.transform);
+        return toReturn;
+    }
+
+    /// <summary>Returns the game object at the specified location from a pre-prepared dictionary.</summary>
+    /// <param name="location">Location of the GameObject you would like to return, i.e. "MapCanvas/Menu".</param>
+    public static GameObject GetObject(string location) => currentObjects[location];
+
+    /// <summary>Creates a button based on a game object and attached it to a parent object.</summary>
+    /// <param name="Location">Location of the GameObject you would like to instantiate, i.e. "MapCanvas/Menu"</param>
+    /// <param name="parentObject">Parent object you would like to attach your button too.</param>
+    /// <param name="Text">The text you would like the button to show.</param>
+    /// <param name="fontSize">Font Size of the button's text.</param>
+    /// <param name="method">The method you would like to have run when the button is pressed.</param>
+    public static GameObject CreateButton(string Location, GameObject parentObject, string Text, int fontSize, UnityAction method) {
+        var GO = Object.Instantiate(currentObjects[Location], parentObject.transform);
+        GO.name = Text;
+        var GOText = GO.transform.GetComponentInChildren<TextMeshProUGUI>();
+        GOText.text = Text;
+        GOText.fontSize = fontSize;
+        /*GOText.outlineWidth = .42f;
+        GOText.outlineColor = new Color32(0, 0, 0, 101); */
+
+        var buttonExists = GO.GetComponent<InvButton>();
+        if (buttonExists) {
+            buttonExists.onButtonPress = new UnityEvent();
+            buttonExists.onButtonPress.AddListener(method);
+            buttonExists.isACloseButton = false;
+            buttonExists.isSnappable = true;
         }
 
-        /// <summary>Returns the game object at the specified location from a pre-prepared dictionary.</summary>
-        /// <param name="location">Location of the GameObject you would like to return, i.e. "MapCanvas/Menu".</param>
-        public static GameObject GetObject(string location) => currentObjects[location];
-        
-        /// <summary>Creates a button based on a game object and attached it to a parent object.</summary>
-        /// <param name="Location">Location of the GameObject you would like to instantiate, i.e. "MapCanvas/Menu"</param>
-        /// <param name="parentObject">Parent object you would like to attach your button too.</param>
-        /// <param name="Text">The text you would like the button to show.</param>
-        /// <param name="fontSize">Font Size of the button's text.</param>
-        /// <param name="method">The method you would like to have run when the button is pressed.</param>
-        public static GameObject CreateButton(string Location, GameObject parentObject, string Text, int fontSize, UnityAction method) {
-            GameObject GO = Object.Instantiate(currentObjects[Location], parentObject.transform);
-            GO.name = Text;
-            var GOText = GO.transform.GetComponentInChildren<TextMeshProUGUI>();
-            GOText.text = Text;
-            GOText.fontSize = fontSize;
-            /*GOText.outlineWidth = .42f;
-            GOText.outlineColor = new Color32(0, 0, 0, 101); */
+        GO.GetComponent<WindowAnimator>().openDelay = 0f;
 
-            var buttonExists = GO.GetComponent<InvButton>();
-            if (buttonExists) {
-                buttonExists.onButtonPress = new UnityEvent();
-                buttonExists.onButtonPress.AddListener(method);
-                buttonExists.isACloseButton = false;
-                buttonExists.isSnappable = true;
-            }
+        var GOIm = GO.GetComponent<Image>();
+        GOIm.color = new Color(.502f, .356f, .235f);
 
-            GO.GetComponent<WindowAnimator>().openDelay = 0f;
-            
-            var GOIm = GO.GetComponent<Image>();
-            GOIm.color = new Color(.502f, .356f, .235f);
-            
-            return GO;
-        }
-        
+        return GO;
     }
 
 }

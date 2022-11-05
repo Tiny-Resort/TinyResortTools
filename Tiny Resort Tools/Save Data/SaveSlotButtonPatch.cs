@@ -1,19 +1,17 @@
 using HarmonyLib;
 using UnityEngine;
 
-namespace TinyResort {
+namespace TinyResort; 
 
-    // This is run anytime a save slot is clicked. It will happened before any loading is started. 
-    
-    [HarmonyPatch(typeof(SaveSlotButton), "onPress")]
-    internal class SaveSlotButtonPatch {
-        
-        [HarmonyPrefix]
-        internal static void Prefix(SaveLoad __instance) {
-            //TRTools.Log($"Running onPress");
-            TRData.preLoadEvent?.Invoke();
-        }
+// This is run anytime a save slot is clicked. It will happened before any loading is started. 
 
-    }
+[HarmonyPatch(typeof(SaveSlotButton), "onPress")]
+internal class SaveSlotButtonPatch {
+
+    [HarmonyPrefix]
+    internal static void Prefix(SaveLoad __instance) =>
+
+        //TRTools.Log($"Running onPress");
+        TRData.preLoadEvent?.Invoke();
 
 }
