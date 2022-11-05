@@ -9,7 +9,7 @@ namespace TinyResort {
         [HarmonyPostfix]
         internal static void patch(SaveLoad __instance) {
             TRTools.LeavingMainMenu = false;
-            TRTools.InMainMenu = true;
+            TRTools._InMainMenu = true;
         }
         
     }

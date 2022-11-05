@@ -7,16 +7,14 @@ namespace TinyResort {
     // We might want to move it there? I am not sure the reason it was put here in the first place. 
     // We might inject buried data into the Buried Data Easy Save file (.ES3) 
     
-    [HarmonyPatch(typeof(SaveLoad), "EasySaveOnTop")]
-    internal class EasySaveOnTopPatch {
+    [HarmonyPatch(typeof(SaveLoad), "EasySaveAfter")]
+    internal class EasySaveAfterPostfix {
         
         [HarmonyPostfix]
-        internal static void patch(SaveLoad __instance) {
+        internal static void Postfix(SaveLoad __instance) {
             TRData.trueSaveEvent?.Invoke();
             TRData.injectDataEvent?.Invoke();
             TRData.postSaveEvent?.Invoke();
         }
-        
     }
-    
 }

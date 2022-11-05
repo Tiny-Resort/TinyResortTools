@@ -1,15 +1,15 @@
-/*using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Net;
 using HarmonyLib;
 using UnityEngine;
 
 namespace TinyResort {
 
-    // LoadCarriables is only run OnServerStart, so all of these will only run when loading your file. 
+    // loadInv is required because clients only run this when joining a server.
     
-    [HarmonyPatch(typeof(SaveLoad), "loadCarriables")]
+    [HarmonyPatch(typeof(NetworkMapSharer), "OnStartClient")]
     [HarmonyPriority(1)]
-    internal class loadCarriables {
+    internal class OnStartClient {
         
         [HarmonyPostfix]
         public static void Postfix() {
@@ -18,8 +18,7 @@ namespace TinyResort {
             TRData.postLoadEvent?.Invoke();
             TRData.injectDataEvent?.Invoke();
             TRTools._InMainMenu = false; 
-            
-            TRTools.LogError($"Run from loadCarriables");
+
         }
     }
-}*/
+}

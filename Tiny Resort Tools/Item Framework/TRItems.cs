@@ -74,7 +74,6 @@ namespace TinyResort {
             TRData.cleanDataEvent += UnloadCustomItems;
             TRData.postLoadEvent += LoadCustomMovables;
             TRData.injectDataEvent += LoadCustomItems;
-            TRData.postClientLoadEvent += LoadClientCustomItems;
             
             LeadPlugin.plugin.AddCommand(
                 "give_item", "Gives you the specified number of any MODDED item. Does not work with vanilla items. To see the custom item IDs, use /tr list_items.",
@@ -432,30 +431,23 @@ namespace TinyResort {
         }
 
         internal static void UnloadClientsItems() {
-            TRTools.LogError($"Removing 1");
             InvItemData.all.Clear();
-            TRTools.LogError($"Removing 2");
             StashData.all.Clear();
-            TRTools.LogError($"Removing 3");
             LetterData.all.Clear();
-            TRTools.LogError($"Removing 4");
             EquipData.all.Clear();
 
-            TRTools.LogError($"Removing Inventory Items");
             for (var i = 0; i < Inventory.inv.invSlots.Length; i++) {
                 if (customItemsByItemID.ContainsKey(Inventory.inv.invSlots[i].itemNo)) {
                     //TRTools.Log($"Found Custom Item: {customItemsByItemID[Inventory.inv.invSlots[i].itemNo].inventoryItem.itemName}");
                     InvItemData.Save(i, Inventory.inv.invSlots[i].stack);
                 }
             }
-            TRTools.LogError($"Removing Private Stash Items");
             for (var j = 0; j < 2; j++) {
                 for (var i = 0; i < ContainerManager.manage.privateStashes[j].itemIds.Length; i++) {
                     if (customItemsByItemID.ContainsKey(ContainerManager.manage.privateStashes[j].itemIds[i])) { StashData.Save(ContainerManager.manage.privateStashes[j].itemStacks[i], j, i); }
                 }
             }
 
-            TRTools.LogError($"Removing Equipment Items");
 
             // Unloads and saves all equipped clothing
             if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo)) { EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat); }
@@ -464,7 +456,6 @@ namespace TinyResort {
             if (customItemsByItemID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo)) { EquipData.Save(EquipWindow.equip.pantsSlot.stack, EquipData.EquipLocations.Pants); }
             if (customItemsByItemID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo)) { EquipData.Save(EquipWindow.equip.shoeSlot.stack, EquipData.EquipLocations.Shoes); }
 
-            TRTools.LogError($"Removing Mailbox Items");
             var inMailBox = new List<Letter>(MailManager.manage.mailInBox);
             foreach (var letter in inMailBox) {
                 if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached)) LetterData.Save(letter, false);
@@ -475,7 +466,6 @@ namespace TinyResort {
             foreach (var letter in tomorrowMail) {
                 if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached)) LetterData.Save(letter, true);
             }
-            TRTools.LogError($"All Removed...");
 
             Data.SetValue("InvItemData", InvItemData.all);
             Data.SetValue("EquipData", EquipData.all);
@@ -818,34 +808,10 @@ namespace TinyResort {
             UnmodTheArrays();
 
         }
-
-        internal static void LoadClientCustomItems() {
-            if (!NetworkMapSharer.share.isServer) {
-                TRTools.LogError($"Only should be seen on client");
-                if (!loadedStashes) {
-                    TRTools.Log($"Loading all Stashes: Required to parse them later.");
-                    ContainerManager.manage.loadStashes();
-                    loadedStashes = true;
-
-                }
-                privateStashesVanilla = ContainerManager.manage.privateStashes.ToList();
-                TRTools.Log($"Start adding in all Saved Custom Items...");
-                TRTools.Log($"Making sure the array sizes are the appropriate size...");
-                ModTheArrays();
-
-                InvItemData.LoadAll();
-                EquipData.LoadAll();
-                LetterData.LoadAll();
-                StashData.LoadAll();
-
-                var SavedCatalogue = (List<string>)TRItems.Data.GetValue("CatalogueData", new List<string>());
-                for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
-                    if (SavedCatalogue.Contains(customItemsByItemID[i].customItemID)) { CatalogueManager.manage.collectedItem[i] = true; }
-            }
-        }
-
+        
         // Called whenever loading or after saving
         internal static void LoadCustomItems() {
+            
             if (!loadedStashes) {
                 TRTools.Log($"Loading all Stashes: Required to parse them later.");
                 ContainerManager.manage.loadStashes();
@@ -858,36 +824,38 @@ namespace TinyResort {
             TRTools.Log($"Making sure the array sizes are the appropriate size...");
             ModTheArrays();
 
-            // If just re-injecting data, then these only need to be added back to lists
-            if (!TRTools.InMainMenu) {
-                TRTools.Log($"Loading in Vehicle and Carryables...");
-                VehicleData.LoadAll(false);
-                CarryableData.LoadAll(false);
-            }
-
-            // Loads all other items normally
-            TRTools.Log($"Loading in the rest of the data...");
-            InvItemData.LoadAll();
-            ChestData.LoadAll();
-            EquipData.LoadAll();
-            LetterData.LoadAll();
-            StashData.LoadAll();
-            HouseData.LoadAll();
-            ObjectData.LoadAll();
-            ObjectTopData.LoadAll();
-            BridgeData.LoadAll();
-            PathData.LoadAll();
-            BuriedObjectData.LoadAll();
-            ItemChangerData.LoadAll();
-            ItemStatusData.LoadAll();
-            PlantData.LoadAll();
-
             // Loads saved unlocks for custom items in the catalogue
             TRTools.Log($"Loading in the saved Catalogue data and adding to list...");
             var SavedCatalogue = (List<string>)TRItems.Data.GetValue("CatalogueData", new List<string>());
             for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
                 if (SavedCatalogue.Contains(customItemsByItemID[i].customItemID)) { CatalogueManager.manage.collectedItem[i] = true; }
 
+            InvItemData.LoadAll();
+            EquipData.LoadAll();
+            LetterData.LoadAll();
+            StashData.LoadAll();
+
+            if (NetworkMapSharer.share.isServer) {
+                // Loads all other items normally
+                TRTools.Log($"Loading in the rest of the data...");
+                ChestData.LoadAll();
+                HouseData.LoadAll();
+                ObjectData.LoadAll();
+                ObjectTopData.LoadAll();
+                BridgeData.LoadAll();
+                PathData.LoadAll();
+                BuriedObjectData.LoadAll();
+                ItemChangerData.LoadAll();
+                ItemStatusData.LoadAll();
+                PlantData.LoadAll();
+
+                // If just re-injecting data, then these only need to be added back to lists
+                if (!TRTools.InMainMenu) {
+                    TRTools.Log($"Loading in Vehicle and Carryables...");
+                    VehicleData.LoadAll(false);
+                    CarryableData.LoadAll(false);
+                }
+            }
         }
 
         // Only called when loading a save slot, not when sleeping
