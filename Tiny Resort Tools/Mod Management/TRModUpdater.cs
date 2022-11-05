@@ -209,7 +209,6 @@ namespace TinyResort {
             // Gets existing plugins
             var pluginInfos = UnityChainloader.Instance.Plugins.Values;
             foreach (var kvp in pluginInfos) {
-
                 // Look for the plugin's config file. One none exists, create one if desired
                 string cfgFile = Path.Combine(configDirectory, kvp.Metadata.GUID + ".cfg");
                 if (!File.Exists(cfgFile)) {

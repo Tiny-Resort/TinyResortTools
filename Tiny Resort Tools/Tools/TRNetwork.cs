@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Mirror;
 using Mirror.RemoteCalls;
 
@@ -5,8 +6,25 @@ namespace TinyResort {
 
     public class TRNetwork : NetworkBehaviour {
 
+        // Create a method to add characters to a TRNetwork type (might need a class)
+        // Create a method to call the Target/Cmd methods using a list of connected players (to specify who sent to)
+        
+        internal static TRNetwork instance;
+        internal List<TRNetwork> connectedPlayers = new List<TRNetwork>();
+
+        /*public void addPlayerPostfix(CharMovement newChar) {
+            if (!this.connectedPlayers.Contains(newChar) && !newChar.isLocalPlayer) { this.connectedPlayers.Add(newChar); }
+        }*/
+
+
         #region Remote Commands
 
+        private void Awake() {
+            TRTools.QuickPatch(typeof(NetworkPlayersManager), "updateStatus", typeof(TRNetwork), null, "addPlayerPostfix");
+            
+            instance = this;
+        }
+        
         [Command]
         public void CmdSendMessageToHost(string message) {
 	        PooledNetworkWriter writer = NetworkWriterPool.GetWriter();
@@ -53,5 +71,4 @@ namespace TinyResort {
 
         #endregion
     }
-
 }

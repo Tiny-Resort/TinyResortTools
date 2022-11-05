@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using BepInEx;
 using BepInEx.Configuration;
+using Mirror;
 using UnityEngine;
 
 namespace TinyResort {
@@ -83,6 +84,11 @@ namespace TinyResort {
             if (NetworkMapSharer.share.localChar) TRIcons.InitializeIcons();
             if (NetworkMapSharer.share.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
+            if (Input.GetKeyDown(KeyCode.F8)) {
+                TRNetwork.instance.CmdSendMessageToHost("Sending message to the host\n\n\n\n\n\n");
+                TRNetwork.instance.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[0].connectionToClient,"Sending message to the client\n\n\n\n\n\n");
+                TRNetwork.instance.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[1].connectionToClient, "Sending message to the client\n\n\n\n\n\n");
+            }
             //if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems(); }
             //if (Input.GetKeyDown(KeyCode.F12)) { TRItems.CurrentSaveInfo(); }
             //if (Input.GetKeyDown(KeyCode.F10)) { TRItems.LoadCustomItems(); }
