@@ -58,7 +58,7 @@ namespace TinyResort {
         private static List<Chest> privateStashesVanilla;
 
         internal static bool fixedRecipes;
-        internal static bool itemNeedsRepaired;
+        internal static bool runningClient;
 
         /// <returns>The details for an item with the given item ID.</returns>
         public static InventoryItem GetItemDetails(int itemID) {
@@ -74,7 +74,8 @@ namespace TinyResort {
             TRData.cleanDataEvent += UnloadCustomItems;
             TRData.postLoadEvent += LoadCustomMovables;
             TRData.injectDataEvent += LoadCustomItems;
-
+            TRData.postClientLoadEvent += LoadClientCustomItems;
+            
             LeadPlugin.plugin.AddCommand(
                 "give_item", "Gives you the specified number of any MODDED item. Does not work with vanilla items. To see the custom item IDs, use /tr list_items.",
                 GivePlayerItem, "CustomItemID", "Quantity"
@@ -430,12 +431,83 @@ namespace TinyResort {
             TRTools.Log($"Ending UnmodTheArrays...");
         }
 
+        internal static void UnloadClientsItems() {
+            TRTools.LogError($"Removing 1");
+            InvItemData.all.Clear();
+            TRTools.LogError($"Removing 2");
+            StashData.all.Clear();
+            TRTools.LogError($"Removing 3");
+            LetterData.all.Clear();
+            TRTools.LogError($"Removing 4");
+            EquipData.all.Clear();
+
+            TRTools.LogError($"Removing Inventory Items");
+            for (var i = 0; i < Inventory.inv.invSlots.Length; i++) {
+                if (customItemsByItemID.ContainsKey(Inventory.inv.invSlots[i].itemNo)) {
+                    //TRTools.Log($"Found Custom Item: {customItemsByItemID[Inventory.inv.invSlots[i].itemNo].inventoryItem.itemName}");
+                    InvItemData.Save(i, Inventory.inv.invSlots[i].stack);
+                }
+            }
+            TRTools.LogError($"Removing Private Stash Items");
+            for (var j = 0; j < 2; j++) {
+                for (var i = 0; i < ContainerManager.manage.privateStashes[j].itemIds.Length; i++) {
+                    if (customItemsByItemID.ContainsKey(ContainerManager.manage.privateStashes[j].itemIds[i])) { StashData.Save(ContainerManager.manage.privateStashes[j].itemStacks[i], j, i); }
+                }
+            }
+
+            TRTools.LogError($"Removing Equipment Items");
+
+            // Unloads and saves all equipped clothing
+            if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo)) { EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat); }
+            if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo)) { EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face); }
+            if (customItemsByItemID.ContainsKey(EquipWindow.equip.shirtSlot.itemNo)) { EquipData.Save(EquipWindow.equip.shirtSlot.stack, EquipData.EquipLocations.Shirt); }
+            if (customItemsByItemID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo)) { EquipData.Save(EquipWindow.equip.pantsSlot.stack, EquipData.EquipLocations.Pants); }
+            if (customItemsByItemID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo)) { EquipData.Save(EquipWindow.equip.shoeSlot.stack, EquipData.EquipLocations.Shoes); }
+
+            TRTools.LogError($"Removing Mailbox Items");
+            var inMailBox = new List<Letter>(MailManager.manage.mailInBox);
+            foreach (var letter in inMailBox) {
+                if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached)) LetterData.Save(letter, false);
+            }
+
+            // Removes mail that would be sent the next night if it contains a custom item
+            var tomorrowMail = new List<Letter>(MailManager.manage.tomorrowsLetters);
+            foreach (var letter in tomorrowMail) {
+                if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached)) LetterData.Save(letter, true);
+            }
+            TRTools.LogError($"All Removed...");
+
+            Data.SetValue("InvItemData", InvItemData.all);
+            Data.SetValue("EquipData", EquipData.all);
+            Data.SetValue("LetterData", LetterData.all);
+            Data.SetValue("StashData", StashData.all);
+            
+            Data.SetValue("InvItemDataLostAndFound", InvItemData.lostAndFound);
+            Data.SetValue("EquipDataLostAndFound", EquipData.lostAndFound);
+            Data.SetValue("LetterDataLostAndFound", LetterData.lostAndFound);
+            Data.SetValue("StashDataLostAndFound", StashData.lostAndFound);
+
+            // Goes through the catalogue to find any custom items that have been unlocked
+            var SavedCatalogue = new List<string>();
+            for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
+                if (CatalogueManager.manage.collectedItem[i]) { SavedCatalogue.Add(customItemsByItemID[i].customItemID); }
+            Data.SetValue("CatalogueData", SavedCatalogue);
+            
+            UnmodTheArrays();
+        }
+        
         // One large method to go through all modded items in the game and remove them. 
         // This might be worth breaking up. Specifically, anything that is done before the Loops of the tiles can be put into
         // their own methods. 
         internal static void UnloadCustomItems() {
 
             TRTools.Log("Removing Items");
+
+            if (!NetworkMapSharer.share.isServer) {
+                TRTools.LogError($"This should only be from the client");
+                UnloadClientsItems();
+                return;
+            }
 
             // Clears all item data lists
             InvItemData.all.Clear();
@@ -682,7 +754,7 @@ namespace TinyResort {
             #endregion
 
             #region Save All Data (All and LostAndFound Lists)
-
+            
             // Saves all the new data
             Data.SetValue("InvItemData", InvItemData.all);
             Data.SetValue("ChestData", ChestData.all);
@@ -745,6 +817,31 @@ namespace TinyResort {
 
             UnmodTheArrays();
 
+        }
+
+        internal static void LoadClientCustomItems() {
+            if (!NetworkMapSharer.share.isServer) {
+                TRTools.LogError($"Only should be seen on client");
+                if (!loadedStashes) {
+                    TRTools.Log($"Loading all Stashes: Required to parse them later.");
+                    ContainerManager.manage.loadStashes();
+                    loadedStashes = true;
+
+                }
+                privateStashesVanilla = ContainerManager.manage.privateStashes.ToList();
+                TRTools.Log($"Start adding in all Saved Custom Items...");
+                TRTools.Log($"Making sure the array sizes are the appropriate size...");
+                ModTheArrays();
+
+                InvItemData.LoadAll();
+                EquipData.LoadAll();
+                LetterData.LoadAll();
+                StashData.LoadAll();
+
+                var SavedCatalogue = (List<string>)TRItems.Data.GetValue("CatalogueData", new List<string>());
+                for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
+                    if (SavedCatalogue.Contains(customItemsByItemID[i].customItemID)) { CatalogueManager.manage.collectedItem[i] = true; }
+            }
         }
 
         // Called whenever loading or after saving
