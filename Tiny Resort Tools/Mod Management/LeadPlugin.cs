@@ -83,9 +83,9 @@ namespace TinyResort {
             if (NetworkMapSharer.share.localChar) TRIcons.InitializeIcons();
             if (NetworkMapSharer.share.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
-            //if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems(); }
+            if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems(); }
             //if (Input.GetKeyDown(KeyCode.F12)) { TRItems.CurrentSaveInfo(); }
-            //if (Input.GetKeyDown(KeyCode.F10)) { TRItems.LoadCustomItems(); }
+            if (Input.GetKeyDown(KeyCode.F10)) { TRItems.LoadCustomItems(); }
             //if (Input.GetKeyDown(KeyCode.F9)) { 
             //     TRTools.Log($"Size: {SaveLoad.saveOrLoad.carryablePrefabs.Length}");
             //     NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[10], NetworkMapSharer.share.localChar.transform.position, true);

@@ -622,8 +622,11 @@ namespace TinyResort {
                     if (onTileMap[x, y] <= -1) continue;
 
                     if (allObjects[onTileMap[x, y]].showObjectOnStatusChange) {
-                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) { ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1); }
-                        else if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) { ItemStatusData.Save(onTileMapStatus[x, y], x, y, -1, -1); }
+                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing) TRTools.LogError($"Mannequin Item #s: {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]}");
+                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
+                            ItemStatusData.Save(onTileMapStatus[x, y], onTileMap[x, y], x, y, -1, -1);
+                        }
+                        else if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) { ItemStatusData.Save(onTileMapStatus[x, y], -1, x, y, -1, -1); }
                     }
 
                     #region Items on Top of Others (NOT in a house)
@@ -717,8 +720,10 @@ namespace TinyResort {
                                 }
 
                                 if (allObjects[tileObjectID].showObjectOnStatusChange) {
-                                    if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) { ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y); }
-                                    else if (allObjects[tileObjectID].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) { ItemStatusData.Save(houseMapOnTileStatus, houseTileX, houseTileY, x, y); }
+                                    if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(houseMapOnTileStatus)) {
+                                        ItemStatusData.Save(houseMapOnTileStatus, tileObjectID, houseTileX, houseTileY, x, y);
+                                    }
+                                    else if (allObjects[tileObjectID].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) { ItemStatusData.Save(houseMapOnTileStatus, -1, houseTileX, houseTileY, x, y); }
                                 }
 
                                 #region Chests (INSIDE a house)
