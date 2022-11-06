@@ -8,6 +8,7 @@ namespace TinyResort {
     // We might inject buried data into the Buried Data Easy Save file (.ES3) 
     
     [HarmonyPatch(typeof(SaveLoad), "EasySaveAfter")]
+    [HarmonyPriority(1)]
     internal class EasySaveAfterPostfix {
         
         [HarmonyPostfix]
