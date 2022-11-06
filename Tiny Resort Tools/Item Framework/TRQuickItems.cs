@@ -15,6 +15,8 @@ using Object = UnityEngine.Object;
 
 namespace TinyResort {
 
+    // TODO: Add method for tracking development items turning into production items. 
+    
     /// <summary>Tools for quickly creating clothing items.</summary>
     public class TRQuickItems {
 
@@ -87,7 +89,7 @@ namespace TinyResort {
                 if (!string.IsNullOrWhiteSpace(itemInfo.iconFileName)) UpdateIcon(newItem.inventoryItem, Paths.PluginPath + path.Replace(itemInfo.fileName, itemInfo.iconFileName));
                 TRItems.customItems[newItem.customItemID] = newItem;
             }
-            else { TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. THis is not allowed and will be blocked. If you are a developer, please turn on developer mode."); }
+            else { TRTools.LogError($"Loading a Quick Item in with a -1 Nexus ID. This is not allowed and will be blocked. If you are a developer, please turn on developer mode."); }
 
             if (TRItems.customItems.ContainsKey(newItem.customItemID) && itemInfo.type.ToLower().Replace(" ", "").Trim() == "path") {
                 newItem.tileTypes = GameObject.Instantiate(quickItemsBundle.LoadAsset<GameObject>("pathTileType").GetComponent<TileTypes>());
