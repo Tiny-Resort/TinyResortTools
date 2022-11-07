@@ -38,6 +38,8 @@ namespace TinyResort {
             // If in developer mode, give a big warning about nexus ID usage
             if (developerMode.Value) { TRTools.LogError(TRTools.TRDeveloperMode()); }
 
+            TRNetwork.instance = gameObject.AddComponent<TRNetwork>();
+
         }
 
         private void Start() {
@@ -48,6 +50,7 @@ namespace TinyResort {
             TRItems.ManageAllItemArray();
             TRIcons.Initialize();
             TRBackup.Initialize();
+
             /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
             TestLicense.SetColor(Color.cyan);
             TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
@@ -85,9 +88,13 @@ namespace TinyResort {
             if (NetworkMapSharer.share.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
             if (Input.GetKeyDown(KeyCode.F8)) {
+                plugin.Log("0");
                 TRNetwork.instance.CmdSendMessageToHost("Sending message to the host\n\n\n\n\n\n");
-                TRNetwork.instance.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[0].connectionToClient,"Sending message to the client\n\n\n\n\n\n");
-                TRNetwork.instance.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[1].connectionToClient, "Sending message to the client\n\n\n\n\n\n");
+                plugin.Log("1");
+                //TRNetwork.instance.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[0].connectionToClient,"Sending message to the client\n\n\n\n\n\n");
+                //plugin.Log("2");
+                //TRNetwork.instance.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[1].connectionToClient, "Sending message to the client\n\n\n\n\n\n");
+                //plugin.Log("3");
             }
             //if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems(); }
             //if (Input.GetKeyDown(KeyCode.F12)) { TRItems.CurrentSaveInfo(); }
