@@ -514,6 +514,7 @@ namespace TinyResort {
             PathData.all.Clear();
             BuriedObjectData.all.Clear();
             ItemChangerData.all.Clear();
+            ItemStatusData.all.Clear();
             PlantData.all.Clear();
 
             #region House Wallpaper/Flooring

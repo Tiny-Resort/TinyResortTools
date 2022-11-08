@@ -33,12 +33,10 @@ namespace TinyResort {
             var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
 
             if (houseDetails != null) {
-                TRTools.LogError($"Removing House ItemStatus");
                 houseDetails.houseMapOnTileStatus[objectXPos, objectYPos] = -1;
                 houseDetails.houseMapOnTile[objectXPos, objectYPos] = -1;
                 var house = HouseManager.manage.findHousesOnDisplay(houseXPos, houseYPos);
                 if (house) {
-                    TRTools.LogError($"Refreshing House Tiles");
                     house.refreshHouseTiles();
                 }
             }
