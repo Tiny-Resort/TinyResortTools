@@ -135,6 +135,14 @@ namespace TinyResort {
         /// <returns></returns>
         internal bool PlayingWithConflicts() { return TRConflictingPlugins.PlayingWithConflicts(plugin.Info); }
 
+        internal int CompareVersion(int majorCompareVersion, int minorCompareVersion, int patchCompareVersion, int majorVersion, int minorVersion, int patchVersion) {
+            if (majorVersion < majorCompareVersion) { return -1; }
+            else if (majorVersion == majorCompareVersion && minorVersion < minorCompareVersion) { return -1; }
+            else if (majorVersion == majorCompareVersion && minorVersion == minorCompareVersion && patchVersion < patchCompareVersion) { return -1; }
+            else if (majorVersion == majorCompareVersion && minorVersion == minorCompareVersion && patchVersion == patchCompareVersion) { return 0; }
+            else { return 1; }
+        }
+
         /// <summary>
         /// Lets you set a minimum version of the API required for your mod. 
         /// </summary>
@@ -160,19 +168,43 @@ namespace TinyResort {
             //TRTools.LogError($"Compare Version: ({majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion})");
             //TRTools.LogError($"API Version: ({majorVersion}.{minorVersion}.{patchVersion})");
 
-            if (majorVersion < majorCompareVersion) {
+            var compared = CompareVersion(majorCompareVersion, minorCompareVersion, patchCompareVersion, majorVersion, minorVersion, patchVersion);
+            if (compared == -1) {
                 TRTools.LogError($"{plugin.Info.Metadata.Name} has an API Minimum version of {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion}. Please update the TR Tools API.");
                 return false;
             }
-            else if (majorVersion == majorCompareVersion && minorVersion < minorCompareVersion) {
-                TRTools.LogError($"{plugin.Info.Metadata.Name} has an API Minimum version of {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion}. Please update the TR Tools API.");
-                return false; }
-            else if (majorVersion == majorCompareVersion && minorVersion == minorCompareVersion && patchVersion < patchCompareVersion) {
-                TRTools.LogError($"{plugin.Info.Metadata.Name} has an API Minimum version of {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion}. Please update the TR Tools API.");
-                return false; }
+            if (compared == 1 || compared == 0) { return true;}
             else { return true; }
         }
 
+
+        /// <summary>
+        /// Compares 
+        /// </summary>
+        /// <param name="version">The version you want to compare to the current API version. This needs to be in the format X.X.X</param>
+        /// <returns>-1 if the provided version is less than the current API version, 0 if the provided version is equal to the current API version, 1 if the provided version is greater than the current API version.</returns>
+        public int CompareAPIVersion(string version) {
+
+            string[] compareVersion = version.Split('.');
+            if (compareVersion.Length < 3) {
+                TRTools.LogError($"Version must be in the format: X.X.X");
+                return -2;
+            }
+
+            int.TryParse(compareVersion[0], out int majorCompareVersion);
+            int.TryParse(compareVersion[1], out int minorCompareVersion);
+            int.TryParse(compareVersion[2], out int patchCompareVersion);
+
+            string[] versions = LeadPlugin.pluginVersion.Split('.');
+            int.TryParse(versions[0], out int majorVersion);
+            int.TryParse(versions[1], out int minorVersion);
+            int.TryParse(versions[2], out int patchVersion);
+
+            // returns -1 if old version, 0 if exact version, and 1 if new version. 
+            return CompareVersion(majorCompareVersion, minorCompareVersion, patchCompareVersion, majorVersion, minorVersion, patchVersion);
+
+        }
+        
         /// <summary>
         /// Returns the current plugin version, so you can customize your mod depending on specific versions.
         /// </summary>

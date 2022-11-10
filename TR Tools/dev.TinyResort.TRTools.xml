@@ -206,6 +206,13 @@
             <param name="minVersion">The version you want to set as the minimum. This needs to be in the format X.X.X</param>
             <returns>Returns true or false and will throw an error in the BepInEx logs.</returns>
         </member>
+        <member name="M:TinyResort.TRPlugin.CompareAPIVersion(System.String)">
+            <summary>
+            Compares 
+            </summary>
+            <param name="minVersion">The version you want to set as the minimum. This needs to be in the format X.X.X</param>
+            <returns>Returns true or false and will throw an error in the BepInEx logs.</returns>
+        </member>
         <member name="M:TinyResort.TRPlugin.GetAPIVersion">
             <summary>
             Returns the current plugin version, so you can customize your mod depending on specific versions.
