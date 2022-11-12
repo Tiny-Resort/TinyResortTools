@@ -211,5 +211,4 @@ namespace TinyResort {
         /// <returns>A string in the format X.X.X, where X are numbers.</returns>
         public string GetAPIVersion() { return LeadPlugin.pluginVersion; }
     }
-
 }

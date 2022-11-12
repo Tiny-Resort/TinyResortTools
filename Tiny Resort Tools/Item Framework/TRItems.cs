@@ -623,7 +623,6 @@ namespace TinyResort {
                     if (onTileMap[x, y] <= -1) continue;
 
                     if (allObjects[onTileMap[x, y]].showObjectOnStatusChange) {
-                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing) TRTools.LogError($"Mannequin Item #s: {allObjects[onTileMap[x, y]]} | {onTileMap[x, y]}");
                         if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
                             ItemStatusData.Save(onTileMapStatus[x, y], onTileMap[x, y], x, y, -1, -1);
                         }
