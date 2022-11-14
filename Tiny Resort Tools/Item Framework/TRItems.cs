@@ -8,6 +8,7 @@ using I2.Loc;
 using Mirror;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
@@ -74,7 +75,7 @@ namespace TinyResort {
             TRData.cleanDataEvent += UnloadCustomItems;
             TRData.postLoadEvent += LoadCustomMovables;
             TRData.injectDataEvent += LoadCustomItems;
-            
+
             LeadPlugin.plugin.AddCommand(
                 "give_item", "Gives you the specified number of any MODDED item. Does not work with vanilla items. To see the custom item IDs, use /tr list_items.",
                 GivePlayerItem, "CustomItemID", "Quantity"
@@ -84,6 +85,64 @@ namespace TinyResort {
 
             //TRTools.Log($"End Initialization TRItems...");
 
+        }
+
+        public static List<ChestPlaceable> LocateNearbyContainers(int startingX, int startingY, int radius) {
+
+            List<ChestPlaceable> foundChests = new List<ChestPlaceable>();
+
+            var allObjects = WorldManager.manageWorld.allObjects;
+            var onTileMap = WorldManager.manageWorld.onTileMap;
+
+            // Clamp starting and ending values to not be over the map size.
+            var endingX = Mathf.Clamp(startingX, startingX + radius, onTileMap.GetLength(0));
+            var endingY = Mathf.Clamp(startingX, startingX + radius, onTileMap.GetLength(0));
+            startingX = Mathf.Clamp(startingX, 0, startingX - radius);
+            startingY = Mathf.Clamp(startingY, 0, startingY - radius);
+            /*var endingX = startingX + radius > onTileMap.GetLength(0) ? onTileMap.GetLength(0) : startingX + radius;
+            var endingY = startingY + radius > onTileMap.GetLength(1) ? onTileMap.GetLength(1) : startingY + radius;*/
+            /*var startX = startingX - radius < 0 ? 0 : startingX - radius;
+            var startY = startingY - radius < 0 ? 0 : startingY - radius;*/
+
+            // Loop through the radius around
+            for (var x = startingX; x < endingX; x++) {
+                for (var y = startingY; y < endingY; y++) {
+
+                    // If the tile is empty, ignore it
+                    if (onTileMap[x, y] <= -1) continue;
+
+                    if (allObjects[onTileMap[x, y]].tileObjectChest) {
+                        // Gains access to the contents of the chest
+                        allObjects[onTileMap[x, y]].tileObjectChest.checkIfEmpty(x, y, null);
+
+                        // Add the chest to a found chest list to return to the user
+                        foundChests.Add(allObjects[onTileMap[x, y]].tileObjectChest);
+                    }
+                    else if (allObjects[onTileMap[x, y]].displayPlayerHouseTiles) {
+
+                        var houseDetails = HouseManager.manage.getHouseInfo(x, y);
+
+                        // Checks every tile inside a house to find custom objects
+                        for (var houseTileX = 0; houseTileX < houseDetails.houseMapOnTile.GetLength(0); houseTileX++) {
+                            for (var houseTileY = 0; houseTileY < houseDetails.houseMapOnTile.GetLength(1); houseTileY++) {
+
+                                // If nothing is on this tile, ignore it
+                                var tileObjectID = houseDetails.houseMapOnTile[houseTileX, houseTileY];
+                                var houseMapOnTileStatus = houseDetails.houseMapOnTileStatus[houseTileX, houseTileY];
+                                if (tileObjectID <= 0) continue;
+                                if (allObjects[tileObjectID].tileObjectChest) {
+                                    // Gains access to the contents of the chest
+                                    allObjects[tileObjectID].tileObjectChest.checkIfEmpty(houseTileX, houseTileY, houseDetails);
+
+                                    // Add the chest to a found chest list to return to the user
+                                    foundChests.Add(allObjects[tileObjectID].tileObjectChest);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return foundChests;
         }
 
         internal static void FixRecipes() {
@@ -448,7 +507,6 @@ namespace TinyResort {
                 }
             }
 
-
             // Unloads and saves all equipped clothing
             if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo)) { EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat); }
             if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo)) { EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face); }
@@ -471,7 +529,7 @@ namespace TinyResort {
             Data.SetValue("EquipData", EquipData.all);
             Data.SetValue("LetterData", LetterData.all);
             Data.SetValue("StashData", StashData.all);
-            
+
             Data.SetValue("InvItemDataLostAndFound", InvItemData.lostAndFound);
             Data.SetValue("EquipDataLostAndFound", EquipData.lostAndFound);
             Data.SetValue("LetterDataLostAndFound", LetterData.lostAndFound);
@@ -482,10 +540,10 @@ namespace TinyResort {
             for (var i = allItemsVanilla.Count; i < CatalogueManager.manage.collectedItem.Length; i++)
                 if (CatalogueManager.manage.collectedItem[i]) { SavedCatalogue.Add(customItemsByItemID[i].customItemID); }
             Data.SetValue("CatalogueData", SavedCatalogue);
-            
+
             UnmodTheArrays();
         }
-        
+
         // One large method to go through all modded items in the game and remove them. 
         // This might be worth breaking up. Specifically, anything that is done before the Loops of the tiles can be put into
         // their own methods. 
@@ -623,9 +681,7 @@ namespace TinyResort {
                     if (onTileMap[x, y] <= -1) continue;
 
                     if (allObjects[onTileMap[x, y]].showObjectOnStatusChange) {
-                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
-                            ItemStatusData.Save(onTileMapStatus[x, y], onTileMap[x, y], x, y, -1, -1);
-                        }
+                        if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) { ItemStatusData.Save(onTileMapStatus[x, y], onTileMap[x, y], x, y, -1, -1); }
                         else if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) { ItemStatusData.Save(onTileMapStatus[x, y], -1, x, y, -1, -1); }
                     }
 
@@ -720,9 +776,7 @@ namespace TinyResort {
                                 }
 
                                 if (allObjects[tileObjectID].showObjectOnStatusChange) {
-                                    if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(houseMapOnTileStatus)) {
-                                        ItemStatusData.Save(houseMapOnTileStatus, tileObjectID, houseTileX, houseTileY, x, y);
-                                    }
+                                    if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(houseMapOnTileStatus)) { ItemStatusData.Save(houseMapOnTileStatus, tileObjectID, houseTileX, houseTileY, x, y); }
                                     else if (allObjects[tileObjectID].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) { ItemStatusData.Save(houseMapOnTileStatus, -1, houseTileX, houseTileY, x, y); }
                                 }
 
@@ -749,7 +803,7 @@ namespace TinyResort {
             #endregion
 
             #region Save All Data (All and LostAndFound Lists)
-            
+
             // Saves all the new data
             Data.SetValue("InvItemData", InvItemData.all);
             Data.SetValue("ChestData", ChestData.all);
@@ -813,10 +867,10 @@ namespace TinyResort {
             UnmodTheArrays();
 
         }
-        
+
         // Called whenever loading or after saving
         internal static void LoadCustomItems() {
-            
+
             if (!loadedStashes) {
                 TRTools.Log($"Loading all Stashes: Required to parse them later.");
                 ContainerManager.manage.loadStashes();

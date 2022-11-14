@@ -70,6 +70,7 @@ namespace TinyResort {
             if (normalMap != null) { newItem.inventoryItem.equipable.material.EnableKeyword("_NORMALMAP"); }
             else { newItem.inventoryItem.equipable.material.DisableKeyword("_NORMALMAP"); }
             newItem.inventoryItem.equipable.material.SetTexture("_BumpMap", normalMap);
+            newItem.inventoryItem.equipable.material.SetColor("_Color", Color.white);
 
             newItem.inventoryItem.equipable.material.name = itemInfo.fileName;
 
