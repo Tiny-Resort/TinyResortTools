@@ -40,7 +40,7 @@ namespace TinyResort {
             // Get the parameters entered for the chat command
             string[] parameters = __instance.chatBox.text.Split(' ');
             parameters[0] = parameters[0].ToLower();
-            parameters[1] = parameters[1].ToLower();
+            if (parameters.Length > 1) { parameters[1] = parameters[1].ToLower(); }
             var trigger = parameters[0].Remove(0, 1);
             
             // Updates the history of the chat box and clears the entry
@@ -53,7 +53,7 @@ namespace TinyResort {
             var args = parameters.Length > 2 ? parameters.Skip(2).ToArray() : new string[0];
 
             // Get the help description for a command or for a trigger in general
-            if (trigger == "help" || parameters.Length == 1 || parameters[1] == "help") {
+            if (trigger == "help" || parameters.Length == 1 || parameters[1] == "" || parameters[1] == "help") {
                 TRChat.GetHelpDescription(trigger, args);
                 return;
             }
