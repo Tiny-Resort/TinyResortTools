@@ -178,9 +178,7 @@ namespace TinyResort {
         }
 
 
-        /// <summary>
-        /// Compares 
-        /// </summary>
+        /// <summary> Compares the installed API version to a version you specify. </summary>
         /// <param name="version">The version you want to compare to the current API version. This needs to be in the format X.X.X</param>
         /// <returns>-1 if the provided version is less than the current API version, 0 if the provided version is equal to the current API version, 1 if the provided version is greater than the current API version.</returns>
         public int CompareAPIVersion(string version) {
