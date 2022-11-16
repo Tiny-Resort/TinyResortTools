@@ -30,7 +30,7 @@ namespace TinyResort {
         internal static void FindAllPaths(string initialDir) {
             foreach (string file in Directory.GetFiles(initialDir)) {
                 if (Path.GetExtension(file) == ".qitem") { filePaths.Add(file); }
-                if (Path.GetExtension(file) == ".qarray") { arrayPaths.Add(file); }
+                if (Path.GetExtension(file) == ".qitems") { arrayPaths.Add(file); }
             }
             foreach (string dir in Directory.GetDirectories(initialDir)) { FindAllPaths(dir); }
         }
@@ -39,6 +39,11 @@ namespace TinyResort {
 
             if (itemInfo.uniqueID < 0 || string.IsNullOrEmpty(itemInfo.fileName)) {
                 TRTools.LogError($"The unique ID or filename is missing from the .qitem file.");
+                return;
+            }
+
+            if (TRItems.customItems.ContainsKey(itemInfo.nexusID + "." + itemInfo.uniqueID)) {
+                TRTools.LogError($"A custom item with the same nexus ID and unique ID has already been loaded.");
                 return;
             }
 
@@ -149,8 +154,8 @@ namespace TinyResort {
 
         internal static void LoadAllQuickItems() {
             FindAllPaths(Paths.PluginPath);
-            foreach (var item in filePaths) { LoadItem(item); }
             foreach (var item in arrayPaths) { LoadArrayItems(item); }
+            foreach (var item in filePaths) { LoadItem(item); }
         }
     }
 

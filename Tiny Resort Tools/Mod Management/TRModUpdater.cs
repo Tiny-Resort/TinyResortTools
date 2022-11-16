@@ -23,6 +23,8 @@ namespace TinyResort {
         private static List<NexusPlugin> loadedPlugins = new List<NexusPlugin>();
 
         private static ConfigEntry<bool> createEmptyConfigFiles;
+        private static ConfigEntry<bool> showUpToDateMods;
+        private static ConfigEntry<bool> showUnknownNexusID;
 
         private static TRButton modsWindowButton;
         private static GameObject modsWindow;
@@ -45,6 +47,16 @@ namespace TinyResort {
                 "Mod Management", "CreateEmptyConfigFiles", false, 
                 "If true and no config file exists for a mod, one will automatically be created for you to add a nexusID setting to manually.");
             
+            showUpToDateMods = LeadPlugin.instance.Config.Bind(
+                "Mod Management", "ShowUpToDateMods", true,
+                "If true, it will show up to date mods in the Mod Update Checker."
+            );
+            
+            showUnknownNexusID = LeadPlugin.instance.Config.Bind(
+                "Mod Management", "ShowUnknownNexusID", true,
+                "If true, it will show mods with an unknown nexus id in the Mod Update Checker."
+            );
+            
             ScanPlugins();
 
             // Create mod update checker button
@@ -65,8 +77,6 @@ namespace TinyResort {
             updateButton.textMesh.fontSize = 12;
             updateButton.textMesh.rectTransform.sizeDelta = new Vector2(500, 50);
             updateButton.textMesh.lineSpacing = -20;
-            
-
         }
 
         public static void Update() {
@@ -170,6 +180,8 @@ namespace TinyResort {
 
                 // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
                 if (mod.updateState == PluginUpdateState.NotSetUp) {
+                    if (!showUnknownNexusID.Value) continue;
+                    
                     mod.updateButton = updateButton.Copy(
                         updateButtonGrid.transform,
                         $"<size=15>{mod.name}</size>\n<color=#787877FF>Status Unknown: Missing NexusID</color>",
@@ -180,6 +192,8 @@ namespace TinyResort {
                 // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
                 else {
                     var tmp = mod.nexusVersion == null ? "No Version" : mod.nexusVersion.ToString();
+                    
+                    if (mod.updateState == PluginUpdateState.UpToDate && !showUpToDateMods.Value) continue;
                     
                     mod.updateButton = updateButton.Copy(
                         updateButtonGrid.transform,
@@ -233,9 +247,7 @@ namespace TinyResort {
                 LeadPlugin.instance.StartCoroutine(GetNexusInfo(kvp.Metadata.Name, id, kvp.Metadata.Version));
 
                 //TRTools.Log($"{kvp.Metadata.Name} {id} current version: {kvp.Metadata.Version}");
-
             }
-            
         }
 
         private static IEnumerator GetNexusInfo(string plugName, int id, Version modVersion) {
