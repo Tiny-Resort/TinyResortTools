@@ -12,6 +12,7 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
+using Newtonsoft.Json;
 
 namespace TinyResort {
 
@@ -21,12 +22,15 @@ namespace TinyResort {
     public class TRQuickItems {
 
         internal static List<string> filePaths = new List<string>();
+        internal static List<string> arrayPaths = new List<string>();
+        internal static List<QuickItemInfo> arrayItems = new List<QuickItemInfo>();
         internal static AssetBundle quickItemsBundle = TRAssets.LoadAssetBundleFromDLL("quickitems_bundle");
         internal static List<string> currentCustomIDs = new List<string>();
 
         internal static void FindAllPaths(string initialDir) {
             foreach (string file in Directory.GetFiles(initialDir)) {
                 if (Path.GetExtension(file) == ".qitem") { filePaths.Add(file); }
+                if (Path.GetExtension(file) == ".qarray") { arrayPaths.Add(file); }
             }
             foreach (string dir in Directory.GetDirectories(initialDir)) { FindAllPaths(dir); }
         }
@@ -37,6 +41,7 @@ namespace TinyResort {
                 TRTools.LogError($"The unique ID or filename is missing from the .qitem file.");
                 return;
             }
+
 
             var fileName = Path.GetFileName(path);
 
@@ -118,8 +123,7 @@ namespace TinyResort {
         }
 
         internal static void LoadItem(string path) {
-            string json = File.ReadAllText(path);
-            var oneItem = QuickItemInfo.CreateFromJson(json);
+            var oneItem = QuickItemInfo.CreateFromJson(File.ReadAllText(path));
 
             string relativePath = path.Remove(0, Paths.PluginPath.Length).Replace(Path.GetFileName(path), oneItem.fileName);
             try {
@@ -127,13 +131,26 @@ namespace TinyResort {
                 InitializeCustomItem(relativePath, asset, oneItem);
             }
             catch { TRTools.LogError($"Missing or incorrect Item Type. Please refer to the documentation for a list of available options."); }
+        }
 
-            //TRTools.Log($"Single Item: {oneItem.fileName} | {oneItem.itemName} | {oneItem.type} | {oneItem.value}");
+        internal static void LoadArrayItems(string path) {
+            var jsonList = JsonConvert.DeserializeObject<List<QuickItemInfo>>(File.ReadAllText(path));
+            if (jsonList != null) {
+                foreach (var item in jsonList) {
+                    string relativePath = path.Remove(0, Paths.PluginPath.Length).Replace(Path.GetFileName(path), item.fileName);
+                    try {
+                        var asset = quickItemsBundle.LoadAsset<GameObject>(item.type.ToLower().Replace(" ", ""));
+                        InitializeCustomItem(relativePath, asset, item);
+                    }
+                    catch { TRTools.LogError($"Missing or incorrect Item Type. Please refer to the documentation for a list of available options."); }
+                }
+            }
         }
 
         internal static void LoadAllQuickItems() {
             FindAllPaths(Paths.PluginPath);
             foreach (var item in filePaths) { LoadItem(item); }
+            foreach (var item in arrayPaths) { LoadArrayItems(item); }
         }
     }
 
