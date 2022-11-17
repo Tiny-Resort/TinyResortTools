@@ -17,7 +17,8 @@ internal class Update {
                 if (histIndex == histList.Count) __instance.chatBox.text = TRChat.currentChatText;
             }
 
-            if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)) __instance.chatBox.caretPosition = __instance.chatBox.text.Length;
+            if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow))
+                __instance.chatBox.caretPosition = __instance.chatBox.text.Length;
         }
     }
 
@@ -74,7 +75,8 @@ internal class Update {
 
         // If more than one command is found, there is a conflict
         if (foundCommands.Count > 1) {
-            var str = "Multiple mods use this trigger and command. Please change the chat trigger used in one of the following mods' config files: ";
+            var str =
+                "Multiple mods use this trigger and command. Please change the chat trigger used in one of the following mods' config files: ";
             for (var i = 0; i < foundCommands.Count; i++) {
                 str += foundCommands[i].pluginName;
                 if (i < foundCommands.Count - 1) str += ", ";

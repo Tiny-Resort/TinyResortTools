@@ -36,11 +36,21 @@ internal class TRBackup {
 
         #region Configurations
 
-        UseBackupManager = LeadPlugin.instance.Config.Bind("Save Backup Manager", "UseBackupManager", true, "Set to false to disable the use of the backup manager.");
+        UseBackupManager = LeadPlugin.instance.Config.Bind(
+            "Save Backup Manager", "UseBackupManager", true, "Set to false to disable the use of the backup manager."
+        );
 
-        CustomSavePath = LeadPlugin.instance.Config.Bind<string>("Save Backup Manager", "BackupLocation", null, "Override the default backup location. The default location is in the James Bendon, this is recommended since it is already close to your current saves locations.\nPlease use a foward slash '/' as the path separator. If you want to use a back slash, you need to use two back slashes.\nWARNING: This deleted the oldest file in the directory. There are some safeholds to try to only delete the mod creates, but please use a folder only for the backups and don't store sensitive data in there.");
-        BackupCount = LeadPlugin.instance.Config.Bind("Save Backup Manager", "BackupCount", 10, "The number of backups you want to store per save slot. Set to -1 to disable limit.");
-        TopNotification = LeadPlugin.instance.Config.Bind("Save Backup Manager", "TopNotification", true, "Show a notification on success or failure of a backup.");
+        CustomSavePath = LeadPlugin.instance.Config.Bind<string>(
+            "Save Backup Manager", "BackupLocation", null,
+            "Override the default backup location. The default location is in the James Bendon, this is recommended since it is already close to your current saves locations.\nPlease use a foward slash '/' as the path separator. If you want to use a back slash, you need to use two back slashes.\nWARNING: This deleted the oldest file in the directory. There are some safeholds to try to only delete the mod creates, but please use a folder only for the backups and don't store sensitive data in there."
+        );
+        BackupCount = LeadPlugin.instance.Config.Bind(
+            "Save Backup Manager", "BackupCount", 10,
+            "The number of backups you want to store per save slot. Set to -1 to disable limit."
+        );
+        TopNotification = LeadPlugin.instance.Config.Bind(
+            "Save Backup Manager", "TopNotification", true, "Show a notification on success or failure of a backup."
+        );
 
         // backupList = LeadPlugin.instance.Config.Bind<string>("Save Backup Manager", "BackupList", null, "DO NOT EDIT. This is storing a list of current backups, so it won't have a chance to delete other files.");
 
@@ -132,16 +142,20 @@ internal class TRBackup {
         islandName = Inventory.inv.islandName.Trim();
         var playerName = Inventory.inv.playerName.Trim();
         var dateTime = DateTime.Now.ToString().Replace("/", "-").Replace(" ", "-").Replace(":", "-");
-        var backupName = !clientInServer ? $"{islandName}-{playerName}-Y{year}-S{season}-W{week}-D{day}-{dateTime}.zip" : $"Server-{playerName}-{string.Format("{0:yyyyMMdd'-'HHmmss}.zip", DateTime.Now)}.zip";
+        var backupName = !clientInServer
+                             ? $"{islandName}-{playerName}-Y{year}-S{season}-W{week}-D{day}-{dateTime}.zip"
+                             : $"Server-{playerName}-{string.Format("{0:yyyyMMdd'-'HHmmss}.zip", DateTime.Now)}.zip";
 
         try {
             ZipFile.CreateFromDirectory(savePath, Path.Combine(saveDestinationSlot, backupName));
             backupList.Add($"{backupName}");
             SaveBackupList();
-            if (TopNotification.Value) TRTools.TopNotification("Save Backup Manager", "The backup was created succesfully.");
+            if (TopNotification.Value)
+                TRTools.TopNotification("Save Backup Manager", "The backup was created succesfully.");
         }
         catch (Exception e) {
-            if (TopNotification.Value) TRTools.TopNotification("Save Backup Manager", "The backup failed due to an incorrect directory.");
+            if (TopNotification.Value)
+                TRTools.TopNotification("Save Backup Manager", "The backup failed due to an incorrect directory.");
             TRTools.LogError($"IOException: {e}");
             return;
         }

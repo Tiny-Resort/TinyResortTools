@@ -14,7 +14,8 @@ public static class TRExtensions {
     /// </summary>
     /// <param name="objToCopy">The class/object to copy.</param>
     /// <returns>The new copy of the class/object.</returns>
-    public static T DeepCopy<T>(this T objToCopy) where T : class => JsonUtility.FromJson<T>(JsonUtility.ToJson(objToCopy));
+    public static T DeepCopy<T>(this T objToCopy) where T : class =>
+        JsonUtility.FromJson<T>(JsonUtility.ToJson(objToCopy));
 
     /// <summary>Creates an exact copy of a component and adds it to the gameobject.</summary>
     /// <param name="originalComponent">The component to copy.</param>
@@ -36,10 +37,13 @@ public static class TRExtensions {
 
         var results = new Dictionary<string, int>();
 
-        foreach (var stringToTest in stringsToCompare) results.Add(stringToTest, ComputeDistance(baseString, stringToTest));
+        foreach (var stringToTest in stringsToCompare)
+            results.Add(stringToTest, ComputeDistance(baseString, stringToTest));
 
         var minimumModifications = results.Min(j => j.Value);
-        var AllMinimumRequired = results.Where(i => i.Value == minimumModifications && minimumModifications <= baseString.Length / 1.5f);
+        var AllMinimumRequired = results.Where(
+            i => i.Value == minimumModifications && minimumModifications <= baseString.Length / 1.5f
+        );
         var list = new List<string>();
         foreach (var compared in AllMinimumRequired) list.Add(compared.Key);
         return list;

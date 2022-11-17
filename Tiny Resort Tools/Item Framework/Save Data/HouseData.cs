@@ -28,7 +28,12 @@ internal class HouseData : ItemSaveData {
     }
 
     public static void Save(HouseDetails house, bool isWall) {
-        all.Add(new HouseData { customItemID = TRItems.customItemsByItemID[isWall ? house.wall : house.floor].customItemID, houseXPos = house.xPos, houseYPos = house.yPos, isWall = isWall });
+        all.Add(
+            new HouseData {
+                customItemID = TRItems.customItemsByItemID[isWall ? house.wall : house.floor].customItemID,
+                houseXPos = house.xPos, houseYPos = house.yPos, isWall = isWall
+            }
+        );
         if (isWall)
             house.wall = 550;
         else

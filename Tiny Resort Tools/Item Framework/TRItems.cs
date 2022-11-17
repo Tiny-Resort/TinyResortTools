@@ -70,7 +70,8 @@ public class TRItems {
         TRData.injectDataEvent += LoadCustomItems;
 
         LeadPlugin.plugin.AddCommand(
-            "give_item", "Gives you the specified number of any MODDED item. Does not work with vanilla items. To see the custom item IDs, use /tr list_items.",
+            "give_item",
+            "Gives you the specified number of any MODDED item. Does not work with vanilla items. To see the custom item IDs, use /tr list_items.",
             GivePlayerItem, "CustomItemID", "Quantity"
         );
 
@@ -125,7 +126,8 @@ public class TRItems {
                             if (tileObjectID <= 0) continue;
                             if (allObjects[tileObjectID].tileObjectChest) {
                                 // Gains access to the contents of the chest
-                                allObjects[tileObjectID].tileObjectChest.checkIfEmpty(houseTileX, houseTileY, houseDetails);
+                                allObjects[tileObjectID]
+                                   .tileObjectChest.checkIfEmpty(houseTileX, houseTileY, houseDetails);
 
                                 // Add the chest to a found chest list to return to the user
                                 foundChests.Add(allObjects[tileObjectID].tileObjectChest);
@@ -142,7 +144,8 @@ public class TRItems {
         if (Inventory.inv)
             for (var i = 0; i < Inventory.inv.allItems.Length; i++)
                 if (Inventory.inv.allItems[i].craftable) {
-                    foreach (var material in Inventory.inv.allItems[i].craftable.itemsInRecipe) FixRecipeItemID(material);
+                    foreach (var material in Inventory.inv.allItems[i].craftable.itemsInRecipe)
+                        FixRecipeItemID(material);
 
                     if (Inventory.inv.allItems[i].craftable.altRecipes.Length > 0)
                         foreach (var recipe in Inventory.inv.allItems[i].craftable.altRecipes) {
@@ -217,10 +220,14 @@ public class TRItems {
     internal static TRCustomItem AddCustomItem(TRPlugin plugin, string assetBundlePath, int uniqueItemID) {
 
         // If the nexusID is invalid and we got here, it must be in developer mode so use the mod name instead
-        var nexusID = plugin.nexusID.Value == -1 ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_") : plugin.nexusID.Value.ToString();
+        var nexusID = plugin.nexusID.Value == -1
+                          ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_")
+                          : plugin.nexusID.Value.ToString();
 
         if (customItemsInitialized) {
-            TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
+            TRTools.LogError(
+                "Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!"
+            );
             return null;
         }
 
@@ -237,14 +244,20 @@ public class TRItems {
     ) {
 
         // If the nexusID is invalid and we got here, it must be in developer mode so use the mod name instead
-        var nexusID = plugin.nexusID.Value == -1 ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_") : plugin.nexusID.Value.ToString();
+        var nexusID = plugin.nexusID.Value == -1
+                          ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_")
+                          : plugin.nexusID.Value.ToString();
 
         if (customItemsInitialized) {
-            TRTools.LogError("Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!");
+            TRTools.LogError(
+                "Mod attempted to load a new item after item initialization. You need to load new items in your Awake() method!"
+            );
             return null;
         }
 
-        customItems[nexusID + "." + uniqueItemID] = TRCustomItem.Create(inventoryItem, tileObject, tileObjectSettings, tileTypes, vehicle, pickUpAndCarry);
+        customItems[nexusID + "." + uniqueItemID] = TRCustomItem.Create(
+            inventoryItem, tileObject, tileObjectSettings, tileTypes, vehicle, pickUpAndCarry
+        );
         customItems[nexusID + "." + uniqueItemID].customItemID = nexusID + "." + uniqueItemID;
         return customItems[nexusID + "." + uniqueItemID];
 
@@ -278,9 +291,14 @@ public class TRItems {
             if (Inventory.inv.invSlots[i].slotUnlocked) {
 
                 // If the item is already in inventory and stackable, place it there
-                if (Inventory.inv.invSlots[i].itemNo == customItem.inventoryItem.getItemId() && customItem.inventoryItem.isStackable) {
-                    Inventory.inv.invSlots[i].updateSlotContentsAndRefresh(customItem.inventoryItem.getItemId(), Inventory.inv.invSlots[i].stack + quantity);
-                    return "Successfully added " + quantity + " '" + customItem.inventoryItem.itemName + "' to your inventory.";
+                if (Inventory.inv.invSlots[i].itemNo == customItem.inventoryItem.getItemId()
+                 && customItem.inventoryItem.isStackable) {
+                    Inventory.inv.invSlots[i]
+                             .updateSlotContentsAndRefresh(
+                                  customItem.inventoryItem.getItemId(), Inventory.inv.invSlots[i].stack + quantity
+                              );
+                    return "Successfully added " + quantity + " '" + customItem.inventoryItem.itemName
+                         + "' to your inventory.";
                 }
 
                 // Otherwise, look for an empty slot
@@ -293,7 +311,8 @@ public class TRItems {
 
         // Place in an emtpy slot if available
         if (emptyInvSlot >= 0) {
-            Inventory.inv.invSlots[emptyInvSlot].updateSlotContentsAndRefresh(customItem.inventoryItem.getItemId(), quantity);
+            Inventory.inv.invSlots[emptyInvSlot]
+                     .updateSlotContentsAndRefresh(customItem.inventoryItem.getItemId(), quantity);
             return "Successfully added " + quantity + " '" + customItem.inventoryItem.itemName + "' to your inventory.";
         }
 
@@ -486,21 +505,28 @@ public class TRItems {
         }
 
         // Unloads and saves all equipped clothing
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo)) EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo)) EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shirtSlot.itemNo)) EquipData.Save(EquipWindow.equip.shirtSlot.stack, EquipData.EquipLocations.Shirt);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo)) EquipData.Save(EquipWindow.equip.pantsSlot.stack, EquipData.EquipLocations.Pants);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo)) EquipData.Save(EquipWindow.equip.shoeSlot.stack, EquipData.EquipLocations.Shoes);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo))
+            EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo))
+            EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shirtSlot.itemNo))
+            EquipData.Save(EquipWindow.equip.shirtSlot.stack, EquipData.EquipLocations.Shirt);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo))
+            EquipData.Save(EquipWindow.equip.pantsSlot.stack, EquipData.EquipLocations.Pants);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo))
+            EquipData.Save(EquipWindow.equip.shoeSlot.stack, EquipData.EquipLocations.Shoes);
 
         var inMailBox = new List<Letter>(MailManager.manage.mailInBox);
         foreach (var letter in inMailBox)
-            if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached))
+            if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached)
+             || customItemsByItemID.ContainsKey(letter.itemAttached))
                 LetterData.Save(letter, false);
 
         // Removes mail that would be sent the next night if it contains a custom item
         var tomorrowMail = new List<Letter>(MailManager.manage.tomorrowsLetters);
         foreach (var letter in tomorrowMail)
-            if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached))
+            if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached)
+             || customItemsByItemID.ContainsKey(letter.itemAttached))
                 LetterData.Save(letter, true);
 
         Data.SetValue("InvItemData", InvItemData.all);
@@ -604,22 +630,29 @@ public class TRItems {
         }
 
         // Unloads and saves all equipped clothing
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo)) EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo)) EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shirtSlot.itemNo)) EquipData.Save(EquipWindow.equip.shirtSlot.stack, EquipData.EquipLocations.Shirt);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo)) EquipData.Save(EquipWindow.equip.pantsSlot.stack, EquipData.EquipLocations.Pants);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo)) EquipData.Save(EquipWindow.equip.shoeSlot.stack, EquipData.EquipLocations.Shoes);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo))
+            EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo))
+            EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shirtSlot.itemNo))
+            EquipData.Save(EquipWindow.equip.shirtSlot.stack, EquipData.EquipLocations.Shirt);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo))
+            EquipData.Save(EquipWindow.equip.pantsSlot.stack, EquipData.EquipLocations.Pants);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo))
+            EquipData.Save(EquipWindow.equip.shoeSlot.stack, EquipData.EquipLocations.Shoes);
 
         // Removes mail from the mail box if it contains a custom item
         var inMailBox = new List<Letter>(MailManager.manage.mailInBox);
         foreach (var letter in inMailBox)
-            if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached))
+            if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached)
+             || customItemsByItemID.ContainsKey(letter.itemAttached))
                 LetterData.Save(letter, false);
 
         // Removes mail that would be sent the next night if it contains a custom item
         var tomorrowMail = new List<Letter>(MailManager.manage.tomorrowsLetters);
         foreach (var letter in tomorrowMail)
-            if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached) || customItemsByItemID.ContainsKey(letter.itemAttached))
+            if (customItemsByItemID.ContainsKey(letter.itemOriginallAttached)
+             || customItemsByItemID.ContainsKey(letter.itemAttached))
                 LetterData.Save(letter, true);
 
         #endregion
@@ -636,7 +669,8 @@ public class TRItems {
         var tileTypeMap = WorldManager.manageWorld.tileTypeMap;
         for (var x = 0; x < tileTypeMap.GetLength(0); x++) {
             for (var y = 0; y < tileTypeMap.GetLength(1); y++)
-                if (tileTypeMap[x, y] > -1 && WorldManager.manageWorld.tileTypes[tileTypeMap[x, y]].isPath && customTileTypeByID.ContainsKey(tileTypeMap[x, y]))
+                if (tileTypeMap[x, y] > -1 && WorldManager.manageWorld.tileTypes[tileTypeMap[x, y]].isPath
+                                           && customTileTypeByID.ContainsKey(tileTypeMap[x, y]))
                     PathData.Save(tileTypeMap[x, y], x, y);
         }
 
@@ -655,9 +689,12 @@ public class TRItems {
                 if (onTileMap[x, y] <= -1) continue;
 
                 if (allObjects[onTileMap[x, y]].showObjectOnStatusChange) {
-                    if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(onTileMapStatus[x, y]))
+                    if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isClothing
+                     && customItemsByItemID.ContainsKey(onTileMapStatus[x, y]))
                         ItemStatusData.Save(onTileMapStatus[x, y], onTileMap[x, y], x, y, -1, -1);
-                    else if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) ItemStatusData.Save(onTileMapStatus[x, y], -1, x, y, -1, -1);
+                    else if (allObjects[onTileMap[x, y]].showObjectOnStatusChange.isSign
+                          && customItemsByItemID.ContainsKey(onTileMapStatus[x, y]))
+                        ItemStatusData.Save(onTileMapStatus[x, y], -1, x, y, -1, -1);
                 }
 
                 #region Items on Top of Others (NOT in a house)
@@ -668,15 +705,20 @@ public class TRItems {
                 // Does this before removing ground items to prevent issues
                 var onTopOfTile = ItemOnTopManager.manage.getAllItemsOnTop(x, y, null);
                 for (var i = 0; i < onTopOfTile.Length; i++)
-                    if (customTileObjectByID.ContainsKey(onTopOfTile[i].itemId) || customItemsByItemID.ContainsKey(onTopOfTile[i].itemStatus))
-                        ObjectTopData.Save(onTopOfTile[i].itemId, x, y, onTopOfTile[i].itemRotation, -1, -1, onTopOfTile[i].itemStatus, onTopOfTile[i].onTopPosition);
+                    if (customTileObjectByID.ContainsKey(onTopOfTile[i].itemId)
+                     || customItemsByItemID.ContainsKey(onTopOfTile[i].itemStatus))
+                        ObjectTopData.Save(
+                            onTopOfTile[i].itemId, x, y, onTopOfTile[i].itemRotation, -1, -1, onTopOfTile[i].itemStatus,
+                            onTopOfTile[i].onTopPosition
+                        );
 
                 #endregion
 
                 #region Chests (NOT in a house)
 
                 // If the tile has a chest on it, save and unload custom items from the chest
-                if (allObjects[onTileMap[x, y]].tileObjectChest) ChestData.Save(allObjects[onTileMap[x, y]].tileObjectChest, x, y, -1, -1);
+                if (allObjects[onTileMap[x, y]].tileObjectChest)
+                    ChestData.Save(allObjects[onTileMap[x, y]].tileObjectChest, x, y, -1, -1);
 
                 #endregion
 
@@ -688,8 +730,11 @@ public class TRItems {
                     var rotation = WorldManager.manageWorld.rotationMap[x, y];
 
                     if (allObjects[onTileMap[x, y]].tileObjectItemChanger) {
-                        if (onTileMapStatus[x, y] >= 0 && Inventory.inv.allItems[onTileMapStatus[x, y]] && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
-                            var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == x && i.yPos == y && i.houseX == -1 && i.houseY == -1);
+                        if (onTileMapStatus[x, y] >= 0 && Inventory.inv.allItems[onTileMapStatus[x, y]]
+                                                       && customItemsByItemID.ContainsKey(onTileMapStatus[x, y])) {
+                            var changer = WorldManager.manageWorld.allChangers.Find(
+                                i => i.xPos == x && i.yPos == y && i.houseX == -1 && i.houseY == -1
+                            );
                             ItemChangerData.Save(onTileMapStatus[x, y], changer);
                         }
                     }
@@ -698,15 +743,22 @@ public class TRItems {
                     else if (allObjects[onTileMap[x, y]].tileObjectBridge) {
                         var bridgeLength = -1;
                         if (rotation == 1)
-                            bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, -1);
+                            bridgeLength = customTileObjectByID[onTileMap[x, y]]
+                                          .tileObjectSettings.checkBridgLenth(x, y, 0, -1);
                         else if (rotation == 2)
-                            bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, -1);
+                            bridgeLength = customTileObjectByID[onTileMap[x, y]]
+                                          .tileObjectSettings.checkBridgLenth(x, y, -1);
                         else if (rotation == 3)
-                            bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 0, 1);
-                        else if (rotation == 4) bridgeLength = customTileObjectByID[onTileMap[x, y]].tileObjectSettings.checkBridgLenth(x, y, 1);
+                            bridgeLength = customTileObjectByID[onTileMap[x, y]]
+                                          .tileObjectSettings.checkBridgLenth(x, y, 0, 1);
+                        else if (rotation == 4)
+                            bridgeLength = customTileObjectByID[onTileMap[x, y]]
+                                          .tileObjectSettings.checkBridgLenth(x, y, 1);
                         BridgeData.Save(onTileMap[x, y], x, y, rotation, bridgeLength);
                     }
-                    else if (allObjects[onTileMap[x, y]].tileObjectGrowthStages) { PlantData.Save(onTileMap[x, y], x, y, onTileMapStatus[x, y]); }
+                    else if (allObjects[onTileMap[x, y]].tileObjectGrowthStages) {
+                        PlantData.Save(onTileMap[x, y], x, y, onTileMapStatus[x, y]);
+                    }
 
                     else { ObjectData.Save(onTileMap[x, y], x, y, rotation, -1, -1); }
 
@@ -725,10 +777,13 @@ public class TRItems {
                     // Removes custom items that are on top of objects inside a house
                     var onTopOfTileInside = ItemOnTopManager.manage.getAllItemsOnTopInHouse(houseDetails);
                     for (var i = 0; i < onTopOfTileInside.Length; i++)
-                        if (customTileObjectByID.ContainsKey(onTopOfTileInside[i].getTileObjectId()) || customItemsByItemID.ContainsKey(onTopOfTileInside[i].itemStatus))
+                        if (customTileObjectByID.ContainsKey(onTopOfTileInside[i].getTileObjectId())
+                         || customItemsByItemID.ContainsKey(onTopOfTileInside[i].itemStatus))
                             ObjectTopData.Save(
-                                onTopOfTileInside[i].itemId, onTopOfTileInside[i].sittingOnX, onTopOfTileInside[i].sittingOnY,
-                                onTopOfTileInside[i].itemRotation, x, y, onTopOfTileInside[i].itemStatus, onTopOfTileInside[i].onTopPosition
+                                onTopOfTileInside[i].itemId, onTopOfTileInside[i].sittingOnX,
+                                onTopOfTileInside[i].sittingOnY,
+                                onTopOfTileInside[i].itemRotation, x, y, onTopOfTileInside[i].itemStatus,
+                                onTopOfTileInside[i].onTopPosition
                             );
 
                     #endregion
@@ -742,28 +797,44 @@ public class TRItems {
                             var houseMapOnTileStatus = houseDetails.houseMapOnTileStatus[houseTileX, houseTileY];
                             if (tileObjectID <= 0) continue;
                             if (allObjects[tileObjectID].tileObjectItemChanger)
-                                if (houseMapOnTileStatus >= 0 && Inventory.inv.allItems[houseMapOnTileStatus] && customItemsByItemID.ContainsKey(houseMapOnTileStatus)) {
-                                    var changer = WorldManager.manageWorld.allChangers.Find(i => i.xPos == houseTileX && i.yPos == houseTileY && i.houseX == x && i.houseY == y);
+                                if (houseMapOnTileStatus >= 0 && Inventory.inv.allItems[houseMapOnTileStatus]
+                                                              && customItemsByItemID.ContainsKey(
+                                                                     houseMapOnTileStatus
+                                                                 )) {
+                                    var changer = WorldManager.manageWorld.allChangers.Find(
+                                        i => i.xPos == houseTileX && i.yPos == houseTileY && i.houseX == x
+                                          && i.houseY == y
+                                    );
                                     ItemChangerData.Save(houseMapOnTileStatus, changer);
                                 }
 
                             if (allObjects[tileObjectID].showObjectOnStatusChange) {
-                                if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing && customItemsByItemID.ContainsKey(houseMapOnTileStatus))
-                                    ItemStatusData.Save(houseMapOnTileStatus, tileObjectID, houseTileX, houseTileY, x, y);
-                                else if (allObjects[tileObjectID].showObjectOnStatusChange.isSign && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY])) ItemStatusData.Save(houseMapOnTileStatus, -1, houseTileX, houseTileY, x, y);
+                                if (allObjects[tileObjectID].showObjectOnStatusChange.isClothing
+                                 && customItemsByItemID.ContainsKey(houseMapOnTileStatus))
+                                    ItemStatusData.Save(
+                                        houseMapOnTileStatus, tileObjectID, houseTileX, houseTileY, x, y
+                                    );
+                                else if (allObjects[tileObjectID].showObjectOnStatusChange.isSign
+                                      && customItemsByItemID.ContainsKey(onTileMapStatus[houseTileX, houseTileY]))
+                                    ItemStatusData.Save(houseMapOnTileStatus, -1, houseTileX, houseTileY, x, y);
                             }
 
                             #region Chests (INSIDE a house)
 
                             // If the object on this house tile is a chest, save and unload custom items from the chest
-                            if (allObjects[tileObjectID].tileObjectChest) ChestData.Save(allObjects[tileObjectID].tileObjectChest, houseTileX, houseTileY, x, y);
+                            if (allObjects[tileObjectID].tileObjectChest)
+                                ChestData.Save(allObjects[tileObjectID].tileObjectChest, houseTileX, houseTileY, x, y);
 
                             #endregion
 
                             #region World Objects (INSIDE a house)
 
                             // If it's a custom item, save and unload it
-                            if (customTileObjectByID.ContainsKey(tileObjectID)) ObjectData.Save(tileObjectID, houseTileX, houseTileY, houseDetails.houseMapRotation[houseTileX, houseTileY], x, y);
+                            if (customTileObjectByID.ContainsKey(tileObjectID))
+                                ObjectData.Save(
+                                    tileObjectID, houseTileX, houseTileY,
+                                    houseDetails.houseMapRotation[houseTileX, houseTileY], x, y
+                                );
 
                             #endregion
 
@@ -940,7 +1011,8 @@ public class TRCustomItem {
         for (var i = 0; i < AllAssets.Length; i++) {
             if (newItem.inventoryItem == null) newItem.inventoryItem = AllAssets[i].GetComponent<InventoryItem>();
             if (newItem.tileObject == null) newItem.tileObject = AllAssets[i].GetComponent<TileObject>();
-            if (newItem.tileObjectSettings == null) newItem.tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>();
+            if (newItem.tileObjectSettings == null)
+                newItem.tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>();
             if (newItem.tileTypes == null) newItem.tileTypes = AllAssets[i].GetComponent<TileTypes>();
             if (newItem.vehicle == null) newItem.vehicle = AllAssets[i].GetComponent<Vehicle>();
             if (newItem.pickUpAndCarry == null) newItem.pickUpAndCarry = AllAssets[i].GetComponent<PickUpAndCarry>();
@@ -956,7 +1028,9 @@ public class TRCustomItem {
         TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null
     ) {
 
-        if (inventoryItem == null && tileObject == null && tileObjectSettings == null && tileTypes == null && vehicle == null && pickUpAndCarry == null) return null;
+        if (inventoryItem == null && tileObject == null && tileObjectSettings == null && tileTypes == null
+         && vehicle == null && pickUpAndCarry == null)
+            return null;
 
         var newItem = new TRCustomItem();
 

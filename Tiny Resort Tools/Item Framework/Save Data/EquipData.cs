@@ -13,7 +13,10 @@ internal class EquipData : ItemSaveData {
     public EquipLocations equipSlot;
 
     public static void LoadAll() {
-        slots = new[] { EquipWindow.equip.hatSlot, EquipWindow.equip.faceSlot, EquipWindow.equip.shirtSlot, EquipWindow.equip.pantsSlot, EquipWindow.equip.shoeSlot };
+        slots = new[] {
+            EquipWindow.equip.hatSlot, EquipWindow.equip.faceSlot, EquipWindow.equip.shirtSlot,
+            EquipWindow.equip.pantsSlot, EquipWindow.equip.shoeSlot
+        };
 
         lostAndFound = (List<EquipData>)TRItems.Data.GetValue("EquipDataLostAndFound", new List<EquipData>());
 
@@ -32,7 +35,12 @@ internal class EquipData : ItemSaveData {
     }
 
     public static void Save(int stackSize, EquipLocations equipSlot) {
-        all.Add(new EquipData { customItemID = TRItems.customItemsByItemID[slots[(int)equipSlot].itemNo].customItemID, stackSize = stackSize, equipSlot = equipSlot });
+        all.Add(
+            new EquipData {
+                customItemID = TRItems.customItemsByItemID[slots[(int)equipSlot].itemNo].customItemID,
+                stackSize = stackSize, equipSlot = equipSlot
+            }
+        );
         slots[(int)equipSlot].updateSlotContentsAndRefresh(-1, 0);
     }
 

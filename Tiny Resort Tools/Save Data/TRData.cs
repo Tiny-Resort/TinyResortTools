@@ -61,7 +61,8 @@ public static class TRData {
     internal static SaveEvent trueLoadEvent;
 
     private static int currentSlot => SaveLoad.saveOrLoad.currentSaveSlotNo();
-    private static string slotDataPath => Path.Combine(Application.persistentDataPath, "Slot" + currentSlot, "Mod Data");
+    private static string slotDataPath =>
+        Path.Combine(Application.persistentDataPath, "Slot" + currentSlot, "Mod Data");
     private static string globalDataPath => Path.Combine(Application.persistentDataPath, "Mod Data");
 
     /// <summary>Subscribes to the save system so that your mod data is saved and loaded properly.</summary>

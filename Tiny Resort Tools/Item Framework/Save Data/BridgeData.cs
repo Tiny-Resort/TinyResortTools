@@ -32,11 +32,8 @@ internal class BridgeData : ItemSaveData {
     public static void Save(int tileObjectID, int objectXPos, int objectYPos, int rotation, int bridgeLength) {
         all.Add(
             new BridgeData {
-                customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID,
-                rotation = rotation,
-                bridgeLength = bridgeLength,
-                objectXPos = objectXPos,
-                objectYPos = objectYPos
+                customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID, rotation = rotation,
+                bridgeLength = bridgeLength, objectXPos = objectXPos, objectYPos = objectYPos
             }
         );
 

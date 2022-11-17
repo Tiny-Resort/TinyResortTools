@@ -86,7 +86,8 @@ internal class TRConflictingPlugins {
         foreach (var plugin in conflictingMods) {
             plugin.modsToShow = $"{plugin.newMod.Metadata.GUID}:\n";
 
-            foreach (var mod in plugin.conflictingModsList) plugin.modsToShow += $"\t<color=#ff7226ff>{mod.Metadata.Name} | {mod.Metadata.GUID}</color>\n";
+            foreach (var mod in plugin.conflictingModsList)
+                plugin.modsToShow += $"\t<color=#ff7226ff>{mod.Metadata.Name} | {mod.Metadata.GUID}</color>\n";
             TRTools.Log(plugin.modsToShow);
 
             if (plugin.conflictButton != null) continue;
@@ -122,7 +123,9 @@ internal class TRConflictingPlugins {
                 Object.Destroy(ConflictingModsWindow.transform.GetChild(0).GetChild(4).gameObject); // VoicesBy
                 Object.Destroy(ConflictingModsWindow.transform.GetChild(0).GetChild(5).gameObject); // Special Thanks
                 Object.Destroy(ConflictingModsWindow.transform.GetChild(0).GetChild(6).gameObject); // Acknowledgements
-                Object.Destroy(ConflictingModsWindow.transform.GetChild(0).GetChild(8).gameObject); // Additional Dialogue
+                Object.Destroy(
+                    ConflictingModsWindow.transform.GetChild(0).GetChild(8).gameObject
+                ); // Additional Dialogue
 
                 var scrollArea = new GameObject("Conflicting Mods Buttons Scroll Area");
                 scrollArea.transform.SetParent(ConflictingModsWindow.transform.GetChild(0));

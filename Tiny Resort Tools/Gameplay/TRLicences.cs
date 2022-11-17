@@ -19,13 +19,19 @@ public static class TRLicences {
 
         TRTools.QuickPatch(typeof(LicenceManager), "Start", typeof(TRLicences), "StartPatch");
         TRTools.QuickPatch(typeof(LicenceManager), "getLicenceName", typeof(TRLicences), "getLicenceNamePatch");
-        TRTools.QuickPatch(typeof(LicenceManager), "getLicenceLevelDescription", typeof(TRLicences), "getLicenceLevelDescriptionPatch");
+        TRTools.QuickPatch(
+            typeof(LicenceManager), "getLicenceLevelDescription", typeof(TRLicences), "getLicenceLevelDescriptionPatch"
+        );
         TRTools.QuickPatch(typeof(Licence), "getNextLevelPrice", typeof(TRLicences), "getNextLevelPricePrefix");
         TRTools.QuickPatch(typeof(Licence), "canAffordNextLevel", typeof(TRLicences), "canAffordNextlevelPrefix");
         TRTools.QuickPatch(typeof(Licence), "getCurrentMaxLevel", typeof(TRLicences), "getCurrentMaxLevelPrefix");
         TRTools.QuickPatch(typeof(LicenceButton), "fillButton", typeof(TRLicences), null, "fillButtonPostfix");
 
-        LeadPlugin.plugin.AddCommand("unlock_licence", "Unlocks the specified licence at no cost. Use the list_licences command to get the licence names.", UnlockLicence, "LicenceName", "Level");
+        LeadPlugin.plugin.AddCommand(
+            "unlock_licence",
+            "Unlocks the specified licence at no cost. Use the list_licences command to get the licence names.",
+            UnlockLicence, "LicenceName", "Level"
+        );
         LeadPlugin.plugin.AddCommand("list_licences", "Lists all custom licences added by any mods.", ListLicences);
 
         Data = TRData.Subscribe("TR.CustomLicences");
@@ -34,7 +40,9 @@ public static class TRLicences {
         TRData.postLoadEvent += LoadLicenceData;
         TRData.injectDataEvent += LoadLicences;
 
-        defaultLicenceSprite = TRAssets.LoadTextureFromAssetBundle(TRAssets.LoadAssetBundleFromDLL("licenceimages"), "default_licence", Vector2.one * 0.5f);
+        defaultLicenceSprite = TRAssets.LoadTextureFromAssetBundle(
+            TRAssets.LoadAssetBundleFromDLL("licenceimages"), "default_licence", Vector2.one * 0.5f
+        );
     }
 
     internal static string ListLicences(string[] args) {
@@ -56,18 +64,17 @@ public static class TRLicences {
 
     internal static TRCustomLicence AddLicence(TRPlugin plugin, int licenceID, string licenceName, int maxLevel = 1) {
 
-        var nexusID = plugin.nexusID.Value == -1 ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_") : plugin.nexusID.Value.ToString();
+        var nexusID = plugin.nexusID.Value == -1
+                          ? plugin.plugin.Info.Metadata.Name.Replace(" ", "_").Replace(".", "_")
+                          : plugin.nexusID.Value.ToString();
 
         var NewLicence = new TRCustomLicence {
-            uniqueID = nexusID + "." + licenceID,
-            info = new Licence(),
-            licenceIcon = defaultLicenceSprite,
-            title = licenceName,
-            maxLevel = maxLevel,
-            licenceIndex = LicenceTypesCount + CustomLicences.Count
+            uniqueID = nexusID + "." + licenceID, info = new Licence(), licenceIcon = defaultLicenceSprite,
+            title = licenceName, maxLevel = maxLevel, licenceIndex = LicenceTypesCount + CustomLicences.Count
         };
 
-        for (var i = 1; i <= maxLevel; i++) NewLicence.SetLevelInfo(i, "This is a placeholder description for level " + i + ".", 500 * i);
+        for (var i = 1; i <= maxLevel; i++)
+            NewLicence.SetLevelInfo(i, "This is a placeholder description for level " + i + ".", 500 * i);
 
         NewLicence.SetInfo();
         CustomLicences.Add(NewLicence);
@@ -97,8 +104,10 @@ public static class TRLicences {
         __instance.licenceColours = licenceColors.ToArray();
 
         // Gets references to the buttn lists
-        var licenceButtons = (List<LicenceButton>)AccessTools.Field(typeof(LicenceManager), "licenceButtons").GetValue(__instance);
-        var journalButtons = (List<LicenceButton>)AccessTools.Field(typeof(LicenceManager), "journalButtons").GetValue(__instance);
+        var licenceButtons =
+            (List<LicenceButton>)AccessTools.Field(typeof(LicenceManager), "licenceButtons").GetValue(__instance);
+        var journalButtons =
+            (List<LicenceButton>)AccessTools.Field(typeof(LicenceManager), "journalButtons").GetValue(__instance);
 
         // Fills in information for each licence
         for (var i = 1; i < __instance.allLicences.Length; i++) {
@@ -108,12 +117,14 @@ public static class TRLicences {
             else
                 __instance.allLicences[i] = new Licence((LicenceManager.LicenceTypes)i);
 
-            var component = Object.Instantiate(__instance.licenceButtonPrefab, __instance.licenceButtonParent).GetComponent<LicenceButton>();
+            var component = Object.Instantiate(__instance.licenceButtonPrefab, __instance.licenceButtonParent)
+                                  .GetComponent<LicenceButton>();
             component.licenceIcon.preserveAspect = true;
             component.fillButton(i);
             licenceButtons.Add(component);
 
-            var component2 = Object.Instantiate(__instance.journalButtonPrefab, __instance.journalWindow).GetComponent<LicenceButton>();
+            var component2 = Object.Instantiate(__instance.journalButtonPrefab, __instance.journalWindow)
+                                   .GetComponent<LicenceButton>();
             component2.licenceIcon.preserveAspect = true;
             component2.fillDetailsForJournal(i);
             journalButtons.Add(component2);
@@ -204,7 +215,9 @@ public static class TRLicences {
 
     // Patches the function that gets a licence name so that it can understand custom licences
     [HarmonyPrefix]
-    internal static bool getLicenceNamePatch(LicenceManager __instance, ref string __result, LicenceManager.LicenceTypes type) {
+    internal static bool getLicenceNamePatch(
+        LicenceManager __instance, ref string __result, LicenceManager.LicenceTypes type
+    ) {
         if ((int)type >= LicenceTypesCount && (int)type - LicenceTypesCount < CustomLicences.Count) {
             __result = CustomLicences[(int)type - LicenceTypesCount].title;
             return false;
@@ -214,11 +227,14 @@ public static class TRLicences {
 
     // If this is a custom licence, return our own descriptions
     [HarmonyPrefix]
-    internal static bool getLicenceLevelDescriptionPatch(LicenceManager __instance, ref string __result, ref LicenceManager.LicenceTypes type, ref int level) {
+    internal static bool getLicenceLevelDescriptionPatch(
+        LicenceManager __instance, ref string __result, ref LicenceManager.LicenceTypes type, ref int level
+    ) {
         if ((int)type >= LicenceTypesCount) {
             var licence = CustomLicences[(int)type - LicenceTypesCount];
             if (!licence.descriptions.TryGetValue(level, out var desc)) {
-                if (level > 0 && level < licence.maxLevel) TRTools.Log("Custom Licence " + licence.title + " has no description for level " + level);
+                if (level > 0 && level < licence.maxLevel)
+                    TRTools.Log("Custom Licence " + licence.title + " has no description for level " + level);
                 __result = "";
             }
             else { __result = desc; }
@@ -270,7 +286,8 @@ public static class TRLicences {
     internal static void UnloadLicences() {
         var currentLicences = LicenceManager.manage.allLicences;
         LicenceManager.manage.allLicences = new Licence[LicenceTypesCount];
-        for (var i = 0; i < LicenceManager.manage.allLicences.Length; i++) LicenceManager.manage.allLicences[i] = currentLicences[i];
+        for (var i = 0; i < LicenceManager.manage.allLicences.Length; i++)
+            LicenceManager.manage.allLicences[i] = currentLicences[i];
     }
 
     // Loads in the custom licences and their save data
@@ -285,7 +302,8 @@ public static class TRLicences {
     }
 
     internal static void SaveLicenceData() {
-        for (var i = 0; i < CustomLicences.Count; i++) Data.SetValue(CustomLicences[i].uniqueID, CustomLicences[i].info.currentLevel);
+        for (var i = 0; i < CustomLicences.Count; i++)
+            Data.SetValue(CustomLicences[i].uniqueID, CustomLicences[i].info.currentLevel);
     }
 
     internal static void LoadLicenceData() {
@@ -354,19 +372,22 @@ public class TRCustomLicence {
     ///     licence.
     /// </param>
     public void AddSkillRequirement(int licenceLevel, CharLevelManager.SkillTypes skill, int skillLevelRequirement) {
-        if (!skillRequirements.ContainsKey(licenceLevel)) skillRequirements[licenceLevel] = new Dictionary<CharLevelManager.SkillTypes, int>();
+        if (!skillRequirements.ContainsKey(licenceLevel))
+            skillRequirements[licenceLevel] = new Dictionary<CharLevelManager.SkillTypes, int>();
         skillRequirements[licenceLevel][skill] = skillLevelRequirement;
     }
 
     /// <summary>Makes this licence only unlock for purchase if another licence has reached a minimum level.</summary>
     /// <param name="requiredLicence">The licence that must be leveled up in order to unlock your licence.</param>
     /// <param name="minimumLevel">The minimum level the required licence must be to unlock your licence.</param>
-    public void AddPrerequisite(TRCustomLicence requiredLicence, int minimumLevel = 1) => prereqsCustom[requiredLicence.uniqueID] = minimumLevel;
+    public void AddPrerequisite(TRCustomLicence requiredLicence, int minimumLevel = 1) =>
+        prereqsCustom[requiredLicence.uniqueID] = minimumLevel;
 
     /// <summary>Makes this licence only unlock for purchase if another licence has reached a minimum level.</summary>
     /// <param name="requiredLicence">The licence that must be leveled up in order to unlock your licence.</param>
     /// <param name="minimumLevel">The minimum level the required licence must be to unlock your licence.</param>
-    public void AddPrerequisite(LicenceManager.LicenceTypes requiredLicence, int minimumLevel = 1) => prereqsVanilla[requiredLicence] = minimumLevel;
+    public void AddPrerequisite(LicenceManager.LicenceTypes requiredLicence, int minimumLevel = 1) =>
+        prereqsVanilla[requiredLicence] = minimumLevel;
 
     internal void SetInfo() {
         info.type = (LicenceManager.LicenceTypes)licenceIndex;

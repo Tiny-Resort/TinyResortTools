@@ -18,15 +18,9 @@ internal class ItemChangerRecipe {
     ) {
         ict = new ItemChangeType {
             depositInto = WorldManager.manageWorld.allObjects[machine], // Furnace = 50
-            amountNeededed = requiredAmount,
-            secondsToComplete = secondsToComplete,
-            daysToComplete = daysToComplete,
-            cycles = cycles,
-            changesWhenComplete = Inventory.inv.allItems[output],
-            changesWhenCompleteTable = lootTable,
-            taskType = taskType,
-            givesXp = givesXP,
-            xPType = xpType
+            amountNeededed = requiredAmount, secondsToComplete = secondsToComplete, daysToComplete = daysToComplete,
+            cycles = cycles, changesWhenComplete = Inventory.inv.allItems[output], changesWhenCompleteTable = lootTable,
+            taskType = taskType, givesXp = givesXP, xPType = xpType
         };
 
         if (Inventory.inv.allItems[input].itemChange != null)

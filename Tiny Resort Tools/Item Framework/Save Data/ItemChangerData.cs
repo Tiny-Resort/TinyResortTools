@@ -16,7 +16,9 @@ internal class ItemChangerData : ItemSaveData {
     public bool startedUnderground;
 
     public static void LoadAll() {
-        lostAndFound = (List<ItemChangerData>)TRItems.Data.GetValue("ItemChangerDataLostAndFound", new List<ItemChangerData>());
+        lostAndFound = (List<ItemChangerData>)TRItems.Data.GetValue(
+            "ItemChangerDataLostAndFound", new List<ItemChangerData>()
+        );
 
         //TRTools.Log($"Loading ItemChangerData lostAndFound: {lostAndFound.Count}");
 
@@ -35,23 +37,18 @@ internal class ItemChangerData : ItemSaveData {
     public static void Save(int itemID, CurrentChanger changer) {
         all.Add(
             new ItemChangerData {
-                customItemID = TRItems.customItemsByItemID[itemID].customItemID,
-                objectXPos = changer.xPos,
-                objectYPos = changer.yPos,
-                counterSeconds = changer.counterSeconds,
-                counterDays = changer.counterDays,
-                timePerCycles = changer.timePerCycles,
-                cycles = changer.cycles,
-                startedUnderground = changer.startedUnderground,
-                houseXPos = changer.houseX,
-                houseYPos = changer.houseY
+                customItemID = TRItems.customItemsByItemID[itemID].customItemID, objectXPos = changer.xPos,
+                objectYPos = changer.yPos, counterSeconds = changer.counterSeconds, counterDays = changer.counterDays,
+                timePerCycles = changer.timePerCycles, cycles = changer.cycles,
+                startedUnderground = changer.startedUnderground, houseXPos = changer.houseX, houseYPos = changer.houseY
             }
         );
 
         if (changer.houseX <= 0 && changer.houseY <= 0)
             WorldManager.manageWorld.onTileStatusMap[changer.xPos, changer.yPos] = -2;
         else
-            HouseManager.manage.getHouseInfo(changer.houseX, changer.houseY).houseMapOnTileStatus[changer.xPos, changer.yPos] = -2;
+            HouseManager.manage.getHouseInfo(changer.houseX, changer.houseY)
+                        .houseMapOnTileStatus[changer.xPos, changer.yPos] = -2;
         WorldManager.manageWorld.allChangers.Remove(changer);
 
     }
@@ -62,7 +59,8 @@ internal class ItemChangerData : ItemSaveData {
         if (houseXPos <= 0 && houseYPos <= 0)
             WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = customItem.inventoryItem.getItemId();
         else
-            HouseManager.manage.getHouseInfo(houseXPos, houseYPos).houseMapOnTileStatus[objectXPos, objectYPos] = customItem.inventoryItem.getItemId();
+            HouseManager.manage.getHouseInfo(houseXPos, houseYPos).houseMapOnTileStatus[objectXPos, objectYPos] =
+                customItem.inventoryItem.getItemId();
 
         var restoreChanger = new CurrentChanger(objectXPos, objectYPos);
         restoreChanger.cycles = cycles;
@@ -72,7 +70,9 @@ internal class ItemChangerData : ItemSaveData {
         restoreChanger.houseY = houseYPos;
         restoreChanger.timePerCycles = timePerCycles;
 
-        TRTools.Log($"Cyles: {cycles} | Seconds: {counterSeconds} | Days: {counterDays} | House: ({houseXPos}, {houseYPos}) | Cycle Time: {timePerCycles}");
+        TRTools.Log(
+            $"Cyles: {cycles} | Seconds: {counterSeconds} | Days: {counterDays} | House: ({houseXPos}, {houseYPos}) | Cycle Time: {timePerCycles}"
+        );
 
         //WorldManager.manageWorld.allChangers.Add(restoreChanger);
         WorldManager.manageWorld.loadCountDownForTile(restoreChanger);

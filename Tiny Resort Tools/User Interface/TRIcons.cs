@@ -50,7 +50,8 @@ internal class TRIcons : MonoBehaviour {
     internal static void DebugIcons() {
 
         var files = TRAssets.ListAllTextures(relativePath);
-        for (var i = 0; i < files.Count; i++) FolderList.Add(Path.GetFileName(files[i]).Replace(".png", "").Replace(" ", "_"));
+        for (var i = 0; i < files.Count; i++)
+            FolderList.Add(Path.GetFileName(files[i]).Replace(".png", "").Replace(" ", "_"));
 
         var oddItems = new List<string>();
         for (var j = 0; j < FolderList.Count; j++)
@@ -60,11 +61,18 @@ internal class TRIcons : MonoBehaviour {
         var invalidItems = new List<string>();
         for (var k = 0; k < Inventory.inv.allItems.Length; k++) {
             var spriteName = Inventory.inv.allItems[k].itemSprite.name;
-            if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName)) && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower().Replace(" ", "_"))) invalidItems.Add($"{k} {Inventory.inv.allItems[k].itemName}");
+            if ((string.IsNullOrWhiteSpace(spriteName) || defaultSprites.Contains(spriteName))
+             && !FolderList.Contains(Inventory.inv.allItems[k].itemName.ToLower().Replace(" ", "_")))
+                invalidItems.Add($"{k} {Inventory.inv.allItems[k].itemName}");
         }
 
-        if (oddItems.Count > 0) TRTools.LogError("Item Icon Issue - The following icons found in the item_icons folder have a name that does not match any items:\n" + string.Join("\n", oddItems));
-        if (invalidItems.Count > 0) TRTools.Log("Item Icon Issue - Item has no unique sprite:\n" + string.Join("\n", invalidItems), false);
+        if (oddItems.Count > 0)
+            TRTools.LogError(
+                "Item Icon Issue - The following icons found in the item_icons folder have a name that does not match any items:\n"
+              + string.Join("\n", oddItems)
+            );
+        if (invalidItems.Count > 0)
+            TRTools.Log("Item Icon Issue - Item has no unique sprite:\n" + string.Join("\n", invalidItems), false);
 
     }
 
@@ -81,7 +89,9 @@ internal class TRIcons : MonoBehaviour {
     internal static void Initialize() {
         TRTools.QuickPatch(typeof(InventoryItem), "getSprite", typeof(TRIcons), "getSpritePrefix");
         TRTools.QuickPatch(typeof(ItemSign), "updateStatus", typeof(TRIcons), null, "updateStatusPostfix");
-        LeadPlugin.plugin.AddCommand("reload_icons", "This will reload all icons in the custom icon's folder.", UpdateAllSprites);
+        LeadPlugin.plugin.AddCommand(
+            "reload_icons", "This will reload all icons in the custom icon's folder.", UpdateAllSprites
+        );
     }
 
     internal static void InitializeIcons() {
@@ -145,10 +155,15 @@ internal class TRIcons : MonoBehaviour {
 
     internal static void updateStatusPostfix(ItemSign __instance, int newStatus) {
         if (newStatus != -1) {
-            var FindSprite = proccessedItemList.Find(i => i.itemName == Inventory.inv.allItems[newStatus].itemName.ToLower().Replace(" ", "_"));
-            var FindQISprite = proccessedQIItemList.Find(i => i.itemName == Inventory.inv.allItems[newStatus].itemName.ToLower().Replace(" ", "_"));
+            var FindSprite = proccessedItemList.Find(
+                i => i.itemName == Inventory.inv.allItems[newStatus].itemName.ToLower().Replace(" ", "_")
+            );
+            var FindQISprite = proccessedQIItemList.Find(
+                i => i.itemName == Inventory.inv.allItems[newStatus].itemName.ToLower().Replace(" ", "_")
+            );
 
-            if (FindSprite != null || FindQISprite != null) __instance.itemRenderer.transform.localScale = new Vector3(.4858f, .4858f, .4858f);
+            if (FindSprite != null || FindQISprite != null)
+                __instance.itemRenderer.transform.localScale = new Vector3(.4858f, .4858f, .4858f);
         }
     }
 

@@ -39,7 +39,9 @@ public static class TRTools {
 
         // Add config entry for nexus ID. If the nexus ID is invalid, set it to -1
         var id = nexusID <= 0 ? -1 : nexusID;
-        HookedPlugins[plugin].nexusID = plugin.Config.Bind("Developer", "NexusID", id, "Nexus Mod ID. You can find it in the URL on the mod's Nexus page.");
+        HookedPlugins[plugin].nexusID = plugin.Config.Bind(
+            "Developer", "NexusID", id, "Nexus Mod ID. You can find it in the URL on the mod's Nexus page."
+        );
 
         // If the nexus ID passed by initialize is valid, then force that value into the config
         if (id > 0 || HookedPlugins[plugin].nexusID.Value < -1) {
@@ -52,18 +54,28 @@ public static class TRTools {
             LogError(
                 "We highly recommend adding the nexusID from the URL of your mod page. "
               + "This will allow you to use all of the TR Tool's features and shows users when there is an update for your mod. "
-              + "This error can be safely ignored if you are in a testing phase, but please add one before the release.", true
+              + "This error can be safely ignored if you are in a testing phase, but please add one before the release.",
+                true
             );
 
         // Add debugmode and chat command config entries
-        HookedPlugins[plugin].debugMode = plugin.Config.Bind("Developer", "DebugMode", false, "If true, the BepinEx console will print out debug messages related to this mod.");
+        HookedPlugins[plugin].debugMode = plugin.Config.Bind(
+            "Developer", "DebugMode", false,
+            "If true, the BepinEx console will print out debug messages related to this mod."
+        );
         if (!string.IsNullOrEmpty(chatTrigger) && chatTrigger.ToLower() != "help")
             HookedPlugins[plugin].chatTrigger =
-                plugin.Config.Bind("Chat", "ChatTrigger", chatTrigger.ToLower(), "What comes after the / in the chat when using chat commands for this mod. Example: If the chat trigger is 'tr' then all chat commands for this mod would start with /tr");
+                plugin.Config.Bind(
+                    "Chat", "ChatTrigger", chatTrigger.ToLower(),
+                    "What comes after the / in the chat when using chat commands for this mod. Example: If the chat trigger is 'tr' then all chat commands for this mod would start with /tr"
+                );
 
         HookedPlugins[plugin].Logger = Logger.CreateLogSource(plugin.Info.Metadata.Name);
         var handler = new BepInExInfoLogInterpolatedStringHandler(18, 1, out var flag);
-        if (flag) handler.AppendLiteral("Plugin " + plugin.Info.Metadata.GUID + " (v" + plugin.Info.Metadata.Version + ") loaded!");
+        if (flag)
+            handler.AppendLiteral(
+                "Plugin " + plugin.Info.Metadata.GUID + " (v" + plugin.Info.Metadata.Version + ") loaded!"
+            );
         HookedPlugins[plugin].Logger.LogInfo(handler);
 
         return HookedPlugins[plugin];
@@ -72,28 +84,38 @@ public static class TRTools {
 
     internal static string TRAscii() {
         string asciiArt;
-        asciiArt = "==========================================================================================================\n";
-        asciiArt += "    _____ _____ _   ___   __ ______ _____ _____  ___________ _____   _____ _____  _____ _      _____ \n";
-        asciiArt += "   |_   _|_   _| \\ | \\ \\ / / | ___ \\  ___/  ___||  _  | ___ \\_   _| |_   _|  _  ||  _  | |    /  ___|\n";
-        asciiArt += "     | |   | | |  \\| |\\ V /  | |_/ / |__ \\ `--. | | | | |_/ / | |     | | | | | || | | | |    \\ `--. \n";
-        asciiArt += "     | |   | | | . ` | \\ /   |    /|  __| `--. \\| | | |    /  | |     | | | | | || | | | |     `--. \\\n";
-        asciiArt += "     | |  _| |_| |\\  | | |   | |\\ \\| |___/\\__/ /\\ \\_/ / |\\ \\  | |     | | \\ \\_/ /\\ \\_/ / |____/\\__/ /\n";
-        asciiArt += "     \\_/  \\___/\\_| \\_/ \\_/   \\_| \\_\\____/\\____/  \\___/\\_| \\_| \\_/     \\_/  \\___/  \\___/\\_____/\\____/ \n\n";
-        asciiArt += "==========================================================================================================\n\n";
+        asciiArt =
+            "==========================================================================================================\n";
+        asciiArt +=
+            "    _____ _____ _   ___   __ ______ _____ _____  ___________ _____   _____ _____  _____ _      _____ \n";
+        asciiArt +=
+            "   |_   _|_   _| \\ | \\ \\ / / | ___ \\  ___/  ___||  _  | ___ \\_   _| |_   _|  _  ||  _  | |    /  ___|\n";
+        asciiArt +=
+            "     | |   | | |  \\| |\\ V /  | |_/ / |__ \\ `--. | | | | |_/ / | |     | | | | | || | | | |    \\ `--. \n";
+        asciiArt +=
+            "     | |   | | | . ` | \\ /   |    /|  __| `--. \\| | | |    /  | |     | | | | | || | | | |     `--. \\\n";
+        asciiArt +=
+            "     | |  _| |_| |\\  | | |   | |\\ \\| |___/\\__/ /\\ \\_/ / |\\ \\  | |     | | \\ \\_/ /\\ \\_/ / |____/\\__/ /\n";
+        asciiArt +=
+            "     \\_/  \\___/\\_| \\_/ \\_/   \\_| \\_\\____/\\____/  \\___/\\_| \\_| \\_/     \\_/  \\___/  \\___/\\_____/\\____/ \n\n";
+        asciiArt +=
+            "==========================================================================================================\n\n";
 
         return asciiArt;
     }
 
     internal static string TRDeveloperMode() {
         string devArt;
-        devArt = "\n==========================================================================================================\n";
+        devArt =
+            "\n==========================================================================================================\n";
         devArt += "______ _____ _   _ _____ _     ___________ ___________  ___  ______________ _____ \n";
         devArt += "|  _  \\  ___| | | |  ___| |   |  _  | ___ \\  ___| ___ \\ |  \\/  |  _  |  _  \\  ___|\n";
         devArt += "| | | | |__ | | | | |__ | |   | | | | |_/ / |__ | |_/ / | .  . | | | | | | | |__  \n";
         devArt += "| | | |  __|| | | |  __|| |   | | | |  __/|  __||    /  | |\\/| | | | | | | |  __| \n";
         devArt += "| |/ /| |___\\ \\_/ / |___| |___\\ \\_/ / |   | |___| |\\ \\  | |  | \\ \\_/ / |/ /| |___ \n";
         devArt += "|___/ \\____/ \\___/\\____/\\_____/\\___/\\_|   \\____/\\_| \\_| \\_|  |_/\\___/|___/ \\____/ \n\n";
-        devArt += "==========================================================================================================\n\n";
+        devArt +=
+            "==========================================================================================================\n\n";
 
         return devArt;
     }
@@ -114,7 +136,10 @@ public static class TRTools {
         LeadPlugin.plugin.LogError(text);
     }
 
-    internal static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") => LeadPlugin.plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod);
+    internal static void QuickPatch(
+        Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = ""
+    ) =>
+        LeadPlugin.plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod);
 
     #region Easy Notifications
 

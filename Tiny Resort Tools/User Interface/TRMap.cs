@@ -16,7 +16,9 @@ public class TRMap : MonoBehaviour {
     /// <param name="markerSprite">Sprite to use for the map marker.</param>
     /// <param name="markerSize">Width and height of the map marker in pixels.</param>
     /// <returns>A list of all active map markers.</returns>
-    public static List<MapMarker> Refresh(string category, int desiredMarkerCount, Sprite markerSprite, float markerSize) {
+    public static List<MapMarker> Refresh(
+        string category, int desiredMarkerCount, Sprite markerSprite, float markerSize
+    ) {
 
         var markers = GetMarkers(category);
         if (markers.Count > 0 && markers[0].mainRect == null) MarkersInUse[category].Clear();
@@ -35,13 +37,17 @@ public class TRMap : MonoBehaviour {
     ///     The world position of the object (or location) the marker represents. Typically, this will
     ///     be the object's transform.position value.
     /// </param>
-    public static void SetMarkerPosition(string category, int index, Vector3 worldPosition) => MarkersInUse[category][index].mainRect.localPosition = new Vector2(worldPosition.x / 2f / RenderMap.map.mapScale, worldPosition.z / 2f / RenderMap.map.mapScale);
+    public static void SetMarkerPosition(string category, int index, Vector3 worldPosition) =>
+        MarkersInUse[category][index].mainRect.localPosition = new Vector2(
+            worldPosition.x / 2f / RenderMap.map.mapScale, worldPosition.z / 2f / RenderMap.map.mapScale
+        );
 
     /// <summary> Changes the marker's tint color. </summary>
     /// <param name="category">Helps organize markers by mod and use.</param>
     /// <param name="index">The index of the marker you want to reposition.</param>
     /// <param name="newColor">The tint you want the marker to have. Pure white uses the sprite as is.</param>
-    public static void SetMarkerColor(string category, int index, Color newColor) => MarkersInUse[category][index].markerImage.color = newColor;
+    public static void SetMarkerColor(string category, int index, Color newColor) =>
+        MarkersInUse[category][index].markerImage.color = newColor;
 
     /// <summary> Creates a new map marker. </summary>
     /// <param name="category">Helps organize markers by mod and use.</param>

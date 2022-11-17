@@ -15,15 +15,14 @@ public class TRChat {
     internal static List<TRChatCommand> predictedTriggers = new();
     internal static List<string> predictedCommands = new();
 
-    internal static void AddCommand(string pluginName, string trigger, string command, string description, Func<string[], string> method, params string[] argumentNames) =>
+    internal static void AddCommand(
+        string pluginName, string trigger, string command, string description, Func<string[], string> method,
+        params string[] argumentNames
+    ) =>
         allCommands.Add(
             new TRChatCommand {
-                pluginName = pluginName,
-                trigger = trigger,
-                command = command,
-                argumentNames = argumentNames,
-                helpDescription = description,
-                method = method
+                pluginName = pluginName, trigger = trigger, command = command, argumentNames = argumentNames,
+                helpDescription = description, method = method
             }
         );
 
@@ -43,7 +42,8 @@ public class TRChat {
     /// <param name="name">The name of the speaker for the chat message. Can be left blank to have no speaker shown.</param>
     public static void SendMessage(Color color, string message, string name = "") {
         var col = ColorUtility.ToHtmlStringRGBA(color);
-        var chatBubble = Object.Instantiate(ChatBox.chat.chatBubble, ChatBox.chat.chatBubbleWindow).GetComponent<ChatBubble>();
+        var chatBubble = Object.Instantiate(ChatBox.chat.chatBubble, ChatBox.chat.chatBubbleWindow)
+                               .GetComponent<ChatBubble>();
         var chatMessage = "<color=#" + col + ">" + message + "</color>";
         chatBubble.fillBubble(name, chatMessage);
         ChatBox.chat.chatLog.Add(chatBubble);
@@ -53,7 +53,9 @@ public class TRChat {
     internal static void GetHelpDescription(string trigger, string[] args) {
 
         if (trigger == "help") {
-            SendMessage("For any chat trigger, you can get more information about available commands by typing /tr help (where tr is the mod's trigger found in its config file)");
+            SendMessage(
+                "For any chat trigger, you can get more information about available commands by typing /tr help (where tr is the mod's trigger found in its config file)"
+            );
             SendMessage("You can also get info on a particular command and its arguments by typing /tr help [Command]");
             return;
         }
@@ -106,7 +108,8 @@ public class TRChat {
 
         foreach (var chatCommand in allCommands) {
             collectTriggers[chatCommand.trigger + chatCommand.command] = chatCommand;
-            if (chatCommand.trigger == trigger && (string.IsNullOrEmpty(command) || chatCommand.command == command)) foundCommands.Add(chatCommand);
+            if (chatCommand.trigger == trigger && (string.IsNullOrEmpty(command) || chatCommand.command == command))
+                foundCommands.Add(chatCommand);
         }
 
         if (foundCommands.Count > 0) return foundCommands;

@@ -16,9 +16,12 @@ internal class NotificationPatch {
         if (forceClearNotification) {
             forceClearNotification = false;
 
-            var toNotify = (List<string>)AccessTools.Field(typeof(NotificationManager), "toNotify").GetValue(__instance);
-            var subTextNot = (List<string>)AccessTools.Field(typeof(NotificationManager), "subTextNot").GetValue(__instance);
-            var soundToPlay = (List<ASound>)AccessTools.Field(typeof(NotificationManager), "soundToPlay").GetValue(__instance);
+            var toNotify =
+                (List<string>)AccessTools.Field(typeof(NotificationManager), "toNotify").GetValue(__instance);
+            var subTextNot =
+                (List<string>)AccessTools.Field(typeof(NotificationManager), "subTextNot").GetValue(__instance);
+            var soundToPlay =
+                (List<ASound>)AccessTools.Field(typeof(NotificationManager), "soundToPlay").GetValue(__instance);
             var topNotificationRunning = AccessTools.Field(typeof(NotificationManager), "topNotificationRunning");
             var topNotificationRunningRoutine = topNotificationRunning.GetValue(__instance);
 

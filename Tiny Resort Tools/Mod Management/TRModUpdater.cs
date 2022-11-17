@@ -111,11 +111,14 @@ internal class TRModUpdater {
                 modLogo.sprite = TRInterface.ModLogo;
 
                 // Add credits at the bottom of the dinkum mods window
-                var modCredits = Object.Instantiate(modsWindow.transform.GetChild(0).GetChild(2), modsWindow.transform.GetChild(0));
+                var modCredits = Object.Instantiate(
+                    modsWindow.transform.GetChild(0).GetChild(2), modsWindow.transform.GetChild(0)
+                );
                 Object.Destroy(modCredits.transform.GetChild(0).gameObject);
                 modCredits.transform.SetAsLastSibling();
                 var modCreditsText = modCredits.GetComponent<TextMeshProUGUI>();
-                modCreditsText.text = "This Update Checker and the DINKUM MODS logo are both unofficial.\nLogo created by Duvinn, Paris, and Row.";
+                modCreditsText.text =
+                    "This Update Checker and the DINKUM MODS logo are both unofficial.\nLogo created by Duvinn, Paris, and Row.";
                 modCreditsText.fontStyle = FontStyles.Italic;
                 modCreditsText.rectTransform.anchoredPosition = new Vector2(0, 25);
                 modCreditsText.rectTransform.anchorMax = new Vector2(0.5f, 0);
@@ -187,7 +190,11 @@ internal class TRModUpdater {
                 mod.updateButton = updateButton.Copy(
                     updateButtonGrid.transform,
                     $"<size=15>{mod.name}</size>\n<color=#787877FF>Status Unknown: Missing NexusID</color>",
-                    delegate { openWebpage("https://modding.wiki/en/dinkum/TRTools/ModManager#why-isnt-x-mod-showing-up-in-the-update-checker"); }
+                    delegate {
+                        openWebpage(
+                            "https://modding.wiki/en/dinkum/TRTools/ModManager#why-isnt-x-mod-showing-up-in-the-update-checker"
+                        );
+                    }
                 );
             }
 
@@ -202,7 +209,9 @@ internal class TRModUpdater {
                     mod.updateState == PluginUpdateState.UpdateAvailable
                         ? $"<size=15>{mod.name}</size>\n<color=#00ff00ff><b>UPDATE AVAILABLE</b></color> (<color=#ff7226ff>{mod.modVersion}</color> -> <color=#00ff00ff>{mod.nexusVersion}</color>)"
                         : $"<size=15>{mod.name}</size>\n<color=#787877FF>UP TO DATE ({mod.modVersion})</color>",
-                    delegate { openWebpage(string.Format("https://www.nexusmods.com/dinkum/mods/{0}/?tab=files", mod.id)); }
+                    delegate {
+                        openWebpage(string.Format("https://www.nexusmods.com/dinkum/mods/{0}/?tab=files", mod.id));
+                    }
                 );
             }
 
@@ -223,7 +232,12 @@ internal class TRModUpdater {
 
         // Scan the quickitem version files.
         foreach (var mod in QuickItemInfo) {
-            if (mod.nexusID == -1) loadedPlugins.Add(new NexusPlugin(mod.modName, mod.nexusID, new Version(mod.version), null, PluginUpdateState.NotSetUp));
+            if (mod.nexusID == -1)
+                loadedPlugins.Add(
+                    new NexusPlugin(
+                        mod.modName, mod.nexusID, new Version(mod.version), null, PluginUpdateState.NotSetUp
+                    )
+                );
             LeadPlugin.instance.StartCoroutine(GetNexusInfo(mod.modName, mod.nexusID, new Version(mod.version)));
         }
 
@@ -249,7 +263,10 @@ internal class TRModUpdater {
                 }
 
             // If a nexusID was found for this plugin, then get it's version information from the webpage
-            if (id == -1) loadedPlugins.Add(new NexusPlugin(kvp.Metadata.Name, id, kvp.Metadata.Version, null, PluginUpdateState.NotSetUp));
+            if (id == -1)
+                loadedPlugins.Add(
+                    new NexusPlugin(kvp.Metadata.Name, id, kvp.Metadata.Version, null, PluginUpdateState.NotSetUp)
+                );
             LeadPlugin.instance.StartCoroutine(GetNexusInfo(kvp.Metadata.Name, id, kvp.Metadata.Version));
 
             //TRTools.Log($"{kvp.Metadata.Name} {id} current version: {kvp.Metadata.Version}");
@@ -268,12 +285,19 @@ internal class TRModUpdater {
 
         // Search nexus mod page for version number
         var check = false;
-        foreach (var line in uwr.downloadHandler.text.Split(new string[3] { "\r\n", "\r", "\n" }, StringSplitOptions.None)) {
+        foreach (var line in uwr.downloadHandler.text.Split(
+                     new string[3] { "\r\n", "\r", "\n" }, StringSplitOptions.None
+                 )) {
             if (check && line.Contains("<div class=\"stat\">")) {
                 var match = Regex.Match(line, "<[^>]+>[^0-9.]*([0-9.]+)[^0-9.]*<[^>]+>");
                 if (!match.Success) break;
                 var nexusVersion = new Version(match.Groups[1].Value);
-                loadedPlugins.Add(new NexusPlugin(plugName, id, modVersion, nexusVersion, nexusVersion > modVersion ? PluginUpdateState.UpdateAvailable : PluginUpdateState.UpToDate));
+                loadedPlugins.Add(
+                    new NexusPlugin(
+                        plugName, id, modVersion, nexusVersion,
+                        nexusVersion > modVersion ? PluginUpdateState.UpdateAvailable : PluginUpdateState.UpToDate
+                    )
+                );
                 break;
             }
             if (line.Contains("<li class=\"stat-version\">")) check = true;

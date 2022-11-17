@@ -12,7 +12,9 @@ internal class ItemStatusData : ItemSaveData {
     internal int mannequinID;
 
     public static void LoadAll() {
-        lostAndFound = (List<ItemStatusData>)TRItems.Data.GetValue("ItemStatusDataLostAndFound", new List<ItemStatusData>());
+        lostAndFound = (List<ItemStatusData>)TRItems.Data.GetValue(
+            "ItemStatusDataLostAndFound", new List<ItemStatusData>()
+        );
 
         //TRTools.Log($"Loading ItemStatusData lostAndFound: {lostAndFound.Count}");
 
@@ -32,12 +34,8 @@ internal class ItemStatusData : ItemSaveData {
     public static void Save(int itemID, int mannequinID, int objectXPos, int objectYPos, int houseXPos, int houseYPos) {
         all.Add(
             new ItemStatusData {
-                customItemID = TRItems.customItemsByItemID[itemID].customItemID,
-                mannequinID = mannequinID,
-                objectXPos = objectXPos,
-                objectYPos = objectYPos,
-                houseXPos = houseXPos,
-                houseYPos = houseYPos
+                customItemID = TRItems.customItemsByItemID[itemID].customItemID, mannequinID = mannequinID,
+                objectXPos = objectXPos, objectYPos = objectYPos, houseXPos = houseXPos, houseYPos = houseYPos
             }
         );
         var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);

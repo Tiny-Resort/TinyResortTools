@@ -14,17 +14,8 @@ public class TRAssets {
     #region Scanning Folders
 
     internal static string[] textureFormats = {
-        "bmp",
-        "exr",
-        "gif",
-        "hdr",
-        "iff",
-        "jpg",
-        "pict",
-        "png",
-        "psd",
-        "tga",
-        "tiff"
+        "bmp", "exr", "gif", "hdr", "iff", "jpg", "pict", "png",
+        "psd", "tga", "tiff"
     };
     internal static string[] audioFormats = { "aif", "wav", "mp3", "ogg" };
 

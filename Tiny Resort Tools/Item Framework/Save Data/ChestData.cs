@@ -27,7 +27,9 @@ internal class ChestData : ItemSaveData {
             catch { TRTools.LogError($"Failed to load item: {item.customItemID}"); }
     }
 
-    public static void Save(ChestPlaceable chestPlaceable, int objectXPos, int objectYPos, int houseXPos, int houseYPos) {
+    public static void Save(
+        ChestPlaceable chestPlaceable, int objectXPos, int objectYPos, int houseXPos, int houseYPos
+    ) {
         // Checks if the chest is in a house
         var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
 
@@ -35,19 +37,17 @@ internal class ChestData : ItemSaveData {
         chestPlaceable.checkIfEmpty(objectXPos, objectYPos, houseDetails);
 
         // Goes through each slot in the chest, unloading and saving each custom item
-        var chest = ContainerManager.manage.activeChests.First(p => p.xPos == objectXPos && p.yPos == objectYPos && p.inside == (houseDetails != null));
+        var chest = ContainerManager.manage.activeChests.First(
+            p => p.xPos == objectXPos && p.yPos == objectYPos && p.inside == (houseDetails != null)
+        );
 
         for (var slotNo = 0; slotNo < chest.itemIds.Length; slotNo++)
             if (TRItems.customItemsByItemID.ContainsKey(chest.itemIds[slotNo])) {
                 all.Add(
                     new ChestData {
-                        customItemID = TRItems.customItemsByItemID[chest.itemIds[slotNo]].customItemID,
-                        slotNo = slotNo,
-                        stackSize = chest.itemStacks[slotNo],
-                        objectXPos = objectXPos,
-                        objectYPos = objectYPos,
-                        houseXPos = houseXPos,
-                        houseYPos = houseYPos
+                        customItemID = TRItems.customItemsByItemID[chest.itemIds[slotNo]].customItemID, slotNo = slotNo,
+                        stackSize = chest.itemStacks[slotNo], objectXPos = objectXPos, objectYPos = objectYPos,
+                        houseXPos = houseXPos, houseYPos = houseYPos
                     }
                 );
                 ContainerManager.manage.changeSlotInChest(objectXPos, objectYPos, slotNo, -1, 0, houseDetails);
@@ -59,7 +59,9 @@ internal class ChestData : ItemSaveData {
         if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
         var tmpHouseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
         ContainerManager.manage.checkIfEmpty(objectXPos, objectYPos, tmpHouseDetails);
-        ContainerManager.manage.changeSlotInChest(objectXPos, objectYPos, slotNo, customItem.inventoryItem.getItemId(), stackSize, tmpHouseDetails);
+        ContainerManager.manage.changeSlotInChest(
+            objectXPos, objectYPos, slotNo, customItem.inventoryItem.getItemId(), stackSize, tmpHouseDetails
+        );
 
         return customItem;
     }

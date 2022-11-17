@@ -15,7 +15,9 @@ internal class CarryableData : ItemSaveData {
     public float positionZ;
 
     public static void LoadAll(bool firstLoad) {
-        lostAndFound = (List<CarryableData>)TRItems.Data.GetValue("CarryableDataLostAndFound", new List<CarryableData>());
+        lostAndFound = (List<CarryableData>)TRItems.Data.GetValue(
+            "CarryableDataLostAndFound", new List<CarryableData>()
+        );
 
         //TRTools.Log($"Loading CarryableData lostAndFound: {lostAndFound.Count}");
 
@@ -33,7 +35,13 @@ internal class CarryableData : ItemSaveData {
     }
 
     public static void Save(PickUpAndCarry myCarry) {
-        all.Add(new CarryableData { customItemID = TRItems.customCarryableByID[myCarry.prefabId].customItemID, positionX = myCarry.transform.position.x, positionY = myCarry.transform.position.y, positionZ = myCarry.transform.position.z });
+        all.Add(
+            new CarryableData {
+                customItemID = TRItems.customCarryableByID[myCarry.prefabId].customItemID,
+                positionX = myCarry.transform.position.x, positionY = myCarry.transform.position.y,
+                positionZ = myCarry.transform.position.z
+            }
+        );
         WorldManager.manageWorld.allCarriables.Remove(myCarry);
     }
 
@@ -48,7 +56,9 @@ internal class CarryableData : ItemSaveData {
         }
 
         // If loading in to save slot, then create the carryable object
-        NetworkMapSharer.share.spawnACarryable(customItem.pickUpAndCarry.gameObject, new Vector3(positionX, positionY, positionZ), false);
+        NetworkMapSharer.share.spawnACarryable(
+            customItem.pickUpAndCarry.gameObject, new Vector3(positionX, positionY, positionZ), false
+        );
 
         return customItem;
     }

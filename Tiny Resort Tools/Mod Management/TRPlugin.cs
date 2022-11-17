@@ -55,10 +55,15 @@ public class TRPlugin {
     /// </param>
     /// <param name="prefixMethod">The name of the prefix method doing the patching.</param>
     /// <param name="postfixMethod">The name of the postfix method doing the patching.</param>
-    public void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") {
+    public void QuickPatch(
+        Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = ""
+    ) {
         var sourceMethodInfo = AccessTools.Method(sourceClassType, sourceMethod);
-        var prefixMethodInfo = prefixMethod.IsNullOrWhiteSpace() ? null : AccessTools.Method(patchClassType, prefixMethod);
-        var postfixMethodInfo = postfixMethod.IsNullOrWhiteSpace() ? null : AccessTools.Method(patchClassType, postfixMethod);
+        var prefixMethodInfo =
+            prefixMethod.IsNullOrWhiteSpace() ? null : AccessTools.Method(patchClassType, prefixMethod);
+        var postfixMethodInfo = postfixMethod.IsNullOrWhiteSpace()
+                                    ? null
+                                    : AccessTools.Method(patchClassType, postfixMethod);
         var prefixHarmonyMethod = prefixMethod.IsNullOrWhiteSpace() ? null : new HarmonyMethod(prefixMethodInfo);
         var postfixHarmonyMethod = postfixMethod.IsNullOrWhiteSpace() ? null : new HarmonyMethod(postfixMethodInfo);
         harmony.Patch(sourceMethodInfo, prefixHarmonyMethod, postfixHarmonyMethod);
@@ -70,7 +75,12 @@ public class TRPlugin {
     /// <param name="method">Method to run when chat command is done.</param>
     /// <param name="argumentNames">The names of each argument your command takes. Used purely for the help description.</param>
     /// <returns>A reference to all the commands for your mod.</returns>
-    public void AddCommand(string command, string description, Func<string[], string> method, params string[] argumentNames) => TRChat.AddCommand(plugin.Info.Metadata.Name, chatTrigger.Value.ToLower(), command, description, method, argumentNames);
+    public void AddCommand(
+        string command, string description, Func<string[], string> method, params string[] argumentNames
+    ) =>
+        TRChat.AddCommand(
+            plugin.Info.Metadata.Name, chatTrigger.Value.ToLower(), command, description, method, argumentNames
+        );
 
     /// <returns>Creates a new item.</returns>
     /// ///
@@ -82,11 +92,16 @@ public class TRPlugin {
     public TRCustomItem AddCustomItem(string assetBundlePath, int uniqueItemID) {
 
         if (!LeadPlugin.developerMode.Value && nexusID.Value == -1) {
-            TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID.");
+            TRTools.LogError(
+                $"Attempting to create a custom item with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID."
+            );
             return null;
         }
 
-        if (LeadPlugin.developerMode.Value && nexusID.Value == -1) TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod.");
+        if (LeadPlugin.developerMode.Value && nexusID.Value == -1)
+            TRTools.LogError(
+                $"Attempting to create a custom item with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod."
+            );
         return TRItems.AddCustomItem(this, assetBundlePath, uniqueItemID);
     }
 
@@ -107,16 +122,24 @@ public class TRPlugin {
     /// <returns></returns>
     public TRCustomItem AddCustomItem(
         int uniqueItemID, InventoryItem inventoryItem = null, TileObject tileObject = null,
-        TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null, PickUpAndCarry pickUpAndCarry = null
+        TileObjectSettings tileObjectSettings = null, TileTypes tileTypes = null, Vehicle vehicle = null,
+        PickUpAndCarry pickUpAndCarry = null
     ) {
         if (!LeadPlugin.developerMode.Value && nexusID.Value == -1) {
-            TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID.");
+            TRTools.LogError(
+                $"Attempting to create a custom item with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID."
+            );
             return null;
         }
 
-        if (LeadPlugin.developerMode.Value && nexusID.Value == -1) TRTools.LogError($"Attempting to create a custom item with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod.");
+        if (LeadPlugin.developerMode.Value && nexusID.Value == -1)
+            TRTools.LogError(
+                $"Attempting to create a custom item with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod."
+            );
 
-        return TRItems.AddCustomItem(this, uniqueItemID, inventoryItem, tileObject, tileObjectSettings, tileTypes, vehicle, pickUpAndCarry);
+        return TRItems.AddCustomItem(
+            this, uniqueItemID, inventoryItem, tileObject, tileObjectSettings, tileTypes, vehicle, pickUpAndCarry
+        );
     }
 
     /// <summary>Adds a custom licence to the system. Must be done for each custom licence.</summary>
@@ -132,14 +155,22 @@ public class TRPlugin {
     /// <returns>The custom licence that is created. Save a reference to this in order to access its state at any time.</returns>
     public TRCustomLicence AddLicence(int licenceID, string licenceName, int maxLevel = 1) {
         if (!LeadPlugin.developerMode.Value && nexusID.Value == -1) {
-            TRTools.LogError($"Attempting to create a custom licence with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID.");
+            TRTools.LogError(
+                $"Attempting to create a custom licence with an incorrect nexusID. Please contact the mod developer ({plugin.Info.Metadata.Name}) to update their nexus ID."
+            );
             return null;
         }
-        if (LeadPlugin.developerMode.Value && nexusID.Value == -1) TRTools.LogError($"Attempting to create a custom licence with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod.");
+        if (LeadPlugin.developerMode.Value && nexusID.Value == -1)
+            TRTools.LogError(
+                $"Attempting to create a custom licence with an incorrect nexusID. This is allowed since you are in developer mode, but please update the nexus ID before publishing ({plugin.Info.Metadata.Name}) to Nexus. If this is not your mod, please notify the owner of the mod."
+            );
 
         if (maxLevel > 5) {
             maxLevel = 5;
-            TRTools.LogError("Custom Licence " + nexusID.Value + "." + licenceID + " " + licenceName + " can not have a max level above 5.");
+            TRTools.LogError(
+                "Custom Licence " + nexusID.Value + "." + licenceID + " " + licenceName
+              + " can not have a max level above 5."
+            );
         }
         return TRLicences.AddLicence(this, licenceID, licenceName, maxLevel);
     }
@@ -148,7 +179,8 @@ public class TRPlugin {
     ///     Set a conflicting plugin to warn the user's about if they have it in their folder.
     /// </summary>
     /// <param name="conflictingPlugin">The GUID for the conflicting plugin.</param>
-    public void AddConflictingPlugin(string conflictingPlugin) => TRConflictingPlugins.AddConflictingPlugin(plugin.Info, conflictingPlugin);
+    public void AddConflictingPlugin(string conflictingPlugin) =>
+        TRConflictingPlugins.AddConflictingPlugin(plugin.Info, conflictingPlugin);
 
     /// <summary>
     ///     If you want to do something specific if they ignore the warning, use this to check in Start()
@@ -156,11 +188,18 @@ public class TRPlugin {
     /// <returns></returns>
     internal bool PlayingWithConflicts() => TRConflictingPlugins.PlayingWithConflicts(plugin.Info);
 
-    internal int CompareVersion(int majorCompareVersion, int minorCompareVersion, int patchCompareVersion, int majorVersion, int minorVersion, int patchVersion) {
+    internal int CompareVersion(
+        int majorCompareVersion, int minorCompareVersion, int patchCompareVersion, int majorVersion, int minorVersion,
+        int patchVersion
+    ) {
         if (majorVersion < majorCompareVersion) return -1;
         if (majorVersion == majorCompareVersion && minorVersion < minorCompareVersion) return -1;
-        if (majorVersion == majorCompareVersion && minorVersion == minorCompareVersion && patchVersion < patchCompareVersion) return -1;
-        if (majorVersion == majorCompareVersion && minorVersion == minorCompareVersion && patchVersion == patchCompareVersion) return 0;
+        if (majorVersion == majorCompareVersion && minorVersion == minorCompareVersion
+                                                && patchVersion < patchCompareVersion)
+            return -1;
+        if (majorVersion == majorCompareVersion && minorVersion == minorCompareVersion
+                                                && patchVersion == patchCompareVersion)
+            return 0;
         return 1;
     }
 
@@ -189,9 +228,13 @@ public class TRPlugin {
         //TRTools.LogError($"Compare Version: ({majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion})");
         //TRTools.LogError($"API Version: ({majorVersion}.{minorVersion}.{patchVersion})");
 
-        var compared = CompareVersion(majorCompareVersion, minorCompareVersion, patchCompareVersion, majorVersion, minorVersion, patchVersion);
+        var compared = CompareVersion(
+            majorCompareVersion, minorCompareVersion, patchCompareVersion, majorVersion, minorVersion, patchVersion
+        );
         if (compared == -1) {
-            TRTools.LogError($"{plugin.Info.Metadata.Name} has an API Minimum version of {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion}. Please update the TR Tools API.");
+            TRTools.LogError(
+                $"{plugin.Info.Metadata.Name} has an API Minimum version of {majorCompareVersion}.{minorCompareVersion}.{patchCompareVersion}. Please update the TR Tools API."
+            );
             return false;
         }
         if (compared == 1 || compared == 0) return true;
@@ -222,7 +265,9 @@ public class TRPlugin {
         int.TryParse(versions[2], out var patchVersion);
 
         // returns -1 if old version, 0 if exact version, and 1 if new version. 
-        return CompareVersion(majorCompareVersion, minorCompareVersion, patchCompareVersion, majorVersion, minorVersion, patchVersion);
+        return CompareVersion(
+            majorCompareVersion, minorCompareVersion, patchCompareVersion, majorVersion, minorVersion, patchVersion
+        );
 
     }
 

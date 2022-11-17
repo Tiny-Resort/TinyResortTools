@@ -27,7 +27,12 @@ internal class InvItemData : ItemSaveData {
     }
 
     public static void Save(int slotNo, int stackSize) {
-        all.Add(new InvItemData { customItemID = TRItems.customItemsByItemID[Inventory.inv.invSlots[slotNo].itemNo].customItemID, slotNo = slotNo, stackSize = stackSize });
+        all.Add(
+            new InvItemData {
+                customItemID = TRItems.customItemsByItemID[Inventory.inv.invSlots[slotNo].itemNo].customItemID,
+                slotNo = slotNo, stackSize = stackSize
+            }
+        );
         Inventory.inv.invSlots[slotNo].updateSlotContentsAndRefresh(-1, 0);
     }
 

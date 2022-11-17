@@ -39,7 +39,9 @@ public class TRInterface : MonoBehaviour {
     /// <param name="text">The text on top of the button.</param>
     /// <param name="clickAction">The method you want to run when clicking the button.</param>
     /// <returns></returns>
-    public static TRButton CreateButton(ButtonTypes type, Transform parent, string text, UnityAction clickAction = null) {
+    public static TRButton CreateButton(
+        ButtonTypes type, Transform parent, string text, UnityAction clickAction = null
+    ) {
 
         TRButton newButton = null;
         switch (type) {

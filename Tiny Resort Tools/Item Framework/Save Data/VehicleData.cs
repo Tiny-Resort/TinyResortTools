@@ -39,12 +39,9 @@ internal class VehicleData : ItemSaveData {
         all.Add(
             new VehicleData {
                 customItemID = TRItems.customVehicleByID[toRemove.saveId].customItemID,
-                colourVariation = toRemove.getVariation(),
-                positionX = toRemove.transform.position.x,
-                positionY = toRemove.transform.position.y,
-                positionZ = toRemove.transform.position.z,
-                rotationX = toRemove.transform.eulerAngles.x,
-                rotationY = toRemove.transform.eulerAngles.y,
+                colourVariation = toRemove.getVariation(), positionX = toRemove.transform.position.x,
+                positionY = toRemove.transform.position.y, positionZ = toRemove.transform.position.z,
+                rotationX = toRemove.transform.eulerAngles.x, rotationY = toRemove.transform.eulerAngles.y,
                 rotationZ = toRemove.transform.eulerAngles.z
             }
         );

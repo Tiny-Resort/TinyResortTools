@@ -30,7 +30,15 @@ internal class StashData : ItemSaveData {
     }
 
     public static void Save(int stackSize, int stashPostition, int slotNo) {
-        all.Add(new StashData { customItemID = TRItems.customItemsByItemID[ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo]].customItemID, stackSize = stackSize, stashPostition = stashPostition, slotNo = slotNo });
+        all.Add(
+            new StashData {
+                customItemID = TRItems
+                              .customItemsByItemID[
+                                   ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo]]
+                              .customItemID,
+                stackSize = stackSize, stashPostition = stashPostition, slotNo = slotNo
+            }
+        );
 
         ContainerManager.manage.privateStashes[stashPostition].itemIds[slotNo] = -1;
         ContainerManager.manage.privateStashes[stashPostition].itemStacks[slotNo] = 0;

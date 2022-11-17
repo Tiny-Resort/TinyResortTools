@@ -46,7 +46,9 @@ internal class TRObjects {
     /// <param name="Text">The text you would like the button to show.</param>
     /// <param name="fontSize">Font Size of the button's text.</param>
     /// <param name="method">The method you would like to have run when the button is pressed.</param>
-    public static GameObject CreateButton(string Location, GameObject parentObject, string Text, int fontSize, UnityAction method) {
+    public static GameObject CreateButton(
+        string Location, GameObject parentObject, string Text, int fontSize, UnityAction method
+    ) {
         var GO = Object.Instantiate(currentObjects[Location], parentObject.transform);
         GO.name = Text;
         var GOText = GO.transform.GetComponentInChildren<TextMeshProUGUI>();

@@ -10,7 +10,9 @@ internal class BuriedObjectData : ItemSaveData {
     public static List<BuriedObjectData> lostAndFound = new();
 
     public static void LoadAll() {
-        lostAndFound = (List<BuriedObjectData>)TRItems.Data.GetValue("BuriedObjectDataLostAndFound", new List<BuriedObjectData>());
+        lostAndFound = (List<BuriedObjectData>)TRItems.Data.GetValue(
+            "BuriedObjectDataLostAndFound", new List<BuriedObjectData>()
+        );
 
         // TRTools.Log($"Loading BuriedObjectData lostAndFound: {lostAndFound.Count}");
 
@@ -28,7 +30,12 @@ internal class BuriedObjectData : ItemSaveData {
 
     // Buried items are always tileObjectID 30, so we set it to -1 to make it an empty tile
     public static void Save(BuriedItem toRemove) {
-        all.Add(new BuriedObjectData { customItemID = TRItems.customItemsByItemID[toRemove.itemId].customItemID, stackSize = toRemove.stackedAmount, objectXPos = toRemove.xPos, objectYPos = toRemove.yPos });
+        all.Add(
+            new BuriedObjectData {
+                customItemID = TRItems.customItemsByItemID[toRemove.itemId].customItemID,
+                stackSize = toRemove.stackedAmount, objectXPos = toRemove.xPos, objectYPos = toRemove.yPos
+            }
+        );
         BuriedManager.manage.allBuriedItems.Remove(toRemove);
         WorldManager.manageWorld.onTileMap[toRemove.xPos, toRemove.yPos] = -1;
     }
@@ -36,7 +43,9 @@ internal class BuriedObjectData : ItemSaveData {
     public TRCustomItem Load() {
         if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
         WorldManager.manageWorld.onTileMap[objectXPos, objectYPos] = 30;
-        BuriedManager.manage.allBuriedItems.Add(new BuriedItem(customItem.inventoryItem.getItemId(), stackSize, objectXPos, objectYPos));
+        BuriedManager.manage.allBuriedItems.Add(
+            new BuriedItem(customItem.inventoryItem.getItemId(), stackSize, objectXPos, objectYPos)
+        );
 
         return customItem;
     }

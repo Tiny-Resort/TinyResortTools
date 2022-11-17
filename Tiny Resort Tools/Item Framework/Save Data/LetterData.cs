@@ -40,15 +40,10 @@ internal class LetterData : ItemSaveData {
         all.Add(
             new LetterData {
                 customItemID = TRItems.customItemsByItemID[toRemove.itemAttached].customItemID,
-                itemAttached = toRemove.itemAttached,
-                itemOriginallAttached = toRemove.itemOriginallAttached,
-                stackOfItemAttached = toRemove.stackOfItemAttached,
-                myType = toRemove.myType,
-                seasonSent = toRemove.seasonSent,
-                letterTemplateNo = toRemove.letterTemplateNo,
-                sentById = toRemove.sentById,
-                hasBeenRead = toRemove.hasBeenRead,
-                tomorrow = tomorrow
+                itemAttached = toRemove.itemAttached, itemOriginallAttached = toRemove.itemOriginallAttached,
+                stackOfItemAttached = toRemove.stackOfItemAttached, myType = toRemove.myType,
+                seasonSent = toRemove.seasonSent, letterTemplateNo = toRemove.letterTemplateNo,
+                sentById = toRemove.sentById, hasBeenRead = toRemove.hasBeenRead, tomorrow = tomorrow
             }
         );
 

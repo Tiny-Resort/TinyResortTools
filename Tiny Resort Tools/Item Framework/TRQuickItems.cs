@@ -41,7 +41,10 @@ public class TRQuickItems {
             return;
         }
 
-        if (TRItems.customItems.ContainsKey(itemInfo.nexusID + "." + itemInfo.uniqueID) || TRItems.customItems.ContainsKey("QI." + folderName + "_" + itemInfo.itemName.Replace(" ", "") + ext.Replace(".", "_"))) {
+        if (TRItems.customItems.ContainsKey(itemInfo.nexusID + "." + itemInfo.uniqueID)
+         || TRItems.customItems.ContainsKey(
+                "QI." + folderName + "_" + itemInfo.itemName.Replace(" ", "") + ext.Replace(".", "_")
+            )) {
             TRTools.LogError("A custom item with the same nexus ID and unique ID has already been loaded.");
             return;
         }
@@ -49,7 +52,11 @@ public class TRQuickItems {
         // If no texture could be loaded, skip this one
         // Path Combine doesn't seem to work here? Acts like PLuginPath is empty...
         var texture = TRAssets.LoadTexture(Paths.PluginPath + path.Trim());
-        var normalMap = string.IsNullOrWhiteSpace(itemInfo.normalMapFileName) ? null : TRAssets.LoadTexture(Paths.PluginPath + path.Replace(fileName, itemInfo.normalMapFileName));
+        var normalMap = string.IsNullOrWhiteSpace(itemInfo.normalMapFileName)
+                            ? null
+                            : TRAssets.LoadTexture(
+                                Paths.PluginPath + path.Replace(fileName, itemInfo.normalMapFileName)
+                            );
         if (!texture) {
             TRTools.LogError($"No texture was found at {Paths.PluginPath + path.Trim()}.");
             return;
@@ -89,20 +96,36 @@ public class TRQuickItems {
             currentCustomIDs.Add(itemInfo.nexusID + "." + itemInfo.uniqueID);
 
         if (itemInfo.nexusID <= 0 && LeadPlugin.developerMode.Value) {
-            TRTools.LogError("Loading a Quick Item in with a -1 Nexus ID. This is allowed since you are in the developer mode, but please update the files before release.(or notify mod author).");
-            newItem.customItemID = "QI." + folderName + "_" + itemInfo.itemName.Replace(" ", "") + ext.Replace(".", "_");
-            if (!string.IsNullOrWhiteSpace(itemInfo.iconFileName)) UpdateIcon(newItem.inventoryItem, Paths.PluginPath + path.Replace(itemInfo.fileName, itemInfo.iconFileName));
+            TRTools.LogError(
+                "Loading a Quick Item in with a -1 Nexus ID. This is allowed since you are in the developer mode, but please update the files before release.(or notify mod author)."
+            );
+            newItem.customItemID =
+                "QI." + folderName + "_" + itemInfo.itemName.Replace(" ", "") + ext.Replace(".", "_");
+            if (!string.IsNullOrWhiteSpace(itemInfo.iconFileName))
+                UpdateIcon(
+                    newItem.inventoryItem, Paths.PluginPath + path.Replace(itemInfo.fileName, itemInfo.iconFileName)
+                );
             TRItems.customItems[newItem.customItemID] = newItem;
         }
         else if (itemInfo.nexusID > 0) {
             newItem.customItemID = itemInfo.nexusID + "." + itemInfo.uniqueID;
-            if (!string.IsNullOrWhiteSpace(itemInfo.iconFileName)) UpdateIcon(newItem.inventoryItem, Paths.PluginPath + path.Replace(itemInfo.fileName, itemInfo.iconFileName));
+            if (!string.IsNullOrWhiteSpace(itemInfo.iconFileName))
+                UpdateIcon(
+                    newItem.inventoryItem, Paths.PluginPath + path.Replace(itemInfo.fileName, itemInfo.iconFileName)
+                );
             TRItems.customItems[newItem.customItemID] = newItem;
         }
-        else { TRTools.LogError("Loading a Quick Item in with a -1 Nexus ID. This is not allowed and will be blocked. If you are a developer, please turn on developer mode."); }
+        else {
+            TRTools.LogError(
+                "Loading a Quick Item in with a -1 Nexus ID. This is not allowed and will be blocked. If you are a developer, please turn on developer mode."
+            );
+        }
 
-        if (TRItems.customItems.ContainsKey(newItem.customItemID) && itemInfo.type.ToLower().Replace(" ", "").Trim() == "path") {
-            newItem.tileTypes = Object.Instantiate(quickItemsBundle.LoadAsset<GameObject>("pathTileType").GetComponent<TileTypes>());
+        if (TRItems.customItems.ContainsKey(newItem.customItemID)
+         && itemInfo.type.ToLower().Replace(" ", "").Trim() == "path") {
+            newItem.tileTypes = Object.Instantiate(
+                quickItemsBundle.LoadAsset<GameObject>("pathTileType").GetComponent<TileTypes>()
+            );
             Object.DontDestroyOnLoad(newItem.tileTypes);
             newItem.tileTypes.myTileMaterial = new Material(newItem.inventoryItem.equipable.material);
             newItem.tileTypes.dropOnChange = newItem.inventoryItem;
@@ -134,19 +157,28 @@ public class TRQuickItems {
             var asset = quickItemsBundle.LoadAsset<GameObject>(oneItem.type.ToLower().Replace(" ", ""));
             InitializeCustomItem(relativePath, asset, oneItem);
         }
-        catch { TRTools.LogError("Missing or incorrect Item Type. Please refer to the documentation for a list of available options."); }
+        catch {
+            TRTools.LogError(
+                "Missing or incorrect Item Type. Please refer to the documentation for a list of available options."
+            );
+        }
     }
 
     internal static void LoadArrayItems(string path) {
         var jsonList = JsonConvert.DeserializeObject<List<QuickItemInfo>>(File.ReadAllText(path));
         if (jsonList != null)
             foreach (var item in jsonList) {
-                var relativePath = path.Remove(0, Paths.PluginPath.Length).Replace(Path.GetFileName(path), item.fileName);
+                var relativePath = path.Remove(0, Paths.PluginPath.Length)
+                                       .Replace(Path.GetFileName(path), item.fileName);
                 try {
                     var asset = quickItemsBundle.LoadAsset<GameObject>(item.type.ToLower().Replace(" ", ""));
                     InitializeCustomItem(relativePath, asset, item);
                 }
-                catch { TRTools.LogError("Missing or incorrect Item Type. Please refer to the documentation for a list of available options."); }
+                catch {
+                    TRTools.LogError(
+                        "Missing or incorrect Item Type. Please refer to the documentation for a list of available options."
+                    );
+                }
             }
     }
 
@@ -155,7 +187,8 @@ public class TRQuickItems {
         foreach (var item in arrayPaths) LoadArrayItems(item);
         foreach (var item in filePaths) LoadItem(item);
 
-        if (!string.IsNullOrWhiteSpace(qversionPath)) TRModUpdater.QuickItemInfo.Add(QIModInfo.CreateFromJson(File.ReadAllText(qversionPath)));
+        if (!string.IsNullOrWhiteSpace(qversionPath))
+            TRModUpdater.QuickItemInfo.Add(QIModInfo.CreateFromJson(File.ReadAllText(qversionPath)));
     }
 }
 

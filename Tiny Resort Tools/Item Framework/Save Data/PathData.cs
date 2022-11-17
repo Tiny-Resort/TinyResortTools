@@ -27,7 +27,12 @@ internal class PathData : ItemSaveData {
     }
 
     public static void Save(int tileType, int objectXPos, int objectYPos) {
-        all.Add(new PathData { customItemID = TRItems.customTileTypeByID[tileType].customItemID, objectXPos = objectXPos, objectYPos = objectYPos });
+        all.Add(
+            new PathData {
+                customItemID = TRItems.customTileTypeByID[tileType].customItemID, objectXPos = objectXPos,
+                objectYPos = objectYPos
+            }
+        );
         WorldManager.manageWorld.tileTypeMap[objectXPos, objectYPos] = 0;
         WorldManager.manageWorld.refreshAllChunksInUse(objectXPos, objectYPos);
 

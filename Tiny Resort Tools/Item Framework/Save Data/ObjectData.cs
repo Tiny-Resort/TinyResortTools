@@ -26,29 +26,31 @@ internal class ObjectData : ItemSaveData {
             catch { TRTools.LogError($"Failed to load item: {item.customItemID}"); }
     }
 
-    public static void Save(int tileObjectID, int objectXPos, int objectYPos, int rotation, int houseXPos, int houseYPos) {
+    public static void Save(
+        int tileObjectID, int objectXPos, int objectYPos, int rotation, int houseXPos, int houseYPos
+    ) {
 
         all.Add(
             new ObjectData {
-                customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID,
-                rotation = rotation,
-                objectXPos = objectXPos,
-                objectYPos = objectYPos,
-                houseXPos = houseXPos,
-                houseYPos = houseYPos
+                customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID, rotation = rotation,
+                objectXPos = objectXPos, objectYPos = objectYPos, houseXPos = houseXPos, houseYPos = houseYPos
             }
         );
 
         var tileID = WorldManager.manageWorld.allObjects[tileObjectID].tileObjectChest ? 23 : -1;
-        var tileStatus = WorldManager.manageWorld.allObjects[tileObjectID].tileObjectChest ? WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] : -1;
+        var tileStatus = WorldManager.manageWorld.allObjects[tileObjectID].tileObjectChest
+                             ? WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos]
+                             : -1;
 
-        if (WorldManager.manageWorld.allObjects[tileObjectID].tileObjectConnect) tileID = WorldManager.manageWorld.allObjects[tileObjectID].tileObjectConnect.isFence ? 323 : tileID;
+        if (WorldManager.manageWorld.allObjects[tileObjectID].tileObjectConnect)
+            tileID = WorldManager.manageWorld.allObjects[tileObjectID].tileObjectConnect.isFence ? 323 : tileID;
 
         // If the object is in a house, remove it from inside the house
         var houseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
         if (houseDetails != null) {
 
-            TRItems.customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObjectInside(objectXPos, objectYPos, rotation, houseDetails);
+            TRItems.customTileObjectByID[tileObjectID]
+                   .tileObject.removeMultiTiledObjectInside(objectXPos, objectYPos, rotation, houseDetails);
             houseDetails.houseMapOnTile[objectXPos, objectYPos] = tileID;
             houseDetails.houseMapOnTileStatus[objectXPos, objectYPos] = tileStatus;
 
@@ -56,7 +58,9 @@ internal class ObjectData : ItemSaveData {
 
             var house = HouseManager.manage.findHousesOnDisplay(houseXPos, houseYPos);
             if (house) {
-                if (house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture) house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture.updateOnTileStatus(objectXPos, objectYPos, houseDetails);
+                if (house.tileObjectsInHouse[objectXPos, objectYPos].tileObjectFurniture)
+                    house.tileObjectsInHouse[objectXPos, objectYPos]
+                         .tileObjectFurniture.updateOnTileStatus(objectXPos, objectYPos, houseDetails);
                 house.refreshHouseTiles();
             }
 
@@ -64,7 +68,8 @@ internal class ObjectData : ItemSaveData {
 
         // If the object is not in a house, remove it from the overworld
         else {
-            TRItems.customTileObjectByID[tileObjectID].tileObject.removeMultiTiledObject(objectXPos, objectYPos, rotation);
+            TRItems.customTileObjectByID[tileObjectID]
+                   .tileObject.removeMultiTiledObject(objectXPos, objectYPos, rotation);
             WorldManager.manageWorld.onTileMap[objectXPos, objectYPos] = tileID;
             WorldManager.manageWorld.onTileStatusMap[objectXPos, objectYPos] = tileStatus;
             WorldManager.manageWorld.refreshTileObjectsOnChunksInUse(objectXPos, objectYPos);

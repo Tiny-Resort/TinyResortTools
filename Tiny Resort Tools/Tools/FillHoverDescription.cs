@@ -40,7 +40,8 @@ internal class FillHoverDescription {
             if (hasFuel) {
                 var fuel = rollOverSlot.stack;
                 var maxFuel = __instance.allItems[rollOverSlot.itemNo].fuelMax;
-                fuelMessage = $"Tool: {isTool} | Power Tool: {isPowerTool}\nFuel: {fuel} | Max Fuel: {maxFuel} | Cost per Swing: {staminaCost}\n";
+                fuelMessage =
+                    $"Tool: {isTool} | Power Tool: {isPowerTool}\nFuel: {fuel} | Max Fuel: {maxFuel} | Cost per Swing: {staminaCost}\n";
             }
 
             var foodType = "";
@@ -63,7 +64,8 @@ internal class FillHoverDescription {
                         var buffType = __instance.allItems[rollOverSlot.itemNo].consumeable.myBuffs[i].myType;
                         var buffTimeLimit = __instance.allItems[rollOverSlot.itemNo].consumeable.myBuffs[i].seconds;
                         var buffLevel = __instance.allItems[rollOverSlot.itemNo].consumeable.myBuffs[i].myLevel;
-                        buffMessage = $"Buff Type: {buffType} | Duration: {buffTimeLimit / 60} mins | Level: {buffLevel}\n";
+                        buffMessage =
+                            $"Buff Type: {buffType} | Duration: {buffTimeLimit / 60} mins | Level: {buffLevel}\n";
                     }
             }
 
@@ -79,8 +81,10 @@ internal class FillHoverDescription {
                     if (__instance.allItems[rollOverSlot.itemNo].equipable.shirt) clothesType = "Shirt";
                     if (__instance.allItems[rollOverSlot.itemNo].equipable.shoes) clothesType = "Shoes";
 
-                    if (__instance.allItems[rollOverSlot.itemNo].equipable.shirtMesh) ShirtMesh = __instance.allItems[rollOverSlot.itemNo].equipable.shirtMesh.name;
-                    if (__instance.allItems[rollOverSlot.itemNo].equipable.material) ClothingMaterial = __instance.allItems[rollOverSlot.itemNo].equipable.material.name;
+                    if (__instance.allItems[rollOverSlot.itemNo].equipable.shirtMesh)
+                        ShirtMesh = __instance.allItems[rollOverSlot.itemNo].equipable.shirtMesh.name;
+                    if (__instance.allItems[rollOverSlot.itemNo].equipable.material)
+                        ClothingMaterial = __instance.allItems[rollOverSlot.itemNo].equipable.material.name;
                 }
 
             var FurnitureType = "";
@@ -102,7 +106,8 @@ internal class FillHoverDescription {
             var ClothingMessages = "";
             if (!string.IsNullOrEmpty(clothesType)) {
                 ClothingMessages = $"[CLOTHES] - Type: {clothesType}\n";
-                if (!string.IsNullOrEmpty(clothesType) && !string.IsNullOrEmpty(ShirtMesh)) ClothingMessages += $"Mesh: {ShirtMesh} | Material: {ClothingMaterial}\n";
+                if (!string.IsNullOrEmpty(clothesType) && !string.IsNullOrEmpty(ShirtMesh))
+                    ClothingMessages += $"Mesh: {ShirtMesh} | Material: {ClothingMaterial}\n";
             }
 
             var FoodMessages = "";
@@ -125,7 +130,9 @@ internal class FillHoverDescription {
             if (!string.IsNullOrEmpty(FurnitureMessages)) DebugMessage += FurnitureMessages;
 
             //TODO: Set an option to have this always turned on(?)
-            if (Input.GetKey(KeyCode.LeftAlt) && __instance && !__instance.InvDescriptionText.text.Contains(DebugMessage)) __instance.InvDescriptionText.text += DebugMessage;
+            if (Input.GetKey(KeyCode.LeftAlt) && __instance
+                                              && !__instance.InvDescriptionText.text.Contains(DebugMessage))
+                __instance.InvDescriptionText.text += DebugMessage;
 
         }
         catch { TRTools.LogError("Failed To Parse Data for Hover Description. WIP."); }

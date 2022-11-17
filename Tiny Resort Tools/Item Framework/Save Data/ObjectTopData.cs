@@ -13,7 +13,9 @@ internal class ObjectTopData : ItemSaveData {
     public int mannequinID;
 
     public static void LoadAll() {
-        lostAndFound = (List<ObjectTopData>)TRItems.Data.GetValue("ObjectTopDataLostAndFound", new List<ObjectTopData>());
+        lostAndFound = (List<ObjectTopData>)TRItems.Data.GetValue(
+            "ObjectTopDataLostAndFound", new List<ObjectTopData>()
+        );
 
         //TRTools.Log($"Loading ObjectTopData lostAndFound: {lostAndFound.Count}");
 
@@ -29,47 +31,49 @@ internal class ObjectTopData : ItemSaveData {
             catch { TRTools.LogError($"Failed to load item: {item.customItemID}"); }
     }
 
-    public static void Save(int tileObjectID, int ObjectXPos, int ObjectYPos, int rotation, int HouseXPos, int HouseYPos, int status, int onTopPos) {
+    public static void Save(
+        int tileObjectID, int ObjectXPos, int ObjectYPos, int rotation, int HouseXPos, int HouseYPos, int status,
+        int onTopPos
+    ) {
 
         if (TRItems.customTileTypeByID.ContainsKey(tileObjectID))
             all.Add(
                 new ObjectTopData {
-                    customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID,
-                    rotation = rotation,
-                    onTopPos = onTopPos,
-                    status = status,
-                    objectXPos = ObjectXPos,
-                    objectYPos = ObjectYPos,
-                    houseXPos = HouseXPos,
-                    houseYPos = HouseYPos,
-                    mannequinID = -1
+                    customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID, rotation = rotation,
+                    onTopPos = onTopPos, status = status, objectXPos = ObjectXPos, objectYPos = ObjectYPos,
+                    houseXPos = HouseXPos, houseYPos = HouseYPos, mannequinID = -1
                 }
             );
         else if (TRItems.customItemsByItemID.ContainsKey(status))
             all.Add(
                 new ObjectTopData {
-                    customItemID = TRItems.customItemsByItemID[status].customItemID,
-                    rotation = rotation,
-                    onTopPos = onTopPos,
-                    status = status,
-                    objectXPos = ObjectXPos,
-                    objectYPos = ObjectYPos,
-                    houseXPos = HouseXPos,
-                    houseYPos = HouseYPos,
-                    mannequinID = tileObjectID
+                    customItemID = TRItems.customItemsByItemID[status].customItemID, rotation = rotation,
+                    onTopPos = onTopPos, status = status, objectXPos = ObjectXPos, objectYPos = ObjectYPos,
+                    houseXPos = HouseXPos, houseYPos = HouseYPos, mannequinID = tileObjectID
                 }
             );
 
         // If it's in a house, remove it from the house
         if (HouseXPos > -1 && HouseYPos > -1 && HouseManager.manage.getHouseInfo(HouseXPos, HouseYPos) != null) {
-            ItemOnTopManager.manage.removeItemOnTop(ItemOnTopManager.manage.getItemOnTopInPosition(onTopPos, ObjectXPos, ObjectYPos, HouseManager.manage.getHouseInfo(HouseXPos, HouseYPos)));
+            ItemOnTopManager.manage.removeItemOnTop(
+                ItemOnTopManager.manage.getItemOnTopInPosition(
+                    onTopPos, ObjectXPos, ObjectYPos, HouseManager.manage.getHouseInfo(HouseXPos, HouseYPos)
+                )
+            );
             var displayPlayerHouseTiles = HouseManager.manage.findHousesOnDisplay(HouseXPos, HouseYPos);
-            if (displayPlayerHouseTiles && displayPlayerHouseTiles.tileObjectsInHouse[ObjectXPos, ObjectYPos]) displayPlayerHouseTiles.tileObjectsInHouse[ObjectXPos, ObjectYPos].checkOnTopInside(ObjectXPos, ObjectYPos, HouseManager.manage.getHouseInfo(HouseXPos, HouseYPos));
+            if (displayPlayerHouseTiles && displayPlayerHouseTiles.tileObjectsInHouse[ObjectXPos, ObjectYPos])
+                displayPlayerHouseTiles.tileObjectsInHouse[ObjectXPos, ObjectYPos]
+                                       .checkOnTopInside(
+                                            ObjectXPos, ObjectYPos,
+                                            HouseManager.manage.getHouseInfo(HouseXPos, HouseYPos)
+                                        );
         }
 
         // If it's not in a house, remove it from the overworld tiles
         else {
-            ItemOnTopManager.manage.removeItemOnTop(ItemOnTopManager.manage.getItemOnTopInPosition(onTopPos, ObjectXPos, ObjectYPos, null));
+            ItemOnTopManager.manage.removeItemOnTop(
+                ItemOnTopManager.manage.getItemOnTopInPosition(onTopPos, ObjectXPos, ObjectYPos, null)
+            );
             WorldManager.manageWorld.unlockClientTile(ObjectXPos, ObjectYPos);
             WorldManager.manageWorld.refreshAllChunksInUse(ObjectXPos, ObjectYPos);
         }
@@ -84,7 +88,9 @@ internal class ObjectTopData : ItemSaveData {
         // If mannequin is not -1, then the custom item is "inside" another item (like a mannequin for clothing)
         var itemID = mannequinID == -1 ? customItem.tileObject.tileObjectId : mannequinID;
         var tmpHouseDetails = houseXPos == -1 ? null : HouseManager.manage.getHouseInfo(houseXPos, houseYPos);
-        ItemOnTopManager.manage.placeItemOnTop(itemID, onTopPos, status, rotation, objectXPos, objectYPos, tmpHouseDetails);
+        ItemOnTopManager.manage.placeItemOnTop(
+            itemID, onTopPos, status, rotation, objectXPos, objectYPos, tmpHouseDetails
+        );
         WorldManager.manageWorld.unlockClientTile(objectXPos, objectYPos);
         WorldManager.manageWorld.refreshAllChunksInUse(objectXPos, objectYPos);
 

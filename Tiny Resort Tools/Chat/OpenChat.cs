@@ -10,7 +10,8 @@ internal class OpenChat {
 
     [HarmonyPostfix]
     internal static void postfix(InputMaster __instance, ref bool __result) {
-        if (LeadPlugin.useSlashToOpenChat.Value && !__result && !ChatBox.chat.chatOpen && Input.GetKeyDown(KeyCode.Slash)) {
+        if (LeadPlugin.useSlashToOpenChat.Value && !__result && !ChatBox.chat.chatOpen
+         && Input.GetKeyDown(KeyCode.Slash)) {
             __result = true;
             SlashOpenedChat = Time.realtimeSinceStartup;
         }

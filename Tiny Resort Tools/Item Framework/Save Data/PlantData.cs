@@ -31,7 +31,10 @@ internal class PlantData : ItemSaveData {
 
     public static void Save(int tileObjectID, int objectXPos, int objectYPos, int growthStatus) {
         all.Add(
-            new PlantData { customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID, objectXPos = objectXPos, objectYPos = objectYPos, growthStatus = growthStatus }
+            new PlantData {
+                customItemID = TRItems.customTileObjectByID[tileObjectID].customItemID, objectXPos = objectXPos,
+                objectYPos = objectYPos, growthStatus = growthStatus
+            }
         );
 
         WorldManager.manageWorld.onTileMap[objectXPos, objectYPos] = -1;
