@@ -2,32 +2,32 @@
 
 Please include a summary of the changes and the related issue. Please also include relevant motivation and context. List any dependencies that are required for this change.
 
-# Developers
-## New Features
+## Developers
+### New Features
 - 
 
-## Improvements
+### Improvements
 -
 
-## Bug Fixes
+### Bug Fixes
 -
 
-# Users
-## New Features
+## Users
+### New Features
 - 
 
-## Improvements
+### Improvements
 -
 
-## Bug Fixes
+### Bug Fixes
 -
-# Internal
-## New Features
+## Internal
+### New Features
 - 
 
-## Improvements
+### Improvements
 -
 
-## Bug Fixes
+### Bug Fixes
 -
 
