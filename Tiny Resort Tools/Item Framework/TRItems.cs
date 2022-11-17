@@ -661,7 +661,6 @@ namespace TinyResort {
             for (var x = 0; x < tileTypeMap.GetLength(0); x++) {
                 for (var y = 0; y < tileTypeMap.GetLength(1); y++)
                     if (tileTypeMap[x, y] > -1 && WorldManager.manageWorld.tileTypes[tileTypeMap[x, y]].isPath && customTileTypeByID.ContainsKey(tileTypeMap[x, y])) {
-                        TRTools.Log($"Found Mod Tile: {tileTypeMap[x, y]} | ({x},{y})");
                         PathData.Save(tileTypeMap[x, y], x, y);
                     }
             }

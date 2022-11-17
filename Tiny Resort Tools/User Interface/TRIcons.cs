@@ -129,9 +129,10 @@ namespace TinyResort {
 
         internal static void updateStatusPostfix(ItemSign __instance, int newStatus) {
             if (newStatus != -1) {
-                var FindSprite = proccessedItemList.Find(i => i.itemName == Inventory.inv.allItems[newStatus].itemName.ToLower());
-
-                if (FindSprite != null) { __instance.itemRenderer.transform.localScale = new Vector3(.4858f, .4858f, .4858f); }
+                var FindSprite = proccessedItemList.Find(i => i.itemName == Inventory.inv.allItems[newStatus].itemName.ToLower().Replace(" ", "_"));
+                var FindQISprite = proccessedQIItemList.Find(i => i.itemName == Inventory.inv.allItems[newStatus].itemName.ToLower().Replace(" ", "_"));
+ 
+                if (FindSprite != null || FindQISprite != null) { __instance.itemRenderer.transform.localScale = new Vector3(.4858f, .4858f, .4858f); }
             }
         }
 

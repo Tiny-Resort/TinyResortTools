@@ -30,12 +30,13 @@ namespace TinyResort {
             useSlashToOpenChat = Config.Bind("Chat", "UseSlashToOpenChat", true, "If true, then pressing forward slash on the keyboard will open the chat box with a slash already in place.");
             developerMode = Config.Bind("Developer", "DeveloperMode", false, "If true, allows the use of nexusID being set to '-1'. Default is false, so you will need to update nexusID before releasing for the enduser.");
 
+            // If in developer mode, give a big warning about nexus ID usage
+            if (developerMode.Value) { TRTools.LogError(TRTools.TRDeveloperMode()); }
+            
             TRLicences.Initialize();
             TRItems.Initialize();
             TRQuickItems.LoadAllQuickItems();
 
-            // If in developer mode, give a big warning about nexus ID usage
-            if (developerMode.Value) { TRTools.LogError(TRTools.TRDeveloperMode()); }
 
         }
 
