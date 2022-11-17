@@ -692,9 +692,10 @@ namespace TinyResort {
                     // Removes items that are on top of other items.
                     // Does this before removing ground items to prevent issues
                     var onTopOfTile = ItemOnTopManager.manage.getAllItemsOnTop(x, y, null);
-                    for (var i = 0; i < onTopOfTile.Length; i++)
-                        if (customTileObjectByID.ContainsKey(onTopOfTile[i].itemId))
-                            ObjectTopData.Save(onTopOfTile[i].itemId, x, y, onTopOfTile[i].itemRotation, -1, -1, onTopOfTile[i].itemStatus, onTopOfTile[i].onTopPosition);
+                    for (var i = 0; i < onTopOfTile.Length; i++) {
+                        if (customTileObjectByID.ContainsKey(onTopOfTile[i].itemId) || customItemsByItemID.ContainsKey(onTopOfTile[i].itemStatus)) ObjectTopData.Save(onTopOfTile[i].itemId, x, y, onTopOfTile[i].itemRotation, -1, -1, onTopOfTile[i].itemStatus, onTopOfTile[i].onTopPosition);
+
+                    }
 
                     #endregion
 
@@ -750,7 +751,7 @@ namespace TinyResort {
                         // Removes custom items that are on top of objects inside a house
                         var onTopOfTileInside = ItemOnTopManager.manage.getAllItemsOnTopInHouse(houseDetails);
                         for (var i = 0; i < onTopOfTileInside.Length; i++) {
-                            if (customTileObjectByID.ContainsKey(onTopOfTileInside[i].getTileObjectId())) {
+                            if (customTileObjectByID.ContainsKey(onTopOfTileInside[i].getTileObjectId()) || customItemsByItemID.ContainsKey(onTopOfTileInside[i].itemStatus)) {
                                 ObjectTopData.Save(
                                     onTopOfTileInside[i].itemId, onTopOfTileInside[i].sittingOnX, onTopOfTileInside[i].sittingOnY,
                                     onTopOfTileInside[i].itemRotation, x, y, onTopOfTileInside[i].itemStatus, onTopOfTileInside[i].onTopPosition
