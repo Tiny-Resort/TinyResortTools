@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 [Serializable]
 internal class CarryableData : ItemSaveData {

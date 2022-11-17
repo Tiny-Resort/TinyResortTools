@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 // This is run anytime a save slot is clicked. It will happened before any loading is started. 
 

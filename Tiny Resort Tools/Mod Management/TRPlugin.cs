@@ -4,7 +4,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 /// <summary>Information and functions relating to your plugin with respect to the TR toolset.</summary>
 public class TRPlugin {

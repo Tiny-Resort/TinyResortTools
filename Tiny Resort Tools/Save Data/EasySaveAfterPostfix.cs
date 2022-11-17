@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 // This is being run during the save process (towards the end). It had `EasySaveBuried` running after it though.
 // We might want to move it there? I am not sure the reason it was put here in the first place. 

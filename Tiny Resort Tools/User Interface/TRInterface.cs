@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 /// <summary> A class to help manage the interface and UI elements. </summary>
 public class TRInterface : MonoBehaviour {

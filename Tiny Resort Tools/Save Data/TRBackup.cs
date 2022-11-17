@@ -8,7 +8,7 @@ using BepInEx.Configuration;
 using BepInEx.Unity.Bootstrap;
 using UnityEngine;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 internal class TRBackup {
 

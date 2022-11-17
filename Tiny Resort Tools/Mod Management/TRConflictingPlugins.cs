@@ -4,7 +4,7 @@ using BepInEx.Unity.Bootstrap;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 internal class TRConflictingPlugins {
 

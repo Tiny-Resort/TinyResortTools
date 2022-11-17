@@ -13,7 +13,7 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Version = SemanticVersioning.Version;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 internal class TRModUpdater {
 
@@ -290,8 +290,8 @@ internal class TRModUpdater {
 
         public readonly string name;
         public readonly Version nexusVersion;
-        public TRButton updateButton;
         public readonly PluginUpdateState updateState;
+        public TRButton updateButton;
 
         public NexusPlugin(string name, int id, Version modVersion, Version nexusVersion, PluginUpdateState state) {
             this.name = name;

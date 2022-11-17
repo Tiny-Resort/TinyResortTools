@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 [Serializable]
 internal class ChestData : ItemSaveData {

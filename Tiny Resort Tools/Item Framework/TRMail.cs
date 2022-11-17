@@ -1,4 +1,4 @@
-namespace TinyResort; 
+namespace TinyResort;
 
 // TODO: Create LetterType template for Mods
 // TODO: Create more robust system for developers to send user mail

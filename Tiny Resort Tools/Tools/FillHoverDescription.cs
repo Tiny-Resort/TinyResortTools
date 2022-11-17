@@ -1,7 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 [HarmonyPatch(typeof(Inventory), "fillHoverDescription")]
 internal class FillHoverDescription {

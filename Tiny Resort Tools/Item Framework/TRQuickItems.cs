@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 // TODO: Add method for tracking development items turning into production items. 
 

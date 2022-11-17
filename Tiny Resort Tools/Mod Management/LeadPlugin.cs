@@ -1,7 +1,7 @@
 using BepInEx;
 using BepInEx.Configuration;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 [BepInPlugin(pluginGuid, pluginName, pluginVersion)]
 internal class LeadPlugin : BaseUnityPlugin {

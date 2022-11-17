@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 // loadInv is required because clients only run this when joining a server.
 

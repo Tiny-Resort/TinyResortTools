@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 /// <summary>Tools for sending messages to the chat box.</summary>
 public class TRChat {

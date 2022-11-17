@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 /*
  * Adding Custom Tree Support:

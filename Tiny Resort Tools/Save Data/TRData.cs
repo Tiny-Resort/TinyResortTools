@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 /// <summary>Tools for adding custom save data to your mod.</summary>
 public static class TRData {

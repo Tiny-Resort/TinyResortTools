@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 // This is run before the SaveGame method (first save method and before the coroutine) is started. 
 

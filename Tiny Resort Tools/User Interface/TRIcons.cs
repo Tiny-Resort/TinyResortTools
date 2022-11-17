@@ -3,7 +3,7 @@ using System.IO;
 using BepInEx;
 using UnityEngine;
 
-namespace TinyResort; 
+namespace TinyResort;
 
 internal class TRIcons : MonoBehaviour {
 
