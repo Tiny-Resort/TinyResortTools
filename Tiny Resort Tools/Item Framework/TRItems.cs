@@ -59,7 +59,7 @@ namespace TinyResort {
         private static List<Chest> privateStashesVanilla;
 
         internal static bool fixedRecipes;
-        internal static bool runningClient;
+        //internal static bool runningClient;
 
         /// <returns>The details for an item with the given item ID.</returns>
         public static InventoryItem GetItemDetails(int itemID) {
@@ -87,7 +87,7 @@ namespace TinyResort {
 
         }
 
-        public static List<ChestPlaceable> LocateNearbyContainers(int startingX, int startingY, int radius) {
+        internal static List<ChestPlaceable> LocateNearbyContainers(int startingX, int startingY, int radius) {
 
             List<ChestPlaceable> foundChests = new List<ChestPlaceable>();
 
@@ -939,11 +939,17 @@ namespace TinyResort {
         //public delegate void TileObjectEvent();
         //public TileObjectEvent interactEvent;
 
+        /// <summary> Reference to the Inventory Item </summary>
         public InventoryItem inventoryItem;
+        /// <summary> Reference to Tile Object </summary>
         public TileObject tileObject;
+        /// <summary> Reference to the Tile Object Settings </summary>
         public TileObjectSettings tileObjectSettings;
+        /// <summary> Reference to the Tile Types </summary>
         public TileTypes tileTypes;
+        /// <summary> Reference to Vehicles</summary>
         public Vehicle vehicle;
+        /// <summary> Reference to the Carryable Objects</summary>
         public PickUpAndCarry pickUpAndCarry;
 
         internal static TRCustomItem Create(string assetBundlePath) {

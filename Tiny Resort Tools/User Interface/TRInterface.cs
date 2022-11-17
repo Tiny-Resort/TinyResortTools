@@ -13,12 +13,13 @@ using Object = UnityEngine.Object;
 
 namespace TinyResort {
 
+    /// <summary> A class to help manage the interface and UI elements. </summary>
     public class TRInterface : MonoBehaviour {
 
         internal static AssetBundle UIBundle;
         internal static Sprite ModLogo;
         internal static TRButton buttonMainMenu;
-        internal static GameObject scrollBar;
+        //internal static GameObject scrollBar;
 
         internal static void Initialize() {
 
@@ -89,21 +90,34 @@ namespace TinyResort {
         }
         
     }
-    
+
+    /// <summary> A class for helping manage buttons and various aspects of them. </summary>
     public class TRButton : MonoBehaviour {
         
+        /// <summary> The reference to edit the rect transform of the button. Use this to change the size. </summary>
         public RectTransform rectTransform;
+        /// <summary> The reference to edit the button's action. </summary>
         public InvButton button;
+        /// <summary> The reference to edit the image and background of the button. </summary>
         public Image background;
+        /// <summary> The reference to edit the the text and aspects of the text. </summary>
         public TextMeshProUGUI textMesh;
+        /// <summary> The reference to edit the button's animation. </summary>
         public ButtonAnimation buttonAnim;
+        /// <summary> The reference to edit the windows's animation. </summary>
         public WindowAnimator windowAnim;
 
+        /// <summary> The method to copy a gameobject and attached it to a parent with a new action.</summary>
+        /// <param name="parent">The parent object you want to attach the button to.</param>
+        /// <param name="text">The text on the button.</param>
+        /// <param name="clickAction">The method you want to run when the button is clicked.</param>
+        /// <returns></returns>
         public TRButton Copy(Transform parent, string text, UnityAction clickAction = null) {
             var copy = Object.Instantiate(gameObject, parent);
             var buttonInfo = copy.GetComponent<TRButton>();
             buttonInfo.textMesh.text = text;
             if (clickAction != null) {
+                buttonInfo.button.onButtonPress = new UnityEvent();
                 buttonInfo.button.onButtonPress.RemoveAllListeners();
                 buttonInfo.button.onButtonPress.AddListener(clickAction);
             }
@@ -111,7 +125,11 @@ namespace TinyResort {
         }
 
     }
-    
-    public enum ButtonTypes { MainMenu }
+
+    /// <summary> The different type of buttons you can create through the use of the API. </summary>
+    public enum ButtonTypes {
+        /// <summary> Themed after the main menu buttons (New Game, Load Game, etc) </summary>
+        MainMenu
+    }
 
 }

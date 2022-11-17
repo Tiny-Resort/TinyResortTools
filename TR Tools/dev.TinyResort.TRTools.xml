@@ -94,6 +94,24 @@
         <member name="M:TinyResort.TRCustomItem.GetUniqueID">
             <returns>Returns the unique ID of your custom item. This will be a combination of your nexus ID and the item ID you gave when adding it.</returns>
         </member>
+        <member name="F:TinyResort.TRCustomItem.inventoryItem">
+            <summary> Reference to the Inventory Item </summary>
+        </member>
+        <member name="F:TinyResort.TRCustomItem.tileObject">
+            <summary> Reference to Tile Object </summary>
+        </member>
+        <member name="F:TinyResort.TRCustomItem.tileObjectSettings">
+            <summary> Reference to the Tile Object Settings </summary>
+        </member>
+        <member name="F:TinyResort.TRCustomItem.tileTypes">
+            <summary> Reference to the Tile Types </summary>
+        </member>
+        <member name="F:TinyResort.TRCustomItem.vehicle">
+            <summary> Reference to Vehicles</summary>
+        </member>
+        <member name="F:TinyResort.TRCustomItem.pickUpAndCarry">
+            <summary> Reference to the Carryable Objects</summary>
+        </member>
         <member name="T:TinyResort.TRMail">
             <summary> Tools for sending the player custom mail. </summary>
         </member>
@@ -120,9 +138,6 @@
         </member>
         <member name="T:TinyResort.TRQuickItems">
             <summary>Tools for quickly creating clothing items.</summary>
-        </member>
-        <member name="T:TinyResort.QuickItemInfo">
-            <summary> Please ignore! This is only for internal use but must be public in order for it to be loadable from JSON. </summary>
         </member>
         <member name="T:TinyResort.QIModInfo">
             <summary> Please ignore! This is only for internal use but must be public in order for it to be loadable from JSON. </summary>
@@ -370,6 +385,9 @@
             <param name="pivot">The center of the sprite. Vector2.zero would be the top left and Vector2.one would be the bottom right.</param>
             <returns>The loaded Sprite.</returns>
         </member>
+        <member name="T:TinyResort.TRInterface">
+            <summary> A class to help manage the interface and UI elements. </summary>
+        </member>
         <member name="M:TinyResort.TRInterface.CreateButton(TinyResort.ButtonTypes,UnityEngine.Transform,System.String,UnityEngine.Events.UnityAction)">
             <summary>
             Create a button using pre-determined assets in the API.
@@ -386,6 +404,40 @@
             <param name="mainColor">The color of the circle.</param>
             <param name="borderThickness">Thickness of the border to the circle (in pixels). Set to 0 to have no border.</param>
             <param name="borderColor">Color of the border.</param>
+        </member>
+        <member name="T:TinyResort.TRButton">
+            <summary> A class for helping manage buttons and various aspects of them. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.rectTransform">
+            <summary> The reference to edit the rect transform of the button. Use this to change the size. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.button">
+            <summary> The reference to edit the button's action. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.background">
+            <summary> The reference to edit the image and background of the button. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.textMesh">
+            <summary> The reference to edit the the text and aspects of the text. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.buttonAnim">
+            <summary> The reference to edit the button's animation. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.windowAnim">
+            <summary> The reference to edit the windows's animation. </summary>
+        </member>
+        <member name="M:TinyResort.TRButton.Copy(UnityEngine.Transform,System.String,UnityEngine.Events.UnityAction)">
+            <summary> The method to copy a gameobject and attached it to a parent with a new action.</summary>
+            <param name="parent">The parent object you want to attach the button to.</param>
+            <param name="text">The text on the button.</param>
+            <param name="clickAction">The method you want to run when the button is clicked.</param>
+            <returns></returns>
+        </member>
+        <member name="T:TinyResort.ButtonTypes">
+            <summary> The different type of buttons you can create through the use of the API. </summary>
+        </member>
+        <member name="F:TinyResort.ButtonTypes.MainMenu">
+            <summary> Themed after the main menu buttons (New Game, Load Game, etc) </summary>
         </member>
         <member name="T:TinyResort.TRMap">
             <summary>Map-related tools, such as easy map markers.</summary>

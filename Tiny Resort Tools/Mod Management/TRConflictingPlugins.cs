@@ -23,12 +23,12 @@ namespace TinyResort {
         internal static Dictionary<string, PluginInfo> pluginInfos;
         internal static List<ConflictingMods> conflictingMods = new List<ConflictingMods>();
 
-        private static TRButton modsWindowButton;
+        //private static TRButton modsWindowButton;
         private static GameObject ConflictingModsWindow;
 
         private static GameObject creditsWindow;
         private static RectTransform updateButtonGrid;
-        private static GameObject menuText;
+        //private static GameObject menuText;
 
         private static TRButton updateButton;
 

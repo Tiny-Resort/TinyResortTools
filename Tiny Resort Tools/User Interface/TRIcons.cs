@@ -30,7 +30,6 @@ namespace TinyResort {
             internal string itemName;
             internal Sprite customSprite;
             internal string spritePath;
-            internal InventoryItem item; 
         }
 
         #region Required Initializations

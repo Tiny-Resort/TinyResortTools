@@ -14,7 +14,7 @@ namespace TinyResort {
         // Position of the tile relative to world (or house if it is in one)
         public int objectXPos;
         public int objectYPos;
-        public int ObjectZPos;
+        //public int ObjectZPos;
 
         // Position of House within World
         public int houseXPos;

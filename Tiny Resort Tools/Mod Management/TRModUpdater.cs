@@ -31,7 +31,7 @@ namespace TinyResort {
         
         private static GameObject creditsWindow;
         private static RectTransform updateButtonGrid;
-        private static GameObject menuText;
+        //private static GameObject menuText;
 
         private static TRButton updateButton;
         

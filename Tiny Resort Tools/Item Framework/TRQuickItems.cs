@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Serialization;
 using BepInEx;
 using HarmonyLib;
 using I2.Loc.SimpleJSON;
@@ -162,7 +163,7 @@ namespace TinyResort {
         }
     }
 
-    /// <summary> Please ignore! This is only for internal use but must be public in order for it to be loadable from JSON. </summary>
+    #pragma warning disable CS1591
     [Serializable]
     public class QuickItemInfo {
 
@@ -204,3 +205,4 @@ namespace TinyResort {
 
     }
 }
+#pragma warning restore CS1591

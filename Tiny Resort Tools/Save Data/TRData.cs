@@ -15,7 +15,7 @@ namespace TinyResort {
     /// <summary>Tools for adding custom save data to your mod.</summary>
     public static class TRData {
 
-        private static int DataVersion;
+        private static int DataVersion = 0;
 
         internal static Dictionary<string, TRModData> Data = new Dictionary<string, TRModData>();
 
@@ -59,7 +59,6 @@ namespace TinyResort {
         /// <summary>This event will run just AFTER a save slot is loaded, just before the ijectDataEvent.</summary>
         public static SaveEvent postLoadEvent;
 
-        public static SaveEvent postClientLoadEvent;
         // These events are only accessible to us so that we can make all custom data is fully saved or loaded before the postLoad and postSave events can be used by mod authors
         internal static SaveEvent trueSaveEvent;
         internal static SaveEvent trueLoadEvent;
