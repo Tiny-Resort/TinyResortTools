@@ -38,6 +38,8 @@ namespace TinyResort {
         private static float scrollPosition;
         private static float scrollMaxPosition;
 
+        internal static List<QIModInfo> QuickItemInfo = new List<QIModInfo>();
+
         
         private static string configDirectory = Application.dataPath.Replace("Dinkum_Data", "BepInEx/config/");
 
@@ -174,7 +176,7 @@ namespace TinyResort {
             scrollMaxPosition = Mathf.Max(loadedPlugins.Count - 6, 0);
             
             foreach (var mod in loadedPlugins) {
-
+                
                 // If a button already exists for this mod, move on
                 if (mod.updateButton != null) continue;
 
@@ -220,6 +222,12 @@ namespace TinyResort {
 
         private static void ScanPlugins() {
 
+            // Scan the quickitem version files.
+            foreach (var mod in QuickItemInfo) {
+                if (mod.nexusID == -1) { loadedPlugins.Add(new NexusPlugin(mod.modName, mod.nexusID, new Version(mod.version), null, PluginUpdateState.NotSetUp)); }
+                LeadPlugin.instance.StartCoroutine(GetNexusInfo(mod.modName, mod.nexusID, new Version(mod.version)));
+            }
+            
             // Gets existing plugins
             var pluginInfos = UnityChainloader.Instance.Plugins.Values;
             foreach (var kvp in pluginInfos) {
@@ -241,7 +249,7 @@ namespace TinyResort {
                         break;
                     }
                 }
-                
+
                 // If a nexusID was found for this plugin, then get it's version information from the webpage
                 if (id == -1) { loadedPlugins.Add(new NexusPlugin(kvp.Metadata.Name, id, kvp.Metadata.Version, null, PluginUpdateState.NotSetUp)); }
                 LeadPlugin.instance.StartCoroutine(GetNexusInfo(kvp.Metadata.Name, id, kvp.Metadata.Version));

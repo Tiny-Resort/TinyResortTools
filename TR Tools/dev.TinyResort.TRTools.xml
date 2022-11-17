@@ -124,6 +124,9 @@
         <member name="T:TinyResort.QuickItemInfo">
             <summary> Please ignore! This is only for internal use but must be public in order for it to be loadable from JSON. </summary>
         </member>
+        <member name="T:TinyResort.QIModInfo">
+            <summary> Please ignore! This is only for internal use but must be public in order for it to be loadable from JSON. </summary>
+        </member>
         <member name="T:TinyResort.TRPlugin">
             <summary>Information and functions relating to your plugin with respect to the TR toolset.</summary>
         </member>

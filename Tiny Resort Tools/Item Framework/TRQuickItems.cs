@@ -23,6 +23,7 @@ namespace TinyResort {
 
         internal static List<string> filePaths = new List<string>();
         internal static List<string> arrayPaths = new List<string>();
+        internal static string qversionPath;
         internal static List<QuickItemInfo> arrayItems = new List<QuickItemInfo>();
         internal static AssetBundle quickItemsBundle = TRAssets.LoadAssetBundleFromDLL("quickitems_bundle");
         internal static List<string> currentCustomIDs = new List<string>();
@@ -31,6 +32,7 @@ namespace TinyResort {
             foreach (string file in Directory.GetFiles(initialDir)) {
                 if (Path.GetExtension(file) == ".qitem") { filePaths.Add(file); }
                 if (Path.GetExtension(file) == ".qitems") { arrayPaths.Add(file); }
+                if (Path.GetExtension(file) == ".qversion") { qversionPath = file; }
             }
             foreach (string dir in Directory.GetDirectories(initialDir)) { FindAllPaths(dir); }
         }
@@ -156,6 +158,8 @@ namespace TinyResort {
             FindAllPaths(Paths.PluginPath);
             foreach (var item in arrayPaths) { LoadArrayItems(item); }
             foreach (var item in filePaths) { LoadItem(item); }
+
+            if (!string.IsNullOrWhiteSpace(qversionPath)) { TRModUpdater.QuickItemInfo.Add(QIModInfo.CreateFromJson(File.ReadAllText(qversionPath))); }
         }
     }
 
@@ -188,4 +192,16 @@ namespace TinyResort {
 
     }
 
+    /// <summary> Please ignore! This is only for internal use but must be public in order for it to be loadable from JSON. </summary>
+    [Serializable]
+    public class QIModInfo {
+
+        // Mod Info
+        public int nexusID;
+        public string version;
+        public string modName;
+        
+        public static QIModInfo CreateFromJson(string jsonString) { return JsonUtility.FromJson<QIModInfo>(jsonString); }
+
+    }
 }
