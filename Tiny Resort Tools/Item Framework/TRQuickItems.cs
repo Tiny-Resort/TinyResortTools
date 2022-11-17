@@ -38,19 +38,20 @@ namespace TinyResort {
         }
 
         internal static void InitializeCustomItem(string path, GameObject obj, QuickItemInfo itemInfo) {
+            
+            var fileName = Path.GetFileName(path);
+            var folderName = Path.GetDirectoryName(path);
+            var ext = Path.GetExtension(path);
 
             if (itemInfo.uniqueID < 0 || string.IsNullOrEmpty(itemInfo.fileName)) {
                 TRTools.LogError($"The unique ID or filename is missing from the .qitem file.");
                 return;
             }
 
-            if (TRItems.customItems.ContainsKey(itemInfo.nexusID + "." + itemInfo.uniqueID)) {
+            if (TRItems.customItems.ContainsKey(itemInfo.nexusID + "." + itemInfo.uniqueID) || TRItems.customItems.ContainsKey("QI." + folderName + "_" + itemInfo.itemName.Replace(" ", "") + ext.Replace(".", "_"))) {
                 TRTools.LogError($"A custom item with the same nexus ID and unique ID has already been loaded.");
                 return;
             }
-
-
-            var fileName = Path.GetFileName(path);
 
             // If no texture could be loaded, skip this one
             // Path Combine doesn't seem to work here? Acts like PLuginPath is empty...
@@ -62,12 +63,10 @@ namespace TinyResort {
             }
 
             // Creates a new instance of the item
-            var folderName = Path.GetDirectoryName(path);
 
             if (string.IsNullOrEmpty(folderName)) { folderName = "unknown"; }
             else { folderName = folderName.Split('\\').Last().Replace(" ", ""); }
 
-            var ext = Path.GetExtension(path);
 
             var newItem = new TRCustomItem();
             newItem.inventoryItem = Object.Instantiate(obj).GetComponent<InventoryItem>();
