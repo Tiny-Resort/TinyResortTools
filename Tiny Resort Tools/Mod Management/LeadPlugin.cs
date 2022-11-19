@@ -1,5 +1,6 @@
 using BepInEx;
 using BepInEx.Configuration;
+using UnityEngine.SceneManagement;
 
 namespace TinyResort;
 
@@ -38,6 +39,12 @@ internal class LeadPlugin : BaseUnityPlugin {
         TRItems.Initialize();
         TRQuickItems.LoadAllQuickItems();
 
+        SceneManager.sceneLoaded += SceneLoaded;
+
+    }
+
+    internal void SceneLoaded(Scene scene, LoadSceneMode mode) {
+        TRTools.LogError("LOADING SCENE " + scene.name);
     }
 
     private void Start() {

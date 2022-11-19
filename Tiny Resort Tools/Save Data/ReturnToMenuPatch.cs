@@ -10,4 +10,5 @@ internal class ReturnToMenuPatch {
         TRTools.LeavingMainMenu = false;
         TRTools._InMainMenu = true;
     }
+    
 }

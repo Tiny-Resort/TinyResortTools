@@ -136,9 +136,7 @@ public static class TRTools {
         LeadPlugin.plugin.LogError(text);
     }
 
-    internal static void QuickPatch(
-        Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = ""
-    ) =>
+    internal static void QuickPatch(Type sourceClassType, string sourceMethod, Type patchClassType, string prefixMethod, string postfixMethod = "") =>
         LeadPlugin.plugin.QuickPatch(sourceClassType, sourceMethod, patchClassType, prefixMethod, postfixMethod);
 
     #region Easy Notifications
