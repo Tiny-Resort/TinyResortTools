@@ -1,5 +1,6 @@
 using BepInEx;
 using BepInEx.Configuration;
+using BepInEx.Unity.Bootstrap;
 using UnityEngine.SceneManagement;
 
 namespace TinyResort;
@@ -44,7 +45,10 @@ internal class LeadPlugin : BaseUnityPlugin {
     }
 
     internal void SceneLoaded(Scene scene, LoadSceneMode mode) {
-        TRTools.LogError("LOADING SCENE " + scene.name);
+        if (scene.name != "scene1") return;
+        
+        //UnityChainloader.Instance.LoadPlugins(Paths.PluginPath);
+        //TRTools.sceneSetupEvent?.Invoke();
     }
 
     private void Start() {

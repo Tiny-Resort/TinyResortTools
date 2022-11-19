@@ -19,6 +19,9 @@ public static class TRTools {
     /// <summary>Tells you if the player is in the main menu or not.</summary>
     public static bool InMainMenu => _InMainMenu;
 
+    public delegate void SceneEvent();
+    public static SceneEvent sceneSetupEvent;
+
     /// <summary> Initializes the Tiny Resort toolset </summary>
     /// <param name="plugin">Your plugin. When calling this from your plugin, simply use 'this'.</param>
     /// <param name="nexusID">
