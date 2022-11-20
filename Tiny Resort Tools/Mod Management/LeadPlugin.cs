@@ -17,6 +17,7 @@ internal class LeadPlugin : BaseUnityPlugin {
 
     internal static ConfigEntry<bool> developerMode;
     public static ConfigEntry<bool> useSlashToOpenChat;
+    private static bool initialSceneSetupDone;
 
     private void Awake() {
 
@@ -46,9 +47,7 @@ internal class LeadPlugin : BaseUnityPlugin {
 
     internal void SceneLoaded(Scene scene, LoadSceneMode mode) {
         if (scene.name != "scene1") return;
-        
-        //UnityChainloader.Instance.LoadPlugins(Paths.PluginPath);
-        //TRTools.sceneSetupEvent?.Invoke();
+        TRTools.sceneSetupEvent?.Invoke();
     }
 
     private void Start() {
@@ -59,6 +58,7 @@ internal class LeadPlugin : BaseUnityPlugin {
         TRItems.ManageAllItemArray();
         TRIcons.Initialize();
         TRBackup.Initialize();
+        
         /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
         TestLicense.SetColor(Color.cyan);
         TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
@@ -66,28 +66,17 @@ internal class LeadPlugin : BaseUnityPlugin {
         TestLicense.SetLevelInfo(3, "Level 3: This is a license made for testing the framework.", 2500);
         TestLicense.AddSkillRequirement(1, CharLevelManager.SkillTypes.Mining, 10);
         TestLicense.AddSkillRequirement(2, CharLevelManager.SkillTypes.Mining, 20);
-        TestLicense.AddSkillRequirement(3, CharLevelManager.SkillTypes.Mining, 30);
+        TestLicense.AddSkillRequirement(3, CharLevelManager.SkillTypes.Mining, 30);*/
         
-        var TestLicense2 = plugin.AddLicence(2, "Test License 2", 2);
-        TestLicense2.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
-        TestLicense2.SetLevelInfo(2, "Level 2: This is a license made for testing the framework.", 1500);
-        TestLicense2.SetLevelInfo(3, "Level 3: This is a license made for testing the framework.", 3000);
-        TestLicense2.AddSkillRequirement(1, CharLevelManager.SkillTypes.Farming, 10);
-        TestLicense2.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
-        TestLicense2.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
-
-        var TestLicense3 = plugin.AddLicence(3, "Test License 3", 3);
-        TestLicense3.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 1000);
-        TestLicense3.SetLevelInfo(2, "Level 2: This is a license made for testing the framework.", 2000);
-        TestLicense3.SetLevelInfo(3, "Level 3: This is a license made for testing the framework.", 5000);
-        TestLicense3.AddSkillRequirement(1, CharLevelManager.SkillTypes.Hunting, 10);
-        TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Farming, 20);
-        TestLicense3.AddSkillRequirement(2, CharLevelManager.SkillTypes.Hunting, 40);
-        TestLicense3.AddSkillRequirement(3, CharLevelManager.SkillTypes.Farming, 30);
-        TestLicense3.AddPrerequisite(TestLicense);*/
     }
 
     private void Update() {
+        
+        // Ensures scene setup happens on first load as well
+        if (!initialSceneSetupDone) {
+            initialSceneSetupDone = true;
+            TRTools.sceneSetupEvent?.Invoke();
+        }
 
         TRModUpdater.Update();
         TRConflictingPlugins.Update();
@@ -103,4 +92,5 @@ internal class LeadPlugin : BaseUnityPlugin {
         //     NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[10], NetworkMapSharer.share.localChar.transform.position, true);
         // }
     }
+    
 }

@@ -19,7 +19,13 @@ public static class TRTools {
     /// <summary>Tells you if the player is in the main menu or not.</summary>
     public static bool InMainMenu => _InMainMenu;
 
+    /// <summary> For events related to scene changes. </summary>
     public delegate void SceneEvent();
+    
+    /// <summary>
+    /// Quitting to main menu will reload the main scene. If you want specific objects (user interface elements) to persist,
+    /// you need to recreate them when the scene is reloaded. So, you should create a method for making the objects, and subscribe it to this event.
+    /// </summary>
     public static SceneEvent sceneSetupEvent;
 
     /// <summary> Initializes the Tiny Resort toolset </summary>

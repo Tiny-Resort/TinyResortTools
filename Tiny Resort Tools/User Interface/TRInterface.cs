@@ -64,6 +64,7 @@ public class TRInterface : MonoBehaviour {
         newButton.textMesh = newObject.GetComponentInChildren<TextMeshProUGUI>();
         newButton.windowAnim = newObject.GetComponentInChildren<WindowAnimator>();
         newButton.buttonAnim = newObject.GetComponentInChildren<ButtonAnimation>();
+        DontDestroyOnLoad(newObject);
         return newButton;
     }
 

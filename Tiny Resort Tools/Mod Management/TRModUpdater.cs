@@ -43,6 +43,8 @@ internal class TRModUpdater {
     private static readonly string configDirectory = Application.dataPath.Replace("Dinkum_Data", "BepInEx/config/");
 
     public static void Initialize() {
+        
+        TRTools.sceneSetupEvent += CreateUI;
 
         createEmptyConfigFiles = LeadPlugin.instance.Config.Bind(
             "Mod Management", "CreateEmptyConfigFiles", false,
@@ -60,6 +62,12 @@ internal class TRModUpdater {
         );
 
         ScanPlugins();
+        
+    }
+
+    public static void CreateUI() {
+
+        creditsWindow = null;
 
         // Create mod update checker button
         var modsButtonParent = OptionsMenu.options.menuParent.transform.GetChild(10);
@@ -79,6 +87,7 @@ internal class TRModUpdater {
         updateButton.textMesh.fontSize = 12;
         updateButton.textMesh.rectTransform.sizeDelta = new Vector2(500, 50);
         updateButton.textMesh.lineSpacing = -20;
+        
     }
 
     public static void Update() {

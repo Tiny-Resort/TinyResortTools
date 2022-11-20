@@ -415,6 +415,15 @@
         <member name="P:TinyResort.TRTools.InMainMenu">
             <summary>Tells you if the player is in the main menu or not.</summary>
         </member>
+        <member name="T:TinyResort.TRTools.SceneEvent">
+            <summary> For events related to scene changes. </summary>
+        </member>
+        <member name="F:TinyResort.TRTools.sceneSetupEvent">
+            <summary>
+            Quitting to main menu will reload the main scene. If you want specific objects (user interface elements) to persist,
+            you need to recreate them when the scene is reloaded. So, you should create a method for making the objects, and subscribe it to this event.
+            </summary>
+        </member>
         <member name="M:TinyResort.TRTools.Initialize(BepInEx.BaseUnityPlugin,System.Int32,System.String)">
             <summary> Initializes the Tiny Resort toolset </summary>
             <param name="plugin">Your plugin. When calling this from your plugin, simply use 'this'.</param>
