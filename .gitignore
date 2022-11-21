@@ -12,3 +12,5 @@ Asset Bundle Creator/Temp/*
 *.dll
 ~$*
 *.tmp
+TinyResortTools.csproj.DotSettings
+packages/*

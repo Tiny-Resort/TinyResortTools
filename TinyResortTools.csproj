@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" />
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,7 +14,7 @@
         <FileAlignment>512</FileAlignment>
         <Deterministic>true</Deterministic>
         <TargetFrameworkProfile />
-        <LangVersion>latest</LangVersion>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
@@ -43,355 +44,536 @@
     <ItemGroup>
         <Reference Include="0Harmony">
             <HintPath>..\DinkumInstallFolder\BepInEx\core\0Harmony.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Assembly-CSharp_publicized">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\publicized_assemblies/Assembly-CSharp_publicized.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Assembly-CSharp-firstpass">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="BepInEx.Core">
             <HintPath>..\DinkumInstallFolder\BepInEx\core\BepInEx.Core.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="BepInEx.Unity">
             <HintPath>..\DinkumInstallFolder\BepInEx\core\BepInEx.Unity.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Coffee.UIParticle">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Coffee.UIParticle.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
         </Reference>
         <Reference Include="kcp2k">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\kcp2k.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
             <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
         </Reference>
         <Reference Include="Mirror">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Mirror.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Mirror.Authenticators">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Mirror.Authenticators.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Mirror.Components">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Mirror.Components.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Mono.Security">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Mono.Security.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="mscorlib">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\mscorlib.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="netstandard">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\netstandard.dll</HintPath>
         </Reference>
+        <Reference Include="Newtonsoft.Json">
+            <HintPath>Embedded Resources\Newtonsoft.Json.dll</HintPath>
+        </Reference>
         <Reference Include="SemanticVersioning">
             <HintPath>..\DinkumInstallFolder\BepInEx\core\SemanticVersioning.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="SimpleWebTransport">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\SimpleWebTransport.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="System">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.dll</HintPath>
+            <Private>False</Private>
         </Reference>
-        <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-            <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+        <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
         </Reference>
         <Reference Include="System.ComponentModel.Composition">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.ComponentModel.Composition.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="System.Configuration">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Configuration.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
         </Reference>
         <Reference Include="System.Core">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Core.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="System.Data">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Data.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+          <HintPath>packages\System.Diagnostics.DiagnosticSource.4.3.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
         </Reference>
         <Reference Include="System.Diagnostics.StackTrace">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Diagnostics.StackTrace.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
         </Reference>
         <Reference Include="System.Drawing">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Drawing.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="System.EnterpriseServices">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.EnterpriseServices.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
         </Reference>
         <Reference Include="System.Globalization.Extensions">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Globalization.Extensions.dll</HintPath>
+            <Private>False</Private>
         </Reference>
-        <Reference Include="System.IO.Compression">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.IO.Compression.dll</HintPath>
+        <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+        </Reference>
+        <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+          <HintPath>packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
         </Reference>
         <Reference Include="System.IO.Compression.FileSystem">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.IO.Compression.FileSystem.dll</HintPath>
+            <Private>False</Private>
         </Reference>
-        <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-            <HintPath>packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+        <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+          <HintPath>packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
         </Reference>
-        <Reference Include="System.Net.Http">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Net.Http.dll</HintPath>
+        <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+        </Reference>
+        <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Linq, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Linq.Expressions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
         </Reference>
         <Reference Include="System.Numerics">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Numerics.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Runtime.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
         </Reference>
         <Reference Include="System.Runtime.Serialization">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Runtime.Serialization.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="System.Runtime.Serialization.Xml">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Runtime.Serialization.Xml.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
         </Reference>
         <Reference Include="System.ServiceModel.Internals">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.ServiceModel.Internals.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
         </Reference>
         <Reference Include="System.Transactions">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Transactions.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="System.Xml">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Xml.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="System.Xml.Linq">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Xml.Linq.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
         </Reference>
         <Reference Include="System.Xml.XPath.XDocument">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Xml.XPath.XDocument.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Telepathy">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Telepathy.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Unity.Analytics.DataPrivacy">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Unity.Analytics.DataPrivacy.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Unity.InputSystem">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Unity.InputSystem.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Unity.Postprocessing.Runtime">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Unity.Postprocessing.Runtime.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Unity.TextMeshPro">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="Unity.Timeline">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Unity.Timeline.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.AccessibilityModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AccessibilityModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.AIModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AIModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.AndroidJNIModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AndroidJNIModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.AnimationModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.ARModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ARModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.AssetBundleModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.AudioModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.ClothModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.ClusterInputModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ClusterInputModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.ClusterRendererModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ClusterRendererModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.CrashReportingModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.CrashReportingModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.DirectorModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.DirectorModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.DSPGraphModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.DSPGraphModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.GameCenterModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.GameCenterModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.GIModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.GIModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.GridModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.GridModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.HotReloadModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.HotReloadModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.ImageConversionModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.IMGUIModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.InputLegacyModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.InputModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.JSONSerializeModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.LocalizationModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.LocalizationModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.ParticleSystemModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.PerformanceReportingModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.PerformanceReportingModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.Physics2DModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.PhysicsModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.ProfilerModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ProfilerModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.ScreenCaptureModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.SharedInternalsModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.SpatialTracking">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SpatialTracking.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.SpriteMaskModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.SpriteShapeModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SpriteShapeModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.StreamingModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.SubstanceModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SubstanceModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.SubsystemsModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SubsystemsModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.TerrainModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.TerrainPhysicsModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.TextCoreModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.TextRenderingModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.TilemapModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.TLSModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TLSModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UI">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UI.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UIElementsModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UIElementsNativeModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UIElementsNativeModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UIModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UmbraModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UNETModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UnityAnalyticsModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UnityConnectModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityConnectModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UnityCurlModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityCurlModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UnityTestProtocolModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UnityWebRequestAudioModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UnityWebRequestModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UnityWebRequestTextureModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UnityWebRequestWWWModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.VehiclesModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.VehiclesModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.VFXModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.VFXModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.VideoModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.VideoModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.VirtualTexturingModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.VirtualTexturingModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.VRModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.VRModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.WindModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.WindModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.XR.LegacyInputHelpers">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.XRModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.XRModule.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="where-allocations">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\where-allocations.dll</HintPath>
+            <Private>False</Private>
         </Reference>
     </ItemGroup>
     <ItemGroup>
         <None Include="App.config" />
+        <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Embedded Resources\ui_elements" />
     </ItemGroup>
     <ItemGroup>
-      <EmbeddedResource Include="Embedded Resources\quickitems_bundle" />
+        <EmbeddedResource Include="Embedded Resources\quickitems_bundle" />
     </ItemGroup>
     <ItemGroup>
-      <EmbeddedResource Include="Embedded Resources\licenceimages" />
+        <EmbeddedResource Include="Embedded Resources\licenceimages" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <PropertyGroup>
@@ -401,4 +583,14 @@
             call "$(SolutionDir)..\CreateToolsZip.bat"
         </PostBuildEvent>
     </PropertyGroup>
+    <Import Project="packages\Fody.6.5.5\build\Fody.targets" Condition="Exists('packages\Fody.6.5.5\build\Fody.targets')" />
+    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+      <PropertyGroup>
+        <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+      </PropertyGroup>
+      <Error Condition="!Exists('packages\Fody.6.5.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.5.5\build\Fody.targets'))" />
+      <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.props'))" />
+      <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.targets'))" />
+    </Target>
+    <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" />
 </Project>

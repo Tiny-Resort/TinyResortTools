@@ -37,7 +37,10 @@
         </member>
         <member name="M:TinyResort.TRCustomLicence.SetIcon(System.String)">
             <summary>Sets the icon used to represent the licence.</summary>
-            <param name="relativePath">The path to the image file (including file name and extension) you want to use as an icon for the licence, relative to the BepinEX plugins folder.</param>
+            <param name="relativePath">
+                The path to the image file (including file name and extension) you want to use as an icon
+                for the licence, relative to the BepinEX plugins folder.
+            </param>
         </member>
         <member name="M:TinyResort.TRCustomLicence.SetLevelInfo(System.Int32,System.String,System.Int32)">
             <summary>Sets the description and cost for a specific level of the licence.</summary>
@@ -49,7 +52,10 @@
             <summary>Makes a specific level of the licence require a minimum level of a particular skill.</summary>
             <param name="licenceLevel">The level of the custom licence for which a prerequisite is being added.</param>
             <param name="skill">What skill the player will need to level up in order to buy this level of the licence.</param>
-            <param name="skillLevelRequirement">What level the needs to be at or higher than in order to buy this level of the licence.</param>
+            <param name="skillLevelRequirement">
+                What level the needs to be at or higher than in order to buy this level of the
+                licence.
+            </param>
         </member>
         <member name="M:TinyResort.TRCustomLicence.AddPrerequisite(TinyResort.TRCustomLicence,System.Int32)">
             <summary>Makes this licence only unlock for purchase if another licence has reached a minimum level.</summary>
@@ -69,30 +75,53 @@
         </member>
         <member name="M:TinyResort.TRItems.GetSaveableItemID(System.Int32)">
             <summary>
-            Use this to get an ID that can be saved for both vanilla and modded items.
-            If you manually save items in special storage slots, then save this value instead of the itemID.
-            Then when loading data, call GetLoadableItemID() with the saved value to get the itemID of the item in that slot.
+                Use this to get an ID that can be saved for both vanilla and modded items.
+                If you manually save items in special storage slots, then save this value instead of the itemID.
+                Then when loading data, call GetLoadableItemID() with the saved value to get the itemID of the item in that slot.
             </summary>
             <param name="itemID">The itemID of the item. This its index in the Inventory.inv.allItems array.</param>
             <returns>A string that is either the vanilla itemID or the customItemID for modded items.</returns>
         </member>
         <member name="M:TinyResort.TRItems.GetLoadableItemID(System.String)">
             <summary>
-            Use this to get the current itemID that matches a saved ID. If you manually save items in special storage slots,
-            then use GetSaveableItemID for saving the item, and this method for loading it back in.
+                Use this to get the current itemID that matches a saved ID. If you manually save items in special storage slots,
+                then use GetSaveableItemID for saving the item, and this method for loading it back in.
             </summary>
             <param name="savedID">The ID that was saved for this item.</param>
             <returns>
-            An int that is the current itemID for this item. It matches the index of the item in the Inventory.inv.allItems array.
-            Keep in mind that this value will change if a new mod is added or the mod loader has changed. So, if you want to save this value,
-            you have to pass it through GetSaveableItemID() first and save the returned value instead.
+                An int that is the current itemID for this item. It matches the index of the item in the Inventory.inv.allItems
+                array.
+                Keep in mind that this value will change if a new mod is added or the mod loader has changed. So, if you want to
+                save this value,
+                you have to pass it through GetSaveableItemID() first and save the returned value instead.
             </returns>
         </member>
         <member name="T:TinyResort.TRCustomItem">
             <summary> Contains various references to components important to your custom item. </summary>
         </member>
+        <member name="F:TinyResort.TRCustomItem.inventoryItem">
+            <summary> Reference to the Inventory Item </summary>
+        </member>
+        <member name="F:TinyResort.TRCustomItem.pickUpAndCarry">
+            <summary> Reference to the Carryable Objects</summary>
+        </member>
+        <member name="F:TinyResort.TRCustomItem.tileObject">
+            <summary> Reference to Tile Object </summary>
+        </member>
+        <member name="F:TinyResort.TRCustomItem.tileObjectSettings">
+            <summary> Reference to the Tile Object Settings </summary>
+        </member>
+        <member name="F:TinyResort.TRCustomItem.tileTypes">
+            <summary> Reference to the Tile Types </summary>
+        </member>
+        <member name="F:TinyResort.TRCustomItem.vehicle">
+            <summary> Reference to Vehicles</summary>
+        </member>
         <member name="M:TinyResort.TRCustomItem.GetUniqueID">
-            <returns>Returns the unique ID of your custom item. This will be a combination of your nexus ID and the item ID you gave when adding it.</returns>
+            <returns>
+                Returns the unique ID of your custom item. This will be a combination of your nexus ID and the item ID you
+                gave when adding it.
+            </returns>
         </member>
         <member name="T:TinyResort.TRMail">
             <summary> Tools for sending the player custom mail. </summary>
@@ -101,27 +130,36 @@
             <summary>Sends the player a letter containing the given item.</summary>
             <param name="itemToSend">The item you want to send.</param>
             <param name="quantity">How many of the item you want to include.</param>
-            <param name="immediate">Normally, the player will recieve this letter upon waking up the following day. Set this to true to make it immediately arrive.</param>
+            <param name="immediate">
+                Normally, the player will recieve this letter upon waking up the following day. Set this to
+                true to make it immediately arrive.
+            </param>
             <param name="NPC">The ID of the NPC you want to have sent the letter. 1 = John</param>
         </member>
         <member name="M:TinyResort.TRMail.SendItemInMail(System.Int32,System.Int32,System.Boolean,System.Int32)">
             <summary>Sends the player a letter containing the given item.</summary>
             <param name="itemToSend">The item ID of the item you want to send.</param>
             <param name="quantity">How many of the item you want to include.</param>
-            <param name="immediate">Normally, the player will recieve this letter upon waking up the following day. Set this to true to make it immediately arrive.</param>
+            <param name="immediate">
+                Normally, the player will recieve this letter upon waking up the following day. Set this to
+                true to make it immediately arrive.
+            </param>
             <param name="NPC">The ID of the NPC you want to have sent the letter. 1 = John</param>
         </member>
         <member name="M:TinyResort.TRMail.SendItemInMail(InventoryItem,System.Int32,System.Boolean,System.Int32)">
             <summary>Sends the player a letter containing the given item.</summary>
             <param name="itemToSend">The item ID of the item you want to send.</param>
             <param name="quantity">How many of the item you want to include.</param>
-            <param name="immediate">Normally, the player will recieve this letter upon waking up the following day. Set this to true to make it immediately arrive.</param>
+            <param name="immediate">
+                Normally, the player will recieve this letter upon waking up the following day. Set this to
+                true to make it immediately arrive.
+            </param>
             <param name="NPC">The ID of the NPC you want to have sent the letter. 1 = John</param>
         </member>
         <member name="T:TinyResort.TRQuickItems">
             <summary>Tools for quickly creating clothing items.</summary>
         </member>
-        <member name="T:TinyResort.QuickItemInfo">
+        <member name="T:TinyResort.QIModInfo">
             <summary> Please ignore! This is only for internal use but must be public in order for it to be loadable from JSON. </summary>
         </member>
         <member name="T:TinyResort.TRPlugin">
@@ -133,12 +171,18 @@
         <member name="M:TinyResort.TRPlugin.Log(System.String,System.Boolean)">
             <summary>Logs to the BepInEx console.</summary>
             <param name="text">The text to post in the console.</param>
-            <param name="debugModeOnly">If true, this message will only show in the console if the config file has DebugMode set to true.</param>
+            <param name="debugModeOnly">
+                If true, this message will only show in the console if the config file has DebugMode set to
+                true.
+            </param>
         </member>
         <member name="M:TinyResort.TRPlugin.LogWarning(System.String,System.Boolean)">
             <summary>Logs a warning to the BepInEx console.</summary>
             <param name="text">The text to post in the console.</param>
-            <param name="debugModeOnly">If true, this message will only show in the console if the config file has DebugMode set to true.</param>
+            <param name="debugModeOnly">
+                If true, this message will only show in the console if the config file has DebugMode set to
+                true.
+            </param>
         </member>
         <member name="M:TinyResort.TRPlugin.LogError(System.String)">
             <summary>Logs an error to the BepInEx console.</summary>
@@ -146,11 +190,14 @@
         </member>
         <member name="M:TinyResort.TRPlugin.QuickPatch(System.Type,System.String,System.Type,System.String,System.String)">
             <summary>
-            Allows you to patch methods using only one line of code instead of three per method patched.
+                Allows you to patch methods using only one line of code instead of three per method patched.
             </summary>
             <param name="sourceClassType">Typically typeOf(className) where className is the class you are patching in Dinkum.</param>
             <param name="sourceMethod">The name of the method in Dinkum being patched.</param>
-            <param name="patchClassType">Typically typeOf(className) where className is the name of your class (the one that contains the patch method).</param>
+            <param name="patchClassType">
+                Typically typeOf(className) where className is the name of your class (the one that
+                contains the patch method).
+            </param>
             <param name="prefixMethod">The name of the prefix method doing the patching.</param>
             <param name="postfixMethod">The name of the postfix method doing the patching.</param>
         </member>
@@ -164,14 +211,22 @@
         </member>
         <member name="M:TinyResort.TRPlugin.AddCustomItem(System.String,System.Int32)">
             <returns>Creates a new item.</returns>
-            /// <param name="assetBundlePath">The path to your asset bundle, relative to the plugins folder.</param>
-            <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
+            ///
+            <param name="assetBundlePath">The path to your asset bundle, relative to the plugins folder.</param>
+            <param name="uniqueItemID">
+                A unique ID for your item. Do not change after releasing your mod. Changing will result in
+                save data mixups.
+            </param>
         </member>
         <member name="M:TinyResort.TRPlugin.AddCustomItem(System.Int32,InventoryItem,TileObject,TileObjectSettings,TileTypes,Vehicle,PickUpAndCarry)">
             <summary>
-            Creates a new item. The preferred method is to use an asset bundle, but this method allows you to condense the number of assetbundles you create.
+                Creates a new item. The preferred method is to use an asset bundle, but this method allows you to condense the
+                number of assetbundles you create.
             </summary>
-            <param name="uniqueItemID">A unique ID for your item. Do not change after releasing your mod. Changing will result in save data mixups.</param>
+            <param name="uniqueItemID">
+                A unique ID for your item. Do not change after releasing your mod. Changing will result in
+                save data mixups.
+            </param>
             <param name="inventoryItem">The InvItem script of an item.</param>
             <param name="tileObject">The tileObject script of an item.</param>
             <param name="tileObjectSettings">The tileObjectSettings script of an item.</param>
@@ -182,33 +237,47 @@
         </member>
         <member name="M:TinyResort.TRPlugin.AddLicence(System.Int32,System.String,System.Int32)">
             <summary>Adds a custom licence to the system. Must be done for each custom licence.</summary>
-            <param name="licenceID">A unique string you are assigning this licence only. Changing this after save data has been made WILL result in save data mixups. Spaces in this are replaced with underscores.</param>
+            <param name="licenceID">
+                A unique string you are assigning this licence only. Changing this after save data has been
+                made WILL result in save data mixups. Spaces in this are replaced with underscores.
+            </param>
             <param name="licenceName">The name that will appear on the licence in-game. (Can be changed at any time without issue)</param>
-            <param name="maxLevel">The highest unlockable level for this licence. The true maximum is 5 since the game only shows up to 5 dots.</param>
+            <param name="maxLevel">
+                The highest unlockable level for this licence. The true maximum is 5 since the game only shows
+                up to 5 dots.
+            </param>
             <returns>The custom licence that is created. Save a reference to this in order to access its state at any time.</returns>
         </member>
         <member name="M:TinyResort.TRPlugin.AddConflictingPlugin(System.String)">
             <summary>
-            Set a conflicting plugin to warn the user's about if they have it in their folder. 
+                Set a conflicting plugin to warn the user's about if they have it in their folder.
             </summary>
             <param name="conflictingPlugin">The GUID for the conflicting plugin.</param>
         </member>
         <member name="M:TinyResort.TRPlugin.PlayingWithConflicts">
             <summary>
-            If you want to do something specific if they ignore the warning, use this to check in Start()
+                If you want to do something specific if they ignore the warning, use this to check in Start()
             </summary>
             <returns></returns>
         </member>
         <member name="M:TinyResort.TRPlugin.RequireAPIVersion(System.String)">
             <summary>
-            Lets you set a minimum version of the API required for your mod. 
+                Lets you set a minimum version of the API required for your mod.
             </summary>
             <param name="minVersion">The version you want to set as the minimum. This needs to be in the format X.X.X</param>
             <returns>Returns true or false and will throw an error in the BepInEx logs.</returns>
         </member>
+        <member name="M:TinyResort.TRPlugin.CompareAPIVersion(System.String)">
+            <summary> Compares the installed API version to a version you specify. </summary>
+            <param name="version">The version you want to compare to the current API version. This needs to be in the format X.X.X</param>
+            <returns>
+                -1 if the provided version is less than the current API version, 0 if the provided version is equal to the
+                current API version, 1 if the provided version is greater than the current API version.
+            </returns>
+        </member>
         <member name="M:TinyResort.TRPlugin.GetAPIVersion">
             <summary>
-            Returns the current plugin version, so you can customize your mod depending on specific versions.
+                Returns the current plugin version, so you can customize your mod depending on specific versions.
             </summary>
             <returns>A string in the format X.X.X, where X are numbers.</returns>
         </member>
@@ -219,14 +288,18 @@
             <summary>Delegate for events related to points in the base game saving and loading.</summary>
         </member>
         <member name="F:TinyResort.TRData.preSaveEvent">
-            <summary> This event will run just before the game saves and before the cleanDataEvent.
-            This is where you want to ensure you have set all values that you wish to be saved.</summary>
+            <summary>
+                This event will run just before the game saves and before the cleanDataEvent.
+                This is where you want to ensure you have set all values that you wish to be saved.
+            </summary>
         </member>
         <member name="F:TinyResort.TRData.cleanDataEvent">
             <summary>
-            This is called before saving the game. If your mod adds anything to the base game's save file (such as custom objects in the world), then
-            you generally need to remove that before the game saves. This is because if the player removes your mod, the game might freeze or crash when
-            loading save data.
+                This is called before saving the game. If your mod adds anything to the base game's save file (such as custom
+                objects in the world), then
+                you generally need to remove that before the game saves. This is because if the player removes your mod, the game
+                might freeze or crash when
+                loading save data.
             </summary>
         </member>
         <member name="F:TinyResort.TRData.postSaveEvent">
@@ -234,9 +307,11 @@
         </member>
         <member name="F:TinyResort.TRData.injectDataEvent">
             <summary>
-            This is called both after the game is saved and when loading in. In your subscribed method, you should carry out any consequences of the data
-            being loaded. For instance, if you have a custom item in the game and the player has it according to your mod data, then here is where you'd
-            actually give it to the player.
+                This is called both after the game is saved and when loading in. In your subscribed method, you should carry out
+                any consequences of the data
+                being loaded. For instance, if you have a custom item in the game and the player has it according to your mod data,
+                then here is where you'd
+                actually give it to the player.
             </summary>
         </member>
         <member name="F:TinyResort.TRData.preLoadEvent">
@@ -247,19 +322,31 @@
         </member>
         <member name="M:TinyResort.TRData.Subscribe(System.String,System.Boolean)">
             <summary>Subscribes to the save system so that your mod data is saved and loaded properly.</summary>
-            <param name="fileName">The name of your save file. Could be anything unique, but I recommend using the GUID of your plugin.</param>
-            <param name="globalSave">If true, then this data will be saved to a global save file used for all save slots. Otherwise, your save file will be specific to each save slot.</param>
+            <param name="fileName">
+                The name of your save file. Could be anything unique, but I recommend using the GUID of your
+                plugin.
+            </param>
+            <param name="globalSave">
+                If true, then this data will be saved to a global save file used for all save slots.
+                Otherwise, your save file will be specific to each save slot.
+            </param>
             <returns>A link to the data for your mod. Keep a reference to this. It is used to get and set all saved values.</returns>
         </member>
         <member name="M:TinyResort.TRData.Save(System.String)">
             <summary>Saves any values that have been set to a mod-specific file in the current save slot folder.</summary>
-            <param name="fileName">The name of your save file. Could be anything unique, but I recommend using the GUID of your plugin.</param>
+            <param name="fileName">
+                The name of your save file. Could be anything unique, but I recommend using the GUID of your
+                plugin.
+            </param>
         </member>
         <member name="T:TinyResort.TRModData">
             <summary>Container for custom save data and functions used to affect it.</summary>
         </member>
         <member name="M:TinyResort.TRModData.SetValue(System.String,System.Object)">
-            <summary>Stores an object in the save data for your mod. Can be called either when an object is updated or during a preSave event.</summary>
+            <summary>
+                Stores an object in the save data for your mod. Can be called either when an object is updated or during a
+                preSave event.
+            </summary>
             <param name="name">An identifier for the variable. Can simply be the name of the variable.</param>
             <param name="value">The object that you wish to save. Must be a serializable type.</param>
         </member>
@@ -267,7 +354,10 @@
             <summary>Gets the stored value for an object of the given name in your mod's save data.</summary>
             <param name="name">An identifier for the variable. Can simply be the name of the variable.</param>
             <param name="defaultValue">If the value you're getting has never been set, this value is returned instead.</param>
-            <returns>The object that are loading. You need to cast this to the desired type, but be sure to check if it is null before doing so.</returns>
+            <returns>
+                The object that are loading. You need to cast this to the desired type, but be sure to check if it is null
+                before doing so.
+            </returns>
         </member>
         <member name="M:TinyResort.TRModData.Remove(System.String)">
             <summary>Removes the given variable from the save file completely.</summary>
@@ -283,7 +373,10 @@
             <summary>Just a few useful methods.</summary>
         </member>
         <member name="M:TinyResort.TRExtensions.DeepCopy``1(``0)">
-            <summary>Allows you to copy any class or data structure by value rather than reference in order to change things about a copy without changing the original.</summary>
+            <summary>
+                Allows you to copy any class or data structure by value rather than reference in order to change things about
+                a copy without changing the original.
+            </summary>
             <param name="objToCopy">The class/object to copy.</param>
             <returns>The new copy of the class/object.</returns>
         </member>
@@ -322,14 +415,32 @@
         <member name="P:TinyResort.TRTools.InMainMenu">
             <summary>Tells you if the player is in the main menu or not.</summary>
         </member>
+        <member name="T:TinyResort.TRTools.SceneEvent">
+            <summary> For events related to scene changes. </summary>
+        </member>
+        <member name="F:TinyResort.TRTools.sceneSetupEvent">
+            <summary>
+            Quitting to main menu will reload the main scene. If you want specific objects (user interface elements) to persist,
+            you need to recreate them when the scene is reloaded. So, you should create a method for making the objects, and subscribe it to this event.
+            </summary>
+        </member>
         <member name="M:TinyResort.TRTools.Initialize(BepInEx.BaseUnityPlugin,System.Int32,System.String)">
             <summary> Initializes the Tiny Resort toolset </summary>
             <param name="plugin">Your plugin. When calling this from your plugin, simply use 'this'.</param>
-            <param name="nexusID">The ID of your mod on nexus. This is the number at the end of the URL for your mod's nexus page. (A mod page does not need to be published in order to have an ID)</param>
-            <param name="chatTrigger">What short text you want associated with your mod when using chat commands. If you put 'tr' for example, then all your chat commands start with /tr</param>
+            <param name="nexusID">
+                The ID of your mod on nexus. This is the number at the end of the URL for your mod's nexus page.
+                (A mod page does not need to be published in order to have an ID)
+            </param>
+            <param name="chatTrigger">
+                What short text you want associated with your mod when using chat commands. If you put 'tr'
+                for example, then all your chat commands start with /tr
+            </param>
         </member>
         <member name="M:TinyResort.TRTools.TopNotification(System.String,System.String,System.Boolean)">
-            <summary> Displays a notification at the top of the screen right away rather than waiting on any previous notifications. </summary>
+            <summary>
+                Displays a notification at the top of the screen right away rather than waiting on any previous
+                notifications.
+            </summary>
             <param name="title">Large text at the top of the notification.</param>
             <param name="subtitle">Smaller descriptive text below the title.</param>
             <param name="playSFX">If true, a sound effect will be played.</param>
@@ -338,7 +449,10 @@
             <summary>Tools for importing custom assets.</summary>
         </member>
         <member name="M:TinyResort.TRAssets.ListAllTextures(System.String)">
-            <summary>Returns a list of all files in a folder that can be imported as a texture (or sprite). Includes subdirectories.</summary>
+            <summary>
+                Returns a list of all files in a folder that can be imported as a texture (or sprite). Includes
+                subdirectories.
+            </summary>
             <param name="relativePath">Path to the folder that you want to be scanned, relative to the BepInEx plugins folder.</param>
         </member>
         <member name="M:TinyResort.TRAssets.ListAllFiles(System.String,System.String[])">
@@ -359,14 +473,23 @@
         <member name="M:TinyResort.TRAssets.LoadSprite(System.String,UnityEngine.Vector2)">
             <summary>Loads an image file from the plugins folder as a Sprite.</summary>
             <param name="relativePath">Path to the image file, relative to the BepInEx plugins folder.</param>
-            <param name="pivot">The center of the sprite. Vector2.zero would be the top left and Vector2.one would be the bottom right.</param>
+            <param name="pivot">
+                The center of the sprite. Vector2.zero would be the top left and Vector2.one would be the bottom
+                right.
+            </param>
             <returns>The loaded Sprite.</returns>
+        </member>
+        <member name="T:TinyResort.TRInterface">
+            <summary> A class to help manage the interface and UI elements. </summary>
         </member>
         <member name="M:TinyResort.TRInterface.CreateButton(TinyResort.ButtonTypes,UnityEngine.Transform,System.String,UnityEngine.Events.UnityAction)">
             <summary>
-            Create a button using pre-determined assets in the API.
+                Create a button using pre-determined assets in the API.
             </summary>
-            <param name="type">The only current option is MainMenu. This looks like the main buttons on the screen (i.e. Main Menu).</param>
+            <param name="type">
+                The only current option is MainMenu. This looks like the main buttons on the screen (i.e. Main
+                Menu).
+            </param>
             <param name="parent">Put the transform of what you want to attach the new button too.</param>
             <param name="text">The text on top of the button.</param>
             <param name="clickAction">The method you want to run when clicking the button.</param>
@@ -378,6 +501,40 @@
             <param name="mainColor">The color of the circle.</param>
             <param name="borderThickness">Thickness of the border to the circle (in pixels). Set to 0 to have no border.</param>
             <param name="borderColor">Color of the border.</param>
+        </member>
+        <member name="T:TinyResort.TRButton">
+            <summary> A class for helping manage buttons and various aspects of them. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.rectTransform">
+            <summary> The reference to edit the rect transform of the button. Use this to change the size. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.button">
+            <summary> The reference to edit the button's action. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.background">
+            <summary> The reference to edit the image and background of the button. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.textMesh">
+            <summary> The reference to edit the the text and aspects of the text. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.buttonAnim">
+            <summary> The reference to edit the button's animation. </summary>
+        </member>
+        <member name="F:TinyResort.TRButton.windowAnim">
+            <summary> The reference to edit the windows's animation. </summary>
+        </member>
+        <member name="M:TinyResort.TRButton.Copy(UnityEngine.Transform,System.String,UnityEngine.Events.UnityAction)">
+            <summary> The method to copy a gameobject and attached it to a parent with a new action.</summary>
+            <param name="parent">The parent object you want to attach the button to.</param>
+            <param name="text">The text on the button.</param>
+            <param name="clickAction">The method you want to run when the button is clicked.</param>
+            <returns></returns>
+        </member>
+        <member name="T:TinyResort.ButtonTypes">
+            <summary> The different type of buttons you can create through the use of the API. </summary>
+        </member>
+        <member name="F:TinyResort.ButtonTypes.MainMenu">
+            <summary> Themed after the main menu buttons (New Game, Load Game, etc) </summary>
         </member>
         <member name="T:TinyResort.TRMap">
             <summary>Map-related tools, such as easy map markers.</summary>
@@ -394,7 +551,10 @@
             <summary> Positions a map marker based on an object's world position. </summary>
             <param name="category">Helps organize markers by mod and use.</param>
             <param name="index">The index of the marker you want to reposition.</param>
-            <param name="worldPosition">The world position of the object (or location) the marker represents. Typically, this will be the object's transform.position value.</param>
+            <param name="worldPosition">
+                The world position of the object (or location) the marker represents. Typically, this will
+                be the object's transform.position value.
+            </param>
         </member>
         <member name="M:TinyResort.TRMap.SetMarkerColor(System.String,System.Int32,UnityEngine.Color)">
             <summary> Changes the marker's tint color. </summary>
