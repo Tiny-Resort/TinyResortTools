@@ -209,8 +209,6 @@ internal class TRModUpdater {
 
             // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
             else {
-                var tmp = mod.nexusVersion == null ? "No Version" : mod.nexusVersion.ToString();
-
                 if (mod.updateState == PluginUpdateState.UpToDate && !showUpToDateMods.Value) continue;
 
                 mod.updateButton = updateButton.Copy(
