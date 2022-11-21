@@ -43,7 +43,7 @@ internal class TRModUpdater {
     private static readonly string configDirectory = Application.dataPath.Replace("Dinkum_Data", "BepInEx/config/");
 
     public static void Initialize() {
-        
+
         TRTools.sceneSetupEvent += CreateUI;
 
         createEmptyConfigFiles = LeadPlugin.instance.Config.Bind(
@@ -62,7 +62,7 @@ internal class TRModUpdater {
         );
 
         ScanPlugins();
-        
+
     }
 
     public static void CreateUI() {
@@ -87,7 +87,7 @@ internal class TRModUpdater {
         updateButton.textMesh.fontSize = 12;
         updateButton.textMesh.rectTransform.sizeDelta = new Vector2(500, 50);
         updateButton.textMesh.lineSpacing = -20;
-        
+
     }
 
     public static void Update() {
@@ -299,8 +299,17 @@ internal class TRModUpdater {
                  )) {
             if (check && line.Contains("<div class=\"stat\">")) {
                 var match = Regex.Match(line, "<[^>]+>[^0-9.]*([0-9.]+)[^0-9.]*<[^>]+>");
+                Version nexusVersion;
                 if (!match.Success) break;
-                var nexusVersion = new Version(match.Groups[1].Value);
+
+                // BepInEx only keeps track of the first three version numbers (Semantic Versioning: https://semver.org/)
+                // I take any version found on nexus with longer version and reduce them to the first three numbers. 
+                var matchSplit = match.Groups[1].Value.Split('.');
+                var matchedVersion = matchSplit.Length > 3
+                                         ? $"{matchSplit[0]}.{matchSplit[1]}.{matchSplit[2]}"
+                                         : match.Groups[1].Value;
+
+                nexusVersion = new Version(matchedVersion);
                 loadedPlugins.Add(
                     new NexusPlugin(
                         plugName, id, modVersion, nexusVersion,
