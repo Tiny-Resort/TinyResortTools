@@ -78,6 +78,8 @@ public class TRAssets {
         if (Directory.Exists(path)) {
             var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
             foreach (var file in files) {
+                // Add check for files added by vortex
+                if (file.Contains("__folder_managed_by_vortex")) continue;
                 var ext = Path.GetExtension(file).Remove(0, 1).ToLower();
                 if (validExtensions.Any(i => i == ext)) list.Add(file);
             }
@@ -118,8 +120,8 @@ public class TRAssets {
     /// <param name="relativePath">Path to the image file, relative to the BepInEx plugins folder.</param>
     /// <returns>The loaded texture.</returns>
     public static Texture2D LoadTexture(string relativePath) {
-
         var path = Path.Combine(Paths.PluginPath, relativePath);
+
         if (!File.Exists(path)) {
             TRTools.LogError("No file found at " + path);
             return null;

@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.Bootstrap;
@@ -58,7 +61,7 @@ internal class LeadPlugin : BaseUnityPlugin {
         TRItems.ManageAllItemArray();
         TRIcons.Initialize();
         TRBackup.Initialize();
-        
+
         /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
         TestLicense.SetColor(Color.cyan);
         TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
@@ -67,11 +70,10 @@ internal class LeadPlugin : BaseUnityPlugin {
         TestLicense.AddSkillRequirement(1, CharLevelManager.SkillTypes.Mining, 10);
         TestLicense.AddSkillRequirement(2, CharLevelManager.SkillTypes.Mining, 20);
         TestLicense.AddSkillRequirement(3, CharLevelManager.SkillTypes.Mining, 30);*/
-        
     }
 
     private void Update() {
-        
+
         // Ensures scene setup happens on first load as well
         if (!initialSceneSetupDone) {
             initialSceneSetupDone = true;
@@ -92,5 +94,5 @@ internal class LeadPlugin : BaseUnityPlugin {
         //     NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[10], NetworkMapSharer.share.localChar.transform.position, true);
         // }
     }
-    
+
 }

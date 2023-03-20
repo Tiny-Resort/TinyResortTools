@@ -17,8 +17,15 @@ internal class TRIcons : MonoBehaviour {
 
     internal static string relativePath = Path.Combine("TR Tools", "item_icons");
 
+    internal static bool IsSymbolic(string path) {
+        var pathInfo = new FileInfo(path);
+        return pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint);
+    }
+
     internal static bool IsInFolder(string itemName) {
-        if (File.Exists(Path.Combine(Paths.PluginPath, relativePath, itemName.Replace(" ", "_") + ".png"))) return true;
+        var path = Path.Combine(Paths.PluginPath, relativePath, itemName.Replace(" ", "_") + ".png");
+        if (File.Exists(path) && !IsSymbolic(path)) return true;
+
         return false;
     }
 
@@ -52,7 +59,6 @@ internal class TRIcons : MonoBehaviour {
         var files = TRAssets.ListAllTextures(relativePath);
         for (var i = 0; i < files.Count; i++)
             FolderList.Add(Path.GetFileName(files[i]).Replace(".png", "").Replace(" ", "_"));
-
         var oddItems = new List<string>();
         for (var j = 0; j < FolderList.Count; j++)
             if (!itemList.Contains(FolderList[j]))
