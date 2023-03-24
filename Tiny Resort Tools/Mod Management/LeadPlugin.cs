@@ -13,7 +13,7 @@ internal class LeadPlugin : BaseUnityPlugin {
 
     public const string pluginName = "TRTools";
     public const string pluginGuid = "dev.TinyResort." + pluginName;
-    public const string pluginVersion = "0.8.1";
+    public const string pluginVersion = "0.8.2";
 
     public static TRPlugin plugin;
     internal static LeadPlugin instance;
