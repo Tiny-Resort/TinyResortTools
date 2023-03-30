@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.Bootstrap;
+using Mirror;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace TinyResort;
@@ -21,6 +24,8 @@ internal class LeadPlugin : BaseUnityPlugin {
     internal static ConfigEntry<bool> developerMode;
     public static ConfigEntry<bool> useSlashToOpenChat;
     private static bool initialSceneSetupDone;
+
+    private Guid assetId = Guid.Parse("5452546f-6f6c-7343-7573-746f6d525043");
 
     private void Awake() {
 
@@ -55,13 +60,15 @@ internal class LeadPlugin : BaseUnityPlugin {
 
     private void Start() {
 
+        NetworkClient.RegisterSpawnHandler(assetId, SpawnTRNetworkManager, UnSpawnTRNetworkManager);
+
         TRInterface.Initialize();
         TRModUpdater.Initialize();
         TRConflictingPlugins.Initialize();
         TRItems.ManageAllItemArray();
         TRIcons.Initialize();
         TRBackup.Initialize();
-
+        GriefProtection.IntializeGriefProtection();
         /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
         TestLicense.SetColor(Color.cyan);
         TestLicense.SetLevelInfo(1, "Level 1: This is a license made for testing the framework.", 500);
@@ -86,6 +93,23 @@ internal class LeadPlugin : BaseUnityPlugin {
         if (NetworkMapSharer.share.localChar) TRIcons.InitializeIcons();
         if (NetworkMapSharer.share.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
+        #region For Testing Only
+
+        if (Input.GetKeyDown(KeyCode.Home)) {
+            TRNetwork.share.RpcCustomRPC("Sent to Both Host/Client from Host.");
+
+            foreach (var character in NetworkPlayersManager.manage.connectedChars) {
+                TRTools.LogError($"connectionToClient {character.connectionToClient}");
+                TRTools.LogError($"connectionToServer: {character.connectionToServer}");
+            }
+            TRNetwork.share.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[0].connectionToClient, "test");
+            TRNetwork.share.CmdSendMessageToHost("Sent to Host from Client");
+        }
+
+        if (TRNetwork.share == null)
+            if (NetworkServer.active)
+                NetworkServer.Spawn(SpawnTRNetworkManager(new SpawnMessage()), assetId);
+
         //if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems(); }
         //if (Input.GetKeyDown(KeyCode.F12)) { TRItems.CurrentSaveInfo(); }
         //if (Input.GetKeyDown(KeyCode.F10)) { TRItems.LoadCustomItems(); }
@@ -93,6 +117,20 @@ internal class LeadPlugin : BaseUnityPlugin {
         //     TRTools.Log($"Size: {SaveLoad.saveOrLoad.carryablePrefabs.Length}");
         //     NetworkMapSharer.share.spawnACarryable(SaveLoad.saveOrLoad.carryablePrefabs[10], NetworkMapSharer.share.localChar.transform.position, true);
         // }
+
+        #endregion
+
     }
+
+    private GameObject SpawnTRNetworkManager(SpawnMessage msg) {
+        var TRNetworkManager = new GameObject("TRNetwork");
+        DontDestroyOnLoad(TRNetworkManager);
+        TRNetworkManager.SetActive(false);
+        TRNetworkManager.AddComponent<TRNetwork>();
+        TRNetworkManager.SetActive(true);
+        return TRNetworkManager;
+    }
+
+    private void UnSpawnTRNetworkManager(GameObject spawned) => Destroy(spawned);
 
 }

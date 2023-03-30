@@ -86,8 +86,7 @@ internal class TRConflictingPlugins {
         foreach (var plugin in conflictingMods) {
             plugin.modsToShow = $"{plugin.newMod.Metadata.GUID}:\n";
 
-            foreach (var mod in plugin.conflictingModsList)
-                plugin.modsToShow += $"\t<color=#ff7226ff>{mod.Metadata.Name} | {mod.Metadata.GUID}</color>\n";
+            foreach (var mod in plugin.conflictingModsList) plugin.modsToShow += $"\t<color=#ff7226ff>{mod.Metadata.Name} | {mod.Metadata.GUID}</color>\n";
             TRTools.Log(plugin.modsToShow);
 
             if (plugin.conflictButton != null) continue;
