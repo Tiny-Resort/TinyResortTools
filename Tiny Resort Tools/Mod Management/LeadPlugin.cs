@@ -25,8 +25,6 @@ internal class LeadPlugin : BaseUnityPlugin {
     public static ConfigEntry<bool> useSlashToOpenChat;
     private static bool initialSceneSetupDone;
 
-    private Guid assetId = Guid.Parse("5452546f-6f6c-7343-7573-746f6d525043");
-
     private void Awake() {
 
         instance = this;
@@ -60,8 +58,7 @@ internal class LeadPlugin : BaseUnityPlugin {
 
     private void Start() {
 
-        NetworkClient.RegisterSpawnHandler(assetId, SpawnTRNetworkManager, UnSpawnTRNetworkManager);
-
+        TRNetwork.Initialize();
         TRInterface.Initialize();
         TRModUpdater.Initialize();
         TRConflictingPlugins.Initialize();
@@ -89,26 +86,29 @@ internal class LeadPlugin : BaseUnityPlugin {
 
         TRModUpdater.Update();
         TRConflictingPlugins.Update();
+        TRNetwork.Update();
 
         if (NetworkMapSharer.share.localChar) TRIcons.InitializeIcons();
         if (NetworkMapSharer.share.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
         #region For Testing Only
 
+        /*
         if (Input.GetKeyDown(KeyCode.Home)) {
             TRNetwork.share.RpcCustomRPC("Sent to Both Host/Client from Host.");
 
-            foreach (var character in NetworkPlayersManager.manage.connectedChars) {
+            /*foreach (var character in NetworkPlayersManager.manage.connectedChars) {
                 TRTools.LogError($"connectionToClient {character.connectionToClient}");
                 TRTools.LogError($"connectionToServer: {character.connectionToServer}");
             }
-            TRNetwork.share.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[0].connectionToClient, "test");
+            TRNetwork.share.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[0].connectionToClient, "test");#1#
             TRNetwork.share.CmdSendMessageToHost("Sent to Host from Client");
         }
+        */
 
-        if (TRNetwork.share == null)
-            if (NetworkServer.active)
-                NetworkServer.Spawn(SpawnTRNetworkManager(new SpawnMessage()), assetId);
+        if (Input.GetKeyDown(KeyCode.F11)) GriefProtection.ResetBanList();
+        if (Input.GetKeyDown(KeyCode.F10)) ClientManagement.listBannedPlayers();
+        if (Input.GetKeyDown(KeyCode.End) && ChestWindow.chests.chestWindowOpen) GriefProtection.LockChest();
 
         //if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems(); }
         //if (Input.GetKeyDown(KeyCode.F12)) { TRItems.CurrentSaveInfo(); }
@@ -121,16 +121,5 @@ internal class LeadPlugin : BaseUnityPlugin {
         #endregion
 
     }
-
-    private GameObject SpawnTRNetworkManager(SpawnMessage msg) {
-        var TRNetworkManager = new GameObject("TRNetwork");
-        DontDestroyOnLoad(TRNetworkManager);
-        TRNetworkManager.SetActive(false);
-        TRNetworkManager.AddComponent<TRNetwork>();
-        TRNetworkManager.SetActive(true);
-        return TRNetworkManager;
-    }
-
-    private void UnSpawnTRNetworkManager(GameObject spawned) => Destroy(spawned);
 
 }

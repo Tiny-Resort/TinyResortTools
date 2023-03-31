@@ -83,12 +83,16 @@ public class TRQuickItems {
             newItem.inventoryItem.equipable.material.EnableKeyword("_NORMALMAP");
         else
             newItem.inventoryItem.equipable.material.DisableKeyword("_NORMALMAP");
+
         newItem.inventoryItem.equipable.material.SetTexture("_BumpMap", normalMap);
         newItem.inventoryItem.equipable.material.SetColor("_Color", Color.white);
 
         newItem.inventoryItem.equipable.material.name = itemInfo.fileName;
 
         newItem.isQuickItem = true;
+
+        // Makes quick items with recipes show up 12 at a time rather than 1 at a time. 
+        if (newItem.inventoryItem.craftable) newItem.inventoryItem.craftable.showInRecipeOverflow = true;
 
         if (currentCustomIDs.Contains(itemInfo.nexusID + "." + itemInfo.uniqueID))
             TRTools.LogError($"The file {itemInfo.fileName} has the same unique ID as another item.");
@@ -187,8 +191,7 @@ public class TRQuickItems {
         foreach (var item in arrayPaths) LoadArrayItems(item);
         foreach (var item in filePaths) LoadItem(item);
 
-        if (!string.IsNullOrWhiteSpace(qversionPath))
-            TRModUpdater.QuickItemInfo.Add(QIModInfo.CreateFromJson(File.ReadAllText(qversionPath)));
+        if (!string.IsNullOrWhiteSpace(qversionPath)) TRModUpdater.QuickItemInfo.Add(QIModInfo.CreateFromJson(File.ReadAllText(qversionPath)));
     }
 }
 

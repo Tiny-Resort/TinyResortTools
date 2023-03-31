@@ -10,6 +10,27 @@ namespace TinyResort;
 public class TRNetwork : NetworkBehaviour {
     public static TRNetwork share;
 
+    internal static Guid assetId = Guid.Parse("5452546f-6f6c-7343-7573-746f6d525043");
+
+    internal static GameObject SpawnTRNetworkManager(SpawnMessage msg) {
+        var TRNetworkManager = new GameObject("TRNetwork");
+        DontDestroyOnLoad(TRNetworkManager);
+        TRNetworkManager.SetActive(false);
+        TRNetworkManager.AddComponent<TRNetwork>();
+        TRNetworkManager.SetActive(true);
+        return TRNetworkManager;
+    }
+
+    internal static void UnSpawnTRNetworkManager(GameObject spawned) => Destroy(spawned);
+
+    internal static void Initialize() => NetworkClient.RegisterSpawnHandler(assetId, SpawnTRNetworkManager, UnSpawnTRNetworkManager);
+
+    internal static void Update() {
+        if (share == null)
+            if (NetworkServer.active)
+                NetworkServer.Spawn(SpawnTRNetworkManager(new SpawnMessage()), assetId);
+    }
+
     private void Awake() => share = this;
 
     public override void OnStartServer() { }

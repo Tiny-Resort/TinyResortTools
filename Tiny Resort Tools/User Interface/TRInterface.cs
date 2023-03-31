@@ -19,7 +19,7 @@ public class TRInterface : MonoBehaviour {
         // Load Button Asset Bundles
         UIBundle = TRAssets.LoadAssetBundleFromDLL("ui_elements");
         foreach (var asset in UIBundle.LoadAllAssets()) {
-            //TRTools.Log($"Asset: {asset.name}");
+            //TRTools.LogError($"Asset: {asset.name}");
         }
         ModLogo = UIBundle.LoadAsset<Sprite>("mod_logo");
         buttonMainMenu = LoadButton("Main Menu Button");
@@ -67,6 +67,8 @@ public class TRInterface : MonoBehaviour {
         DontDestroyOnLoad(newObject);
         return newButton;
     }
+
+    //TODO: Create new tab in journal menu
 
     /// <summary> Creates a sprite in the shape of a circle with a border. </summary>
     /// <param name="pixelRadius">The radius of the circle (in pixels).</param>

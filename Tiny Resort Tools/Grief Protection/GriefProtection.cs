@@ -63,8 +63,6 @@ public class GriefProtection {
 
         #region Patching
 
-        LeadPlugin.plugin.QuickPatch(typeof(RealWorldTimeLight), "Update", typeof(GriefProtection), "updateRWTLPrefix");
-
         ClientManagement.init();
         BlockDropItem.init();
         BlockHarvest.init();
@@ -110,49 +108,52 @@ public class GriefProtection {
         }
     }
 
-    internal static void updateRWTLPrefix(RealWorldTimeLight __instance) {
+    internal static void ResetBanList() {
+        ClientManagement.resetBanList();
+        SaveBanList();
+    }
 
-        if (Input.GetKeyDown(KeyCode.F11)) {
-            ClientManagement.resetBanList();
-            SaveBanList();
+    internal static void LockChest() {
+
+        var currentlyOpenedChest = Traverse.Create(ChestWindow.chests).Field("currentlyOpenedChest").GetValue() as Chest;
+
+        if (currentlyOpenedChest == null) {
+            TRTools.LogError("Unable to locate current chest. Please report this as a bug to the TR Tools nexus page or #modding-space discord channel.");
+            return;
         }
-        if (Input.GetKeyDown(KeyCode.F10)) ClientManagement.listBannedPlayers();
 
-        if (Input.GetKeyDown(KeyCode.End) && ChestWindow.chests.chestWindowOpen) {
-            var currentlyOpenedChest = Traverse.Create(ChestWindow.chests).Field("currentlyOpenedChest").GetValue() as Chest;
+        var BlacklistChestExists = LockChests.blacklistedChests.Find(i => i.chestX == currentlyOpenedChest.xPos && i.chestY == currentlyOpenedChest.yPos);
+        var WhitelistChestExists = LockChests.whitelistedChests.Find(i => i.chestX == currentlyOpenedChest.xPos && i.chestY == currentlyOpenedChest.yPos);
 
-            var BlacklistChestExists = LockChests.blacklistedChests.Find(i => i.chestX == currentlyOpenedChest.xPos && i.chestY == currentlyOpenedChest.yPos);
-            var WhitelistChestExists = LockChests.whitelistedChests.Find(i => i.chestX == currentlyOpenedChest.xPos && i.chestY == currentlyOpenedChest.yPos);
-
-            var checkChest = LockChests.LockAllChests.Value ? WhitelistChestExists : BlacklistChestExists;
-            var message = "";
-            if (checkChest != null) {
-                if (LockChests.LockAllChests.Value) {
-                    message = $"Removed Whitelisted Chest at ({checkChest.chestX}, {checkChest.chestY}).";
-                    LockChests.whitelistedChests.Remove(checkChest);
-                }
-                else {
-                    message = $"Removed Blacklisted Chest at ({checkChest.chestX}, {checkChest.chestY}).";
-                    LockChests.blacklistedChests.Remove(checkChest);
-                }
+        var checkChest = LockChests.LockAllChests.Value ? WhitelistChestExists : BlacklistChestExists;
+        var message = "";
+        if (checkChest != null) {
+            if (LockChests.LockAllChests.Value) {
+                message = $"Removed Whitelisted Chest at ({checkChest.chestX}, {checkChest.chestY}).";
+                LockChests.whitelistedChests.Remove(checkChest);
             }
             else {
-                var tempChest = new LockChests.LockedChests();
-                tempChest.chestX = currentlyOpenedChest.xPos;
-                tempChest.chestY = currentlyOpenedChest.yPos;
-                if (LockChests.LockAllChests.Value) {
-                    message = $"Added Whitelisted Chest at ({tempChest.chestX}, {tempChest.chestY}).";
-                    LockChests.whitelistedChests.Add(tempChest);
-                }
-                else {
-                    message = $"Added Blacklisted Chest at ({tempChest.chestX}, {tempChest.chestY}).";
-                    LockChests.blacklistedChests.Add(tempChest);
-                }
-
+                message = $"Removed Blacklisted Chest at ({checkChest.chestX}, {checkChest.chestY}).";
+                LockChests.blacklistedChests.Remove(checkChest);
             }
-            TRTools.TopNotification("Grief Protection", message);
-
-            LockChests.SaveCustomizedChests();
         }
+        else {
+            var tempChest = new LockChests.LockedChests();
+            tempChest.chestX = currentlyOpenedChest.xPos;
+            tempChest.chestY = currentlyOpenedChest.yPos;
+            if (LockChests.LockAllChests.Value) {
+                message = $"Added Whitelisted Chest at ({tempChest.chestX}, {tempChest.chestY}).";
+                LockChests.whitelistedChests.Add(tempChest);
+            }
+            else {
+                message = $"Added Blacklisted Chest at ({tempChest.chestX}, {tempChest.chestY}).";
+                LockChests.blacklistedChests.Add(tempChest);
+            }
+
+        }
+        TRTools.TopNotification("Grief Protection", message);
+
+        LockChests.SaveCustomizedChests();
+
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.Bootstrap;
 using TMPro;
@@ -216,9 +217,7 @@ internal class TRModUpdater {
                     mod.updateState == PluginUpdateState.UpdateAvailable
                         ? $"<size=15>{mod.name}</size>\n<color=#00ff00ff><b>UPDATE AVAILABLE</b></color> (<color=#ff7226ff>{mod.modVersion}</color> -> <color=#00ff00ff>{mod.nexusVersion}</color>)"
                         : $"<size=15>{mod.name}</size>\n<color=#787877FF>UP TO DATE ({mod.modVersion})</color>",
-                    delegate {
-                        openWebpage(string.Format("https://www.nexusmods.com/dinkum/mods/{0}/?tab=files", mod.id));
-                    }
+                    delegate { openWebpage(string.Format("https://www.nexusmods.com/dinkum/mods/{0}/?tab=files", mod.id)); }
                 );
             }
 
@@ -250,10 +249,11 @@ internal class TRModUpdater {
 
         // Gets existing plugins
         var pluginInfos = UnityChainloader.Instance.Plugins.Values;
-        foreach (var kvp in pluginInfos) {
+
+        foreach (var kvp in pluginInfos.Select(kvp => kvp.Metadata)) {
 
             // Look for the plugin's config file. One none exists, create one if desired
-            var cfgFile = Path.Combine(configDirectory, kvp.Metadata.GUID + ".cfg");
+            var cfgFile = Path.Combine(configDirectory, kvp.GUID + ".cfg");
             if (!File.Exists(cfgFile)) {
                 if (createEmptyConfigFiles.Value) File.Create(cfgFile);
                 continue;
@@ -261,20 +261,23 @@ internal class TRModUpdater {
 
             // Search through the config file for a nexusID for this plugin
             var id = -1;
-            foreach (var line in File.ReadAllLines(cfgFile))
-                if (line.Trim().ToLower().StartsWith("nexusid")) {
+            foreach (var line in File.ReadAllLines(cfgFile)) {
+
+                // Added a better regex for grabbing the Nexus ID. This one allows for white spaces. Credit: SadGirlRika#8141
+                var lineMatch = Regex.Match(line.Trim().ToLower(), @"^\s*nexus\s*id\s*=\s*(\d+)");
+                if (lineMatch.Success) {
                     if (line.Contains("-")) continue;
-                    var match = Regex.Match(line, "[0-9]+");
-                    if (match.Success) id = int.Parse(match.Value);
+                    id = int.Parse(lineMatch.Groups[1].Value);
                     break;
                 }
+            }
 
             // If a nexusID was found for this plugin, then get it's version information from the webpage
             if (id == -1)
                 loadedPlugins.Add(
-                    new NexusPlugin(kvp.Metadata.Name, id, kvp.Metadata.Version, null, PluginUpdateState.NotSetUp)
+                    new NexusPlugin(kvp.Name, id, kvp.Version, null, PluginUpdateState.NotSetUp)
                 );
-            LeadPlugin.instance.StartCoroutine(GetNexusInfo(kvp.Metadata.Name, id, kvp.Metadata.Version));
+            LeadPlugin.instance.StartCoroutine(GetNexusInfo(kvp.Name, id, kvp.Version));
 
             //TRTools.Log($"{kvp.Metadata.Name} {id} current version: {kvp.Metadata.Version}");
         }
@@ -291,32 +294,32 @@ internal class TRModUpdater {
         }
 
         // Search nexus mod page for version number
+        // Note: Refactored to lower complexity. 
         var check = false;
-        foreach (var line in uwr.downloadHandler.text.Split(
-                     new string[3] { "\r\n", "\r", "\n" }, StringSplitOptions.None
-                 )) {
-            if (check && line.Contains("<div class=\"stat\">")) {
-                var match = Regex.Match(line, "<[^>]+>[^0-9.]*([0-9.]+)[^0-9.]*<[^>]+>");
-                Version nexusVersion;
-                if (!match.Success) break;
-
-                // BepInEx only keeps track of the first three version numbers (Semantic Versioning: https://semver.org/)
-                // I take any version found on nexus with longer version and reduce them to the first three numbers. 
-                var matchSplit = match.Groups[1].Value.Split('.');
-                var matchedVersion = matchSplit.Length > 3
-                                         ? $"{matchSplit[0]}.{matchSplit[1]}.{matchSplit[2]}"
-                                         : match.Groups[1].Value;
-
-                nexusVersion = new Version(matchedVersion);
-                loadedPlugins.Add(
-                    new NexusPlugin(
-                        plugName, id, modVersion, nexusVersion,
-                        nexusVersion > modVersion ? PluginUpdateState.UpdateAvailable : PluginUpdateState.UpToDate
-                    )
-                );
-                break;
-            }
+        foreach (var line in uwr.downloadHandler.text.Split(new string[3] { "\r\n", "\r", "\n" }, StringSplitOptions.None)) {
             if (line.Contains("<li class=\"stat-version\">")) check = true;
+            if (!check || !line.Contains("<div class=\"stat\">")) continue;
+
+            var match = Regex.Match(line, "<[^>]+>[^0-9.]*([0-9.]+)[^0-9.]*<[^>]+>");
+            Version nexusVersion;
+            if (!match.Success) break;
+
+            // BepInEx only keeps track of the first three version numbers (Semantic Versioning: https://semver.org/)
+            // I take any version found on nexus with longer version and reduce them to the first three numbers. 
+            var matchSplit = match.Groups[1].Value.Split('.');
+            var matchedVersion = matchSplit.Length > 3
+                                     ? $"{matchSplit[0]}.{matchSplit[1]}.{matchSplit[2]}"
+                                     : match.Groups[1].Value;
+
+            nexusVersion = new Version(matchedVersion);
+            loadedPlugins.Add(
+                new NexusPlugin(
+                    plugName, id, modVersion, nexusVersion,
+                    nexusVersion > modVersion ? PluginUpdateState.UpdateAvailable : PluginUpdateState.UpToDate
+                )
+            );
+            break;
+
         }
 
         // If the mods window is open, repopulate the mod list to keep it up to date

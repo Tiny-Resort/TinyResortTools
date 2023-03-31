@@ -144,8 +144,7 @@ public class TRItems {
         if (Inventory.inv)
             for (var i = 0; i < Inventory.inv.allItems.Length; i++)
                 if (Inventory.inv.allItems[i].craftable) {
-                    foreach (var material in Inventory.inv.allItems[i].craftable.itemsInRecipe)
-                        FixRecipeItemID(material);
+                    foreach (var material in Inventory.inv.allItems[i].craftable.itemsInRecipe) FixRecipeItemID(material);
 
                     if (Inventory.inv.allItems[i].craftable.altRecipes.Length > 0)
                         foreach (var recipe in Inventory.inv.allItems[i].craftable.altRecipes) {
@@ -505,16 +504,11 @@ public class TRItems {
         }
 
         // Unloads and saves all equipped clothing
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo))
-            EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo))
-            EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shirtSlot.itemNo))
-            EquipData.Save(EquipWindow.equip.shirtSlot.stack, EquipData.EquipLocations.Shirt);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo))
-            EquipData.Save(EquipWindow.equip.pantsSlot.stack, EquipData.EquipLocations.Pants);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo))
-            EquipData.Save(EquipWindow.equip.shoeSlot.stack, EquipData.EquipLocations.Shoes);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo)) EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo)) EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shirtSlot.itemNo)) EquipData.Save(EquipWindow.equip.shirtSlot.stack, EquipData.EquipLocations.Shirt);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo)) EquipData.Save(EquipWindow.equip.pantsSlot.stack, EquipData.EquipLocations.Pants);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo)) EquipData.Save(EquipWindow.equip.shoeSlot.stack, EquipData.EquipLocations.Shoes);
 
         var inMailBox = new List<Letter>(MailManager.manage.mailInBox);
         foreach (var letter in inMailBox)
@@ -630,16 +624,11 @@ public class TRItems {
         }
 
         // Unloads and saves all equipped clothing
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo))
-            EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo))
-            EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shirtSlot.itemNo))
-            EquipData.Save(EquipWindow.equip.shirtSlot.stack, EquipData.EquipLocations.Shirt);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo))
-            EquipData.Save(EquipWindow.equip.pantsSlot.stack, EquipData.EquipLocations.Pants);
-        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo))
-            EquipData.Save(EquipWindow.equip.shoeSlot.stack, EquipData.EquipLocations.Shoes);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.hatSlot.itemNo)) EquipData.Save(EquipWindow.equip.hatSlot.stack, EquipData.EquipLocations.Hat);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.faceSlot.itemNo)) EquipData.Save(EquipWindow.equip.faceSlot.stack, EquipData.EquipLocations.Face);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shirtSlot.itemNo)) EquipData.Save(EquipWindow.equip.shirtSlot.stack, EquipData.EquipLocations.Shirt);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.pantsSlot.itemNo)) EquipData.Save(EquipWindow.equip.pantsSlot.stack, EquipData.EquipLocations.Pants);
+        if (customItemsByItemID.ContainsKey(EquipWindow.equip.shoeSlot.itemNo)) EquipData.Save(EquipWindow.equip.shoeSlot.stack, EquipData.EquipLocations.Shoes);
 
         // Removes mail from the mail box if it contains a custom item
         var inMailBox = new List<Letter>(MailManager.manage.mailInBox);
@@ -717,8 +706,7 @@ public class TRItems {
                 #region Chests (NOT in a house)
 
                 // If the tile has a chest on it, save and unload custom items from the chest
-                if (allObjects[onTileMap[x, y]].tileObjectChest)
-                    ChestData.Save(allObjects[onTileMap[x, y]].tileObjectChest, x, y, -1, -1);
+                if (allObjects[onTileMap[x, y]].tileObjectChest) ChestData.Save(allObjects[onTileMap[x, y]].tileObjectChest, x, y, -1, -1);
 
                 #endregion
 
@@ -756,9 +744,7 @@ public class TRItems {
                                           .tileObjectSettings.checkBridgLenth(x, y, 1);
                         BridgeData.Save(onTileMap[x, y], x, y, rotation, bridgeLength);
                     }
-                    else if (allObjects[onTileMap[x, y]].tileObjectGrowthStages) {
-                        PlantData.Save(onTileMap[x, y], x, y, onTileMapStatus[x, y]);
-                    }
+                    else if (allObjects[onTileMap[x, y]].tileObjectGrowthStages) { PlantData.Save(onTileMap[x, y], x, y, onTileMapStatus[x, y]); }
 
                     else { ObjectData.Save(onTileMap[x, y], x, y, rotation, -1, -1); }
 
@@ -822,8 +808,7 @@ public class TRItems {
                             #region Chests (INSIDE a house)
 
                             // If the object on this house tile is a chest, save and unload custom items from the chest
-                            if (allObjects[tileObjectID].tileObjectChest)
-                                ChestData.Save(allObjects[tileObjectID].tileObjectChest, houseTileX, houseTileY, x, y);
+                            if (allObjects[tileObjectID].tileObjectChest) ChestData.Save(allObjects[tileObjectID].tileObjectChest, houseTileX, houseTileY, x, y);
 
                             #endregion
 
@@ -1011,8 +996,7 @@ public class TRCustomItem {
         for (var i = 0; i < AllAssets.Length; i++) {
             if (newItem.inventoryItem == null) newItem.inventoryItem = AllAssets[i].GetComponent<InventoryItem>();
             if (newItem.tileObject == null) newItem.tileObject = AllAssets[i].GetComponent<TileObject>();
-            if (newItem.tileObjectSettings == null)
-                newItem.tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>();
+            if (newItem.tileObjectSettings == null) newItem.tileObjectSettings = AllAssets[i].GetComponent<TileObjectSettings>();
             if (newItem.tileTypes == null) newItem.tileTypes = AllAssets[i].GetComponent<TileTypes>();
             if (newItem.vehicle == null) newItem.vehicle = AllAssets[i].GetComponent<Vehicle>();
             if (newItem.pickUpAndCarry == null) newItem.pickUpAndCarry = AllAssets[i].GetComponent<PickUpAndCarry>();
