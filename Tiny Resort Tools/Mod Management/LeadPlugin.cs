@@ -90,7 +90,10 @@ internal class LeadPlugin : BaseUnityPlugin {
         TRConflictingPlugins.Update();
         TRNetwork.Update();
 
-        if (NetworkMapSharer.share.localChar) TRIcons.InitializeIcons();
+        if (NetworkMapSharer.share.localChar) {
+            TRBackup.LoadSavedBackups();
+            TRIcons.InitializeIcons();
+        }
         if (NetworkMapSharer.share.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
         #region For Testing Only

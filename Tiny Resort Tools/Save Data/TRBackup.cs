@@ -55,9 +55,7 @@ internal class TRBackup {
         // backupList = LeadPlugin.instance.Config.Bind<string>("Save Backup Manager", "BackupList", null, "DO NOT EDIT. This is storing a list of current backups, so it won't have a chance to delete other files.");
 
         #endregion
-
-        backupList = (List<string>)Data.GetValue("BackupList", new List<string>());
-
+        
         pluginInfos = UnityChainloader.Instance.Plugins.Values.ToList();
         TRData.postLoadEvent += CreateInitialBackup;
         var plugInfo = pluginInfos.Find(i => i.Metadata.GUID == "dev.TinyResort.SaveBackupManager");
@@ -65,6 +63,10 @@ internal class TRBackup {
             TRData.postSaveEvent += CreateBackup;
         else if (plugInfo != null) TRTools.Log("Loaded Save Backup Manager Mod (Not API).");
 
+    }
+
+    internal static void LoadSavedBackups() {
+        backupList = (List<string>)Data.GetValue("BackupList", new List<string>());
     }
 
     private static void getOrCreateSavePaths() {
@@ -78,14 +80,20 @@ internal class TRBackup {
     }
 
     private static void RemoveLastBackup(string currentFolder) {
+
+
         var slot = new DirectoryInfo(currentFolder);
+        TRTools.LogError($"Current Folder: {currentFolder}");
 
         currentBackups.Clear();
 
         // Grabs all files in the directory
-        foreach (var zip in slot.GetFiles())
-            if (zip.FullName.Contains(".zip") && (zip.FullName.Contains("Server") || zip.FullName.Contains(islandName)))
+        foreach (var zip in slot.GetFiles()) {
+            if (zip.FullName.Contains(".zip") && (zip.FullName.Contains("Server") || zip.FullName.Contains(islandName))) {
+                TRTools.LogError($"Add File: {zip}");
                 currentBackups.Add(zip);
+            }
+        }
 
         // Create new list from currentBackups iff its included in BackupListInfo (from config file)
         //for (int i = 0; i < currentBackups.Count; i++) { TRTools.Log($"CurrentBackup Name List: {currentBackups[i].Name}"); }
@@ -98,8 +106,12 @@ internal class TRBackup {
         for (int i = 0; i < filesFromMod.Count; i++) { TRTools.Log($"Temp List: {filesFromMod[i].FullName}"); }*/
 
         // If the final list is larger than the max backup count, delete the first created file and remove from backupList
+        TRTools.LogError($"Current Count: {filesFromMod.Count}");
+
         if (filesFromMod.Count >= BackupCount.Value) {
             backupList.Remove(filesFromMod[0].Name);
+            TRTools.LogError($"Current Folder: {filesFromMod[0].Name}");
+
             filesFromMod[0].Delete();
         }
 
