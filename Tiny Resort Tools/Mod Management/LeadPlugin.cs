@@ -5,6 +5,7 @@ using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.Bootstrap;
+using HarmonyLib;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,6 +21,7 @@ internal class LeadPlugin : BaseUnityPlugin {
 
     public static TRPlugin plugin;
     internal static LeadPlugin instance;
+    internal static int currentSlot;
 
     internal static ConfigEntry<bool> developerMode;
     public static ConfigEntry<bool> useSlashToOpenChat;
@@ -106,9 +108,11 @@ internal class LeadPlugin : BaseUnityPlugin {
         }
         */
 
+        /*
         if (Input.GetKeyDown(KeyCode.F11)) GriefProtection.ResetBanList();
         if (Input.GetKeyDown(KeyCode.F10)) ClientManagement.listBannedPlayers();
         if (Input.GetKeyDown(KeyCode.End) && ChestWindow.chests.chestWindowOpen) GriefProtection.LockChest();
+        */
 
         //if (Input.GetKeyDown(KeyCode.F11)) { TRItems.UnloadCustomItems(); }
         //if (Input.GetKeyDown(KeyCode.F12)) { TRItems.CurrentSaveInfo(); }

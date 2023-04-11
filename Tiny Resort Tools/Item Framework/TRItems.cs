@@ -57,6 +57,7 @@ public class TRItems {
     /// <returns>The details for an item with the given item ID.</returns>
     public static InventoryItem GetItemDetails(int itemID) {
         if (itemID >= 0 && itemID < Inventory.inv.allItems.Length) return Inventory.inv.allItems[itemID];
+        if (itemID == -1) return null;
         TRTools.LogError("Attempting to get item details for item with ID of " + itemID + " which does not exist.");
         return null;
     }
@@ -64,7 +65,7 @@ public class TRItems {
     internal static void Initialize() {
         //TRTools.Log($"Initializing TRItems...");
 
-        Data = TRData.Subscribe("TR.CustomItems");
+        Data = TRData.Subscribe("TR.CustomItems"); 
         TRData.cleanDataEvent += UnloadCustomItems;
         TRData.postLoadEvent += LoadCustomMovables;
         TRData.injectDataEvent += LoadCustomItems;
