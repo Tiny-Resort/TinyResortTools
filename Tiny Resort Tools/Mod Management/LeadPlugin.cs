@@ -98,6 +98,10 @@ internal class LeadPlugin : BaseUnityPlugin {
 
         #region For Testing Only
 
+        if (Input.GetKeyDown(KeyCode.Home)) {
+            var position = NetworkMapSharer.share.localChar.myInteract.transform.position;
+            TRItemTools.LocateNearbyContainers((int)position.x / 2, (int)position.z / 2, 100);
+        }
         /*
         if (Input.GetKeyDown(KeyCode.Home)) {
             TRNetwork.share.RpcCustomRPC("Sent to Both Host/Client from Host.");
