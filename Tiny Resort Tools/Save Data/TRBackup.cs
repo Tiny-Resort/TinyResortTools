@@ -55,7 +55,7 @@ internal class TRBackup {
         // backupList = LeadPlugin.instance.Config.Bind<string>("Save Backup Manager", "BackupList", null, "DO NOT EDIT. This is storing a list of current backups, so it won't have a chance to delete other files.");
 
         #endregion
-        
+
         pluginInfos = UnityChainloader.Instance.Plugins.Values.ToList();
         TRData.postLoadEvent += CreateInitialBackup;
         var plugInfo = pluginInfos.Find(i => i.Metadata.GUID == "dev.TinyResort.SaveBackupManager");
@@ -65,9 +65,7 @@ internal class TRBackup {
 
     }
 
-    internal static void LoadSavedBackups() {
-        backupList = (List<string>)Data.GetValue("BackupList", new List<string>());
-    }
+    internal static void LoadSavedBackups() => backupList = (List<string>)Data.GetValue("BackupList", new List<string>());
 
     private static void getOrCreateSavePaths() {
         saveSlot = SaveLoad.saveOrLoad.currentSaveSlotNo();
@@ -81,19 +79,15 @@ internal class TRBackup {
 
     private static void RemoveLastBackup(string currentFolder) {
 
-
         var slot = new DirectoryInfo(currentFolder);
-        TRTools.LogError($"Current Folder: {currentFolder}");
 
         currentBackups.Clear();
 
         // Grabs all files in the directory
-        foreach (var zip in slot.GetFiles()) {
+        foreach (var zip in slot.GetFiles())
             if (zip.FullName.Contains(".zip") && (zip.FullName.Contains("Server") || zip.FullName.Contains(islandName))) {
-                TRTools.LogError($"Add File: {zip}");
                 currentBackups.Add(zip);
             }
-        }
 
         // Create new list from currentBackups iff its included in BackupListInfo (from config file)
         //for (int i = 0; i < currentBackups.Count; i++) { TRTools.Log($"CurrentBackup Name List: {currentBackups[i].Name}"); }
@@ -106,12 +100,9 @@ internal class TRBackup {
         for (int i = 0; i < filesFromMod.Count; i++) { TRTools.Log($"Temp List: {filesFromMod[i].FullName}"); }*/
 
         // If the final list is larger than the max backup count, delete the first created file and remove from backupList
-        TRTools.LogError($"Current Count: {filesFromMod.Count}");
 
         if (filesFromMod.Count >= BackupCount.Value) {
             backupList.Remove(filesFromMod[0].Name);
-            TRTools.LogError($"Current Folder: {filesFromMod[0].Name}");
-
             filesFromMod[0].Delete();
         }
 
@@ -128,8 +119,12 @@ internal class TRBackup {
     }
 
     internal static void CreateInitialBackup() {
-        getOrCreateSavePaths();
 
+        var date = WorldManager.manageWorld.getDateSave();
+        if (date.year == 1 && date.day == 1 && date.week == 1 && date.month == 1) return;
+        
+        getOrCreateSavePaths();
+        
         if (!Directory.Exists(globalSaveLocation)) Directory.CreateDirectory(globalSaveLocation);
         var currentGlobalSaves = Directory.GetFiles(globalSaveLocation);
 
@@ -162,12 +157,10 @@ internal class TRBackup {
             ZipFile.CreateFromDirectory(savePath, Path.Combine(saveDestinationSlot, backupName));
             backupList.Add($"{backupName}");
             SaveBackupList();
-            if (TopNotification.Value)
-                TRTools.TopNotification("Save Backup Manager", "The backup was created succesfully.");
+            if (TopNotification.Value) TRTools.TopNotification("Save Backup Manager", "The backup was created succesfully.");
         }
         catch (Exception e) {
-            if (TopNotification.Value)
-                TRTools.TopNotification("Save Backup Manager", "The backup failed due to an incorrect directory.");
+            if (TopNotification.Value) TRTools.TopNotification("Save Backup Manager", "The backup failed due to an incorrect directory.");
             TRTools.LogError($"IOException: {e}");
             return;
         }

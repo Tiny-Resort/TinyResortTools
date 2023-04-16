@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using BepInEx;
 using Newtonsoft.Json;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using System.Windows;
+using Color = UnityEngine.Color;
 
 namespace TinyResort;
 
@@ -133,6 +136,7 @@ public class TRQuickItems {
             Object.DontDestroyOnLoad(newItem.tileTypes);
             newItem.tileTypes.myTileMaterial = new Material(newItem.inventoryItem.equipable.material);
             newItem.tileTypes.dropOnChange = newItem.inventoryItem;
+            if (ColorUtility.TryParseHtmlString(itemInfo.color, out var color)) newItem.tileTypes.tileColorOnMap = color;
         }
 
         //TRTools.Log($"Custom ID: {newItem.customItemID}");
@@ -213,7 +217,7 @@ public class QuickItemInfo {
     public string itemName = "Item That Must Not Be Named";
     public string description = "What a wonderful use of a quick item's description!";
     public int value = 1000;
-
+    public string color = "#FFB67A";
     // Setting the normal map for items
     public string normalMapFileName;
 
