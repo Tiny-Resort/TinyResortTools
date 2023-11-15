@@ -1,15 +1,16 @@
 using HarmonyLib;
 
-namespace TinyResort;
+namespace TinyResort
+{
+    // This is run before the SaveGame method (first save method and before the coroutine) is started. 
 
-// This is run before the SaveGame method (first save method and before the coroutine) is started. 
+    [HarmonyPatch(typeof(SaveAndLoad), "SaveGame")]
+    internal class SaveGamePatch {
 
-[HarmonyPatch(typeof(SaveLoad), "SaveGame")]
-internal class SaveGamePatch {
-
-    [HarmonyPrefix]
-    internal static void Prefix(SaveLoad __instance) {
-        TRData.preSaveEvent?.Invoke();
-        TRData.cleanDataEvent?.Invoke();
+        [HarmonyPrefix]
+        internal static void Prefix(SaveAndLoad __instance) {
+            TRData.preSaveEvent?.Invoke();
+            TRData.cleanDataEvent?.Invoke();
+        }
     }
 }

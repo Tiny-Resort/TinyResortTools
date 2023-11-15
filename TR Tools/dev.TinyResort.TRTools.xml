@@ -79,7 +79,7 @@
                 If you manually save items in special storage slots, then save this value instead of the itemID.
                 Then when loading data, call GetLoadableItemID() with the saved value to get the itemID of the item in that slot.
             </summary>
-            <param name="itemID">The itemID of the item. This its index in the Inventory.inv.allItems array.</param>
+            <param name="itemID">The itemID of the item. This its index in the Inventory.Instance.allItems array.</param>
             <returns>A string that is either the vanilla itemID or the customItemID for modded items.</returns>
         </member>
         <member name="M:TinyResort.TRItems.GetLoadableItemID(System.String)">
@@ -89,7 +89,7 @@
             </summary>
             <param name="savedID">The ID that was saved for this item.</param>
             <returns>
-                An int that is the current itemID for this item. It matches the index of the item in the Inventory.inv.allItems
+                An int that is the current itemID for this item. It matches the index of the item in the Inventory.Instance.allItems
                 array.
                 Keep in mind that this value will change if a new mod is added or the mod loader has changed. So, if you want to
                 save this value,
@@ -125,36 +125,6 @@
         </member>
         <member name="T:TinyResort.TRMail">
             <summary> Tools for sending the player custom mail. </summary>
-        </member>
-        <member name="M:TinyResort.TRMail.SendItemInMail(TinyResort.TRCustomItem,System.Int32,System.Boolean,System.Int32)">
-            <summary>Sends the player a letter containing the given item.</summary>
-            <param name="itemToSend">The item you want to send.</param>
-            <param name="quantity">How many of the item you want to include.</param>
-            <param name="immediate">
-                Normally, the player will recieve this letter upon waking up the following day. Set this to
-                true to make it immediately arrive.
-            </param>
-            <param name="NPC">The ID of the NPC you want to have sent the letter. 1 = John</param>
-        </member>
-        <member name="M:TinyResort.TRMail.SendItemInMail(System.Int32,System.Int32,System.Boolean,System.Int32)">
-            <summary>Sends the player a letter containing the given item.</summary>
-            <param name="itemToSend">The item ID of the item you want to send.</param>
-            <param name="quantity">How many of the item you want to include.</param>
-            <param name="immediate">
-                Normally, the player will recieve this letter upon waking up the following day. Set this to
-                true to make it immediately arrive.
-            </param>
-            <param name="NPC">The ID of the NPC you want to have sent the letter. 1 = John</param>
-        </member>
-        <member name="M:TinyResort.TRMail.SendItemInMail(InventoryItem,System.Int32,System.Boolean,System.Int32)">
-            <summary>Sends the player a letter containing the given item.</summary>
-            <param name="itemToSend">The item ID of the item you want to send.</param>
-            <param name="quantity">How many of the item you want to include.</param>
-            <param name="immediate">
-                Normally, the player will recieve this letter upon waking up the following day. Set this to
-                true to make it immediately arrive.
-            </param>
-            <param name="NPC">The ID of the NPC you want to have sent the letter. 1 = John</param>
         </member>
         <member name="T:TinyResort.TRQuickItems">
             <summary>Tools for quickly creating clothing items.</summary>
