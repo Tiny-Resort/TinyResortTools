@@ -2,65 +2,66 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TinyResort;
+namespace TinyResort
+{
+    [Serializable]
+    internal class CarryableData : ItemSaveData {
 
-[Serializable]
-internal class CarryableData : ItemSaveData {
+        public static List<CarryableData> all = new();
+        public static List<CarryableData> lostAndFound = new();
 
-    public static List<CarryableData> all = new();
-    public static List<CarryableData> lostAndFound = new();
+        public float positionX;
+        public float positionY;
+        public float positionZ;
 
-    public float positionX;
-    public float positionY;
-    public float positionZ;
+        public static void LoadAll(bool firstLoad) {
+            lostAndFound = (List<CarryableData>)TRItems.Data.GetValue(
+                "CarryableDataLostAndFound", new List<CarryableData>()
+            );
 
-    public static void LoadAll(bool firstLoad) {
-        lostAndFound = (List<CarryableData>)TRItems.Data.GetValue(
-            "CarryableDataLostAndFound", new List<CarryableData>()
-        );
+            //TRTools.Log($"Loading CarryableData lostAndFound: {lostAndFound.Count}");
 
-        //TRTools.Log($"Loading CarryableData lostAndFound: {lostAndFound.Count}");
+            all = (List<CarryableData>)TRItems.Data.GetValue("CarryableData", new List<CarryableData>());
 
-        all = (List<CarryableData>)TRItems.Data.GetValue("CarryableData", new List<CarryableData>());
+            //TRTools.Log($"Loading CarryableData: {all.Count}");
 
-        //TRTools.Log($"Loading CarryableData: {all.Count}");
-
-        foreach (var item in all)
-            try {
-                if (item.Load(firstLoad) == null)
-                    if (!lostAndFound.Contains(item))
-                        lostAndFound.Add(item);
-            }
-            catch { TRTools.LogError($"Failed to load item: {item.customItemID}"); }
-    }
-
-    public static void Save(PickUpAndCarry myCarry) {
-        all.Add(
-            new CarryableData {
-                customItemID = TRItems.customCarryableByID[myCarry.prefabId].customItemID,
-                positionX = myCarry.transform.position.x, positionY = myCarry.transform.position.y,
-                positionZ = myCarry.transform.position.z
-            }
-        );
-        WorldManager.manageWorld.allCarriables.Remove(myCarry);
-    }
-
-    public TRCustomItem Load(bool firstLoad) {
-
-        if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
-
-        // If re-injecting data after saving, just re-add it to list
-        if (!firstLoad) {
-            WorldManager.manageWorld.allCarriables.Remove(customItem.pickUpAndCarry);
-            return customItem;
+            foreach (var item in all)
+                try {
+                    if (item.Load(firstLoad) == null)
+                        if (!lostAndFound.Contains(item))
+                            lostAndFound.Add(item);
+                }
+                catch { TRTools.LogError($"Failed to load item: {item.customItemID}"); }
         }
 
-        // If loading in to save slot, then create the carryable object
-        NetworkMapSharer.share.spawnACarryable(
-            customItem.pickUpAndCarry.gameObject, new Vector3(positionX, positionY, positionZ), false
-        );
+        public static void Save(PickUpAndCarry myCarry) {
+            all.Add(
+                new CarryableData {
+                    customItemID = TRItems.customCarryableByID[myCarry.prefabId].customItemID,
+                    positionX = myCarry.transform.position.x, positionY = myCarry.transform.position.y,
+                    positionZ = myCarry.transform.position.z
+                }
+            );
+            WorldManager.Instance.allCarriables.Remove(myCarry);
+        }
 
-        return customItem;
+        public TRCustomItem Load(bool firstLoad) {
+
+            if (!TRItems.customItems.TryGetValue(customItemID, out var customItem)) return null;
+
+            // If re-injecting data after saving, just re-add it to list
+            if (!firstLoad) {
+                WorldManager.Instance.allCarriables.Remove(customItem.pickUpAndCarry);
+                return customItem;
+            }
+
+            // If loading in to save slot, then create the carryable object
+            NetworkMapSharer.Instance.spawnACarryable(
+                customItem.pickUpAndCarry.gameObject, new Vector3(positionX, positionY, positionZ), false
+            );
+
+            return customItem;
+        }
     }
 }
 
