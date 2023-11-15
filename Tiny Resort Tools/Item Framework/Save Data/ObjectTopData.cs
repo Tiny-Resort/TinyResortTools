@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [Serializable]
     internal class ObjectTopData : ItemSaveData {
 

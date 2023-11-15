@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [Serializable]
     internal class BridgeData : ItemSaveData {
 
         public static List<BridgeData> all = new();
-        public static List<BridgeData> lostAndFound = new(); 
+        public static List<BridgeData> lostAndFound = new();
 
         public int bridgeLength;
 
-        public static void LoadAll() { 
+        public static void LoadAll() {
             lostAndFound = (List<BridgeData>)TRItems.Data.GetValue("BridgeDataLostAndFound", new List<BridgeData>());
 
             //TRTools.Log($"Loading BridgeData lostAndFound: {lostAndFound.Count}");

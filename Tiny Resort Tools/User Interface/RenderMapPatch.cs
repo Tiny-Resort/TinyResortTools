@@ -1,7 +1,6 @@
 using HarmonyLib;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [HarmonyPatch(typeof(RenderMap), "RunMapFollow")]
     internal class RenderMapPatch {
 

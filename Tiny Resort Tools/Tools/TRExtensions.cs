@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace TinyResort
-{
+namespace TinyResort {
     /// <summary>Just a few useful methods.</summary>
     public static class TRExtensions {
 

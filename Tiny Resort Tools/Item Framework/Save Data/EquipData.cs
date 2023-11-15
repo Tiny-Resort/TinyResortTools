@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [Serializable]
     internal class EquipData : ItemSaveData {
 
@@ -52,6 +51,9 @@ namespace TinyResort
             return customItem;
         }
 
-        internal enum EquipLocations { Hat, Face, Shirt, Pants, Shoes }
+        internal enum EquipLocations {
+            Hat, Face, Shirt,
+            Pants, Shoes
+        }
     }
 }

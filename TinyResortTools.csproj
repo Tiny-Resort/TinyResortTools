@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\build\BepInEx.AssemblyPublicizer.MSBuild.props" Condition="Exists('packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\build\BepInEx.AssemblyPublicizer.MSBuild.props')" />
-    <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" />
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <Import Project="packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\build\BepInEx.AssemblyPublicizer.MSBuild.props" Condition="Exists('packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\build\BepInEx.AssemblyPublicizer.MSBuild.props')"/>
+    <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')"/>
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -14,7 +14,7 @@
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <Deterministic>true</Deterministic>
-        <TargetFrameworkProfile />
+        <TargetFrameworkProfile/>
         <LangVersion>9</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -44,19 +44,19 @@
     </ItemGroup>
     <ItemGroup>
         <Reference Include="0Harmony, Version=2.10.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>packages\HarmonyX.2.10.0\lib\net45\0Harmony.dll</HintPath>
+            <HintPath>packages\HarmonyX.2.10.0\lib\net45\0Harmony.dll</HintPath>
         </Reference>
         <Reference Include="AsmResolver, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\AsmResolver.dll</HintPath>
+            <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\AsmResolver.dll</HintPath>
         </Reference>
         <Reference Include="AsmResolver.DotNet, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\AsmResolver.DotNet.dll</HintPath>
+            <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\AsmResolver.DotNet.dll</HintPath>
         </Reference>
         <Reference Include="AsmResolver.PE, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\AsmResolver.PE.dll</HintPath>
+            <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\AsmResolver.PE.dll</HintPath>
         </Reference>
         <Reference Include="AsmResolver.PE.File, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\AsmResolver.PE.File.dll</HintPath>
+            <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\AsmResolver.PE.File.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp" Publicize="true">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -67,13 +67,13 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="BepInEx.AssemblyPublicizer, Version=0.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\BepInEx.AssemblyPublicizer.dll</HintPath>
+            <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\BepInEx.AssemblyPublicizer.dll</HintPath>
         </Reference>
         <Reference Include="BepInEx.AssemblyPublicizer.MSBuild, Version=0.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\BepInEx.AssemblyPublicizer.MSBuild.dll</HintPath>
+            <HintPath>packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\lib\net472\BepInEx.AssemblyPublicizer.MSBuild.dll</HintPath>
         </Reference>
         <Reference Include="BepInEx.Core, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>packages\BepInEx.Core.6.0.0-pre.1\lib\net35\BepInEx.Core.dll</HintPath>
+            <HintPath>packages\BepInEx.Core.6.0.0-pre.1\lib\net35\BepInEx.Core.dll</HintPath>
         </Reference>
         <Reference Include="BepInEx.Unity">
             <HintPath>..\DinkumInstallFolder\BepInEx\core\BepInEx.Unity.dll</HintPath>
@@ -93,7 +93,7 @@
         <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
             <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
         </Reference>
-        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="Microsoft.CSharp"/>
         <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
         </Reference>
@@ -110,26 +110,26 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="Mono.Cecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-          <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.dll</HintPath>
+            <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.dll</HintPath>
         </Reference>
         <Reference Include="Mono.Cecil.Mdb, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-          <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+            <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
         </Reference>
         <Reference Include="Mono.Cecil.Pdb, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-          <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+            <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
         </Reference>
         <Reference Include="Mono.Cecil.Rocks, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-          <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+            <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
         </Reference>
         <Reference Include="Mono.Security">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Mono.Security.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="MonoMod.RuntimeDetour, Version=22.3.23.4, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>packages\MonoMod.RuntimeDetour.22.3.23.4\lib\net452\MonoMod.RuntimeDetour.dll</HintPath>
+            <HintPath>packages\MonoMod.RuntimeDetour.22.3.23.4\lib\net452\MonoMod.RuntimeDetour.dll</HintPath>
         </Reference>
         <Reference Include="MonoMod.Utils, Version=22.5.1.1, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>packages\MonoMod.Utils.22.5.1.1\lib\net452\MonoMod.Utils.dll</HintPath>
+            <HintPath>packages\MonoMod.Utils.22.5.1.1\lib\net452\MonoMod.Utils.dll</HintPath>
         </Reference>
         <Reference Include="mscorlib">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\mscorlib.dll</HintPath>
@@ -142,7 +142,7 @@
             <HintPath>Embedded Resources\Newtonsoft.Json.dll</HintPath>
         </Reference>
         <Reference Include="SemanticVersioning, Version=2.0.2.0, Culture=neutral, PublicKeyToken=a89bb7dc6f7a145c, processorArchitecture=MSIL">
-          <HintPath>packages\SemanticVersioning.2.0.2\lib\net45\SemanticVersioning.dll</HintPath>
+            <HintPath>packages\SemanticVersioning.2.0.2\lib\net45\SemanticVersioning.dll</HintPath>
         </Reference>
         <Reference Include="SimpleWebTransport">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\SimpleWebTransport.dll</HintPath>
@@ -156,7 +156,7 @@
             <HintPath>packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
         </Reference>
         <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+            <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
         </Reference>
         <Reference Include="System.ComponentModel.Composition">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.ComponentModel.Composition.dll</HintPath>
@@ -228,7 +228,7 @@
             <HintPath>packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
         </Reference>
         <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+            <HintPath>packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
         </Reference>
         <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
@@ -241,7 +241,7 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+            <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
         </Reference>
         <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
@@ -250,7 +250,7 @@
             <HintPath>packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
         </Reference>
         <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+            <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
         </Reference>
         <Reference Include="System.Runtime.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
@@ -286,10 +286,10 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="System.Text.Encodings.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+            <HintPath>packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
         </Reference>
         <Reference Include="System.Text.Json, Version=6.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>packages\System.Text.Json.6.0.7\lib\net461\System.Text.Json.dll</HintPath>
+            <HintPath>packages\System.Text.Json.6.0.7\lib\net461\System.Text.Json.dll</HintPath>
         </Reference>
         <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
@@ -302,7 +302,7 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+            <HintPath>packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
         </Reference>
         <Reference Include="System.Xml">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Xml.dll</HintPath>
@@ -621,23 +621,23 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <None Include="App.config" />
-        <None Include="packages.config" />
+        <None Include="App.config"/>
+        <None Include="packages.config"/>
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Embedded Resources\ui_elements" />
+        <EmbeddedResource Include="Embedded Resources\ui_elements"/>
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Embedded Resources\quickitems_bundle" />
+        <EmbeddedResource Include="Embedded Resources\quickitems_bundle"/>
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Embedded Resources\licenceimages" />
+        <EmbeddedResource Include="Embedded Resources\licenceimages"/>
     </ItemGroup>
     <ItemGroup>
-      <Analyzer Include="packages\BepInEx.Analyzers.1.0.8\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
-      <Analyzer Include="packages\BepInEx.Analyzers.1.0.8\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
+        <Analyzer Include="packages\BepInEx.Analyzers.1.0.8\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll"/>
+        <Analyzer Include="packages\BepInEx.Analyzers.1.0.8\analyzers\dotnet\cs\BepInEx.Analyzers.dll"/>
     </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <PropertyGroup Condition="'$(OS)' != 'Unix'">
         <PostBuildEvent>
             copy /Y "$(SolutionDir)bin\Debug\$(TargetName).dll" "$(SolutionDir)TR Tools\$(TargetName).dll"
@@ -656,15 +656,15 @@
             cd -
         </PostBuildEvent>
     </PropertyGroup>
-    <Import Project="packages\Fody.6.5.5\build\Fody.targets" Condition="Exists('packages\Fody.6.5.5\build\Fody.targets')" />
+    <Import Project="packages\Fody.6.5.5\build\Fody.targets" Condition="Exists('packages\Fody.6.5.5\build\Fody.targets')"/>
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
         <PropertyGroup>
             <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
         </PropertyGroup>
-        <Error Condition="!Exists('packages\Fody.6.5.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.5.5\build\Fody.targets'))" />
-        <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.props'))" />
-        <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.targets'))" />
-        <Error Condition="!Exists('packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\build\BepInEx.AssemblyPublicizer.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\build\BepInEx.AssemblyPublicizer.MSBuild.props'))" />
+        <Error Condition="!Exists('packages\Fody.6.5.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.5.5\build\Fody.targets'))"/>
+        <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.props'))"/>
+        <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.targets'))"/>
+        <Error Condition="!Exists('packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\build\BepInEx.AssemblyPublicizer.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\BepInEx.AssemblyPublicizer.MSBuild.0.4.1\build\BepInEx.AssemblyPublicizer.MSBuild.props'))"/>
     </Target>
     <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')"/>
 </Project>

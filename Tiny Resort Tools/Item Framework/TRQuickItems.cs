@@ -10,8 +10,7 @@ using Object = UnityEngine.Object;
 using System.Windows;
 using Color = UnityEngine.Color;
 
-namespace TinyResort
-{
+namespace TinyResort {
     // TODO: Add method for tracking development items turning into production items. 
 
     /// <summary>Tools for quickly creating clothing items.</summary>

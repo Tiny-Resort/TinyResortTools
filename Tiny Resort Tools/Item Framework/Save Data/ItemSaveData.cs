@@ -1,7 +1,6 @@
 using System;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [Serializable]
     internal class ItemSaveData {
 

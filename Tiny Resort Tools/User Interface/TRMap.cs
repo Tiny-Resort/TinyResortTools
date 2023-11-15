@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TinyResort
-{
+namespace TinyResort {
     /// <summary>Map-related tools, such as easy map markers.</summary>
     public class TRMap : MonoBehaviour {
 

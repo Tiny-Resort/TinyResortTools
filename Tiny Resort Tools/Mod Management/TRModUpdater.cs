@@ -14,8 +14,7 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Version = SemanticVersioning.Version;
 
-namespace TinyResort
-{
+namespace TinyResort {
     internal class TRModUpdater {
 
         public enum PluginUpdateState { UpdateAvailable, UpToDate, NotSetUp }

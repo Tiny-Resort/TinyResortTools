@@ -6,8 +6,7 @@ using HarmonyLib;
 using UnityEngine;
 using Logger = BepInEx.Logging.Logger;
 
-namespace TinyResort
-{
+namespace TinyResort {
     /// <summary>Used mostly for initialization and internal control of the API's features.</summary>
     public static class TRTools {
 

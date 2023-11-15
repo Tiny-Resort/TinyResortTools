@@ -10,11 +10,9 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [BepInPlugin(pluginGuid, pluginName, pluginVersion)]
     internal class LeadPlugin : BaseUnityPlugin {
-
         public const string pluginName = "TRTools";
         public const string pluginGuid = "dev.TinyResort." + pluginName;
         public const string pluginVersion = "0.8.4";
@@ -28,7 +26,6 @@ namespace TinyResort
         private static bool initialSceneSetupDone;
 
         private void Awake() {
-
             instance = this;
             plugin = this.Initialize(83, "tr");
             plugin.harmony.PatchAll();
@@ -50,7 +47,6 @@ namespace TinyResort
             TRQuickItems.LoadAllQuickItems();
 
             SceneManager.sceneLoaded += SceneLoaded;
-
         }
 
         internal void SceneLoaded(Scene scene, LoadSceneMode mode) {
@@ -59,7 +55,6 @@ namespace TinyResort
         }
 
         private void Start() {
-
             TRNetwork.Initialize();
             TRInterface.Initialize();
             TRModUpdater.Initialize();
@@ -80,7 +75,6 @@ namespace TinyResort
         }
 
         private void Update() {
-
             // Ensures scene setup happens on first load as well
             if (!initialSceneSetupDone) {
                 initialSceneSetupDone = true;
@@ -95,10 +89,12 @@ namespace TinyResort
                 TRBackup.LoadSavedBackups();
                 TRIcons.InitializeIcons();
             }
+
             if (NetworkMapSharer.Instance.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
             #region For Testing Only
 
+            if (Input.GetKeyDown(KeyCode.Home)) { }
             /*
             if (Input.GetKeyDown(KeyCode.Home)) {
                 TRNetwork.share.RpcCustomRPC("Sent to Both Host/Client from Host.");
@@ -127,8 +123,6 @@ namespace TinyResort
             // }
 
             #endregion
-
         }
-
     }
 }

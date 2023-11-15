@@ -3,8 +3,7 @@ using System.Linq;
 using HarmonyLib;
 using UnityEngine;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [HarmonyPatch(typeof(ChatBox), "Update")]
     internal class Update {
 

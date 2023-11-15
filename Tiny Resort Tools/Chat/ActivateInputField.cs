@@ -2,8 +2,7 @@ using HarmonyLib;
 using TMPro;
 using UnityEngine;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [HarmonyPatch(typeof(TMP_InputField), "ActivateInputFieldInternal")]
     internal class ActivateInputFieldInternal {
 

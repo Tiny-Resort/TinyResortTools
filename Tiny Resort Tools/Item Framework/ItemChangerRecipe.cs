@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TinyResort
-{
+namespace TinyResort {
     internal class ItemChangerRecipe {
         internal static ItemChangeType ict;
         internal static ItemChange ic;

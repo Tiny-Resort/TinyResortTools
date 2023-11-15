@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace TinyResort
-{
+namespace TinyResort {
     internal class TRObjects {
 
         internal static Dictionary<string, GameObject> currentObjects = new();

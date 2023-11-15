@@ -5,8 +5,7 @@ using Mirror.RemoteCalls;
 using HarmonyLib;
 using UnityEngine;
 
-namespace TinyResort
-{
+namespace TinyResort {
     public class TRNetwork : NetworkBehaviour {
         public static TRNetwork share;
 

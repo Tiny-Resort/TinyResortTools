@@ -1,8 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [HarmonyPatch(typeof(InputMaster), "OpenChat")]
     internal class OpenChat {
 

@@ -4,8 +4,7 @@ using HarmonyLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace TinyResort
-{
+namespace TinyResort {
     /// <summary>A framework for creating custom licences and using them to gate your mod's features behind player progression.</summary>
     public static class TRLicences {
 

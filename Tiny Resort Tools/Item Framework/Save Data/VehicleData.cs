@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [Serializable]
     internal class VehicleData : ItemSaveData {
 

@@ -6,8 +6,7 @@ using System.Reflection;
 using BepInEx;
 using UnityEngine;
 
-namespace TinyResort
-{
+namespace TinyResort {
     /// <summary>Tools for importing custom assets.</summary>
     public class TRAssets {
 

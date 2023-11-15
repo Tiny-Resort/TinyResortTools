@@ -1,7 +1,6 @@
 using HarmonyLib;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [HarmonyPatch(typeof(WorldManager), "getDropsToSave")]
     internal class getDropsToSave {
 

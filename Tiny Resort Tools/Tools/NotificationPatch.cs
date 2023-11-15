@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 
-namespace TinyResort
-{
+namespace TinyResort {
     [HarmonyPatch(typeof(NotificationManager), "makeTopNotification")]
     internal class NotificationPatch {
 
