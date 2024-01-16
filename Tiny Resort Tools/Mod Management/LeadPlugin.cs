@@ -68,7 +68,7 @@ internal class LeadPlugin : BaseUnityPlugin {
 
         // TRItems.ManageAllItemArray();
         // TRIcons.Initialize();
-        TRBackup.Initialize();
+        //TRBackup.Initialize();
 
         // GriefProtection.IntializeGriefProtection();
         /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
@@ -93,10 +93,10 @@ internal class LeadPlugin : BaseUnityPlugin {
         TRConflictingPlugins.Update();
         TRNetwork.Update();
 
-        if (NetworkMapSharer.Instance.localChar) {
-            TRBackup.LoadSavedBackups();
+        if (NetworkMapSharer.Instance.localChar)
+
+            //TRBackup.LoadSavedBackups();
             TRIcons.InitializeIcons();
-        }
         if (NetworkMapSharer.Instance.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
         #region For Testing Only
@@ -113,6 +113,9 @@ internal class LeadPlugin : BaseUnityPlugin {
             TRNetwork.share.CmdSendMessageToHost("Sent to Host from Client");
         }
         */
+        if (Input.GetKeyDown(KeyCode.Home)) { TRNetwork.share.RpcCustomRPC("RPC CUSTOM RPC: Test"); }
+        //if (Input.GetKeyDown(KeyCode.Home)) { TRNetwork.share.TargetSendMessageToClient(NetworkConnection,"RPC CUSTOM RPC: Test"); }
+        if (Input.GetKeyDown(KeyCode.Home)) { TRNetwork.share.CmdSendMessageToHost("CmdSendMessageToHost: Test"); }
 
         /*
         if (Input.GetKeyDown(KeyCode.F11)) GriefProtection.ResetBanList();
