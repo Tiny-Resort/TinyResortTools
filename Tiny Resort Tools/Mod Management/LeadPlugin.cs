@@ -113,9 +113,14 @@ internal class LeadPlugin : BaseUnityPlugin {
             TRNetwork.share.CmdSendMessageToHost("Sent to Host from Client");
         }
         */
-        if (Input.GetKeyDown(KeyCode.Home)) { TRNetwork.share.RpcCustomRPC("RPC CUSTOM RPC: Test"); }
-        //if (Input.GetKeyDown(KeyCode.Home)) { TRNetwork.share.TargetSendMessageToClient(NetworkConnection,"RPC CUSTOM RPC: Test"); }
-        if (Input.GetKeyDown(KeyCode.Home)) { TRNetwork.share.CmdSendMessageToHost("CmdSendMessageToHost: Test"); }
+        if (Input.GetKeyDown(KeyCode.Home)) TRNetwork.share.CmdSendMessageToHost();
+        if (Input.GetKeyDown(KeyCode.Delete)) {
+            TRTools.LogError("Clicked Delete");
+            foreach (var chest in TRNetwork.share.allChests) {
+                TRTools.LogError($"{chest.xPos}.{chest.yPos}");
+                foreach (var item in chest.itemIds) TRTools.LogError($"Item ID: {item}");
+            }
+        }
 
         /*
         if (Input.GetKeyDown(KeyCode.F11)) GriefProtection.ResetBanList();
