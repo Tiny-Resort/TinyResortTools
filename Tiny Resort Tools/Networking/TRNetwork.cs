@@ -19,10 +19,8 @@ public class TRNetwork : NetworkBehaviour {
 
     public static TRNetwork share;
 
-    /*[SyncVar]
-    public List<Chest> allChests;*/
-
-    public readonly SyncList<Chest> allChests = new();
+    [SyncVar]
+    public List<Chest> allChests = new();
 
     internal static Guid assetId = Guid.Parse("5452546f-6f6c-7343-7573-746f6d525043");
 
@@ -48,38 +46,80 @@ public class TRNetwork : NetworkBehaviour {
 
     private void Awake() => share = this;
 
-    public override void OnStartServer() => allChests.AddRange(ContainerManager.manage.activeChests);
-
-    // public override void OnStartClient() => RpcCustomRPC("TESTTESTTEST",ContainerManager.manage.activeChests);
+    //public override void OnStartServer() => allChests.AddRange(ContainerManager.manage.activeChests);
 
     #region Send To Host
 
     /*
      * Sends a message from the Host -> Host and from Client -> Host
      */
-
     [TargetRpc]
-    public void CmdSendMessageToHost() {
+    public void CmdRequestActiveChests() {
         var writer = NetworkWriterPool.GetWriter();
-        writer.WriteList(ContainerManager.manage.activeChests);
-        writer.WriteUInt(NetworkMapSharer.Instance.localChar.netId);
-        SendCommandInternal(typeof(TRNetwork), "CmdSendMessageToHost", writer, 0, false);
+        writer.WriteChestList(ContainerManager.manage.activeChests);
+
+        //writer.WriteUInt(NetworkMapSharer.Instance.localChar.netId);
+        SendCommandInternal(typeof(TRNetwork), "CmdRequestActiveChests", writer, 0, false);
         NetworkWriterPool.Recycle(writer);
     }
 
-    protected static void InvokeUserCode_CmdSendMessageToHost(
+    protected static void InvokeUserCode_CmdRequestActiveChests(
         NetworkBehaviour obj, NetworkReader reader, NetworkConnectionToClient senderConnection
     ) =>
-        ((TRNetwork)obj).UserCode_CmdSendMessageToHost(reader.ReadList<Chest>());
+        ((TRNetwork)obj).UserCode_CmdRequestActiveChests(reader.ReadChestList());
 
-    protected void UserCode_CmdSendMessageToHost(List<Chest> message) {
-        share.RpcCustomRPC(ContainerManager.manage.activeChests);
+    protected void UserCode_CmdRequestActiveChests(List<Chest> message) {
+        share.RpcSendActiveChests(message);
         TRTools.LogError("CmdSendMessageToHost");
     }
 
     #endregion
 
-    #region Send to Single Client
+    #region Send To All
+
+    /*
+         * Sends a message from the to both Host and Client, but only from Host.
+         */
+    [ClientRpc]
+    public void RpcSendActiveChests(List<Chest> chests) {
+        var writer = NetworkWriterPool.GetWriter();
+        writer.WriteChestList(chests);
+        SendRPCInternal(typeof(TRNetwork), "RpcSendActiveChests", writer, 0, false);
+        NetworkWriterPool.Recycle(writer);
+    }
+
+    protected static void InvokeUserCode_RpcSendActiveChests(
+        NetworkBehaviour obj, NetworkReader reader, NetworkConnectionToClient senderConnection
+    ) =>
+        ((TRNetwork)obj).UserCode_RpcSendActiveChests(reader.ReadChestList());
+
+    protected void UserCode_RpcSendActiveChests(List<Chest> type) {
+        if (!NetworkMapSharer.Instance.localChar) TRTools.LogError($"No Local Char");
+        TRTools.LogError($"{type.Count}");
+        if (NetworkMapSharer.Instance.localChar.isServer) TRTools.LogError($"Attempting to Send to Clients.");
+        if (NetworkMapSharer.Instance.localChar.isClient && !NetworkMapSharer.Instance.localChar.isServer) {
+            TRTools.LogError($"Attempting to Add....");
+            share.allChests.Clear();
+            share.allChests.AddRange(type);
+        }
+    }
+
+    #endregion
+
+    static TRNetwork() {
+        RemoteCallHelper.RegisterRpcDelegate(
+            typeof(TRNetwork), "RpcSendActiveChests", new CmdDelegate(InvokeUserCode_RpcSendActiveChests)
+        );
+        RemoteCallHelper.RegisterCommandDelegate(
+            typeof(TRNetwork), "CmdRequestActiveChests", new CmdDelegate(InvokeUserCode_CmdRequestActiveChests), false
+        );
+        /*RemoteCallHelper.RegisterCommandDelegate(
+            typeof(TRNetwork), "TargetSendMessageToClient", new CmdDelegate(InvokeUserCode_TargetSendMessageToClient),
+            false
+        );*/
+    }
+
+    /*#region Send to Single Client
 
     [TargetRpc]
     public void TargetSendMessageToClient(NetworkConnectionToClient con, string message) {
@@ -102,48 +142,52 @@ public class TRNetwork : NetworkBehaviour {
         ((TRNetwork)obj).UserCode_TargetSendMessageToClient(reader.ReadString());
     }
 
-    #endregion
+    #endregion*/
+}
 
-    #region Send To All
+public static class ChestReaderWriter {
+    public static void WriteChestList(this NetworkWriter writer, List<Chest> dataList) {
+        // Write the count of items in the list
+        writer.WriteInt(dataList.Count);
 
-    /*
-         * Sends a message from the to both Host and Client, but only from Host.
-         */
-    [ClientRpc]
-    public void RpcCustomRPC(List<Chest> chests) {
-        var writer = NetworkWriterPool.GetWriter();
-        writer.WriteList(chests);
-        SendRPCInternal(typeof(TRNetwork), "CustomRPC", writer, 0, false);
-        NetworkWriterPool.Recycle(writer);
-    }
-
-    protected static void InvokeUserCode_CustomRPC(
-        NetworkBehaviour obj, NetworkReader reader, NetworkConnectionToClient senderConnection
-    ) =>
-        ((TRNetwork)obj).UserCode_CustomRPC(reader.ReadList<Chest>());
-
-    protected void UserCode_CustomRPC(List<Chest> type) {
-        if (!NetworkMapSharer.Instance.localChar) TRTools.LogError($"No Local Char");
-        TRTools.LogError($"{type.Count}");
-        if (NetworkMapSharer.Instance.localChar.isServer) TRTools.LogError($"Attempting to Send to Clients.");
-        if (NetworkMapSharer.Instance.localChar.isClient && !NetworkMapSharer.Instance.localChar.isServer) {
-            TRTools.LogError($"Attempting to Add....");
-            share.allChests.Clear();
-            share.allChests.AddRange(type);
+        // Iterate through the list and write each custom data
+        foreach (var chest in dataList) {
+            writer.WriteBool(chest.inside);
+            writer.WriteInt(chest.insideX);
+            writer.WriteInt(chest.insideY);
+            writer.WriteInt(chest.xPos);
+            writer.WriteInt(chest.yPos);
+            writer.WriteArray(chest.itemIds);
+            writer.WriteArray(chest.itemStacks);
+            writer.WriteInt(chest.playingLookingInside);
+            writer.WriteInt(chest.placedInWorldLevel);
         }
     }
 
-    #endregion
+    public static List<Chest> ReadChestList(this NetworkReader reader) {
+        // Read the count of items in the list
+        var count = reader.ReadInt();
 
-    static TRNetwork() {
+        // Create a new list to store CustomData objects
+        var dataList = new List<Chest>();
 
-        RemoteCallHelper.RegisterRpcDelegate(typeof(TRNetwork), "CustomRPC", new CmdDelegate(InvokeUserCode_CustomRPC));
-        RemoteCallHelper.RegisterCommandDelegate(
-            typeof(TRNetwork), "CmdSendMessageToHost", new CmdDelegate(InvokeUserCode_CmdSendMessageToHost), false
-        );
-        RemoteCallHelper.RegisterCommandDelegate(
-            typeof(TRNetwork), "TargetSendMessageToClient", new CmdDelegate(InvokeUserCode_TargetSendMessageToClient),
-            false
-        );
+        // Iterate through the count and read each CustomData object
+        for (var i = 0; i < count; i++) {
+            var data = new Chest(0, 0);
+            data.inside = reader.ReadBool();
+            data.insideX = reader.ReadInt();
+            data.insideY = reader.ReadInt();
+            data.xPos = reader.ReadInt();
+            data.yPos = reader.ReadInt();
+            data.itemIds = reader.ReadArray<int>();
+            data.itemStacks = reader.ReadArray<int>();
+            data.playingLookingInside = reader.ReadInt();
+            data.placedInWorldLevel = reader.ReadInt();
+
+            // Read other properties as needed
+            dataList.Add(data);
+        }
+
+        return dataList;
     }
 }

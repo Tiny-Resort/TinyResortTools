@@ -113,7 +113,7 @@ internal class LeadPlugin : BaseUnityPlugin {
             TRNetwork.share.CmdSendMessageToHost("Sent to Host from Client");
         }
         */
-        if (Input.GetKeyDown(KeyCode.Home)) TRNetwork.share.CmdSendMessageToHost();
+        if (Input.GetKeyDown(KeyCode.Home)) TRNetwork.share.CmdRequestActiveChests();
         if (Input.GetKeyDown(KeyCode.Delete)) {
             TRTools.LogError("Clicked Delete");
             foreach (var chest in TRNetwork.share.allChests) {
