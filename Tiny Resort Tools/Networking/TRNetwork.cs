@@ -19,9 +19,6 @@ public class TRNetwork : NetworkBehaviour {
 
     public static TRNetwork share;
 
-    [SyncVar]
-    public List<Chest> allChests = new();
-
     internal static Guid assetId = Guid.Parse("5452546f-6f6c-7343-7573-746f6d525043");
 
     internal static GameObject SpawnTRNetworkManager(SpawnMessage msg) {
@@ -46,19 +43,14 @@ public class TRNetwork : NetworkBehaviour {
 
     private void Awake() => share = this;
 
-    //public override void OnStartServer() => allChests.AddRange(ContainerManager.manage.activeChests);
-
     #region Send To Host
 
     /*
      * Sends a message from the Host -> Host and from Client -> Host
      */
-    [TargetRpc]
+    [Command]
     public void CmdRequestActiveChests() {
         var writer = NetworkWriterPool.GetWriter();
-        writer.WriteChestList(ContainerManager.manage.activeChests);
-
-        //writer.WriteUInt(NetworkMapSharer.Instance.localChar.netId);
         SendCommandInternal(typeof(TRNetwork), "CmdRequestActiveChests", writer, 0, false);
         NetworkWriterPool.Recycle(writer);
     }
@@ -66,11 +58,13 @@ public class TRNetwork : NetworkBehaviour {
     protected static void InvokeUserCode_CmdRequestActiveChests(
         NetworkBehaviour obj, NetworkReader reader, NetworkConnectionToClient senderConnection
     ) =>
-        ((TRNetwork)obj).UserCode_CmdRequestActiveChests(reader.ReadChestList());
+        ((TRNetwork)obj).UserCode_CmdRequestActiveChests();
 
-    protected void UserCode_CmdRequestActiveChests(List<Chest> message) {
-        share.RpcSendActiveChests(message);
-        TRTools.LogError("CmdSendMessageToHost");
+    protected void UserCode_CmdRequestActiveChests() {
+        if (NetworkMapSharer.Instance.localChar.isServer) {
+            TRTools.Log("Running RpcSendActiveChests for clients to get updated lists.");
+            share.RpcSendActiveChests(ContainerManager.manage.activeChests);
+        }
     }
 
     #endregion
@@ -96,11 +90,10 @@ public class TRNetwork : NetworkBehaviour {
     protected void UserCode_RpcSendActiveChests(List<Chest> type) {
         if (!NetworkMapSharer.Instance.localChar) TRTools.LogError($"No Local Char");
         TRTools.LogError($"{type.Count}");
-        if (NetworkMapSharer.Instance.localChar.isServer) TRTools.LogError($"Attempting to Send to Clients.");
+        if (NetworkMapSharer.Instance.localChar.isServer) TRTools.Log($"Attempting to Send to Clients.");
         if (NetworkMapSharer.Instance.localChar.isClient && !NetworkMapSharer.Instance.localChar.isServer) {
-            TRTools.LogError($"Attempting to Add....");
-            share.allChests.Clear();
-            share.allChests.AddRange(type);
+            TRTools.Log("Updating Active Chests List.");
+            ContainerManager.manage.activeChests = type;
         }
     }
 

@@ -116,7 +116,7 @@ internal class LeadPlugin : BaseUnityPlugin {
         if (Input.GetKeyDown(KeyCode.Home)) TRNetwork.share.CmdRequestActiveChests();
         if (Input.GetKeyDown(KeyCode.Delete)) {
             TRTools.LogError("Clicked Delete");
-            foreach (var chest in TRNetwork.share.allChests) {
+            foreach (var chest in ContainerManager.manage.activeChests) {
                 TRTools.LogError($"{chest.xPos}.{chest.yPos}");
                 foreach (var item in chest.itemIds) TRTools.LogError($"Item ID: {item}");
             }
