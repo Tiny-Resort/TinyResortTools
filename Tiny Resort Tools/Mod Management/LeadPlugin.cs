@@ -68,7 +68,7 @@ internal class LeadPlugin : BaseUnityPlugin {
 
         // TRItems.ManageAllItemArray();
         // TRIcons.Initialize();
-        //TRBackup.Initialize();
+        TRBackup.Initialize();
 
         // GriefProtection.IntializeGriefProtection();
         /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);
@@ -93,10 +93,8 @@ internal class LeadPlugin : BaseUnityPlugin {
         TRConflictingPlugins.Update();
         TRNetwork.Update();
 
-        if (NetworkMapSharer.Instance.localChar)
-
-            //TRBackup.LoadSavedBackups();
-            TRIcons.InitializeIcons();
+        if (NetworkMapSharer.Instance.localChar) TRBackup.LoadSavedBackups();
+        TRIcons.InitializeIcons();
         if (NetworkMapSharer.Instance.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
         #region For Testing Only
@@ -113,14 +111,14 @@ internal class LeadPlugin : BaseUnityPlugin {
             TRNetwork.share.CmdSendMessageToHost("Sent to Host from Client");
         }
         */
-        if (Input.GetKeyDown(KeyCode.Home)) TRNetwork.share.CmdRequestActiveChests();
+        /*if (Input.GetKeyDown(KeyCode.Home)) TRNetwork.share.CmdRequestActiveChests();
         if (Input.GetKeyDown(KeyCode.Delete)) {
             TRTools.LogError("Clicked Delete");
             foreach (var chest in ContainerManager.manage.activeChests) {
                 TRTools.LogError($"{chest.xPos}.{chest.yPos}");
                 foreach (var item in chest.itemIds) TRTools.LogError($"Item ID: {item}");
             }
-        }
+        }*/
 
         /*
         if (Input.GetKeyDown(KeyCode.F11)) GriefProtection.ResetBanList();
