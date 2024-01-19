@@ -24,7 +24,7 @@ internal class TRBackup {
     private static ConfigEntry<bool> UseBackupManager;
     private static List<string> backupList = new();
 
-    private static readonly List<FileInfo> currentBackups = new();
+    private static readonly List<DirectoryInfo> currentBackups = new();
     private static List<PluginInfo> pluginInfos = new();
     internal static bool clientInServer;
 
@@ -93,26 +93,30 @@ internal class TRBackup {
         currentBackups.Clear();
 
         // Grabs all files in the directory
-        foreach (var zip in slot.GetFiles())
-            if (zip.FullName.Contains(".zip")
-             && (zip.FullName.Contains("Server") || zip.FullName.Contains(islandName)))
+        foreach (var zip in slot.GetDirectories()) {
+            if (zip.FullName.Contains("Server") || zip.FullName.Contains(islandName)) {
                 currentBackups.Add(zip);
+            }
+        }
+        
 
         // Create new list from currentBackups iff its included in BackupListInfo (from config file)
         //for (int i = 0; i < currentBackups.Count; i++) { TRTools.Log($"CurrentBackup Name List: {currentBackups[i].Name}"); }
         var filesFromMod = currentBackups.Where(i => backupList.Any(l => l.Contains(i.Name))).ToList();
         filesFromMod = filesFromMod.OrderBy(i => i.CreationTime).ToList();
 
-        /*// Print out all lists to make sure all info is correct
-        for (int i = 0; i < currentBackups.Count; i++) { TRTools.Log($"currentBackups List: {currentBackups[i].FullName}"); }
-        for (int i = 0; i < backupList.Count; i++) { TRTools.Log($"Backup Info List: {backupList[i]}"); }
-        for (int i = 0; i < filesFromMod.Count; i++) { TRTools.Log($"Temp List: {filesFromMod[i].FullName}"); }*/
+        //foreach (var save in filesFromMod) { TRTools.LogError($"Backup List {save.FullName}"); }
+        // Print out all lists to make sure all info is correct
+        //for (var i = 0; i < currentBackups.Count; i++)
+        //    TRTools.Log($"currentBackups List: {currentBackups[i].FullName}");
+        //for (var i = 0; i < backupList.Count; i++) TRTools.Log($"Backup Info List: {backupList[i]}");
+        //for (var i = 0; i < filesFromMod.Count; i++) TRTools.Log($"Temp List: {filesFromMod[i].FullName}");
 
         // If the final list is larger than the max backup count, delete the first created file and remove from backupList
 
-        if (filesFromMod.Count >= BackupCount.Value) {
+        if (filesFromMod.Count > BackupCount.Value) {
+            filesFromMod[0].Delete(recursive: true);
             backupList.Remove(filesFromMod[0].Name);
-            filesFromMod[0].Delete();
         }
 
         SaveBackupList();
@@ -176,7 +180,7 @@ internal class TRBackup {
         var dateTime = DateTime.Now.ToString().Replace("/", "-").Replace(" ", "-").Replace(":", "-");
         var backupName = !clientInServer
                              ? $"{islandName}-{playerName}-Y{year}-S{season}-W{week}-D{day}-{dateTime}"
-                             : $"Server-{playerName}-{string.Format("{0:yyyyMMdd'-'HHmmss}.zip", DateTime.Now)}";
+                             : $"Server-{playerName}-{string.Format("{0:yyyyMMdd'-'HHmmss}", DateTime.Now)}";
 
         try {
             CopyToNewDirectory(Path.Combine(saveDestinationSlot, backupName));
@@ -191,7 +195,10 @@ internal class TRBackup {
             TRTools.LogError($"IOException: {e}");
             return;
         }
-        if (BackupCount.Value != -1) RemoveLastBackup(saveDestinationSlot);
+        if (BackupCount.Value != -1) {
+            TRTools.LogError("Attempting to remove a backup.");
+            RemoveLastBackup(saveDestinationSlot);
+        }
 
     }
 }
