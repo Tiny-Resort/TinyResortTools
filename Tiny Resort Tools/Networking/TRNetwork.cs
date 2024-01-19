@@ -7,17 +7,27 @@ using Mirror.RemoteCalls;
 using HarmonyLib;
 using UnityEngine;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MonoMod.Core;
 
-// TODO: It is sending Chest data now, but can't write/read it due to it being a unique type.
-// see: https://mirror-networking.gitbook.io/docs/manual/guides/serialization
+// TODO: If chest window is open, get Chest details and send it with request, at end of request ask for that data again. 
 
 namespace TinyResort;
 
 public class TRNetwork : NetworkBehaviour {
 
     public static TRNetwork share;
+
+    /// <summary>Delegate for events related activeChest retrival requests</summary>
+    public delegate void ChestRetrivalEvent();
+
+    /// <summary>
+    ///     This event will run just before the game saves and before the cleanDataEvent.
+    ///     This is where you want to ensure you have set all values that you wish to be saved.
+    /// </summary>
+    public static ChestRetrivalEvent postActiveChestRetrival;
 
     internal static Guid assetId = Guid.Parse("5452546f-6f6c-7343-7573-746f6d525043");
 
@@ -63,7 +73,14 @@ public class TRNetwork : NetworkBehaviour {
     protected void UserCode_CmdRequestActiveChests() {
         if (NetworkMapSharer.Instance.localChar.isServer) {
             TRTools.Log("Running RpcSendActiveChests for clients to get updated lists.");
-            share.RpcSendActiveChests(ContainerManager.manage.activeChests);
+            var doneUpdating = false;
+            var firstUpdate = true;
+            for (var i = 0; i < ContainerManager.manage.activeChests.Count; i++) {
+                TRTools.LogError($"Update {i}");
+                if (i > 0) firstUpdate = false;
+                if (i == ContainerManager.manage.activeChests.Count - 1) doneUpdating = true;
+                share.RpcSendActiveChests(ContainerManager.manage.activeChests[i], firstUpdate, doneUpdating);
+            }
         }
     }
 
@@ -75,9 +92,11 @@ public class TRNetwork : NetworkBehaviour {
          * Sends a message from the to both Host and Client, but only from Host.
          */
     [ClientRpc]
-    public void RpcSendActiveChests(List<Chest> chests) {
+    public void RpcSendActiveChests(Chest chests, bool firstUpdate, bool doneUpdating) {
         var writer = NetworkWriterPool.GetWriter();
         writer.WriteChestList(chests);
+        writer.WriteBool(firstUpdate);
+        writer.WriteBool(doneUpdating);
         SendRPCInternal(typeof(TRNetwork), "RpcSendActiveChests", writer, 0, false);
         NetworkWriterPool.Recycle(writer);
     }
@@ -85,18 +104,87 @@ public class TRNetwork : NetworkBehaviour {
     protected static void InvokeUserCode_RpcSendActiveChests(
         NetworkBehaviour obj, NetworkReader reader, NetworkConnectionToClient senderConnection
     ) =>
-        ((TRNetwork)obj).UserCode_RpcSendActiveChests(reader.ReadChestList());
+        ((TRNetwork)obj).UserCode_RpcSendActiveChests(reader.ReadChestList(), reader.ReadBool(), reader.ReadBool());
 
-    protected void UserCode_RpcSendActiveChests(List<Chest> type) {
-        if (!NetworkMapSharer.Instance.localChar) TRTools.LogError($"No Local Char");
-        if (NetworkMapSharer.Instance.localChar.isServer) TRTools.Log($"Attempting to Send to Clients.");
+    // TODO: Add a way to detect a chest by location and compare its contents. If different only change that content. 
+    // It currently empties the list and remakes the list each time its called.
+    protected void UserCode_RpcSendActiveChests(Chest type, bool firstUpdate, bool doneUpdating) {
+        if (!NetworkMapSharer.Instance.localChar) return;
+
+        if (NetworkMapSharer.Instance.localChar.isServer) TRTools.Log($"Providing Client(s) with Active Chest List.");
+
         if (NetworkMapSharer.Instance.localChar.isClient && !NetworkMapSharer.Instance.localChar.isServer) {
-            TRTools.Log("Updating Active Chests List.");
-            ContainerManager.manage.activeChests = type;
+
+            TRTools.Log("Updating Active Chests List with provided data from Host.");
+
+            //foreach (var item in type.itemIds) TRTools.LogError($"Items: {item}: {TRItems.GetItemDetails(item)}");
+            if (firstUpdate) ContainerManager.manage.activeChests.Clear();
+            ContainerManager.manage.activeChests.Add(type);
+            if (doneUpdating) postActiveChestRetrival?.Invoke();
+
+            /*if (ContainerManager.manage.activeChests.Count == 0) {
+                ContainerManager.manage.activeChests.Add(type);
+                foreach (var item in type.itemIds)
+                    TRTools.LogError($" First Items: {item}: {TRItems.GetItemDetails(item)}");
+            }
+            else {
+                if (CompareChests(type)) return;
+
+                ContainerManager.manage.activeChests.Add(type);
+                TRTools.LogError($"Not IN Location: {type.xPos}.{type.yPos}\n");
+                foreach (var item in type.itemIds) TRTools.LogError($" NOT IN{item}: {TRItems.GetItemDetails(item)}");
+            }*/
         }
     }
 
     #endregion
+
+    internal static bool CompareChests(Chest chest) {
+        var isSame = false;
+        var isInside = false;
+        var isXPos = false;
+        var isYPos = false;
+        var isInsideX = false;
+        var isInsideY = false;
+        var isIds = false;
+        var isStacks = false;
+        var isPlayingLooking = false;
+        var isWorldLevel = false;
+        foreach (var aChest in ContainerManager.manage.activeChests) {
+            if (aChest.inside == chest.inside) {
+                TRTools.LogError($"Inside inside");
+                isInside = true;
+            }
+            if (aChest.xPos == chest.xPos) {
+                TRTools.LogError($"Inside xPos");
+                isXPos = true;
+            }
+            if (aChest.yPos == chest.yPos) {
+                TRTools.LogError($"Inside yPos");
+                isYPos = true;
+            }
+            if (aChest.insideX == chest.insideX) {
+                TRTools.LogError($"Inside insideX");
+                isInsideX = true;
+            }
+            if (aChest.insideY == chest.insideY) isInsideY = true;
+            if (aChest.itemIds.SequenceEqual(chest.itemIds)) {
+                TRTools.LogError($"IDs are the same");
+                isIds = true;
+            }
+            if (aChest.itemStacks.SequenceEqual(chest.itemStacks)) isStacks = true;
+            if (aChest.playingLookingInside == chest.playingLookingInside) isPlayingLooking = true;
+            if (aChest.placedInWorldLevel == chest.placedInWorldLevel) isWorldLevel = true;
+            if (isInside && isXPos && isYPos && isInsideX && isInsideY && isIds && isStacks && isPlayingLooking
+             && isWorldLevel) {
+                TRTools.LogError($"Chests the Same FOUND!");
+                isSame = true;
+                return isSame;
+            }
+
+        }
+        return isSame;
+    }
 
     static TRNetwork() {
         RemoteCallHelper.RegisterRpcDelegate(
@@ -138,7 +226,35 @@ public class TRNetwork : NetworkBehaviour {
 }
 
 public static class ChestReaderWriter {
-    public static void WriteChestList(this NetworkWriter writer, List<Chest> dataList) {
+    public static void WriteChestList(this NetworkWriter writer, Chest chest) {
+        // Iterate through the list and write each custom data
+        writer.WriteBool(chest.inside);
+        writer.WriteInt(chest.insideX);
+        writer.WriteInt(chest.insideY);
+        writer.WriteInt(chest.xPos);
+        writer.WriteInt(chest.yPos);
+        writer.WriteArray(chest.itemIds);
+        writer.WriteArray(chest.itemStacks);
+        writer.WriteInt(chest.playingLookingInside);
+        writer.WriteInt(chest.placedInWorldLevel);
+    }
+
+    public static Chest ReadChestList(this NetworkReader reader) {
+        // Read the count of items in the list
+
+        var data = new Chest(0, 0);
+        data.inside = reader.ReadBool();
+        data.insideX = reader.ReadInt();
+        data.insideY = reader.ReadInt();
+        data.xPos = reader.ReadInt();
+        data.yPos = reader.ReadInt();
+        data.itemIds = reader.ReadArray<int>();
+        data.itemStacks = reader.ReadArray<int>();
+        data.playingLookingInside = reader.ReadInt();
+        data.placedInWorldLevel = reader.ReadInt();
+        return data;
+    }
+    /*public static void WriteChestList(this NetworkWriter writer, List<Chest> dataList) {
         // Write the count of items in the list
         writer.WriteInt(dataList.Count);
 
@@ -181,5 +297,5 @@ public static class ChestReaderWriter {
         }
 
         return dataList;
-    }
+    }*/
 }
