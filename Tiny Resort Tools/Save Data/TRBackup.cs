@@ -80,7 +80,7 @@ internal class TRBackup {
         savePath = Path.Combine(DataPath, "Slot" + saveSlot);
         if (CustomSavePath.Value.IsNullOrWhiteSpace()) {
             saveDestinationSlot = Path.Combine(SaveDestination, "Slot" + saveSlot);
-            TRTools.LogError(SaveDestination);
+            TRTools.Log($"Save Destination: {SaveDestination}");
         }
         else { saveDestinationSlot = Path.Combine(CustomSavePath.Value, "Slot" + saveSlot); }
         if (!Directory.Exists(saveDestinationSlot)) Directory.CreateDirectory(saveDestinationSlot);
@@ -93,12 +93,9 @@ internal class TRBackup {
         currentBackups.Clear();
 
         // Grabs all files in the directory
-        foreach (var zip in slot.GetDirectories()) {
-            if (zip.FullName.Contains("Server") || zip.FullName.Contains(islandName)) {
+        foreach (var zip in slot.GetDirectories())
+            if (zip.FullName.Contains("Server") || zip.FullName.Contains(islandName))
                 currentBackups.Add(zip);
-            }
-        }
-        
 
         // Create new list from currentBackups iff its included in BackupListInfo (from config file)
         //for (int i = 0; i < currentBackups.Count; i++) { TRTools.Log($"CurrentBackup Name List: {currentBackups[i].Name}"); }
@@ -115,7 +112,7 @@ internal class TRBackup {
         // If the final list is larger than the max backup count, delete the first created file and remove from backupList
 
         if (filesFromMod.Count > BackupCount.Value) {
-            filesFromMod[0].Delete(recursive: true);
+            filesFromMod[0].Delete(true);
             backupList.Remove(filesFromMod[0].Name);
         }
 
@@ -196,7 +193,7 @@ internal class TRBackup {
             return;
         }
         if (BackupCount.Value != -1) {
-            TRTools.LogError("Attempting to remove a backup.");
+            TRTools.Log("Attempting to remove a backup.");
             RemoveLastBackup(saveDestinationSlot);
         }
 
