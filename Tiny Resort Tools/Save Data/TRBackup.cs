@@ -49,7 +49,7 @@ internal class TRBackup {
 
         CustomSavePath = LeadPlugin.instance.Config.Bind<string>(
             "Save Backup Manager", "BackupLocation", null,
-            "Override the default backup location. The default location is in the James Bendon, this is recommended since it is already close to your current saves locations.\nPlease use a foward slash '/' as the path separator. If you want to use a back slash, you need to use two back slashes.\nWARNING: This deleted the oldest file in the directory. There are some safeholds to try to only delete the mod creates, but please use a folder only for the backups and don't store sensitive data in there."
+            "Override the default backup location. The default location is in the \"AppData/LocalLow/James Bendon\" folder , this is recommended since it is already close to your current saves locations.\nPlease use a foward slash '/' as the path separator. If you want to use a back slash, you need to use two back slashes.\nWARNING: This deleted the oldest file in the directory. There are some safeholds to try to only delete the mod creates, but please use a folder only for the backups and don't store sensitive data in there."
         );
         BackupCount = LeadPlugin.instance.Config.Bind(
             "Save Backup Manager", "BackupCount", 10,
