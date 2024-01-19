@@ -89,7 +89,6 @@ public class TRNetwork : NetworkBehaviour {
 
     protected void UserCode_RpcSendActiveChests(List<Chest> type) {
         if (!NetworkMapSharer.Instance.localChar) TRTools.LogError($"No Local Char");
-        TRTools.LogError($"{type.Count}");
         if (NetworkMapSharer.Instance.localChar.isServer) TRTools.Log($"Attempting to Send to Clients.");
         if (NetworkMapSharer.Instance.localChar.isClient && !NetworkMapSharer.Instance.localChar.isServer) {
             TRTools.Log("Updating Active Chests List.");
