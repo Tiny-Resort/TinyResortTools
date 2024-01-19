@@ -16,7 +16,7 @@
         <Deterministic>true</Deterministic>
         <TargetFrameworkProfile />
         <LangVersion>11</LangVersion>
-        <Nullable>disable</Nullable>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
@@ -77,6 +77,9 @@
         </Reference>
         <Reference Include="Costura, Version=5.8.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
             <HintPath>packages\Costura.Fody.5.8.0-alpha0098\lib\netstandard1.0\Costura.dll</HintPath>
+        </Reference>
+        <Reference Include="DotNetZip, Version=1.16.0.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+          <HintPath>packages\DotNetZip.1.16.0\lib\net40\DotNetZip.dll</HintPath>
         </Reference>
         <Reference Include="kcp2k">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\kcp2k.dll</HintPath>
@@ -178,8 +181,9 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="System.Data">
-          <HintPath>Embedded Resources\System.Data.dll</HintPath>
+            <HintPath>Embedded Resources\System.Data.dll</HintPath>
         </Reference>
+        <Reference Include="System.Data.OracleClient" />
         <Reference Include="System.Diagnostics.DiagnosticSource, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
             <HintPath>packages\System.Diagnostics.DiagnosticSource.8.0.0\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
         </Reference>
@@ -190,6 +194,7 @@
         <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
         </Reference>
+        <Reference Include="System.DirectoryServices" />
         <Reference Include="System.Drawing">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.Drawing.dll</HintPath>
             <Private>False</Private>
@@ -208,20 +213,8 @@
         <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
         </Reference>
-        <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-            <HintPath>packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
-        </Reference>
-        <Reference Include="System.IO.Compression.FileSystem">
-            <HintPath>Embedded Resources\System.IO.Compression.FileSystem.dll</HintPath>
-        </Reference>
-        <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-            <HintPath>packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
-        </Reference>
-        <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-            <HintPath>packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
-        </Reference>
-        <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-            <HintPath>packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+        <Reference Include="System.IO.FileSystem">
+            <HintPath>Embedded Resources\System.IO.FileSystem.dll</HintPath>
         </Reference>
         <Reference Include="System.Linq, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
@@ -232,6 +225,7 @@
         <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
             <HintPath>packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
         </Reference>
+        <Reference Include="System.Net" />
         <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
         </Reference>
@@ -254,6 +248,9 @@
         <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
         </Reference>
+        <Reference Include="System.Runtime.Extensions">
+            <HintPath>Embedded Resources\System.Runtime.Extensions.dll</HintPath>
+        </Reference>
         <Reference Include="System.Runtime.Extensions, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Runtime.Extensions.4.3.1\lib\net462\System.Runtime.Extensions.dll</HintPath>
         </Reference>
@@ -265,6 +262,10 @@
         </Reference>
         <Reference Include="System.Runtime.Serialization">
             <HintPath>Embedded Resources\System.Runtime.Serialization.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Security" />
+        <Reference Include="System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Security.AccessControl.6.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
         </Reference>
         <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
@@ -278,9 +279,28 @@
         <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
         </Reference>
+        <Reference Include="System.Security.Permissions, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+          <HintPath>packages\System.Security.Permissions.8.0.0\lib\net462\System.Security.Permissions.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+        </Reference>
         <Reference Include="System.ServiceModel.Internals">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\System.ServiceModel.Internals.dll</HintPath>
             <Private>False</Private>
+        </Reference>
+        <Reference Include="System.ServiceProcess" />
+        <Reference Include="System.Shim, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+            <HintPath>packages\System.Shim.1.0.0.1\lib\net40-client\System.Shim.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Text.Encoding.CodePages">
+          <HintPath>Embedded Resources\System.Text.Encoding.CodePages.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Text.Encoding.CodePages, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Text.Encoding.CodePages.8.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Text.Encodings.Web">
+            <HintPath>Embedded Resources\System.Text.Encodings.Web.dll</HintPath>
         </Reference>
         <Reference Include="System.Text.Encodings.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
             <HintPath>packages\System.Text.Encodings.Web.8.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
@@ -616,6 +636,7 @@
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\where-allocations.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="WindowsBase" />
     </ItemGroup>
     <ItemGroup>
         <None Include="App.config" />
@@ -635,20 +656,23 @@
         <Analyzer Include="packages\BepInEx.Analyzers.1.0.8\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Embedded Resources\System.IO.Compression.dll" />
-        <EmbeddedResource Include="Embedded Resources\System.IO.Compression.FileSystem.dll" />
-    </ItemGroup>
-    <ItemGroup>
+        <!--
+                <EmbeddedResource Include="Embedded Resources\System.IO.Compression.dll" />
+        -->
         <EmbeddedResource Include="Embedded Resources\Newtonsoft.Json.dll" />
-    </ItemGroup>
-    <ItemGroup>
         <EmbeddedResource Include="Embedded Resources\netstandard.dll" />
-    </ItemGroup>
-    <ItemGroup>
         <EmbeddedResource Include="Embedded Resources\System.Runtime.Serialization.dll" />
+        <EmbeddedResource Include="Embedded Resources\System.Data.dll" />
+        <EmbeddedResource Include="Embedded Resources\System.IO.Compression.FileSystem.dll" />
+        <EmbeddedResource Include="Embedded Resources\System.IO.Compression.ZipFile.dll" />
+        <EmbeddedResource Include="Embedded Resources\System.IO.FileSystem.dll" />
+        <EmbeddedResource Include="Embedded Resources\System.IO.FileSystem.Primitives.dll" />
+        <EmbeddedResource Include="Embedded Resources\System.Runtime.dll" />
+        <EmbeddedResource Include="Embedded Resources\System.Runtime.Extensions.dll" />
+        <EmbeddedResource Include="Embedded Resources\System.Text.Encodings.Web.dll" />
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Embedded Resources\System.Data.dll" />
+      <EmbeddedResource Include="Embedded Resources\System.Text.Encoding.CodePages.dll" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <PropertyGroup Condition="'$(OS)' != 'Unix'">

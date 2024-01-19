@@ -251,6 +251,15 @@
             </summary>
             <returns>A string in the format X.X.X, where X are numbers.</returns>
         </member>
+        <member name="T:TinyResort.TRNetwork.ChestRetrivalEvent">
+            <summary>Delegate for events related activeChest retrival requests</summary>
+        </member>
+        <member name="F:TinyResort.TRNetwork.postActiveChestRetrival">
+            <summary>
+                This event will run just before the game saves and before the cleanDataEvent.
+                This is where you want to ensure you have set all values that you wish to be saved.
+            </summary>
+        </member>
         <member name="T:TinyResort.TRData">
             <summary>Tools for adding custom save data to your mod.</summary>
         </member>

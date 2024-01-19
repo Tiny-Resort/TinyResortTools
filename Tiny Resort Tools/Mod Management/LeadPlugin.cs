@@ -17,7 +17,7 @@ internal class LeadPlugin : BaseUnityPlugin {
 
     public const string pluginName = "TRTools";
     public const string pluginGuid = "dev.TinyResort." + pluginName;
-    public const string pluginVersion = "0.8.5";
+    public const string pluginVersion = "0.8.8";
 
     public static TRPlugin plugin;
     internal static LeadPlugin instance;
@@ -93,10 +93,8 @@ internal class LeadPlugin : BaseUnityPlugin {
         TRConflictingPlugins.Update();
         TRNetwork.Update();
 
-        if (NetworkMapSharer.Instance.localChar) {
-            TRBackup.LoadSavedBackups();
-            TRIcons.InitializeIcons();
-        }
+        if (NetworkMapSharer.Instance.localChar) TRBackup.LoadSavedBackups();
+        TRIcons.InitializeIcons();
         if (NetworkMapSharer.Instance.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
         #region For Testing Only
@@ -113,6 +111,14 @@ internal class LeadPlugin : BaseUnityPlugin {
             TRNetwork.share.CmdSendMessageToHost("Sent to Host from Client");
         }
         */
+        /*if (Input.GetKeyDown(KeyCode.Home)) TRNetwork.share.CmdRequestActiveChests();
+        if (Input.GetKeyDown(KeyCode.Delete)) {
+            TRTools.LogError("Clicked Delete");
+            foreach (var chest in ContainerManager.manage.activeChests) {
+                TRTools.LogError($"{chest.xPos}.{chest.yPos}");
+                foreach (var item in chest.itemIds) TRTools.LogError($"Item ID: {item}");
+            }
+        }*/
 
         /*
         if (Input.GetKeyDown(KeyCode.F11)) GriefProtection.ResetBanList();
