@@ -76,7 +76,6 @@ public class TRNetwork : NetworkBehaviour {
             var doneUpdating = false;
             var firstUpdate = true;
             for (var i = 0; i < ContainerManager.manage.activeChests.Count; i++) {
-                TRTools.LogError($"Update {i}");
                 if (i > 0) firstUpdate = false;
                 if (i == ContainerManager.manage.activeChests.Count - 1) doneUpdating = true;
                 share.RpcSendActiveChests(ContainerManager.manage.activeChests[i], firstUpdate, doneUpdating);
@@ -117,74 +116,13 @@ public class TRNetwork : NetworkBehaviour {
 
             TRTools.Log("Updating Active Chests List with provided data from Host.");
 
-            //foreach (var item in type.itemIds) TRTools.LogError($"Items: {item}: {TRItems.GetItemDetails(item)}");
             if (firstUpdate) ContainerManager.manage.activeChests.Clear();
             ContainerManager.manage.activeChests.Add(type);
             if (doneUpdating) postActiveChestRetrival?.Invoke();
-
-            /*if (ContainerManager.manage.activeChests.Count == 0) {
-                ContainerManager.manage.activeChests.Add(type);
-                foreach (var item in type.itemIds)
-                    TRTools.LogError($" First Items: {item}: {TRItems.GetItemDetails(item)}");
-            }
-            else {
-                if (CompareChests(type)) return;
-
-                ContainerManager.manage.activeChests.Add(type);
-                TRTools.LogError($"Not IN Location: {type.xPos}.{type.yPos}\n");
-                foreach (var item in type.itemIds) TRTools.LogError($" NOT IN{item}: {TRItems.GetItemDetails(item)}");
-            }*/
         }
     }
 
     #endregion
-
-    internal static bool CompareChests(Chest chest) {
-        var isSame = false;
-        var isInside = false;
-        var isXPos = false;
-        var isYPos = false;
-        var isInsideX = false;
-        var isInsideY = false;
-        var isIds = false;
-        var isStacks = false;
-        var isPlayingLooking = false;
-        var isWorldLevel = false;
-        foreach (var aChest in ContainerManager.manage.activeChests) {
-            if (aChest.inside == chest.inside) {
-                TRTools.LogError($"Inside inside");
-                isInside = true;
-            }
-            if (aChest.xPos == chest.xPos) {
-                TRTools.LogError($"Inside xPos");
-                isXPos = true;
-            }
-            if (aChest.yPos == chest.yPos) {
-                TRTools.LogError($"Inside yPos");
-                isYPos = true;
-            }
-            if (aChest.insideX == chest.insideX) {
-                TRTools.LogError($"Inside insideX");
-                isInsideX = true;
-            }
-            if (aChest.insideY == chest.insideY) isInsideY = true;
-            if (aChest.itemIds.SequenceEqual(chest.itemIds)) {
-                TRTools.LogError($"IDs are the same");
-                isIds = true;
-            }
-            if (aChest.itemStacks.SequenceEqual(chest.itemStacks)) isStacks = true;
-            if (aChest.playingLookingInside == chest.playingLookingInside) isPlayingLooking = true;
-            if (aChest.placedInWorldLevel == chest.placedInWorldLevel) isWorldLevel = true;
-            if (isInside && isXPos && isYPos && isInsideX && isInsideY && isIds && isStacks && isPlayingLooking
-             && isWorldLevel) {
-                TRTools.LogError($"Chests the Same FOUND!");
-                isSame = true;
-                return isSame;
-            }
-
-        }
-        return isSame;
-    }
 
     static TRNetwork() {
         RemoteCallHelper.RegisterRpcDelegate(
