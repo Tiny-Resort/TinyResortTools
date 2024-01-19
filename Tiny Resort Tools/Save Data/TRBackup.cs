@@ -64,11 +64,12 @@ internal class TRBackup {
         #endregion
 
         pluginInfos = UnityChainloader.Instance.Plugins.Values.ToList();
-        TRData.postLoadEvent += CreateInitialBackup;
         var plugInfo = pluginInfos.Find(i => i.Metadata.GUID == "dev.TinyResort.SaveBackupManager");
-        if (plugInfo == null && UseBackupManager.Value)
+        if (plugInfo == null && UseBackupManager.Value) {
+            TRData.postLoadEvent += CreateInitialBackup;
             TRData.postSaveEvent += CreateBackup;
-        else if (plugInfo != null) TRTools.Log("Loaded Save Backup Manager Mod (Not API).");
+        }
+        else if (plugInfo != null) { TRTools.Log("Loaded Save Backup Manager Mod (Not API)."); }
 
     }
 
