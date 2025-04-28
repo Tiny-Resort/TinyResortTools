@@ -605,9 +605,9 @@
         <PostBuildEvent>
             copy /Y "$(SolutionDir)bin\Debug\$(TargetName).dll" "$(SolutionDir)TR Tools\$(TargetName).dll"
             copy /Y "$(SolutionDir)bin\Debug\$(TargetName).xml" "$(SolutionDir)TR Tools\$(TargetName).xml"
-            xcopy "$(SolutionDir)TR Tools" "..\DinkumInstallFolder\BepInEx\plugins\TR Tools\" /E /I /Y
-            <!--call "$(SolutionDir)..\MoveAssetsFolderTools.bat" "$(SolutionDir)TR Tools"
-            call "$(SolutionDir)..\CreateToolsZip.bat" -->
+            <!-- xcopy "$(SolutionDir)TR Tools" "..\DinkumInstallFolder\BepInEx\plugins\TR Tools\" /E /I /Y -->
+            call "$(SolutionDir)..\MoveAssetsFolderTools.bat" "$(SolutionDir)TR Tools"
+            call "$(SolutionDir)..\CreateToolsZip.bat"
         </PostBuildEvent>
     </PropertyGroup>
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
