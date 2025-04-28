@@ -69,9 +69,12 @@ namespace TinyResort
         public static void CreateUI() {
 
             creditsWindow = null;
+            TRTools.Log($"Creating UI for Mod Update Checker");
 
             // Create mod update checker button
-            var modsButtonParent = OptionsMenu.options.menuParent.transform.GetChild(10);
+            // modsButtonParent needs to be connected to CornerStuff, which
+            // is currently `GetChild(11)
+            var modsButtonParent = OptionsMenu.options.menuParent.transform.GetChild(11);
             modsWindowButton = TRInterface.CreateButton(ButtonTypes.MainMenu, modsButtonParent, "MODS", ToggleModWindow);
             modsWindowButton.rectTransform.sizeDelta = new Vector2(146, 44);
             modsWindowButton.rectTransform.anchorMin = new Vector2(0f, 0.5f);
@@ -88,7 +91,6 @@ namespace TinyResort
             updateButton.textMesh.fontSize = 12;
             updateButton.textMesh.rectTransform.sizeDelta = new Vector2(500, 50);
             updateButton.textMesh.lineSpacing = -20;
-
         }
 
         public static void Update() {

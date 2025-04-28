@@ -77,8 +77,8 @@ namespace TinyResort
                     "Item Icon Issue - The following icons found in the item_icons folder have a name that does not match any items:\n"
                     + string.Join("\n", oddItems)
                 );
-            if (invalidItems.Count > 0)
-                TRTools.Log("Item Icon Issue - Item has no unique sprite:\n" + string.Join("\n", invalidItems), false);
+            // if (invalidItems.Count > 0)
+                // TRTools.Log("Item Icon Issue - Item has no unique sprite:\n" + string.Join("\n", invalidItems), false);
 
         }
 

@@ -360,277 +360,216 @@
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\Unity.Timeline.dll</HintPath>
             <Private>False</Private>
         </Reference>
-        <Reference Include="UnityEngine">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.AccessibilityModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AccessibilityModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.AccessibilityModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.AccessibilityModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.AIModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AIModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.AIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.AIModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.AndroidJNIModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AndroidJNIModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.AndroidJNIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.AndroidJNIModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.AnimationModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.AnimationModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.ARModule">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ARModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
-        <Reference Include="UnityEngine.AssetBundleModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.AssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.AssetBundleModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.AudioModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.AudioModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.ClothModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.ClothModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.ClothModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.ClusterInputModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ClusterInputModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.ClusterInputModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.ClusterInputModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.ClusterRendererModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ClusterRendererModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.ClusterRendererModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.ClusterRendererModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.CoreModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.CrashReportingModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.CrashReportingModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.CrashReportingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.CrashReportingModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.DirectorModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.DirectorModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.DirectorModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.DirectorModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.DSPGraphModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.DSPGraphModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.DSPGraphModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.DSPGraphModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.GameCenterModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.GameCenterModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.GameCenterModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.GameCenterModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.GIModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.GIModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.GIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.GIModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.GridModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.GridModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.GridModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.GridModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.HotReloadModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.HotReloadModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.HotReloadModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.HotReloadModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.ImageConversionModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.ImageConversionModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.IMGUIModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.IMGUIModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.InputLegacyModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.InputLegacyModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.InputModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.InputModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.InputModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.InputModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.JSONSerializeModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.JSONSerializeModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.LocalizationModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.LocalizationModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.LocalizationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.LocalizationModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.ParticleSystemModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.ParticleSystemModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.PerformanceReportingModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.PerformanceReportingModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.PerformanceReportingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.PerformanceReportingModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.Physics2DModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.Physics2DModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.Physics2DModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.PhysicsModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.ProfilerModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ProfilerModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.ProfilerModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.ProfilerModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.ScreenCaptureModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.ScreenCaptureModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.ScreenCaptureModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.SharedInternalsModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.SharedInternalsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.SharedInternalsModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.SpatialTracking">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SpatialTracking.dll</HintPath>
             <Private>False</Private>
         </Reference>
-        <Reference Include="UnityEngine.SpriteMaskModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.SpriteMaskModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.SpriteMaskModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.SpriteShapeModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SpriteShapeModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.SpriteShapeModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.SpriteShapeModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.StreamingModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.StreamingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.StreamingModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.SubstanceModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SubstanceModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.SubstanceModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.SubstanceModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.SubsystemsModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.SubsystemsModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.SubsystemsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.SubsystemsModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.TerrainModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.TerrainModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.TerrainModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.TerrainPhysicsModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.TerrainPhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.TerrainPhysicsModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.TextCoreModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.TextCoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.TextCoreModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.TextRenderingModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.TextRenderingModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.TilemapModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.TilemapModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.TilemapModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.TLSModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.TLSModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.TLSModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.TLSModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.UI">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UI.dll</HintPath>
             <Private>False</Private>
         </Reference>
-        <Reference Include="UnityEngine.UIElementsModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UIElementsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UIElementsModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UIElementsNativeModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UIElementsNativeModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UIElementsNativeModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UIElementsNativeModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UIModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UIModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UIModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UmbraModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UmbraModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UmbraModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UNETModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UNETModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UNETModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UnityAnalyticsModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UnityAnalyticsCommonModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UnityAnalyticsCommonModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UnityConnectModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityConnectModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UnityAnalyticsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UnityAnalyticsModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UnityCurlModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityCurlModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UnityConnectModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UnityConnectModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UnityTestProtocolModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityTestProtocolModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UnityCurlModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UnityCurlModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UnityTestProtocolModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UnityTestProtocolModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UnityWebRequestAudioModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UnityWebRequestModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UnityWebRequestAudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UnityWebRequestTextureModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UnityWebRequestModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.UnityWebRequestWWWModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UnityWebRequestTextureModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.VehiclesModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.VehiclesModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.UnityWebRequestWWWModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.VFXModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.VFXModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.VehiclesModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.VehiclesModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.VideoModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.VideoModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.VFXModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.VFXModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.VirtualTexturingModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.VirtualTexturingModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.VideoModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.VideoModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.VRModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.VRModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.VirtualTexturingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.VirtualTexturingModule.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine.WindModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.WindModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.VRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.VRModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.WindModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.WindModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.XR.LegacyInputHelpers">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
             <Private>False</Private>
         </Reference>
-        <Reference Include="UnityEngine.XRModule">
-            <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\UnityEngine.XRModule.dll</HintPath>
-            <Private>False</Private>
+        <Reference Include="UnityEngine.XRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\UnityEngine.Modules.2020.3.48\lib\net45\UnityEngine.XRModule.dll</HintPath>
         </Reference>
         <Reference Include="where-allocations">
             <HintPath>..\DinkumInstallFolder\Dinkum_Data\Managed\where-allocations.dll</HintPath>
@@ -660,37 +599,15 @@
                 <EmbeddedResource Include="Embedded Resources\System.IO.Compression.dll" />
         -->
         <EmbeddedResource Include="Embedded Resources\Newtonsoft.Json.dll" />
-        <EmbeddedResource Include="Embedded Resources\netstandard.dll" />
-        <EmbeddedResource Include="Embedded Resources\System.Runtime.Serialization.dll" />
-        <EmbeddedResource Include="Embedded Resources\System.Data.dll" />
-        <EmbeddedResource Include="Embedded Resources\System.IO.Compression.FileSystem.dll" />
-        <EmbeddedResource Include="Embedded Resources\System.IO.Compression.ZipFile.dll" />
-        <EmbeddedResource Include="Embedded Resources\System.IO.FileSystem.dll" />
-        <EmbeddedResource Include="Embedded Resources\System.IO.FileSystem.Primitives.dll" />
-        <EmbeddedResource Include="Embedded Resources\System.Runtime.dll" />
-        <EmbeddedResource Include="Embedded Resources\System.Runtime.Extensions.dll" />
-        <EmbeddedResource Include="Embedded Resources\System.Text.Encodings.Web.dll" />
-    </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Include="Embedded Resources\System.Text.Encoding.CodePages.dll" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <PropertyGroup Condition="'$(OS)' != 'Unix'">
         <PostBuildEvent>
             copy /Y "$(SolutionDir)bin\Debug\$(TargetName).dll" "$(SolutionDir)TR Tools\$(TargetName).dll"
             copy /Y "$(SolutionDir)bin\Debug\$(TargetName).xml" "$(SolutionDir)TR Tools\$(TargetName).xml"
-            call "$(SolutionDir)..\MoveAssetsFolderTools.bat" "$(SolutionDir)TR Tools"
-            call "$(SolutionDir)..\CreateToolsZip.bat"
-        </PostBuildEvent>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(OS)' == 'Unix'">
-        <PostBuildEvent>
-            cp "$(SolutionDir)bin\Debug\$(TargetName).dll" "$(SolutionDir)TR Tools\$(TargetName).dll"
-            cp "$(SolutionDir)bin\Debug\$(TargetName).xml" "$(SolutionDir)TR Tools\$(TargetName).xml"
-            cp -r "$(SolutionDir)TR Tools" "/home/tanyrus/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Dinkum/BepInEx/plugins/"
-            cd "/home/tanyrus/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Dinkum/BepInEx/plugins/"
-            zip -r "TR Tools.zip" "TR Tools"
-            cd -
+            xcopy "$(SolutionDir)TR Tools" "..\DinkumInstallFolder\BepInEx\plugins\TR Tools\" /E /I /Y
+            <!--call "$(SolutionDir)..\MoveAssetsFolderTools.bat" "$(SolutionDir)TR Tools"
+            call "$(SolutionDir)..\CreateToolsZip.bat" -->
         </PostBuildEvent>
     </PropertyGroup>
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

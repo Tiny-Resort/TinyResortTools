@@ -11,9 +11,8 @@ namespace TinyResort
         internal static void Prefix(SaveLoad __instance) {
 
             //TRTools.Log($"Running onPress");
-            TRData.preLoadEvent?.Invoke();
-
-            TRTools.LogError("INSIDE: SaveSlotButtonPatch");
+            TRData.preLoadEvent?.Invoke(); 
+            // TRTools.LogError("INSIDE: SaveSlotButtonPatch");
         }
 
     }

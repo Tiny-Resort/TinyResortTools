@@ -15,11 +15,11 @@ namespace TinyResort
         //internal static GameObject scrollBar;
 
         internal static void Initialize() {
-
+            // TRTools.LogError($"Initializing TRInterface.");
             // Load Button Asset Bundles
             UIBundle = TRAssets.LoadAssetBundleFromDLL("ui_elements");
             foreach (var asset in UIBundle.LoadAllAssets()) {
-                //TRTools.LogError($"Asset: {asset.name}");
+                // TRTools.LogError($"Asset: {asset.name}");
             }
             ModLogo = UIBundle.LoadAsset<Sprite>("mod_logo");
             buttonMainMenu = LoadButton("Main Menu Button");
