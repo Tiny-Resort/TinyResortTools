@@ -72,18 +72,27 @@ namespace TinyResort
             TRTools.Log($"Creating UI for Mod Update Checker");
 
             // Create mod update checker button
+            // modsButtonParent needs to be connected to MenuItems, which
+            // is currently `GetChild(5) 
+            var modsButtonParent = OptionsMenu.options.menuParent.transform.GetChild(5);
+            modsWindowButton = TRInterface.CreateButton(ButtonTypes.MainMenu, modsButtonParent, "Mods", ToggleModWindow);
+            /*
+            If we want to return to having the Mods button on the bottom left corner, we can update the
+            GetChild and uncomment the rectTransform overrides. 
             // modsButtonParent needs to be connected to CornerStuff, which
             // is currently `GetChild(11)
             var modsButtonParent = OptionsMenu.options.menuParent.transform.GetChild(11);
-            modsWindowButton = TRInterface.CreateButton(ButtonTypes.MainMenu, modsButtonParent, "MODS", ToggleModWindow);
             modsWindowButton.rectTransform.sizeDelta = new Vector2(146, 44);
             modsWindowButton.rectTransform.anchorMin = new Vector2(0f, 0.5f);
             modsWindowButton.rectTransform.anchorMax = new Vector2(0f, 0.5f);
             modsWindowButton.rectTransform.pivot = new Vector2(0.5f, 0.5f);
             modsWindowButton.rectTransform.anchoredPosition = new Vector2(-1115, -5f);
+            */
+            
             modsWindowButton.textMesh.alignment = TextAlignmentOptions.Center;
-            modsWindowButton.textMesh.fontSize = 18;
-
+            modsWindowButton.textMesh.fontSize = 20;
+            modsWindowButton.transform.SetSiblingIndex(5);
+            
             // Create an update button to work with
             updateButton = TRInterface.CreateButton(ButtonTypes.MainMenu, null, "");
             updateButton.windowAnim.openDelay = 0;
@@ -116,11 +125,14 @@ namespace TinyResort
                     modsWindow = Object.Instantiate(creditsWindow, creditsWindow.transform.parent);
                     modsWindow.name = "Mod Loader Window";
 
+                    modsWindow.transform.GetChild(0).name = "Mod Window Internals";
+
                     // Add the Dinkum Mods logo at the top of the updater window
                     var modLogo = modsWindow.transform.GetChild(0).GetChild(7).GetComponent<Image>();
                     modLogo.rectTransform.anchoredPosition += new Vector2(0, -30);
                     modLogo.rectTransform.sizeDelta = new Vector2(modLogo.rectTransform.sizeDelta.x, 250);
                     modLogo.sprite = TRInterface.ModLogo;
+                    modLogo.name = "Dinkum Mods Logo";
 
                     // Add credits at the bottom of the dinkum mods window
                     var modCredits = Object.Instantiate(
@@ -129,6 +141,7 @@ namespace TinyResort
                     Object.Destroy(modCredits.transform.GetChild(0).gameObject);
                     modCredits.transform.SetAsLastSibling();
                     var modCreditsText = modCredits.GetComponent<TextMeshProUGUI>();
+                    modCreditsText.name = "Mod Credits";
                     modCreditsText.text =
                         "This Update Checker and the DINKUM MODS logo are both unofficial.\nLogo created by Duvinn, Paris, and Row.";
                     modCreditsText.fontStyle = FontStyles.Italic;
@@ -138,7 +151,10 @@ namespace TinyResort
                     modCreditsText.rectTransform.pivot = new Vector2(0.5f, 0);
                     modCreditsText.rectTransform.sizeDelta = new Vector2(500, 35);
                     modCreditsText.fontSize = 11;
-
+                    
+                    // I2.Loc.Localize automatically translates the text and re-replaces the text. We don't want that.
+                    Object.Destroy(modCreditsText.GetComponent<I2.Loc.Localize>());
+                    
                     // Destroy all unused children
                     Object.Destroy(modsWindow.transform.GetChild(0).GetChild(2).gameObject); // Title  
                     Object.Destroy(modsWindow.transform.GetChild(0).GetChild(3).gameObject); // Music
@@ -146,6 +162,7 @@ namespace TinyResort
                     Object.Destroy(modsWindow.transform.GetChild(0).GetChild(5).gameObject); // Special Thanks
                     Object.Destroy(modsWindow.transform.GetChild(0).GetChild(6).gameObject); // Acknowledgements
                     Object.Destroy(modsWindow.transform.GetChild(0).GetChild(8).gameObject); // Additional Dialogue
+                    Object.Destroy(modsWindow.transform.GetChild(1).gameObject); // License Button (top right)
 
                     var scrollArea = new GameObject("Mod Update Buttons Scroll Area");
                     scrollArea.transform.SetParent(modsWindow.transform.GetChild(0));
