@@ -1,18 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Buffers;
-using System.IO;
-using System.Resources;
-using System.Runtime;
-using System.Text;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.Bootstrap;
 using UnityEngine;
-using Ionic.Zip;
 
 namespace TinyResort;
 

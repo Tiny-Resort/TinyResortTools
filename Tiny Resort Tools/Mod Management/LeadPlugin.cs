@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Unity.Bootstrap;
-using HarmonyLib;
-using Mirror;
-using UnityEngine;
+
 using UnityEngine.SceneManagement;
 
 namespace TinyResort;
@@ -17,7 +10,7 @@ internal class LeadPlugin : BaseUnityPlugin {
 
     public const string pluginName = "TRTools";
     public const string pluginGuid = "dev.TinyResort." + pluginName;
-    public const string pluginVersion = "0.8.8";
+    public const string pluginVersion = "0.8.9";
 
     public static TRPlugin plugin;
     internal static LeadPlugin instance;
