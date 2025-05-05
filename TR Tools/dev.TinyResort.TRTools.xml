@@ -67,6 +67,12 @@
             <param name="requiredLicence">The licence that must be leveled up in order to unlock your licence.</param>
             <param name="minimumLevel">The minimum level the required licence must be to unlock your licence.</param>
         </member>
+        <member name="T:TinyResort.TRStorage.TRCustomStorage">
+            <summary>Information and functions related to your custom storage.</summary>
+        </member>
+        <member name="M:TinyResort.TRStorage.GetItemDetails(System.Int32)">
+            <returns>The details for an item with the given item ID.</returns>
+        </member>
         <member name="T:TinyResort.TRItems">
             <summary>Tools for working with the Dinkum inventory.</summary>
         </member>
