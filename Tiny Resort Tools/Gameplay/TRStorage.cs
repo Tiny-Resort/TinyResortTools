@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace TinyResort;
 
@@ -31,7 +35,9 @@ public class TRStorage
   
     
     private static TRModData Data;
-
+    private static float scrollPosition;
+    private static float scrollMaxPosition;
+    
     private static List<TRCustomStorage> customInventory;
     
     // Method to safely add items
@@ -124,6 +130,7 @@ public class TRStorage
         /*defaultLicenceSprite = TRAssets.LoadTextureFromAssetBundle(
             TRAssets.LoadAssetBundleFromDLL("licenceimages"), "default_licence", Vector2.one * 0.5f
         );*/
+
     }
 
     
@@ -168,6 +175,17 @@ public class TRStorage
     
     #endregion
 
+    public static void Update() {
+
+        // Creates the mods update checker window and button to open window if they aren't created yet
+        if (WorldManager.Instance && !creditsWindow) CreateInventoryUI();
+
+        if (modsWindow && modsWindow.activeInHierarchy) {
+            scrollPosition = Mathf.Clamp(scrollPosition - Input.mouseScrollDelta.y, 0, scrollMaxPosition);
+            updateButtonGrid.anchoredPosition = new Vector2(0, scrollPosition * 58);
+        }
+
+    }
     
     /// <returns>The details for an item with the given item ID.</returns>
     public static InventoryItem GetItemDetails(int itemID) {
@@ -229,5 +247,147 @@ public class TRStorage
         }
 
         return "Listed all items in storage.";
+    }
+    
+    private static GameObject modsWindow;
+    private static GameObject creditsWindow;
+    private static GameObject canvas;
+
+    private static RectTransform updateButtonGrid;
+    
+    internal static void CreateInventoryUI()
+    {
+        TRTools.Log("Starting CreateInventoryUI method");
+        
+        if (!creditsWindow) {
+            TRTools.Log("Credits window not found, attempting to locate it");
+    
+            creditsWindow = GameObject.Find("MapCanvas/MenuScreen/Credits");
+            
+            TRTools.Log($"Credits window found: {creditsWindow != null}, Canvas found: {canvas != null}");
+            
+            if (creditsWindow) {
+                TRTools.Log("Creating mod window from credits window template");
+                
+                // Create and setup a window for displaying update buttons for mods
+                modsWindow = Object.Instantiate(creditsWindow, creditsWindow.transform.parent.parent);
+                modsWindow.name = "Mod Loader Window";
+                TRTools.Log("Mod window instantiated");
+    
+                modsWindow.transform.GetChild(0).name = "Mod Window Internals";
+                TRTools.Log("Renamed first child to Mod Window Internals");
+    
+                // Add the Dinkum Mods logo at the top of the updater window
+                try {
+                    TRTools.Log("Attempting to setup mod logo");
+                    var modLogo = modsWindow.transform.GetChild(0).GetChild(7).GetComponent<Image>();
+                    modLogo.rectTransform.anchoredPosition += new Vector2(0, -30);
+                    modLogo.rectTransform.sizeDelta = new Vector2(modLogo.rectTransform.sizeDelta.x, 250);
+                    modLogo.sprite = TRInterface.ModLogo;
+                    modLogo.name = "Dinkum Mods Logo";
+                    TRTools.Log($"Mod logo set up, sprite valid: {modLogo.sprite != null}");
+                }
+                catch (Exception ex) {
+                    TRTools.LogError($"Error setting up mod logo: {ex.Message}");
+                }
+    
+                // Add credits at the bottom of the dinkum mods window
+                try {
+                    TRTools.Log("Setting up mod credits");
+                    var modCredits = Object.Instantiate(
+                        modsWindow.transform.GetChild(0).GetChild(2), modsWindow.transform.GetChild(0)
+                    );
+                    Object.Destroy(modCredits.transform.GetChild(0).gameObject);
+                    modCredits.transform.SetAsLastSibling();
+                    var modCreditsText = modCredits.GetComponent<TextMeshProUGUI>();
+                    modCreditsText.name = "Mod Credits";
+                    modCreditsText.text =
+                        "This Update Checker and the DINKUM MODS logo are both unofficial.\nLogo created by Duvinn, Paris, and Row.";
+                    modCreditsText.fontStyle = FontStyles.Italic;
+                    modCreditsText.rectTransform.anchoredPosition = new Vector2(0, 25);
+                    modCreditsText.rectTransform.anchorMax = new Vector2(0.5f, 0);
+                    modCreditsText.rectTransform.anchorMin = new Vector2(0.5f, 0);
+                    modCreditsText.rectTransform.pivot = new Vector2(0.5f, 0);
+                    modCreditsText.rectTransform.sizeDelta = new Vector2(500, 35);
+                    modCreditsText.fontSize = 11;
+                    TRTools.Log("Mod credits set up successfully");
+                    
+                    // I2.Loc.Localize automatically translates the text and re-replaces the text. We don't want that.
+                    Object.Destroy(modCreditsText.GetComponent<I2.Loc.Localize>());
+                }
+                catch (Exception ex) {
+                    TRTools.LogError($"Error setting up mod credits: {ex.Message}");
+                }
+                
+                // Destroy all unused children
+                TRTools.Log("Removing unused child elements");
+                try {
+                    Object.Destroy(modsWindow.transform.GetChild(0).GetChild(2).gameObject); // Title  
+                    Object.Destroy(modsWindow.transform.GetChild(0).GetChild(3).gameObject); // Music
+                    Object.Destroy(modsWindow.transform.GetChild(0).GetChild(4).gameObject); // VoicesBy
+                    Object.Destroy(modsWindow.transform.GetChild(0).GetChild(5).gameObject); // Special Thanks
+                    Object.Destroy(modsWindow.transform.GetChild(0).GetChild(6).gameObject); // Acknowledgements
+                    Object.Destroy(modsWindow.transform.GetChild(0).GetChild(8).gameObject); // Additional Dialogue
+                    Object.Destroy(modsWindow.transform.GetChild(1).gameObject); // License Button (top right)
+                    TRTools.Log("Unused child elements removed successfully");
+                }
+                catch (Exception ex) {
+                    TRTools.LogError($"Error removing unused child elements: {ex.Message}");
+                }
+    
+                try {
+                    TRTools.Log("Creating scroll area");
+                    var scrollArea = new GameObject("Mod Update Buttons Scroll Area");
+                    scrollArea.transform.SetParent(modsWindow.transform.GetChild(0));
+                    scrollArea.transform.SetAsLastSibling();
+                    var scrollAreaImage = scrollArea.AddComponent<Image>();
+                    scrollAreaImage.rectTransform.anchorMin = new Vector2(0.5f, 1f);
+                    scrollAreaImage.rectTransform.anchorMax = new Vector2(0.5f, 1f);
+                    scrollAreaImage.rectTransform.pivot = new Vector2(0.5f, 1f);
+                    scrollAreaImage.rectTransform.sizeDelta = new Vector2(550, 340);
+                    scrollAreaImage.rectTransform.anchoredPosition = new Vector2(0, -155f);
+                    scrollAreaImage.color = Color.red;
+                    scrollAreaImage.rectTransform.localScale = Vector3.one;
+                    scrollArea.AddComponent<Mask>().showMaskGraphic = false;
+                    TRTools.Log("Scroll area created and configured");
+    
+                    // Create a UI grid for the update buttons to go in
+                    TRTools.Log("Creating button grid");
+                    var updateButtonObj = new GameObject("Mod Update Button Grid");
+                    updateButtonObj.transform.SetParent(scrollArea.transform);
+                    updateButtonObj.transform.SetAsLastSibling();
+                    var gridLayoutGroup = updateButtonObj.AddComponent<GridLayoutGroup>();
+                    gridLayoutGroup.cellSize = new Vector2(500, 50);
+                    gridLayoutGroup.spacing = new Vector2(8, 8);
+                    gridLayoutGroup.childAlignment = TextAnchor.UpperCenter;
+                    gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+                    gridLayoutGroup.constraintCount = 1;
+                    updateButtonGrid = updateButtonObj.GetComponent<RectTransform>();
+                    updateButtonGrid.pivot = new Vector2(0.5f, 1);
+                    updateButtonGrid.anchorMax = new Vector2(0.5f, 1);
+                    updateButtonGrid.anchorMin = new Vector2(0.5f, 1);
+                    updateButtonGrid.localScale = Vector3.one;
+                    updateButtonGrid.anchoredPosition = new Vector2(0, 0);
+                    TRTools.Log("Button grid created and configured");
+                }
+                catch (Exception ex) {
+                    TRTools.LogError($"Error creating UI elements: {ex.Message}");
+                }
+                
+                TRTools.Log("CreateInventoryUI completed successfully");
+            }
+            else {
+                TRTools.LogError("Failed to create inventory UI: Credits window not found");
+            }
+        }
+        else {
+            TRTools.Log("Credits window already exists, skipping UI creation");
+        }
+    }
+    
+    internal static void OpenInventoryWindow()
+    {
+        modsWindow.gameObject.SetActive(!modsWindow.gameObject.activeSelf);
+
     }
 }
