@@ -238,6 +238,55 @@ public class TRStorage
         }
     }
 
+    
+    /*private static void PopulateModList() {
+
+            scrollPosition = 0;
+            scrollMaxPosition = Mathf.Max(customInventory.Count - 6, 0);
+
+            foreach (var item in customInventory) {
+
+                // If a button already exists for this mod, move on
+                if (item.itemSlot != null) continue;
+
+                // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
+                if (mod.updateState == PluginUpdateState.NotSetUp) {
+                    if (!showUnknownNexusID.Value) continue;
+
+                    mod.updateButton = updateButton.Copy(
+                        updateButtonGrid.transform,
+                        $"<size=15>{mod.name}</size>\n<color=#787877FF>Status Unknown: Missing NexusID</color>",
+                        delegate {
+                            openWebpage(
+                                "https://modding.wiki/en/dinkum/TRTools/ModManager#why-isnt-x-mod-showing-up-in-the-update-checker"
+                            );
+                        }
+                    );
+                }
+
+                // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
+                else {
+                    if (mod.updateState == PluginUpdateState.UpToDate && !showUpToDateMods.Value) continue;
+
+                    mod.updateButton = updateButton.Copy(
+                        updateButtonGrid.transform,
+                        mod.updateState == PluginUpdateState.UpdateAvailable
+                            ? $"<size=15>{mod.name}</size>\n<color=#00ff00ff><b>UPDATE AVAILABLE</b></color> (<color=#ff7226ff>{mod.modVersion}</color> -> <color=#00ff00ff>{mod.nexusVersion}</color>)"
+                            : $"<size=15>{mod.name}</size>\n<color=#787877FF>UP TO DATE ({mod.modVersion})</color>",
+                        delegate {
+                            openWebpage(string.Format("https://www.nexusmods.com/dinkum/mods/{0}/?tab=files", mod.id));
+                        }
+                    );
+                }
+
+            }
+
+            // Organize the mod update buttons with mods that have an update available at the top
+            loadedPlugins = loadedPlugins.OrderBy(i => i.updateState).ThenBy(i => i.name).ToList();
+            for (var i = 0; i < loadedPlugins.Count; i++) loadedPlugins[i].updateButton.transform.SetSiblingIndex(i);
+
+        }*/
+    
     internal static string AddItem(string[] args) //, InventoryItem item)
     {
         var itemDetails = TRItems.GetItemDetails(int.TryParse(args[0], out var itemID) ? itemID : -1);
@@ -306,6 +355,7 @@ public class TRStorage
         // Inventory Item is not Serializable, so we need to store only the ID
         public int itemID { get; set; }
         public int stackSize { get; set; }
+        private static TRButton itemSlot;
 
         // Add an equality comparer based on the item ID
         public override bool Equals(object obj)
