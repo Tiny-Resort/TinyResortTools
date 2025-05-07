@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 namespace TinyResort
 {
-    internal class TRObjects {
+    public class TRObjects {
 
         internal static Dictionary<string, GameObject> currentObjects = new();
 
-        public static void Initialize() {
+        internal static void Initialize() {
             var transformType = typeof(Transform);
             var toFind = (Transform[])Resources.FindObjectsOfTypeAll(transformType);
         

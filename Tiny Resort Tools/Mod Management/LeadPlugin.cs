@@ -8,7 +8,7 @@ namespace TinyResort;
 [BepInPlugin("dev.TinyResort.TRTools", "TRTools", pluginVersion)]
 internal class LeadPlugin : BaseUnityPlugin {
 
-    public const string pluginVersion = "0.9.0";
+    public const string pluginVersion = "0.9.1";
 
     public static TRPlugin plugin;
     internal static LeadPlugin instance;
@@ -61,7 +61,7 @@ internal class LeadPlugin : BaseUnityPlugin {
         // TRItems.ManageAllItemArray();
         // TRIcons.Initialize();
         TRBackup.Initialize();
-        TRStorage.Initialize();
+        // TRStorage.Initialize();
         TRObjects.Initialize();
 
         // GriefProtection.IntializeGriefProtection();
@@ -88,29 +88,23 @@ internal class LeadPlugin : BaseUnityPlugin {
         TRNetwork.Update();
 
 
-        if (NetworkMapSharer.Instance.localChar)
-        {
-            TRBackup.LoadSavedBackups();
-            TRStorage.Update();
-
-        }
+        if (NetworkMapSharer.Instance.localChar) TRBackup.LoadSavedBackups();
         // TRIcons.InitializeIcons();
         if (NetworkMapSharer.Instance.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
         #region For Testing Only
 
-        if (Input.GetKeyDown(KeyCode.Home))
-        {
-            TRStorage.OpenInventoryWindow();
-            /*TRNetwork.share.RpcCustomRPC("Sent to Both Host/Client from Host.");
+        /* if (Input.GetKeyDown(KeyCode.Home))
+         {
+             TRNetwork.share.RpcCustomRPC("Sent to Both Host/Client from Host.");
 
-            /*foreach (var character in NetworkPlayersManager.manage.connectedChars) {
-                TRTools.LogError($"connectionToClient {character.connectionToClient}");
-                TRTools.LogError($"connectionToServer: {character.connectionToServer}");
-            }
-            TRNetwork.share.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[0].connectionToClient, "test");#1#
-            TRNetwork.share.CmdSendMessageToHost("Sent to Host from Client");*/
-        }
+             /*foreach (var character in NetworkPlayersManager.manage.connectedChars) {
+                 TRTools.LogError($"connectionToClient {character.connectionToClient}");
+                 TRTools.LogError($"connectionToServer: {character.connectionToServer}");
+             }
+             TRNetwork.share.TargetSendMessageToClient(NetworkPlayersManager.manage.connectedChars[0].connectionToClient, "test");
+             TRNetwork.share.CmdSendMessageToHost("Sent to Host from Client");
+        }*/
         /*if (Input.GetKeyDown(KeyCode.Home)) TRNetwork.share.CmdRequestActiveChests();
         if (Input.GetKeyDown(KeyCode.Delete)) {
             TRTools.LogError("Clicked Delete");
