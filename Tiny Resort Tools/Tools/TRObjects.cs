@@ -11,21 +11,23 @@ namespace TinyResort
         internal static Dictionary<string, GameObject> currentObjects = new();
 
         public static void Initialize() {
-
             var transformType = typeof(Transform);
             var toFind = (Transform[])Resources.FindObjectsOfTypeAll(transformType);
-
+        
             foreach (var trans in toFind) {
                 var path = trans.gameObject.name;
+                
                 if (trans.parent != null) {
                     var parent = trans.parent;
                     while (parent != null) {
                         path = parent.gameObject.name + "/" + path;
                         parent = parent.parent;
                     }
+                                
                     currentObjects[path] = trans.gameObject;
                 }
             }
+
         }
 
         /// <summary>Searches for and instantiates an object while storing it in a Dictionary to avoid duplication.</summary>
@@ -36,9 +38,15 @@ namespace TinyResort
             return toReturn;
         }
 
-        /// <summary>Returns the game object at the specified location from a pre-prepared dictionary.</summary>
+        /// <summary>Returns the game object at the specified location from a pre-prepared dictionary. Finds the GameObject if not in the dictionary yet.</summary>
         /// <param name="location">Location of the GameObject you would like to return, i.e. "MapCanvas/Menu".</param>
-        public static GameObject GetObject(string location) => currentObjects[location];
+        public static GameObject GetObject(string location)
+        {
+            if (currentObjects.ContainsKey(location)) return currentObjects[location];
+            
+            currentObjects[location] = GameObject.Find(location);
+            return currentObjects[location];
+        } 
 
         /// <summary>Creates a button based on a game object and attached it to a parent object.</summary>
         /// <param name="Location">Location of the GameObject you would like to instantiate, i.e. "MapCanvas/Menu"</param>

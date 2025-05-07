@@ -64,6 +64,7 @@ internal class LeadPlugin : BaseUnityPlugin {
         // TRIcons.Initialize();
         TRBackup.Initialize();
         TRStorage.Initialize();
+        TRObjects.Initialize();
 
         // GriefProtection.IntializeGriefProtection();
         /*var TestLicense = plugin.AddLicence(1, "Test License 1",  10);

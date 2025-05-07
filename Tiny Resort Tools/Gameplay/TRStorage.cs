@@ -7,6 +7,12 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace TinyResort;
+
+
+// TODO: Create a button for all items at start of game and cache them
+// TODO: Update the button on add/remove methods
+// TODO: Populate on UI creation, and add/remove methods
+// TODO: Fix mouse no appearing when window is open
 public class TRStorage
 {
     private static TRModData Data;
@@ -17,9 +23,12 @@ public class TRStorage
     private static GameObject modsWindow;
     private static GameObject creditsWindow;
     private static GameObject canvas;
+    private static bool isUIInitialized;
 
     private static RectTransform updateButtonGrid;
     
+    private static TRButton itemSlotTemplate;
+
     // Method to safely add items
     public static bool TryAddItem(InventoryItem itemDetails, int stackSize)
     {
@@ -67,6 +76,7 @@ public class TRStorage
         // If stack size is 0 or less, remove the item entirely
         if (existingItem.stackSize <= 0)
         {
+            Object.Destroy(existingItem.itemSlot.gameObject);
             customInventory.Remove(existingItem);
         }
         
@@ -116,12 +126,41 @@ public class TRStorage
     public static void Update() {
 
         // Creates the mods update checker window and button to open window if they aren't created yet
-        if (WorldManager.Instance && !creditsWindow) CreateInventoryUI();
+        if (!isUIInitialized) CreateInventoryUI();
 
         if (modsWindow && modsWindow.activeInHierarchy) {
             scrollPosition = Mathf.Clamp(scrollPosition - Input.mouseScrollDelta.y, 0, scrollMaxPosition);
             updateButtonGrid.anchoredPosition = new Vector2(0, scrollPosition * 58);
         }
+        
+        // Look into openAndCloseInv
+        // this.cursor.gameObject.SetActive(this.invOpen);
+        // this.walletSlot.hideSlot(false);
+        // this.weaponSlot.hideSlot(this.invOpen);
+        // We need to hide everything, turn on cursor, turn off camera, etc. 
+        
+        /*if (InputMaster.input.OpenInventory() && !CreativeManager.instance.IsCreativeSearchWindowOpen())
+        {
+            if (ChestWindow.chests.chestWindowOpen)
+            {
+                Inventory.Instance.invOpen = false;
+                Inventory.Instance.openAndCloseInv();
+                Inventory.Instance.scanPocketsForCatalogueUpdate();
+                ChestWindow.chests.closeChestInWindow();
+                MenuButtonsTop.menu.closeButtonDelay(0.15f);
+            }
+            else if (!Inventory.Instance.invOpen && Inventory.Instance.CanMoveCharacter())
+            {
+                MenuButtonsTop.menu.switchToInv();
+            }
+            else if (Inventory.Instance.invOpen)
+            {
+                MenuButtonsTop.menu.closeButtonDelay(0.15f);
+                MenuButtonsTop.menu.closeCamera();
+                Inventory.Instance.invOpen = false;
+                Inventory.Instance.openAndCloseInv();
+            }
+        }*/
 
     }
     
@@ -168,126 +207,114 @@ public class TRStorage
     {
         TRTools.Log("Starting CreateInventoryUI method");
 
-        if (!creditsWindow)
+         TRTools.Log("Creating Inventory window from credits window template");
+
+        // Create and setup a window for displaying update buttons for mods
+        modsWindow = TRObjects.InstantiateObject("MapCanvas/MenuScreen/Credits", TRObjects.GetObject("Canvas"));
+        modsWindow.name = "Inventory Window";
+        TRTools.Log("Inventory window instantiated");
+
+        modsWindow.transform.GetChild(0).name = "Inventory Window Internals";
+        TRTools.Log("Renamed first child to Mod Window Internals");
+
+        // Add the Dinkum Mods logo at the top of the updater window
+
+        var modLogo = modsWindow.transform.GetChild(0).GetChild(7).GetComponent<Image>();
+        modLogo.rectTransform.anchoredPosition += new Vector2(0, -30);
+        modLogo.rectTransform.sizeDelta = new Vector2(modLogo.rectTransform.sizeDelta.x, 250);
+        modLogo.sprite = TRInterface.ModLogo;
+        modLogo.name = "Dinkum Mods Logo";
+
+
+        // Destroy all unused children
+        Object.Destroy(modsWindow.transform.GetChild(0).GetChild(2).gameObject); // Title  
+        Object.Destroy(modsWindow.transform.GetChild(0).GetChild(3).gameObject); // Music
+        Object.Destroy(modsWindow.transform.GetChild(0).GetChild(4).gameObject); // VoicesBy
+        Object.Destroy(modsWindow.transform.GetChild(0).GetChild(5).gameObject); // Special Thanks
+        Object.Destroy(modsWindow.transform.GetChild(0).GetChild(6).gameObject); // Acknowledgements
+        Object.Destroy(modsWindow.transform.GetChild(0).GetChild(8).gameObject); // Additional Dialogue
+        Object.Destroy(modsWindow.transform.GetChild(1).gameObject); // License Button (top right)
+
+
+        var scrollArea = new GameObject("Inventory Items Scroll Area");
+        scrollArea.transform.SetParent(modsWindow.transform.GetChild(0));
+        scrollArea.transform.SetAsLastSibling();
+        var scrollAreaImage = scrollArea.AddComponent<Image>();
+        scrollAreaImage.rectTransform.anchorMin = new Vector2(0.5f, 1f);
+        scrollAreaImage.rectTransform.anchorMax = new Vector2(0.5f, 1f);
+        scrollAreaImage.rectTransform.pivot = new Vector2(0.5f, 1f);
+        scrollAreaImage.rectTransform.sizeDelta = new Vector2(550, 340);
+        scrollAreaImage.rectTransform.anchoredPosition = new Vector2(0, -155f);
+        scrollAreaImage.color = Color.red;
+        scrollAreaImage.rectTransform.localScale = Vector3.one;
+        scrollArea.AddComponent<Mask>().showMaskGraphic = false;
+
+        // Create a UI grid for the update buttons to go in
+        var updateButtonObj = new GameObject("Inventory Item Grid");
+        updateButtonObj.transform.SetParent(scrollArea.transform);
+        updateButtonObj.transform.SetAsLastSibling();
+        var gridLayoutGroup = updateButtonObj.AddComponent<GridLayoutGroup>();
+        gridLayoutGroup.cellSize = new Vector2(500, 50);
+        gridLayoutGroup.spacing = new Vector2(8, 8);
+        gridLayoutGroup.childAlignment = TextAnchor.UpperCenter;
+        gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        gridLayoutGroup.constraintCount = 1;
+        updateButtonGrid = updateButtonObj.GetComponent<RectTransform>();
+        updateButtonGrid.pivot = new Vector2(0.5f, 1);
+        updateButtonGrid.anchorMax = new Vector2(0.5f, 1);
+        updateButtonGrid.anchorMin = new Vector2(0.5f, 1);
+        updateButtonGrid.localScale = Vector3.one;
+        updateButtonGrid.anchoredPosition = new Vector2(0, 0);
+        
+        if (!itemSlotTemplate)
         {
-
-            creditsWindow = GameObject.Find("MapCanvas/MenuScreen/Credits");
-
-            if (creditsWindow)
-            {
-                TRTools.Log("Creating Inventory window from credits window template");
-
-                // Create and setup a window for displaying update buttons for mods
-                modsWindow = Object.Instantiate(creditsWindow, creditsWindow.transform.parent.parent);
-                modsWindow.name = "Inventory Window";
-                TRTools.Log("Inventory window instantiated");
-
-                modsWindow.transform.GetChild(0).name = "Inventory Window Internals";
-                TRTools.Log("Renamed first child to Mod Window Internals");
-
-                // Add the Dinkum Mods logo at the top of the updater window
-
-                var modLogo = modsWindow.transform.GetChild(0).GetChild(7).GetComponent<Image>();
-                modLogo.rectTransform.anchoredPosition += new Vector2(0, -30);
-                modLogo.rectTransform.sizeDelta = new Vector2(modLogo.rectTransform.sizeDelta.x, 250);
-                modLogo.sprite = TRInterface.ModLogo;
-                modLogo.name = "Dinkum Mods Logo";
-
-
-                // Destroy all unused children
-                Object.Destroy(modsWindow.transform.GetChild(0).GetChild(2).gameObject); // Title  
-                Object.Destroy(modsWindow.transform.GetChild(0).GetChild(3).gameObject); // Music
-                Object.Destroy(modsWindow.transform.GetChild(0).GetChild(4).gameObject); // VoicesBy
-                Object.Destroy(modsWindow.transform.GetChild(0).GetChild(5).gameObject); // Special Thanks
-                Object.Destroy(modsWindow.transform.GetChild(0).GetChild(6).gameObject); // Acknowledgements
-                Object.Destroy(modsWindow.transform.GetChild(0).GetChild(8).gameObject); // Additional Dialogue
-                Object.Destroy(modsWindow.transform.GetChild(1).gameObject); // License Button (top right)
-
-
-                var scrollArea = new GameObject("Inventory Items Scroll Area");
-                scrollArea.transform.SetParent(modsWindow.transform.GetChild(0));
-                scrollArea.transform.SetAsLastSibling();
-                var scrollAreaImage = scrollArea.AddComponent<Image>();
-                scrollAreaImage.rectTransform.anchorMin = new Vector2(0.5f, 1f);
-                scrollAreaImage.rectTransform.anchorMax = new Vector2(0.5f, 1f);
-                scrollAreaImage.rectTransform.pivot = new Vector2(0.5f, 1f);
-                scrollAreaImage.rectTransform.sizeDelta = new Vector2(550, 340);
-                scrollAreaImage.rectTransform.anchoredPosition = new Vector2(0, -155f);
-                scrollAreaImage.color = Color.red;
-                scrollAreaImage.rectTransform.localScale = Vector3.one;
-                scrollArea.AddComponent<Mask>().showMaskGraphic = false;
-
-                // Create a UI grid for the update buttons to go in
-                var updateButtonObj = new GameObject("Inventory Item Grid");
-                updateButtonObj.transform.SetParent(scrollArea.transform);
-                updateButtonObj.transform.SetAsLastSibling();
-                var gridLayoutGroup = updateButtonObj.AddComponent<GridLayoutGroup>();
-                gridLayoutGroup.cellSize = new Vector2(500, 50);
-                gridLayoutGroup.spacing = new Vector2(8, 8);
-                gridLayoutGroup.childAlignment = TextAnchor.UpperCenter;
-                gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-                gridLayoutGroup.constraintCount = 1;
-                updateButtonGrid = updateButtonObj.GetComponent<RectTransform>();
-                updateButtonGrid.pivot = new Vector2(0.5f, 1);
-                updateButtonGrid.anchorMax = new Vector2(0.5f, 1);
-                updateButtonGrid.anchorMin = new Vector2(0.5f, 1);
-                updateButtonGrid.localScale = Vector3.one;
-                updateButtonGrid.anchoredPosition = new Vector2(0, 0);
-
-            }
+            itemSlotTemplate = TRInterface.CreateButton(ButtonTypes.MainMenu, null, "");
+            itemSlotTemplate.windowAnim.openDelay = 0;
+            Object.Destroy(itemSlotTemplate.buttonAnim);
+            itemSlotTemplate.textMesh.fontSize = 12;
+            itemSlotTemplate.textMesh.rectTransform.sizeDelta = new Vector2(500, 50);
+            itemSlotTemplate.textMesh.lineSpacing = -20;
         }
+
+        PopulateInventoryList();
+        isUIInitialized = true;
     }
 
     
-    /*private static void PopulateModList() {
 
-            scrollPosition = 0;
-            scrollMaxPosition = Mathf.Max(customInventory.Count - 6, 0);
+    internal static void PopulateInventoryList()
+    {
 
-            foreach (var item in customInventory) {
+        scrollPosition = 0;
+        scrollMaxPosition = Mathf.Max(customInventory.Count - 6, 0);
 
-                // If a button already exists for this mod, move on
-                if (item.itemSlot != null) continue;
+        foreach (var item in customInventory)
+        {
 
-                // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
-                if (mod.updateState == PluginUpdateState.NotSetUp) {
-                    if (!showUnknownNexusID.Value) continue;
+            // If a button already exists for this mod, move on
+            // It doesnt update the stack size because of this
+            if (item.itemSlot != null) continue;
 
-                    mod.updateButton = updateButton.Copy(
-                        updateButtonGrid.transform,
-                        $"<size=15>{mod.name}</size>\n<color=#787877FF>Status Unknown: Missing NexusID</color>",
-                        delegate {
-                            openWebpage(
-                                "https://modding.wiki/en/dinkum/TRTools/ModManager#why-isnt-x-mod-showing-up-in-the-update-checker"
-                            );
-                        }
-                    );
+            var inventoryItem = TRItems.GetItemDetails(item.itemID);
+            
+            item.itemSlot = itemSlotTemplate.Copy(
+                updateButtonGrid.transform,
+                $"<size=15>{inventoryItem.itemName}</size>\n<color=#787877FF>{item.stackSize}</color>",
+                delegate {
+                    Inventory.Instance.addItemToInventory(item.itemID, item.stackSize, true);;
                 }
+            );
+        }
+     
 
-                // Create a button for each mod, indicating if it has an update available with link to mod page on nexus
-                else {
-                    if (mod.updateState == PluginUpdateState.UpToDate && !showUpToDateMods.Value) continue;
+        // Organize the mod update buttons with mods that have an update available at the top
+        customInventory = customInventory.OrderBy(i => i.stackSize).ThenBy(i => i.itemID).ToList();
+        for (var i = 0; i < customInventory.Count; i++) customInventory[i].itemSlot.transform.SetSiblingIndex(i);
 
-                    mod.updateButton = updateButton.Copy(
-                        updateButtonGrid.transform,
-                        mod.updateState == PluginUpdateState.UpdateAvailable
-                            ? $"<size=15>{mod.name}</size>\n<color=#00ff00ff><b>UPDATE AVAILABLE</b></color> (<color=#ff7226ff>{mod.modVersion}</color> -> <color=#00ff00ff>{mod.nexusVersion}</color>)"
-                            : $"<size=15>{mod.name}</size>\n<color=#787877FF>UP TO DATE ({mod.modVersion})</color>",
-                        delegate {
-                            openWebpage(string.Format("https://www.nexusmods.com/dinkum/mods/{0}/?tab=files", mod.id));
-                        }
-                    );
-                }
+        
+    }
 
-            }
-
-            // Organize the mod update buttons with mods that have an update available at the top
-            loadedPlugins = loadedPlugins.OrderBy(i => i.updateState).ThenBy(i => i.name).ToList();
-            for (var i = 0; i < loadedPlugins.Count; i++) loadedPlugins[i].updateButton.transform.SetSiblingIndex(i);
-
-        }*/
-    
-    internal static string AddItem(string[] args) //, InventoryItem item)
+    internal static string AddItem(string[] args)
     {
         var itemDetails = TRItems.GetItemDetails(int.TryParse(args[0], out var itemID) ? itemID : -1);
         if (itemDetails == null) return "Item with ID " + args[0] + " does not exist.";
@@ -295,7 +322,11 @@ public class TRStorage
         if (stackSizeInt < 1) return "Stack size must be greater than 0.";
         
         TryAddItem(itemDetails, stackSize);
+        
+        
+        PopulateInventoryList();
         return $"Added {stackSize} {itemDetails.itemName} to the storage.";
+        
     }
     
     internal static string RemoveItem(string[] args) //, InventoryItem item)
@@ -310,7 +341,8 @@ public class TRStorage
             return $"Could not find {itemDetails.itemName} in storage.";
         }
         
-        return $"Removed {stackSize} {itemDetails.itemName} from storage.";
+        PopulateInventoryList();
+        return $"Removed {stackSize} {itemDetails.itemName} from storage."; 
     }
 
     // For Testing Purposes
@@ -355,7 +387,7 @@ public class TRStorage
         // Inventory Item is not Serializable, so we need to store only the ID
         public int itemID { get; set; }
         public int stackSize { get; set; }
-        private static TRButton itemSlot;
+        public TRButton itemSlot;
 
         // Add an equality comparer based on the item ID
         public override bool Equals(object obj)

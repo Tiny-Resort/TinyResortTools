@@ -70,9 +70,6 @@
         <member name="T:TinyResort.TRStorage.TRCustomStorage">
             <summary>Information and functions related to your custom storage.</summary>
         </member>
-        <member name="M:TinyResort.TRStorage.GetItemDetails(System.Int32)">
-            <returns>The details for an item with the given item ID.</returns>
-        </member>
         <member name="T:TinyResort.TRItems">
             <summary>Tools for working with the Dinkum inventory.</summary>
         </member>
@@ -303,7 +300,7 @@
             <summary>This event will run just BEFORE a save slot is loaded.</summary>
         </member>
         <member name="F:TinyResort.TRData.postLoadEvent">
-            <summary>This event will run just AFTER a save slot is loaded, just before the ijectDataEvent.</summary>
+            <summary>This event will run just AFTER a save slot is loaded, just before the injectDataEvent.</summary>
         </member>
         <member name="M:TinyResort.TRData.Subscribe(System.String,System.Boolean)">
             <summary>Subscribes to the save system so that your mod data is saved and loaded properly.</summary>
@@ -383,7 +380,7 @@
             <param name="parentObject">Parent object you would like to attach your button too.</param>
         </member>
         <member name="M:TinyResort.TRObjects.GetObject(System.String)">
-            <summary>Returns the game object at the specified location from a pre-prepared dictionary.</summary>
+            <summary>Returns the game object at the specified location from a pre-prepared dictionary. Finds the GameObject if not in the dictionary yet.</summary>
             <param name="location">Location of the GameObject you would like to return, i.e. "MapCanvas/Menu".</param>
         </member>
         <member name="M:TinyResort.TRObjects.CreateButton(System.String,UnityEngine.GameObject,System.String,System.Int32,UnityEngine.Events.UnityAction)">
