@@ -36,7 +36,7 @@ namespace TinyResort
                     topNotificationRunning.SetValue(__instance, null);
                 }
 
-                // Resets all animations related to the notificatin bubble appearing/disappearing
+                // Resets all animations related to the notification bubble appearing/disappearing
                 __instance.StopCoroutine("closeWithMask");
                 __instance.topNotification.StopAllCoroutines();
                 var Anim = __instance.topNotification.GetComponent<WindowAnimator>();
