@@ -5,12 +5,10 @@ using UnityEngine.SceneManagement;
 
 namespace TinyResort;
 
-[BepInPlugin(pluginGuid, pluginName, pluginVersion)]
+[BepInPlugin("dev.TinyResort.TRTools", "TRTools", pluginVersion)]
 internal class LeadPlugin : BaseUnityPlugin {
 
-    public const string pluginName = "TRTools";
-    public const string pluginGuid = "dev.TinyResort." + pluginName;
-    public const string pluginVersion = "0.8.9";
+    public const string pluginVersion = "0.9.0";
 
     public static TRPlugin plugin;
     internal static LeadPlugin instance;
@@ -96,7 +94,7 @@ internal class LeadPlugin : BaseUnityPlugin {
             TRStorage.Update();
 
         }
-        TRIcons.InitializeIcons();
+        // TRIcons.InitializeIcons();
         if (NetworkMapSharer.Instance.localChar && !TRItems.fixedRecipes) TRItems.FixRecipes();
 
         #region For Testing Only
