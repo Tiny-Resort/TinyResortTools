@@ -5,9 +5,11 @@ using UnityEngine.SceneManagement;
 
 namespace TinyResort;
 
-[BepInPlugin("dev.TinyResort.TRTools", "TRTools", pluginVersion)]
+[BepInPlugin(pluginGuid, pluginName, pluginVersion)]
 internal class LeadPlugin : BaseUnityPlugin {
-
+    
+    public const string pluginName = "TRTools";
+    public const string pluginGuid = "dev.TinyResort." + pluginName;
     public const string pluginVersion = "0.9.1";
 
     public static TRPlugin plugin;
@@ -61,7 +63,6 @@ internal class LeadPlugin : BaseUnityPlugin {
         // TRItems.ManageAllItemArray();
         // TRIcons.Initialize();
         TRBackup.Initialize();
-        // TRStorage.Initialize();
         TRObjects.Initialize();
 
         // GriefProtection.IntializeGriefProtection();
